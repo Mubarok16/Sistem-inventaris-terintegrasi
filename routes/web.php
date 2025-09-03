@@ -13,11 +13,11 @@ Route::get('/', [AuthContoller::class, 'showLoginForm'])->name('login')->middlew
 Route::post('/', [AuthContoller::class, 'login']);
 Route::post('/logout', [AuthContoller::class, 'logout'])->name('logout');
 
-
-// routes for dashboard mhs
-Route::get('/dashboard/mahasiswa', [DashboardController::class, 'dashboardMhs'])->middleware('auth');
-// routes for dashboard admin
-Route::get('/dashboard/admin', [DashboardController::class, 'dashboardAdmin'])->middleware('auth');
+// routes for dashboard admin and mahasiswa
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
+    Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa']);
+});
 
 
 

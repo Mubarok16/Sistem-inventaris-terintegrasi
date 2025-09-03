@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthContoller extends Controller
 {
-      public function showLoginForm()
+    public function showLoginForm()
     {
         $Data = User::all();
         return view('BlankPage', compact('Data')); // buat view login.blade.php
@@ -27,7 +27,7 @@ class AuthContoller extends Controller
             $request->session()->regenerate();
             if (Auth::user()->hak_akses === 1) { // cek jika hak_akses adalah 'admin'
                 return redirect()->intended('/dashboard/admin'); // arahkan ke dashboard admin
-            }else if (Auth::user()->hak_akses === 2) { // cek jika hak_akses adalah 'mahasiswa'
+            } else if (Auth::user()->hak_akses === 2) { // cek jika hak_akses adalah 'mahasiswa'
                 return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard mahasiswa
             }
             // return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard
