@@ -17,7 +17,7 @@
         Features
     </div>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseBootstrap"
+        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-target="#collapseBootstrap"
             aria-expanded="true" aria-controls="collapseBootstrap">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Peminjaman Barang</span>
@@ -35,7 +35,7 @@
         </div> --}}
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Peminjaman Ruang</span>
@@ -49,7 +49,7 @@
         </div> --}}
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseTable"
             aria-expanded="true" aria-controls="collapseTable">
             <i class="fas fa-fw fa-table"></i>
             <span>List Peminjaman</span>

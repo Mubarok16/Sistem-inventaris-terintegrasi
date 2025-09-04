@@ -111,16 +111,18 @@
                                 <div class="row gy-2 overflow-hidden">
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
-                                            <label for="email" class="form-label">Username</label>
                                             <input type="text" class="form-control" name="username" id="username"
-                                                placeholder="username" required>
+                                                placeholder=" " required>
+                                            <label for="email" class="form-label">username</label>
+
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
-                                            <label for="password" class="form-label">Password</label>
                                             <input type="password" class="form-control" name="password" id="password"
-                                                value="" placeholder="Password" required>
+                                                value="" placeholder=" " required>
+                                            <label for="password" class="form-label">password</label>
+
                                         </div>
                                     </div>
                                     <div class="col-12">

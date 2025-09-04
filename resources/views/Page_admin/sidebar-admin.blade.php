@@ -17,7 +17,7 @@
         Features
     </div>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseBootstrap"
+        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-target="#collapseBootstrap"
             aria-expanded="true" aria-controls="collapseBootstrap">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Bootstrap UI</span>
@@ -35,7 +35,7 @@
         </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Forms</span>
@@ -49,7 +49,7 @@
         </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseTable"
             aria-expanded="true" aria-controls="collapseTable">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span>
@@ -73,7 +73,7 @@
         Examples
     </div>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage"
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapsePage"
             aria-expanded="true" aria-controls="collapsePage">
             <i class="fas fa-fw fa-columns"></i>
             <span>Pages</span>
