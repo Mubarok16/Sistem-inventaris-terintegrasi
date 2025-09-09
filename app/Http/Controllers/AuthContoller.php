@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+// class AuthContoller untuk mengelola login users 
 class AuthContoller extends Controller
 {
     public function showLoginForm()
     {
-        $Data = User::all();
-        return view('BlankPage', compact('Data')); // buat view login.blade.php
+        return view('BlankPage'); // retun menampilkan view login.blade.php
     }
 
     public function login(Request $request)
     {
-        $Data = User::all();
-
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
@@ -37,7 +34,7 @@ class AuthContoller extends Controller
             'username' => 'username atau password salah!.',
         ]);
     }
-
+    // method untuk logout users
     public function logout(Request $request)
     {
         Auth::logout();

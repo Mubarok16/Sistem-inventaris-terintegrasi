@@ -50,7 +50,9 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-   protected $fillable = [
+
+    protected $primaryKey = 'id_user';
+    protected $fillable = [
         'name',
         'username',
         'password',
