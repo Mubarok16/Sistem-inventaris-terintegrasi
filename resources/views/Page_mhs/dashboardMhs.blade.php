@@ -1,4 +1,4 @@
-@extends('dashboard.dashboard_app')
+@extends('components.dashboard.dashboard_app')
 
 @section('title', 'dashboard mahasiswa')
 
@@ -9,12 +9,13 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 {{-- Navbar --}}
-                @include('dashboard.navbar')
+                @include('components.dashboard.navbar')
 
                 <div class="container-fluid" id="container-wrapper">
                     {{-- isi content --}}
                     <h1>Welcome to dashboard mahasiswa</h1>
                     <p>This is the main content of the dashboard mahasiswa.!!</p>
+                    @include('components.mahasiswa.contentDashbord')
                 </div>
             </div>
         </div>

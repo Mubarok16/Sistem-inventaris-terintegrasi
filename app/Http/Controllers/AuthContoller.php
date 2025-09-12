@@ -10,7 +10,8 @@ class AuthContoller extends Controller
 {
     public function showLoginForm()
     {
-        return view('BlankPage'); // retun menampilkan view login.blade.php
+            return view('BlankPage'); // retun menampilkan view login.blade.php
+        // }
     }
 
     public function login(Request $request)
@@ -27,7 +28,7 @@ class AuthContoller extends Controller
             } else if (Auth::user()->hak_akses === 2) { // cek jika hak_akses adalah 'mahasiswa'
                 return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard mahasiswa
             }
-            // return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard
+
         }
 
         return back()->withErrors([

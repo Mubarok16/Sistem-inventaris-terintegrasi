@@ -7,17 +7,7 @@ use Illuminate\Http\Request;
 // class return view dashboard
 class DashboardController extends Controller
 {
-    // return view dshboard mhs
-    // public function dashboardMhs()
-    // {
-    //     return view('Page_mhs.dashboardMhs');
-    // }
-    // // return view dashboard admin
-    // public function dashboardAdmin()
-    // {
-    //     return view('Page_admin.dashboard-admin');
-    // }
-    // hak akses controller
+    // method untuk agar admin hanya bisa mengakses halaman sesuai dengan hak aksesnya
     public function admin()
     {
         if (Auth::user()->hak_akses !== 1) {
@@ -25,7 +15,8 @@ class DashboardController extends Controller
         }
         return view('Page_admin.dashboard-admin');
     }
-
+    
+    // method untuk agar mahasiswa hanya bisa mengakses halaman sesuai dengan hak aksesnya
     public function mahasiswa()
     {
         if (Auth::user()->hak_akses !== 2) {

@@ -4,11 +4,11 @@
         <div class="sidebar-brand-icon">
             <img src="{{ Vite::asset('resources/img/logo/logo2.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">RuangAdmin</div>
+        <div class="sidebar-brand-text mx-3">FT Unwir</div>
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ url('/dashboard/mahasiswa') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>

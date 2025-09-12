@@ -462,7 +462,7 @@ a:focus {
 }
 
 .topbar #sidebarToggleTop:active {
-  background-color: #dddfeb
+  background-color: #dddfeb;
 }
 
 .topbar .navbar-search {

@@ -1,4 +1,4 @@
-@extends('dashboard.dashboard_app')
+@extends('components.dashboard.dashboard_app')
 
 @section('title', 'dashboard admin')
 
@@ -9,7 +9,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 {{-- Navbar --}}
-                @include('dashboard.navbar')
+                @include('components.dashboard.navbar')
 
                 <div class="container-fluid" id="container-wrapper">
                     {{-- isi content --}}

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 // routes for authentication
 Route::get('/', [AuthContoller::class, 'showLoginForm'])->name('login')->middleware('guest');
-Route::post('/', [AuthContoller::class, 'login']);
+Route::post('/', [AuthContoller::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthContoller::class, 'logout'])->name('logout');
 
 // routes for dashboard admin and mahasiswa
