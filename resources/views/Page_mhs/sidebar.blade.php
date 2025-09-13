@@ -2,12 +2,12 @@
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon">
-            <img src="{{ Vite::asset('resources/img/logo/logo2.png') }}">
+            <img src="{{ asset('images/logo_ft.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">FT Unwir</div>
+        <div class="sidebar-brand-text mx-3">SIGMA UNWIR</div> {{-- sistem integrasi peminjaman sarana prasarana dan agenda kegiatan --}}
     </a>
     <hr class="sidebar-divider my-0">
-    <li class="nav-item active">
+    <li class="nav-item {{ $halaman === 'contentDashbord' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/mahasiswa') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -16,9 +16,8 @@
     <div class="sidebar-heading">
         Features
     </div>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-target="#collapseBootstrap"
-            aria-expanded="true" aria-controls="collapseBootstrap">
+    <li class="nav-item {{ $halaman === 'contentPeminjamanBarang' ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{ url('/dashboard/mahasiswa/peminjaman-barang') }}">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Peminjaman Barang</span>
         </a>
@@ -34,9 +33,8 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
-            aria-expanded="true" aria-controls="collapseForm">
+    <li class="nav-item {{ $halaman === 'contentPeminjamanRuang' ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{ url('/dashboard/mahasiswa/peminjaman-ruang') }}">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Peminjaman Ruang</span>
         </a>
@@ -48,9 +46,8 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseTable"
-            aria-expanded="true" aria-controls="collapseTable">
+    <li class="nav-item {{ $halaman === 'contentListPeminjaman' ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>List Peminjaman</span>
         </a>
@@ -62,8 +59,8 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="ui-colors.html">
+    <li class="nav-item {{ $halaman === 'contentRiwayat' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ url('/dashboard/mahasiswa/riwayat') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Riwayat</span>
         </a>
