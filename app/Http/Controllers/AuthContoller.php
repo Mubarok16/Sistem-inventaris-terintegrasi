@@ -23,10 +23,19 @@ class AuthContoller extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            if (Auth::user()->hak_akses === 1) { // cek jika hak_akses adalah 'admin'
+            if (Auth::user()->hak_akses === 1) { // cek jika hak_akses adalah 'admin/tendik'
                 return redirect()->intended('/dashboard/admin'); // arahkan ke dashboard admin
             } else if (Auth::user()->hak_akses === 2) { // cek jika hak_akses adalah 'mahasiswa'
                 return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard mahasiswa
+            }elseif (Auth::user()->hak_akses === 3) { // cek jika hak_akses adalah 'pimpinan'
+                return redirect()->intended('/dashboard/pimpinan'); // arahkan ke dashboard dosen
+            }elseif (Auth::user()->hak_akses === 4) { // cek jika hak_akses adalah 'kaprodi'
+                return redirect()->intended('/dashboard/kaprodi'); // arahkan ke dashboard kaprodi
+            }else {
+                Auth::logout();
+                return back()->withErrors([
+                    'username' => 'Akses tidak dikenali.',
+                ]);
             }
 
         }

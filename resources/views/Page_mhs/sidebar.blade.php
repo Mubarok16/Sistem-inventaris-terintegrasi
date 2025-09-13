@@ -1,10 +1,10 @@
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/dashboard/mahasiswa') }}">
         <div class="sidebar-brand-icon">
             <img src="{{ asset('images/logo_ft.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">SIGMA UNWIR</div> {{-- sistem integrasi peminjaman sarana prasarana dan agenda kegiatan --}}
+        <div class="sidebar-brand-text mx-3">SIGMA</div> {{-- Sistem inteGrasi peMinjaman sarana prasarana dan Agenda kegiatan --}}
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item {{ $halaman === 'contentDashbord' ? 'active' : '' }}">

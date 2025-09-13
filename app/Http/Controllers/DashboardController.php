@@ -62,6 +62,25 @@ class DashboardController extends Controller
     }
     // --- IGNORE ---
 
+    // method untuk agar pimpinan fakultas hanya bisa mengakses halaman sesuai dengan hak aksesnya
+    public function pimpinan()
+    {
+        if (Auth::user()->hak_akses !== 3) {
+            abort(403, 'Unauthorized');
+        }
+        return view('Page_pimpinan.dahsboardPimpinan');
+    }
+    // --- IGNORE ---
+
+    // method untuk agar kaprodi hanya bisa mengakses halaman sesuai dengan hak aksesnya
+    public function kaprodi()
+    {
+        if (Auth::user()->hak_akses !== 4) {
+            abort(403, 'Unauthorized');
+        }
+        return view('Page_kaprodi.dashboardKaprodi');
+    }
+    // --- IGNORE ---
 
 }
 

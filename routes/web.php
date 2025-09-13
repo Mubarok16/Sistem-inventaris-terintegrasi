@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     // dashboard utama user
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa']);
+    Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan']);
+    Route::get('/dashboard/kaprodi', [DashboardController::class, 'kaprodi']);
 
     //route untuk halaman content dashboard mahasiswa
     Route::get('/dashboard/mahasiswa/peminjaman-barang', [DashboardController::class, 'mahasiswaPeminjamanBarang']);
