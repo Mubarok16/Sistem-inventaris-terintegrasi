@@ -18,7 +18,7 @@
                     {{-- @include('components.mahasiswa.'. ($halaman === 'contentDashbord' ? 'contentDashbord' : ($halaman === 'contentPeminjamanBarang' ? 'contentPeminjamanBarang' : 'contentPeminjamanBarang'))) --}}
                     @if ($halaman === 'contentDashbord')
                         <h4>Dashboard</h4>
-                        @include('components.mahasiswa.contentDashbord')
+                        @include('components.mahasiswa.contentDashbordMhs')
                     @elseif ($halaman === 'contentPeminjamanBarang')
                         <h4>Peminjaman Barang</h4>
                         @include('components.mahasiswa.contentPeminjamanBarang')

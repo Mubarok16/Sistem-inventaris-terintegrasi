@@ -4,7 +4,7 @@
         <div class="sidebar-brand-icon">
             <img src="{{ asset('images/logo_ft.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">SIGMA</div> {{-- Sistem inteGrasi peMinjaman sarana prasarana dan Agenda kegiatan --}}
+        <div class="sidebar-brand-text mx-3">SIPRA</div> {{-- Sistem inteGrasi peMinjaman sarana prasarana dan Agenda kegiatan --}}
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item {{ $halaman === 'contentDashbord' ? 'active' : '' }}">
