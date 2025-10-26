@@ -918,6 +918,10 @@ a:focus {
     min-width: 100vw
   }
 
+  .dsb-text{
+    font-size: 14px;
+  }
+
   .sidebar.toggled {
     width: 100vw !important;
     transition: all .3s ease-in-out;
@@ -1307,6 +1311,12 @@ a:focus {
   position: relative;
   height: 10rem;
   width: 100%
+}
+
+@media (max-width:375px) {
+   .dsb-text{
+    font-size: 12px;
+  }
 }
 
 @media (min-width:768px) {

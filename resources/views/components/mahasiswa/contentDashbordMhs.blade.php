@@ -5,51 +5,51 @@
             <h6 class="text-gray-500 pb-2">Agenda Ruangan</h6>
             <div class="row row-cols-3 g-3">
                 <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
+                    <a href="javascript:void(0);" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0">Ruang Kelas A</p>
+                            <p class="m-0 dsb-text">Ruang Kelas A</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                     <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0">Lab Komputer Jaringan</p>
+                            <p class="m-0 dsb-text">Lab Komputer Jaringan</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                      <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0">Ruang Kelas C</p>
+                            <p class="m-0 dsb-text">Ruang Kelas C</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                     <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0">Ruang Kelas D</p>
+                            <p class="m-0 dsb-text">Ruang Kelas D</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                     <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0">Ruang Kelas E</p>
+                            <p class="m-0 dsb-text">Ruang Kelas E</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                     <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0">Lab Elektronika</p>
+                            <p class="m-0 dsb-text">Lab Elektronik</p>
                         </div>
                     </a>
                 </div>
                 <div class="col">
                     <a href="" class="text-decoration-none text-dark ">
                         <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0">Lab Sipil</p>
+                            <p class="m-0 dsb-text">Lab Sipil</p>
                         </div>
                     </a>
                 </div>
