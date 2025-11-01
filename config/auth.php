@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'peminjam' => [
+            'driver' => 'session',
+            'provider' => 'peminjam',
+        ],
     ],
 
     /*
@@ -65,10 +70,10 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'peminjam' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Peminjam::class), // Model Mahasiswa
+        ],
     ],
 
     /*

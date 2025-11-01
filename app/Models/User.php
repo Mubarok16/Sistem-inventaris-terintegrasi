@@ -50,12 +50,21 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-
+    protected $table = 'users';
     protected $primaryKey = 'id_user';
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $keyType = 'string';
+    
     protected $fillable = [
-        'name',
+        'id_user',
+        'nama',
         'username',
         'password',
         'hak_akses',
     ];
+    public function usesTimestamps()
+    {
+        return false;
+    }
 }

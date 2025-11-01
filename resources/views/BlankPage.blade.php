@@ -20,6 +20,15 @@
     style="background-image: linear-gradient(rgba(0, 0, 0, 0.712), rgba(1, 1, 19, 0.897)), url('{{ asset('images/backgoound.jpg') }}'); background-size: cover; background-repeat: no-repeat;   background-position: center center;   background-attachment: fixed;">
 
     <!-- Login 13 - Bootstrap Brain Component -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul style="margin-bottom: 0;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <section class="py-3 py-md-5">
         <div class="container">
             <div class="row justify-content-center">

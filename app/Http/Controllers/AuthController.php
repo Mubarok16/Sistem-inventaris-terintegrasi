@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 // class AuthContoller untuk mengelola login users 
-class AuthContoller extends Controller
+class AuthController extends Controller
 {
     public function showLoginForm()
     {
-            return view('BlankPage'); // retun menampilkan view login.blade.php
+        return view('BlankPage'); // retun menampilkan view login.blade.php
         // }
     }
 
@@ -21,23 +21,25 @@ class AuthContoller extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            if (Auth::user()->hak_akses === 1) { // cek jika hak_akses adalah 'admin/tendik'
+            if (Auth::user()->hak_akses === "admin") { // cek jika hak_akses adalah 'admin/tendik'
                 return redirect()->intended('/dashboard/admin'); // arahkan ke dashboard admin
-            } else if (Auth::user()->hak_akses === 2) { // cek jika hak_akses adalah 'mahasiswa'
-                return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard mahasiswa
-            }elseif (Auth::user()->hak_akses === 3) { // cek jika hak_akses adalah 'pimpinan'
+            } elseif (Auth::user()->hak_akses === "pimpinan") { // cek jika hak_akses adalah 'pimpinan'
                 return redirect()->intended('/dashboard/pimpinan'); // arahkan ke dashboard dosen
-            }elseif (Auth::user()->hak_akses === 4) { // cek jika hak_akses adalah 'kaprodi'
+            } elseif (Auth::user()->hak_akses === "kaprodi") { // cek jika hak_akses adalah 'kaprodi'
                 return redirect()->intended('/dashboard/kaprodi'); // arahkan ke dashboard kaprodi
-            }else {
+            } else {
                 Auth::logout();
                 return back()->withErrors([
                     'username' => 'Akses tidak dikenali.',
                 ]);
             }
+        }
 
+        if (Auth::guard('peminjam')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard admin
         }
 
         return back()->withErrors([
