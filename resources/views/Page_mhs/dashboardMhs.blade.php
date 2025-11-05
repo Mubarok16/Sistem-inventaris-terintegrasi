@@ -26,7 +26,7 @@
                         <h4>Peminjaman Ruang</h4>
                         @include('components.mahasiswa.contentPeminjamanRuang')
                     @elseif ($halaman === 'contentListPeminjaman')
-                        <h4>List Peminjaman</h4>
+                        <h4>Cart Peminjaman</h4>
                         @include('components.mahasiswa.contentListPeminjaman')
                     @elseif ($halaman === 'contentRiwayat')
                         <h4>Riwayat</h4>

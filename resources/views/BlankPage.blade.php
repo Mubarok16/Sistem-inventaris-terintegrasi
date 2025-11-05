@@ -73,9 +73,7 @@
                                                     click for sign in
                                                 </p>
                                             </div> --}}
-                                            <p class="form-check-label text-secondary">
-                                                click bellow for sign in
-                                            </p>
+                                            <a href="/create-akun-peminjam" class="link-primary text-decoration-none">belum punya akun?</a>
                                             <a href="#!" class="link-primary text-decoration-none">Forgot
                                                 password?</a>
                                         </div>

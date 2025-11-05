@@ -13,8 +13,28 @@
 
                 <div class="container-fluid" id="container-wrapper">
                     {{-- isi content --}}
-                    <h1>Welcome to dashboard admin</h1>
-                    <p>This is the main content of the dashboard admin.!!</p>
+                     @if ($halaman === 'contentDashbord')
+                        <h4>Dashboard Staff</h4>
+                        @include('components.admin.componentDashboardAdm')
+                    @elseif ($halaman === 'contentPengelolaanUser')
+                        <h4>Pengelolaan User</h4>
+                        @include('components.admin.componentPengelolaanUser')
+                    @elseif ($halaman === 'contentPengajuanPeminjaman')
+                        <h4>Pengajuan Peminjaman</h4>
+                        @include('components.admin.componentPengajuanPeminjaman')
+                    @elseif ($halaman === 'contentDataBarang')
+                        <h4>Data Barang</h4>
+                        @include('components.admin.componentDataBarang')
+                    @elseif ($halaman === 'contentDataRuangan')
+                        <h4>Data Ruangan</h4>
+                        @include('components.admin.componentDataRuangan')
+                    @elseif ($halaman === 'contentAgenda')
+                        <h4>Agenda</h4>
+                        @include('components.admin.componentPengelolaanAgenda')
+                    @elseif ($halaman === 'contentPengadaanBarang')
+                        <h4>Pengadaan Barang</h4>
+                        @include('components.admin.componentPengadaanBarang')
+                    @endif
                 </div>
             </div>
         </div>

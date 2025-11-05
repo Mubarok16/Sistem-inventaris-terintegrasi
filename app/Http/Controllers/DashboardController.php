@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Models\Peminjam;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 // class return view dashboard
@@ -15,7 +17,70 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
         $user = Auth::user()->nama;
-        return view('Page_admin.dashboard-admin', compact('user'));
+        $halaman = 'contentDashbord';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+    }
+
+    public function adminPengelolaanUser()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $AkunPeminjams = Peminjam::all();
+        $AkunUsers = User::all();
+        $halaman = 'contentPengelolaanUser';
+        return view('Page_admin.dashboard-admin', compact('halaman','user','AkunPeminjams','AkunUsers'));
+    }
+
+    public function adminPengajuanPeminjaman()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $halaman = 'contentPengajuanPeminjaman';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+    }
+
+    public function adminDataBarang()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $halaman = 'contentDataBarang';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+    }
+
+    public function adminDataRuangan()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $halaman = 'contentDataRuangan';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+    }
+
+    public function adminAgenda()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $halaman = 'contentAgenda';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+    }
+
+    public function adminPengadaanBarang()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $user = Auth::user()->nama;
+        $halaman = 'contentPengadaanBarang';
+        return view('Page_admin.dashboard-admin', compact('halaman','user'));
     }
 
 
