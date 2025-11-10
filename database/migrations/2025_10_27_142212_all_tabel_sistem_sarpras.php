@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('username', 12);
             $table->string('password', 255);
             $table->string('hak_akses', 10);
+            $table->timestamps();
         });
 
         // table tipe_rooms
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->text('nama_room');
             $table->string('kondisi_room', 12);
             $table->text('gambar_room');
+            $table->timestamps();
 
             // Relasi ke tabel tipe_rooms
             $table->foreign('id_tipe_room')
@@ -56,6 +58,7 @@ return new class extends Migration
             $table->integer('qty_item');
             $table->string('kondisi_item', 12);
             $table->text('img_item');
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('id_room')
@@ -76,6 +79,7 @@ return new class extends Migration
             $table->text('fakultas');
             $table->text('prodi');
             $table->text('img_identitas');
+            $table->timestamps();
         });
 
         // table peminjaman rooms
@@ -83,14 +87,15 @@ return new class extends Migration
             $table->string('id_peminjaman_room', 12)->primary();
             $table->string('kode_transaksi', 12);
             $table->string('id_room', 12);
-            $table->string('id_user', 12)->nullable();
+            $table->string('id_user', 12);
             $table->string('no_identitas', 12);
-            $table->text('lampiran_file')->nullable();
+            $table->text('lampiran_file');
             $table->text('ket_peminjaman');
-            $table->timestampTz('tgl_transaksi');
+            // $table->timestampTz('tgl_transaksi');
             $table->timeTz('tgl_mulai');
             $table->timeTz('tgl_selesai');
             $table->string('status');
+            $table->timestamps();
 
             // Foreign keys
             $table->foreign('id_room')
@@ -114,11 +119,12 @@ return new class extends Migration
             $table->string('id_item', 12);
             $table->string('no_identitas', 12);
             $table->text('lampiran_file');
-            $table->timeTz('tgl_transaksi_item');
+            // $table->timeTz('tgl_transaksi_item');
             $table->timeTz('tgl_pinjam_item');
             $table->timeTz('tgl_kembali_item');
             $table->integer('qty_pinjam_item');
             $table->string('status_item', 12);
+            $table->timestamps();
 
             // Foreign keys
             $table->foreign('id_item')
@@ -142,6 +148,7 @@ return new class extends Migration
             $table->string('id_item', 12);
             $table->timeTz('tgl_agenda');
             $table->timeTz('tgl_agenda_selesai');
+            $table->timestamps();
 
             // Relasi ke tabel items
             $table->foreign('id_item')

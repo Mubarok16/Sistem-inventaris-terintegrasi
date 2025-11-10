@@ -27,8 +27,8 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
         $user = Auth::user()->nama;
-        $AkunPeminjams = Peminjam::all();
-        $AkunUsers = User::all();
+        $AkunPeminjams = Peminjam::latest()->get();
+        $AkunUsers = User::latest()->get();
         $halaman = 'contentPengelolaanUser';
         return view('Page_admin.dashboard-admin', compact('halaman','user','AkunPeminjams','AkunUsers'));
     }

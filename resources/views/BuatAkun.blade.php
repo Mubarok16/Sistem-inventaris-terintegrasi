@@ -26,6 +26,13 @@
             </ul>
         </div>
     @endif
+    @if (session('gagal'))
+        <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+            <ul style="margin-bottom: 0;">
+                {{ session('gagal') }}
+            </ul>
+        </div>
+    @endif
     <section class="py-3 py-md-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -55,8 +62,8 @@
                                     </div>
                                     <div class="col-12 m-0">
                                         <div class="form-floating mb-2">
-                                            <input type="text" class="form-control" name="nama_peminjam" id="nama_peminjam"
-                                                placeholder=" " required>
+                                            <input type="text" class="form-control" name="nama_peminjam"
+                                                id="nama_peminjam" placeholder=" " required>
                                             <label class="form-label">nama</label>
                                         </div>
                                     </div>
@@ -104,7 +111,11 @@
                                                     <option value="manajemen">Manajemen</option>
                                                 </optgroup>
                                                 <optgroup label="AGAMA ISLAM">
-                                                    <option value="manajemen">Manajemen</option>
+                                                    <option value="pendidikan agama islam">pendidikan agama islam
+                                                    </option>
+                                                    <option value="ekonomi syariah">ekonomi syariah</option>
+                                                    <option value="bimbingan konseling islam">bimbingan konseling islam
+                                                    </option>
                                                 </optgroup>
                                                 <optgroup label="PERTANIAN">
                                                     <option value="agribisnis">agribisnis</option>
@@ -120,8 +131,8 @@
                                     <div class="col-12 m-0">
                                         <div class="mb-2">
                                             <label for="foto" class="form-label">Masukkan foto ktm</label>
-                                            <input type="file" name="img_identitas" id="foto" class="form-control"
-                                                accept="image/*" capture="environment" required>
+                                            <input type="file" name="img_identitas" id="foto"
+                                                class="form-control" accept="image/*" capture="environment" required>
                                         </div>
                                     </div>
 

@@ -9,7 +9,7 @@ class Peminjam extends Authenticatable
 {
     protected $table = 'peminjam';
     protected $primaryKey = 'no_identitas';
-    public $timestamps = false;
+    // public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'int';
     
@@ -21,9 +21,11 @@ class Peminjam extends Authenticatable
         'fakultas',
         'prodi',
         'img_identitas',
+        'created_at',
+        'updated_at',
     ];
-    public function usesTimestamps()
-    {
-        return false;
-    }
+    // public function usesTimestamps()
+    // {
+    //     return false;
+    // }
 }
