@@ -29,8 +29,9 @@ class DashboardController extends Controller
         $user = Auth::user()->nama;
         $AkunPeminjams = Peminjam::latest()->get();
         $AkunUsers = User::latest()->get();
+        $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $halaman = 'contentPengelolaanUser';
-        return view('Page_admin.dashboard-admin', compact('halaman','user','AkunPeminjams','AkunUsers'));
+        return view('Page_admin.dashboard-admin', compact('halaman','user','AkunPeminjams','AkunUsers','JmlhAdmin'));
     }
 
     public function adminPengajuanPeminjaman()
