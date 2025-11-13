@@ -1,26 +1,21 @@
 <!-- Main Content -->
 
-<div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm">
+<div class="bg-white p-6 rounded-xl shadow-sm">
     <!-- PageHeading & Actions -->
     <!-- ToolBar -->
     <div class="flex justify-between items-center gap-4 mb-4">
         <div class="flex-1 max-w-md">
             <label class="flex flex-col w-full">
-                <div class="flex w-full flex-1 items-stretch rounded-lg h-10">
-                    <div
-                        class="text-gray-500 dark:text-gray-400 flex bg-background-light dark:bg-background-dark items-center justify-center pl-3 rounded-l-lg">
-                        <span class="material-symbols-outlined">search</span>
-                    </div>
-                    <input
-                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-sm font-normal text-gray-800 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-background-light dark:bg-background-dark h-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
-                        placeholder="Search nama ruangan..." value="" />
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass search-icon material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input class="w-full pl-10 pr-4 py-2 bg-background-light border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-black"
+                        placeholder="Search" type="text" />
                 </div>
             </label>
         </div>
-        <button
-            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white gap-2 pl-3 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-            <span class="material-symbols-outlined text-base">add</span>
-            <span class="truncate">Add ruang</span>
+        <button @click="AddBarang = true" class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+                <i class="fa-solid fa-plus material-symbols-outlined text-sm"></i>
+                <span>Add Akun</span>
         </button>
     </div>
     <!-- Table -->

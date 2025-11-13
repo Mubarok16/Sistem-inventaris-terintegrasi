@@ -3,7 +3,7 @@ window.$ = window.jQuery = $;
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap; // supaya ruang-admin.js bisa akses global
 
-import './bootstrap'; // Biarkan jika ada
+// import './bootstrap'; // Biarkan jika ada
 import Alpine from 'alpinejs'; // <-- IMPORT ALPINE
 
 window.Alpine = Alpine; // <-- Membuat Alpine tersedia secara global

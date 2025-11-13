@@ -39,7 +39,7 @@
         <div class="max-h-70 overflow-y-auto overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
-                    <tr class="bg-primary text-white">
+                    <tr class="bg-primary text-white ">
                         <th class="px-4 py-3 text-sm font-medium ">
                             Nama
                         </th>
@@ -49,7 +49,7 @@
                             Password</th>
                         <th class="px-4 py-3 text-sm font-medium ">
                             Hak-Akses</th>
-                        <th class="px-4 py-3 text-sm font-medium  text-right">
+                        <th class="px-4 py-3 text-sm font-medium  text-center">
                             Aksi</th>
                     </tr>
                 </thead>
@@ -311,9 +311,6 @@
                                 {{ $akunPeminjam->prodi }}
                             </td>
                             <td class="px-4 py-3 text-sm font-normal text-primary hover:underline cursor-pointer">
-                                {{-- <a href="{{ asset('storage/' . $akunPeminjam->img_identitas) }}"
-                                    target="_blank">lihat
-                                </a> --}}
                                  <button class="p-2 text-slate-900 hover:text-blue-500" 
                                     @click="OpenImgIdentitas = true; selectedPeminjam = {
                                         no_identitas: '{{ $akunPeminjam->no_identitas }}',

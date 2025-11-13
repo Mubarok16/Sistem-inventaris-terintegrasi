@@ -9,16 +9,16 @@
         // css js app
         'resources/css/app.css',
         'resources/js/app.js',
-        // css js ruang-admin
-        'resources/css/ruang-admin.css',
-        'resources/js/ruang-admin.js',
     ])
-    {{-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> --}}
-
+    {{-- panggil css template --}}
+    <link rel="stylesheet" href="{{ asset('css/ruang-admin.css') }}"> 
 </head>
 <body id="page-top " class=".container-fluid">
     <div id="wrapper">
         @yield('content')
-    </div> 
+    </div>
+
+    {{-- JS template --}}
+    <script src="{{ asset('js/ruang-admin.js') }}"></script> 
 </body>
 </html>
