@@ -26,7 +26,7 @@
                         <h4>Data Barang</h4>
                         @include('components.admin.componentDataBarang')
                     @elseif ($halaman === 'contentDataRuangan')
-                        <h4>Data Ruangan</h4>
+                        <h4>Pengelolaan Ruangan</h4>
                         @include('components.admin.componentDataRuangan')
                     @elseif ($halaman === 'contentAgenda')
                         <h4>Agenda</h4>

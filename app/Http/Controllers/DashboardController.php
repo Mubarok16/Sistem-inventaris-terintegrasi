@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Peminjam;
+use App\Models\TipeRuangan;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -59,9 +60,11 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+
+        $DataRuangan = TipeRuangan::get();
         $user = Auth::user()->nama;
         $halaman = 'contentDataRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman','user','DataRuangan'));
     }
 
     public function adminAgenda()

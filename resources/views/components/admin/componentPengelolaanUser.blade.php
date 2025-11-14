@@ -98,9 +98,8 @@
     </section>
 
     <!-- show tambah akun -->
-    <div x-show="AddAkunStaff"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
-        x-transition>
+    <div x-show="AddAkunStaff" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
+        x-transition x-cloak>
         <div @click.outside="AddAkunStaff = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 
             <button @click="AddAkunStaff = false"
@@ -154,7 +153,7 @@
     </div>
 
     {{-- show edit akun --}}
-    <div x-show="EditAkunStaff"
+    <div x-show="EditAkunStaff" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="EditAkunStaff = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
@@ -210,7 +209,7 @@
     </div>
 
     {{-- show delet akun staff --}}
-    <div x-show="DeleteAkunStaff"
+    <div x-show="DeleteAkunStaff" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="DeleteAkunStaff = false"
@@ -346,7 +345,7 @@
     </section>
 
     {{-- showw tambah akun peminjam --}}
-    <div x-show="AddAkunPeminjam"
+    <div x-show="AddAkunPeminjam" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="AddAkunPeminjam = false"
@@ -455,7 +454,7 @@
     </div>
 
     {{-- show edit akun peminjam --}}
-    <div x-show="EditAkunPeminjam"
+    <div x-show="EditAkunPeminjam" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="EditAkunPeminjam = false"
@@ -547,7 +546,7 @@
     </div>
 
     {{-- show delet akun peminjam --}}
-    <div x-show="DeleteAkunPeminjam"
+    <div x-show="DeleteAkunPeminjam" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="DeleteAkunPeminjam = false"
@@ -574,7 +573,7 @@
     </div>
 
     {{-- show image identitas --}}
-    <div x-show="OpenImgIdentitas"
+    <div x-show="OpenImgIdentitas" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
         <div @click.outside="OpenImgIdentitas = false"

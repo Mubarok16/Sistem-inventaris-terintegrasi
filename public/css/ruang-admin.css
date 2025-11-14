@@ -4,6 +4,10 @@
   src: url(../font/Nunito-Regular.ttf) format('ttf'), url(../font/Nunito-Regular.ttf) format('truetype')
 }
 
+[x-cloak] { 
+    display: none !important; 
+}
+
 html {
   position: relative;
   min-height: 100%;
