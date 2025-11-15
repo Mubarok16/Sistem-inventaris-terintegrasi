@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Peminjam;
 use App\Models\TipeRuangan;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $halaman = 'contentDashbord';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminPengelolaanUser()
@@ -32,7 +33,7 @@ class DashboardController extends Controller
         $AkunUsers = User::latest()->get();
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $halaman = 'contentPengelolaanUser';
-        return view('Page_admin.dashboard-admin', compact('halaman','user','AkunPeminjams','AkunUsers','JmlhAdmin'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunPeminjams', 'AkunUsers', 'JmlhAdmin'));
     }
 
     public function adminPengajuanPeminjaman()
@@ -42,7 +43,7 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $halaman = 'contentPengajuanPeminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminDataBarang()
@@ -52,7 +53,7 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $halaman = 'contentDataBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminDataRuangan()
@@ -61,10 +62,14 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $DataRuangan = TipeRuangan::get();
+        $DataRuangan = DB::table('rooms')
+            ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
+            ->get();
+        $DataTipeRuangan = TipeRuangan::get();
         $user = Auth::user()->nama;
         $halaman = 'contentDataRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman','user','DataRuangan'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan'));
     }
 
     public function adminAgenda()
@@ -74,7 +79,7 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $halaman = 'contentAgenda';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminPengadaanBarang()
@@ -84,7 +89,7 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $halaman = 'contentPengadaanBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
 
@@ -152,6 +157,4 @@ class DashboardController extends Controller
         $halaman = 'contentRiwayat'; // variable untuk menampilkan content riwayat
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
     }
-    
-
 }

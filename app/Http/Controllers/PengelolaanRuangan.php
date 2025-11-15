@@ -16,17 +16,21 @@ class PengelolaanRuangan extends Controller
                 'nama_tipe' => 'required|string|max:255',
             ]);
 
-            do {
-                // Buat ID acak baru
-                $id_tipe_acak = Str::random(12);
+            // do {
+            //     // Buat ID acak baru
+            //     $id_tipe_acak = Str::random(12);
 
-                // Cek apakah ID ini sudah ada di database
-                $idSudahAda = TipeRuangan::where('id_tipe_room', $id_tipe_acak)->exists();
-            } while ($idSudahAda);
+            //     // Cek apakah ID ini sudah ada di database
+            //     $idSudahAda = TipeRuangan::where('id_tipe_room', $id_tipe_acak)->exists();
+            // } while ($idSudahAda);
+
+            $TipeRuangan = new TipeRuangan();// instance untuk mengakses method model
+
+            $idSingkat = $TipeRuangan->getSingkatanAttribute($request->nama_tipe);// memanggil method getSingkatanAttribute dari model TipeRuangan
 
             // Simpan tipe ruangan ke database
             TipeRuangan::create([
-                'id_tipe_room' => $id_tipe_acak,
+                'id_tipe_room' => $idSingkat,
                 'nama_tipe_room' => $request->nama_tipe,
             ]);
             return redirect()->back()->with('success', 'Tipe ruangan berhasil ditambahkan.');
@@ -77,4 +81,6 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('gagal', $e->getMessage());
         }
     }
+
+    
 }

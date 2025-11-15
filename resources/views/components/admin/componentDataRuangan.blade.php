@@ -15,7 +15,7 @@
 @endif
 
 {{-- tabel data ruangan --}}
-<div class="bg-white rounded-xl shadow-sm p-6 mt-4">
+<div x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false }" class="bg-white rounded-xl shadow-sm p-6 mt-4">
     <h5 class="text-xl font-bold leading-tight tracking-tight mb-4">Data Ruangan</h5>
 
     <!-- ToolBar -->
@@ -31,7 +31,7 @@
                 </div>
             </label>
         </div>
-        <button @click="AddRuangan = true"
+        <button @click="AddDataRuangan = true"
             class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
             <i class="fa-solid fa-plus material-symbols-outlined text-sm"></i>
             <span>Add Ruangan</span>
@@ -60,22 +60,22 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- @foreach ($AkunUsers as $akunUser) --}}
+                @foreach ($DataRuangan as $DataRuangan)
                 <tr class="border-b border-slate-200 ">
                     <td class="px-4 py-3 text-sm font-normal  ">
-                        R001
+                        {{ $DataRuangan->id_room }}
                     </td>
                     <td class="px-4 py-3 text-sm font-normal ">
-                        Lab Komputer
+                        {{ $DataRuangan->nama_room }}
                     </td>
                     <td class="px-4 py-3 text-sm font-normal">
-                        Laboratorium
+                        {{ $DataRuangan->nama_tipe_room }}
                     </td>
                     <td class="px-4 py-3">
                         <a href="">Lihat</a>
                     </td>
                     <td class="px-4 py-3">
-                        baik
+                        {{ $DataRuangan->kondisi_room }}
                     </td>
                     <td class="px-4 py-3 text-sm font-normal">
                         <button class="p-2 text-slate-900 hover:text-blue-500 text-center"
@@ -84,18 +84,51 @@
                         </button>
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <button @click="EditRuangan = true;" class="p-2 text-slate-900 hover:text-blue-500">
+                        <button @click="EditDataRuangan = true;" class="p-2 text-slate-900 hover:text-blue-500">
                             <span class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
                         </button>
-                        <button class="p-2 text-slate-900 hover:text-red-500" @click="DeleteRuangan = true;">
+                        <button class="p-2 text-slate-900 hover:text-red-500" @click="DeleteDataRuangan = true;">
                             <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
                         </button>
                     </td>
                 </tr>
-                {{-- @endforeach --}}
+                @endforeach
             </tbody>
         </table>
     </div>
+
+    {{-- ====================================== show ============================================================= --}}
+    {{-- shwo add data ruangan --}}
+    <div x-show="AddDataRuangan"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
+        x-cloak>
+        <div @click.outside="AddDataRuangan = false"
+            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+
+            <button @click="AddDataRuangan = false"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+
+            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Add Data Ruangan</h2>
+
+            <form method="POST" action="{{ route('addTipeRuangan') }}">
+                @csrf
+                <div class="row gy-2 overflow-hidden">
+                    <div class="col-12 m-0">
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" name="nama_tipe" placeholder=" " required>
+                            <label class="form-label">Nama Tipe</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-grid">
+                            <button class="btn btn-primary w-100" type="submit">Simpan Tipe</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 {{-- ================================================================================================================ --}}
@@ -140,7 +173,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($DataRuangan as $dataRuangan)
+                @foreach ($DataTipeRuangan as $dataRuangan)
                     <tr class="border-b border-slate-200 ">
                         <td class="px-4 py-3 text-sm font-normal  ">
                             {{ $dataRuangan->id_tipe_room }}
