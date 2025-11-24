@@ -15,7 +15,7 @@
 @endif
 
 {{-- tabel data ruangan --}}
-<div x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false }" class="bg-white rounded-xl shadow-sm p-6 mt-4">
+<div x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false, OpenImgRuangan: false }" class="bg-white rounded-xl shadow-sm p-6 mt-4">
     <h5 class="text-xl font-bold leading-tight tracking-tight mb-4">Data Ruangan</h5>
 
     <!-- ToolBar -->
@@ -39,65 +39,89 @@
     </div>
     <!-- Data Table -->
     <div class="max-h-70 overflow-y-auto overflow-x-auto">
-        <table class="w-full text-left">
-            <thead>
-                <tr class="bg-primary text-white ">
+        <table class="w-full text-left table-striped ">
+            <thead class="sticky top-0 z-1 bg-primary">
+                <tr class="text-white">
                     <th class="px-4 py-3 text-sm font-medium ">
-                        Id Ruangan
+                        Id
                     </th>
                     <th class="px-4 py-3 text-sm font-medium ">
-                        Nama</th>
+                        Gambar</th>
+                    <th class="px-4 py-3 text-sm font-medium ">
+                        Nama Ruangan</th>
                     <th class="px-4 py-3 text-sm font-medium ">
                         Tipe</th>
-                    <th class="px-4 py-3 text-sm font-medium">
-                        List Barang</th>
+                    {{-- <th class="px-4 py-3 text-sm font-medium">
+                        List Barang</th> --}}
                     <th class="px-4 py-3 text-sm font-medium">
                         Kondisi</th>
-                    <th class="px-4 py-3 text-sm font-medium ">
-                        Gambar</th>
                     <th class="px-4 py-3 text-sm font-medium  text-center">
                         Aksi</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($DataRuangan as $DataRuangan)
-                <tr class="border-b border-slate-200 ">
-                    <td class="px-4 py-3 text-sm font-normal  ">
-                        {{ $DataRuangan->id_room }}
-                    </td>
-                    <td class="px-4 py-3 text-sm font-normal ">
-                        {{ $DataRuangan->nama_room }}
-                    </td>
-                    <td class="px-4 py-3 text-sm font-normal">
-                        {{ $DataRuangan->nama_tipe_room }}
-                    </td>
-                    <td class="px-4 py-3">
-                        <a href="">Lihat</a>
-                    </td>
-                    <td class="px-4 py-3">
-                        {{ $DataRuangan->kondisi_room }}
-                    </td>
-                    <td class="px-4 py-3 text-sm font-normal">
-                        <button class="p-2 text-slate-900 hover:text-blue-500 text-center"
-                            @click="OpenImgRuangan = true;">
-                            <span class="material-symbols-outlined text-sm fa-solid fa-image"></span>
-                        </button>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <button @click="EditDataRuangan = true;" class="p-2 text-slate-900 hover:text-blue-500">
-                            <span class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
-                        </button>
-                        <button class="p-2 text-slate-900 hover:text-red-500" @click="DeleteDataRuangan = true;">
-                            <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
+            <tbody class="">
+                @if ($DataRuangan->isEmpty())
+                    <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                        <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
+                            <span class="text-red-600 font-semibold">Data kosong!</span>
+                        </td>
+                    </tr>
+                @else
+                    @foreach ($DataRuangan as $DataRuangan)
+                        <tr class="odd:bg-gray-200 even:bg-white">
+                            <td class="px-4 py-3 text-sm font-normal  ">
+                                {{ $DataRuangan->id_room }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-normal">
+                                <img src="/storage/{{ $DataRuangan->gambar_room }}"
+                                    class=" text-slate-900 hover:text-blue-500 text-center max-w-15 hover:scale-120 hover:grayscale cursor-pointer rounded-sm"
+                                    @click="OpenImgRuangan = true; true; selectedDataRuangan = {
+                                        img: '{{ $DataRuangan->gambar_room }}',
+                                    }">
+                                {{-- <span class="material-symbols-outlined text-sm fa-solid fa-image"></span> --}}
+                                {{-- </button> --}}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-normal ">
+                                {{ $DataRuangan->nama_tipe_room }}
+                                {{ $DataRuangan->nama_room }}
+                            </td>
+                            <td class="px-4 py-3 text-sm font-normal">
+                                {{ $DataRuangan->nama_tipe_room }}
+                            </td>
+                            {{-- <td class="px-4 py-3">
+                            <a href="">Lihat</a>
+                        </td> --}}
+
+                            <td class="px-4 py-3">
+                                {{ $DataRuangan->kondisi_room }}
+                            </td>
+                            <td class="px-4 py-3 text-center flex gap-1">
+                                <form method="GET" action="/admin/data-ruangan/detail/{{ $DataRuangan->id_room }}">
+                                    @csrf
+                                    <button
+                                        class="py-1 px-2 text-slate-900 bg-blue-500 hover:bg-blue-300 flex items-center gap-1">
+                                        <i class="material-symbols-outlined text-xs fa-solid fa-eye"></i>
+                                        <span>Detail</span>
+                                    </button>
+                                </form>
+                                <button
+                                    class="py-1 px-2 text-slate-900 bg-red-500 hover:bg-red-400 flex items-center gap-1"
+                                    @click="DeleteDataRuangan = true; selectedDataRuangan = {
+                                        id_room: '{{ $DataRuangan->id_room }}',
+                                    }">
+                                    <i class="material-symbols-outlined text-xs fa-solid fa-trash-can"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>
 
     {{-- ====================================== show ============================================================= --}}
+
     {{-- shwo add data ruangan --}}
     <div x-show="AddDataRuangan"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
@@ -110,22 +134,91 @@
 
             <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Add Data Ruangan</h2>
 
-            <form method="POST" action="{{ route('addTipeRuangan') }}">
+            <form method="POST" action="{{ route('addRuangan') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12 m-0">
                         <div class="form-floating mb-2">
-                            <input type="text" class="form-control" name="nama_tipe" placeholder=" " required>
-                            <label class="form-label">Nama Tipe</label>
+                            <input type="text" class="form-control" name="nama_room" placeholder=" " required>
+                            <label class="form-label">Nama Ruangan</label>
+                        </div>
+                    </div>
+                    <div class="col-12 m-0">
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-home"></i>
+                            </span>
+                            <select name="tipe" class="form-select" required>
+                                <option value="">--- Pilih Tipe Ruangan ---</option>
+                                @foreach ($DataTipeRuangan as $dataTipe)
+                                    <option value="{{ $dataTipe->id_tipe_room }}">{{ $dataTipe->nama_tipe_room }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 m-0">
+                        <div class="mb-2">
+                            <label>Kondisi Ruangan:</label><br>
+                            <input type="radio" name="kondisi" value="Baik">
+                            <label for="pria">Baik</label>
+                            <input type="radio" name="kondisi" value="Rusak">
+                            <label for="pria">Rusak</label>
+                        </div>
+                    </div>
+                    <div class="col-12 m-0">
+                        <div class="mb-2">
+                            <label for="foto" class="form-label">Masukkan gambar ruangan</label>
+                            <input type="file" name="gambar_room" class="form-control"
+                                accept="image/jpeg, image/png,.doc" capture="environment" required>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="d-grid">
-                            <button class="btn btn-primary w-100" type="submit">Simpan Tipe</button>
+                            <button class="btn btn-primary w-100" type="submit">Simpan</button>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    {{-- shwo img ruangan --}}
+    <div x-show="OpenImgRuangan"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
+        x-transition x-cloak>
+        <div class="flex justify-center rounded-2xl w-full max-w-xl relative" @click.outside="OpenImgRuangan = false">
+            <img :src="`/storage/${selectedDataRuangan.img}`" alt="Foto Peminjam" class="container">
+        </div>
+    </div>
+
+    {{-- show data ruangan --}}
+    <div x-show="DeleteDataRuangan" x-cloak
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
+        x-transition>
+        <div @click.outside="DeleteDataRuangan = false"
+            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+
+            <button @click="DeleteDataRuangan = false"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+
+            <h4 class="text-lg font-semibold mb-4 text-center text-gray-700">Yakin ingin menghapus tipe?</h4>
+
+            <form method="POST" :action="'/admin/delete-ruangan/' + selectedDataRuangan.id_room"
+                enctype="multipart/form-data">
+                @csrf
+
+                <div class="row gy-2 overflow-hidden">
+                    <div class="col-12">
+                        {{-- <input type="text" class="hidden" name="id_tipe" x-model="selectedTipeRuangan.id_tipe"> --}}
+                        <div class="d-grid">
+                            <button class="btn btn-primary w-100" type="submit">Hapus Ruangan</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
         </div>
     </div>
 
@@ -156,12 +249,12 @@
         </button>
     </div>
     <!-- Data Table tipe ruangan -->
-    <div class="max-h-70 overflow-y-auto overflow-x-auto">
+    <div class="overflow-x-auto max-h-70 overflow-y-auto">
         <table class="w-full text-left">
-            <thead>
+            <thead class="sticky top-0 z-10">
                 <tr class="bg-primary text-white ">
                     <th class="px-4 py-3 text-sm font-medium ">
-                        id tipe Ruangan
+                        id tipe
                     </th>
                     <th class="px-4 py-3 text-sm font-medium ">
                         Nama tipe
@@ -172,33 +265,48 @@
 
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($DataTipeRuangan as $dataRuangan)
-                    <tr class="border-b border-slate-200 ">
-                        <td class="px-4 py-3 text-sm font-normal  ">
-                            {{ $dataRuangan->id_tipe_room }}
-                        </td>
-                        <td class="px-4 py-3 text-sm font-normal">
-                            {{ $dataRuangan->nama_tipe_room }}
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <button class="p-2 text-slate-900 hover:text-blue-500"
-                                @click="EditTipeRuangan = true; selectedTipeRuangan = {
-                                        id_tipe: '{{ $dataRuangan->id_tipe_room }}',
-                                        nama_tipe: '{{ $dataRuangan->nama_tipe_room }}',
+            <div class="">
+                <tbody>
+                    @if ($DataTipeRuangan->isEmpty())
+                        <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
+                                <span class="text-red-600 font-semibold">Data kosong!</span>
+                            </td>
+                        </tr>
+                    @else
+                        @foreach ($DataTipeRuangan as $dataRuangan)
+                            <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                                <td class="px-4 py-3 text-sm font-normal  ">
+                                    {{ $dataRuangan->id_tipe_room }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    {{ $dataRuangan->nama_tipe_room }}
+                                </td>
+                                <td class="px-4 py-3 text-center flex gap-1 justify-center">
+                                    <button
+                                        class="px-2 py-1 text-slate-900 bg-green-500 hover:bg-green-400 flex items-center gap-1"
+                                        @click="EditTipeRuangan = true; selectedTipeRuangan = {
+                                            id_tipe: '{{ $dataRuangan->id_tipe_room }}',
+                                            nama_tipe: '{{ $dataRuangan->nama_tipe_room }}',
+                                        }">
+                                        <span
+                                            class="material-symbols-outlined text-xs fa-solid fa-pen-to-square"></span>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-slate-900 bg-red-500 hover:bg-red-400 flex items-center gap-1"
+                                        @click="DeleteTipeRuangan = true; selectedTipeRuangan = {
+                                            id_tipe: '{{ $dataRuangan->id_tipe_room }}',
                                     }">
-                                <span class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
-                            </button>
-                            <button class="p-2 text-slate-900 hover:text-red-500"
-                                @click="DeleteTipeRuangan = true; selectedTipeRuangan = {
-                                        id_tipe: '{{ $dataRuangan->id_tipe_room }}',
-                                }">
-                                <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+                                        <span class="material-symbols-outlined text-xs fa-solid fa-trash-can"></span>
+                                        <span>Hapus</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </div>
         </table>
     </div>
 
@@ -206,8 +314,8 @@
 
     {{-- shwo add tipe ruangan --}}
     <div x-show="AddTipeRuangan"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
-        x-cloak>
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
+        x-transition x-cloak>
         <div @click.outside="AddTipeRuangan = false"
             class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 
@@ -287,7 +395,7 @@
 
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12">
-                        <input type="text" class="hidden" name="id_tipe" x-model="selectedTipeRuangan.id_tipe">
+                        {{-- <input type="text" class="hidden" name="id_tipe" x-model="selectedTipeRuangan.id_tipe"> --}}
                         <div class="d-grid">
                             <button class="btn btn-primary w-100" type="submit">Hapus tipe</button>
                         </div>

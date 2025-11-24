@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
 use App\Http\Controllers\PengelolaanRuangan;
+use App\Http\Controllers\PengelolaanBarang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,7 +45,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('admin/tambah-tipe-ruangan', [PengelolaanRuangan::class, 'simpanTipeRuangan'])->name('addTipeRuangan');
     Route::post('/admin/edit-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'editTipeRuangan']);
     Route::post('/admin/delete-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'hapusTipeRuangan']);
-
+    Route::post('/admin/tambah-ruangan', [PengelolaanRuangan::class, 'tambahRuangan'])->name('addRuangan');
+    Route::post('/admin/delete-ruangan/{id}', [PengelolaanRuangan::class, 'hapusRuangan']);
+    Route::get('/admin/data-ruangan/detail/{id}', [PengelolaanRuangan::class, 'DetailRuangan']);
+    // pengelolaan barang
+    Route::post('admin/tambah-tipe-barang', [PengelolaanBarang::class, 'simpanTipeBarang'])->name('addTipeBarang');
+    Route::post('/admin/edit-tipe-barang/{id}', [PengelolaanBarang::class, 'editTipeBarang']);
+    Route::delete('/admin/delete-tipe-barang/{id}', [PengelolaanBarang::class, 'hapusTipeBarang']);
+    Route::post('/admin/tambah-barang', [PengelolaanBarang::class, 'tambahBarang'])->name('addBarang');
+    Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang']);
+    
 
 
     // -----------------------------------------------------------------------------------------------------

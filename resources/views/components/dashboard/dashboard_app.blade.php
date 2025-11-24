@@ -13,7 +13,7 @@
     {{-- panggil css template --}}
     <link rel="stylesheet" href="{{ asset('css/ruang-admin.css') }}"> 
 </head>
-<body id="page-top " class=".container-fluid">
+<body id="page-top " class=".container-fluid ">
     <div id="wrapper">
         @yield('content')
     </div>

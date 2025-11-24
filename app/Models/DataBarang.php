@@ -2,27 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DataRuangan extends Model
+class DataBarang extends Model
 {
-    protected $table = 'rooms';
-    protected $primaryKey = 'id_room';
+    protected $table = 'items';
+    protected $primaryKey = 'id_item';
     protected $keyType = 'string';
     public $incrementing = false;
-    // public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
+        'id_item',
         'id_room',
-        'id_tipe_room',
-        'nama_room',
-        'kondisi_room',
-        'gambar_room',
+        'id_tipe_item',
+        'nama_item',
+        'merek_model',
+        'qty_item',
+        'kondisi_item',
+        'img_item',
+        'created_at',
+        'updated_at',
     ];
 
     // fungsi untuk mendapatkan singkatan dari nama tipe ruangan
-    public function getSingkatanNamaRoom($Data,$tipe,$urutan): string
+    public function generateIdItem($Data,$tipe,$urutan): string
     {
         $urutan = $urutan + 1; // Increment urutan untuk penomoran berikutnya
         $urutanDuadigit = str_pad($urutan, 2, '0', STR_PAD_LEFT);

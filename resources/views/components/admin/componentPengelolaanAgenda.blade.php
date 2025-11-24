@@ -1,191 +1,71 @@
 <!-- Main card for table -->
-<div class="flex flex-col bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-white/10">
-    <!-- SearchBar -->
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10">
-        <!-- ToolBar -->
-        <div class="flex justify-between items-center gap-4 mb-4">
-            <div class="flex-1 max-w-md">
-                <label class="flex flex-col w-full">
-                    <div class="flex w-full flex-1 items-stretch rounded-lg h-10">
-                        <div
-                            class="text-gray-500 dark:text-gray-400 flex bg-background-light dark:bg-background-dark items-center justify-center pl-3 rounded-l-lg">
-                            <span class="material-symbols-outlined">search</span>
-                        </div>
-                        <input
-                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-sm font-normal text-gray-800 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-background-light dark:bg-background-dark h-full placeholder:text-gray-500 dark:placeholder:text-gray-400"
-                            placeholder="Search nama ruangan..." value="" />
-                    </div>
-                </label>
-            </div>
-            <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white gap-2 pl-3 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-                <span class="material-symbols-outlined text-base">add</span>
-                <span class="truncate">Add ruang</span>
-            </button>
+<div class="bg-white py-4 px-3 rounded-sm shadow-md">
+    <!-- ToolBar -->
+    <div class="flex justify-between items-center gap-4 mb-2">
+        <div class="flex-1 max-w-md">
+            <label class="flex flex-col w-full">
+                <div class="relative w-full md:w-72">
+                    <i
+                        class="fa-solid fa-magnifying-glass search-icon material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 bg-background-light border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-black"
+                        placeholder="Search" type="text" />
+                </div>
+            </label>
         </div>
+        <button @click="AddDataBarang = true"
+            class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+            <i class="fa-solid fa-plus material-symbols-outlined text-sm"></i>
+            <span>Add Agenda</span>
+        </button>
     </div>
     <!-- Table -->
-    <div class="px-4 py-3 @container">
+    <div class=" py-3 @container">
         <div class="flex overflow-hidden">
-            <table class="w-full text-sm">
-                <thead class="border-b border-gray-200 dark:border-white/10">
-                    <tr class="bg-white dark:bg-background-dark">
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium w-16">
+            <table class="w-full text-left">
+                <thead class="sticky top-0 z-1">
+                    <tr class="bg-primary text-white ">
+                        <th class="px-4 py-3 text-sm font-medium">
                             ID</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium min-w-[200px]">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Keterangan Agenda</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Tanggal</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Jam Mulai</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Jam Selesai</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Tipe Agenda</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Ruangan</th>
-                        <th class="px-4 py-3 text-left text-gray-500 dark:text-gray-400 font-medium w-36">
+                        <th class="px-4 py-3 text-sm font-medium">
                             Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">1</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">
+                    <tr class="text-gray-700">
+                        <td class="px-4 py-3 text-sm font-normal">1</td>
+                        <td class="px-4 py-3 text-sm font-normal">
                             Rapat Dosen Awal Semester</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2024-08-01
+                        <td class="px-4 py-3 text-sm font-normal">2024-08-01
                         </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">09:00</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">11:00</td>
-                        <td class="h-[72px] px-4 py-2">
+                        <td class="px-4 py-3 text-sm font-normal">09:00</td>
+                        <td class="px-4 py-3 text-sm font-normal">11:00</td>
+                        <td class="px-4 py-3 text-sm font-normal">
                             <span
                                 class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium">Rutin</span>
                         </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">Ruang Rapat
+                        <td class="px-4 py-3 text-sm font-normal">Ruang Rapat
                             A</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <div class="flex gap-2">
+                        <td class="px-4 py-3 text-sm font-normal">
+                            <div class="flex items-center gap-2">
                                 <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">visibility</span></button>
+                                    class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark">Detail</button>
                                 <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">edit</span></button>
+                                    class="px-3 py-1.5 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-background-dark">Approve</button>
                                 <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><span
-                                        class="material-symbols-outlined !text-[20px]">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">
-                            Kuliah Umum Kecerdasan Buatan</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2024-08-05
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">13:00</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">15:00</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <span
-                                class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium">Insidental</span>
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">Aula Gedung
-                            B</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <div class="flex gap-2">
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">visibility</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">edit</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><span
-                                        class="material-symbols-outlined !text-[20px]">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">3</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">
-                            Maintenance Server</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2024-08-07
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">10:00</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">12:00</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <span
-                                class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium">Rutin</span>
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">Ruang
-                            Server</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <div class="flex gap-2">
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">visibility</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">edit</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><span
-                                        class="material-symbols-outlined !text-[20px]">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">4</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">
-                            Presentasi Proyek Mahasiswa Akhir</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2024-08-10
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">09:00</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">17:00</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <span
-                                class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium">Insidental</span>
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">
-                            Laboratorium Komputer</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <div class="flex gap-2">
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">visibility</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">edit</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><span
-                                        class="material-symbols-outlined !text-[20px]">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5">
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">5</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-800 dark:text-gray-100 font-medium">
-                            Rapat Evaluasi Bulanan</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">2024-08-15
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">14:00</td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">15:30</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <span
-                                class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium">Rutin</span>
-                        </td>
-                        <td class="h-[72px] px-4 py-2 text-gray-600 dark:text-gray-300">Ruang Rapat
-                            A</td>
-                        <td class="h-[72px] px-4 py-2">
-                            <div class="flex gap-2">
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">visibility</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 dark:text-gray-400"><span
-                                        class="material-symbols-outlined !text-[20px]">edit</span></button>
-                                <button
-                                    class="size-8 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"><span
-                                        class="material-symbols-outlined !text-[20px]">delete</span></button>
+                                    class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-background-dark">Reject</button>
                             </div>
                         </td>
                     </tr>

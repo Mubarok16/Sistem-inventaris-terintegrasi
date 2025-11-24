@@ -59,7 +59,7 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentDataRuangan' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/data-ruangan') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Data Ruangan</span>

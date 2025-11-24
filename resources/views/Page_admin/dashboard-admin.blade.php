@@ -6,7 +6,7 @@
     {{-- Sidebar --}}
         @include('Page_admin.sidebar-admin')
 
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column bg-[#f8fdff]!">
             <div id="content">
                 {{-- Navbar --}}
                 @include('components.dashboard.navbar')
@@ -25,6 +25,9 @@
                     @elseif ($halaman === 'contentDataBarang')
                         <h4>Data Barang</h4>
                         @include('components.admin.componentDataBarang')
+                    @elseif ($halaman === 'contentDetailRuangan')
+                        <h4>Detail Ruangan</h4>
+                        {{-- @include('components.admin.componentDataRuangan') --}}
                     @elseif ($halaman === 'contentDataRuangan')
                         <h4>Pengelolaan Ruangan</h4>
                         @include('components.admin.componentDataRuangan')

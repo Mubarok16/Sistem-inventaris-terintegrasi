@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Peminjam;
 use App\Models\TipeRuangan;
+use App\Models\TipeBarang;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\DataRuangan;
+use App\Models\PengelolaanPeminjamanAdmin;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 
 // class return view dashboard
@@ -41,9 +45,15 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+
         $user = Auth::user()->nama;
+
+        $dataPengajuanPeminjaman = collect(PengelolaanPeminjamanAdmin::getRingkasanPeminjamanGabungan());
+
+        $dataPeminjamanApprove = $dataPengajuanPeminjaman->where('status','!=', 'diajukan')->sortByDesc('created_at');
+
         $halaman = 'contentPengajuanPeminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanApprove'));
     }
 
     public function adminDataBarang()
@@ -51,9 +61,17 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+        $DataRuangan = DataRuangan::get();
+        $DataBarang = DB::table('items')
+            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->latest()
+            ->get();
+        $DataTipeBarang = TipeBarang::get();
         $user = Auth::user()->nama;
         $halaman = 'contentDataBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeBarang', 'DataRuangan', 'DataBarang'));
     }
 
     public function adminDataRuangan()
@@ -65,6 +83,7 @@ class DashboardController extends Controller
         $DataRuangan = DB::table('rooms')
             ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
+            ->latest()
             ->get();
         $DataTipeRuangan = TipeRuangan::get();
         $user = Auth::user()->nama;

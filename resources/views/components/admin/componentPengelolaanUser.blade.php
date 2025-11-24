@@ -38,7 +38,7 @@
         <!-- Table Pegawai -->
         <div class="max-h-70 overflow-y-auto overflow-x-auto">
             <table class="w-full text-left">
-                <thead>
+                <thead class="sticky top-0 z-1">
                     <tr class="bg-primary text-white ">
                         <th class="px-4 py-3 text-sm font-medium ">
                             Nama
@@ -54,52 +54,62 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($AkunUsers as $akunUser)
-                        <tr class="border-b border-slate-200 dark:border-slate-800">
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 ">
-                                {{ $akunUser->nama }}
+                    @if ($AkunUsers->isEmpty())
+                        <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
+                                <span class="text-red-600 font-semibold">Data kosong!</span>
                             </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ $akunUser->username }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ substr($akunUser->password, 0, 20) }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal">
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                    {{ $akunUser->hak_akses }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <button
-                                    @click="EditAkunStaff = true; selectedUser = {
+                        </tr>
+                    @else
+                        @foreach ($AkunUsers as $akunUser)
+                            <tr class="border-b border-slate-200 dark:border-slate-800 odd:bg-gray-200 even:bg-white">
+                                <td class="p-2 text-sm font-normal text-slate-500 ">
+                                    {{ $akunUser->nama }}
+                                </td>
+                                <td class="p-2 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ $akunUser->username }}
+                                </td>
+                                <td class="p-2 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ substr($akunUser->password, 0, 20) }}
+                                </td>
+                                <td class="p-2 text-sm font-normal">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                        {{ $akunUser->hak_akses }}
+                                    </span>
+                                </td>
+                                <td class="p-2 text-center">
+                                    <button
+                                        @click="EditAkunStaff = true; selectedUser = {
                                         id: '{{ $akunUser->id_user }}',
                                         nama: '{{ $akunUser->nama }}',
                                         username: '{{ $akunUser->username }}',
                                         hak_akses: '{{ $akunUser->hak_akses }}',
                                     }"
-                                    class="p-2 text-slate-900 hover:text-blue-500">
-                                    <span class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
-                                </button>
-                                <button
-                                    class="p-2 text-slate-900 hover:text-red-500 @if ($akunUser->hak_akses === 'pimpinan' or $akunUser->hak_akses === 'kaprodi' or $JmlhAdmin === 1) hidden @endif"
-                                    @click="DeleteAkunStaff = true; selectedUser = {
+                                        class="p-2 text-slate-900 hover:text-blue-500">
+                                        <span
+                                            class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
+                                    </button>
+                                    <button
+                                        class="p-2 text-slate-900 hover:text-red-500 @if ($akunUser->hak_akses === 'pimpinan' or $akunUser->hak_akses === 'kaprodi' or $JmlhAdmin === 1) hidden @endif"
+                                        @click="DeleteAkunStaff = true; selectedUser = {
                                         id: '{{ $akunUser->id_user }}',
                                     }">
-                                    <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
+                                        <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
     </section>
 
     <!-- show tambah akun -->
-    <div x-show="AddAkunStaff" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
-        x-transition x-cloak>
+    <div x-show="AddAkunStaff"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
+        x-cloak>
         <div @click.outside="AddAkunStaff = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 
             <button @click="AddAkunStaff = false"
@@ -156,7 +166,8 @@
     <div x-show="EditAkunStaff" x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
         x-transition>
-        <div @click.outside="EditAkunStaff = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+        <div @click.outside="EditAkunStaff = false"
+            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 
             <button @click="EditAkunStaff = false"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
@@ -186,7 +197,8 @@
                                 placeholder=" " maxlength="12">
                             <label for="password" class="form-label">password</label>
                         </div>
-                        <label for="foto" class="form-label text-sm text-red-500">kosongkan jika tidak mengganti password!</label>
+                        <label for="foto" class="form-label text-sm text-red-500">kosongkan jika tidak mengganti
+                            password!</label>
                     </div>
 
                     <div class="col-12 m-0">
@@ -268,7 +280,7 @@
         <!-- Table for Peminjam -->
         <div class="max-h-70 overflow-y-auto overflow-x-auto">
             <table class="w-full text-left">
-                <thead class="">
+                <thead class="sticky top-0 z-10">
                     <tr class="bg-primary text-white">
                         <th class="px-4 py-3 text-sm font-medium">No.
                             Identitas</th>
@@ -289,56 +301,64 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    @foreach ($AkunPeminjams as $akunPeminjam)
-                        <tr class="border-b border-slate-200 dark:border-slate-800">
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ $akunPeminjam->no_identitas }}
+                    @if ($AkunPeminjams->isEmpty())
+                        <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
+                                <span class="text-red-600 font-semibold">Data kosong!</span>
                             </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500">
-                                {{ $akunPeminjam->nama_peminjam }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ $akunPeminjam->username }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ substr($akunPeminjam->password, 0, 10) }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ $akunPeminjam->fakultas }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
-                                {{ $akunPeminjam->prodi }}
-                            </td>
-                            <td class="px-4 py-3 text-sm font-normal text-primary hover:underline cursor-pointer">
-                                 <button class="p-2 text-slate-900 hover:text-blue-500" 
-                                    @click="OpenImgIdentitas = true; selectedPeminjam = {
+                        </tr>
+                    @else
+                        @foreach ($AkunPeminjams as $akunPeminjam)
+                            <tr class="border-b border-slate-200 dark:border-slate-800 odd:bg-gray-200 even:bg-white">
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ $akunPeminjam->no_identitas }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500">
+                                    {{ $akunPeminjam->nama_peminjam }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ $akunPeminjam->username }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ substr($akunPeminjam->password, 0, 10) }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ $akunPeminjam->fakultas }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                    {{ $akunPeminjam->prodi }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal text-primary hover:underline cursor-pointer">
+                                    <button class="p-2 text-slate-900 hover:text-blue-500"
+                                        @click="OpenImgIdentitas = true; selectedPeminjam = {
                                         no_identitas: '{{ $akunPeminjam->no_identitas }}',
                                         img: '{{ $akunPeminjam->img_identitas }}',
                                     }">
-                                    <span class="material-symbols-outlined text-sm fa-solid fa-image"></span>
-                                </button>
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <button class="p-2 text-slate-900 hover:text-blue-500"
-                                    @click="EditAkunPeminjam = true; selectedPeminjam = {
+                                        <span class="material-symbols-outlined text-sm fa-solid fa-image"></span>
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <button class="p-2 text-slate-900 hover:text-blue-500"
+                                        @click="EditAkunPeminjam = true; selectedPeminjam = {
                                         no_identitas: '{{ $akunPeminjam->no_identitas }}',
                                         nama_peminjam: '{{ $akunPeminjam->nama_peminjam }}',
                                         username: '{{ $akunPeminjam->username }}',
                                         fakultas: '{{ $akunPeminjam->fakultas }}',
                                         prodi: '{{ $akunPeminjam->prodi }}',
                                     }">
-                                    <span class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
-                                </button>
-                                <button class="p-2 text-slate-900 hover:text-red-500" 
-                                    @click="DeleteAkunPeminjam = true; selectedPeminjam = {
+                                        <span
+                                            class="material-symbols-outlined text-sm fa-solid fa-pen-to-square"></span>
+                                    </button>
+                                    <button class="p-2 text-slate-900 hover:text-red-500"
+                                        @click="DeleteAkunPeminjam = true; selectedPeminjam = {
                                         no_identitas: '{{ $akunPeminjam->no_identitas }}',
                                     }">
-                                    <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-
+                                        <span class="material-symbols-outlined text-sm fa-solid fa-trash-can"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -438,8 +458,8 @@
                     <div class="col-12 m-0">
                         <div class="mb-2">
                             <label for="foto" class="form-label">Masukkan foto ktm</label>
-                            <input type="file" name="img_identitas" class="form-control"
-                                accept="image/*" capture="environment" required>
+                            <input type="file" name="img_identitas" class="form-control" accept="image/*"
+                                capture="environment" required>
                         </div>
                     </div>
 
@@ -465,7 +485,8 @@
 
             <h4 class="text-xl font-semibold mb-4 text-center text-gray-700">Edit Akun Peminjam</h4>
 
-            <form method="POST" :action="'/admin/edit-akun-peminjam/'+selectedPeminjam.no_identitas" enctype="multipart/form-data">
+            <form method="POST" :action="'/admin/edit-akun-peminjam/' + selectedPeminjam.no_identitas"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12 m-0">
@@ -488,14 +509,16 @@
                                 placeholder=" " maxlength="12">
                             <label for="password" class="form-label">password</label>
                         </div>
-                        <label for="foto" class="form-label text-sm text-red-500">kosongkan jika tidak mengganti password!</label>
+                        <label for="foto" class="form-label text-sm text-red-500">kosongkan jika tidak mengganti
+                            password!</label>
                     </div>
                     <div class="col-12 m-0">
                         <div class="input-group mb-2">
                             <span class="input-group-text">
                                 <i class="fa-solid fa-building-columns"></i>
                             </span>
-                            <select name="prodi" id="prodi" class="form-select" x-model="selectedPeminjam.prodi" required>
+                            <select name="prodi" id="prodi" class="form-select"
+                                x-model="selectedPeminjam.prodi" required>
                                 <option value="">pilih prodi</option>
                                 <optgroup label="TEKNIK">
                                     <option value="teknik sipil">Teknik Sipil</option>
@@ -562,7 +585,8 @@
                 @csrf
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12">
-                        <input type="text" class="hidden" name="no_identitas" x-model="selectedPeminjam.no_identitas">
+                        <input type="text" class="hidden" name="no_identitas"
+                            x-model="selectedPeminjam.no_identitas">
                         <div class="d-grid">
                             <button class="btn btn-primary w-100" type="submit">Hapus Akun</button>
                         </div>
@@ -574,20 +598,19 @@
 
     {{-- show image identitas --}}
     <div x-show="OpenImgIdentitas" x-cloak
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
-        x-transition>
-        <div @click.outside="OpenImgIdentitas = false"
+        class="fixed inset-0 flex items-center justify-center bg-opacity-10 backdrop-blur-sm z-50" x-transition>
+        {{-- <div @click.outside="OpenImgIdentitas = false"
             class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg relative">
 
             <button @click="OpenImgIdentitas = false"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;
             </button>
 
-            <h5 class="text-xl font-semibold mb-4 text-center text-gray-700">Yakin Ingin Menghapus Akun?</h5>
+            <h5 class="text-xl font-semibold mb-4 text-center text-gray-700">Yakin Ingin Menghapus Akun?</h5> --}}
 
-            
-            {{-- {{ $akunPeminjam->img_identitas }} --}}
-            {{-- <form method="POST" :action="'/admin/hapus-akun-peminjam/' + selectedPeminjam.no_identitas">
+
+        {{-- {{ $akunPeminjam->img_identitas }} --}}
+        {{-- <form method="POST" :action="'/admin/hapus-akun-peminjam/' + selectedPeminjam.no_identitas">
                 @csrf
                 <div class="row gy-2 overflow-hidden">
                     <div class="col-12">
@@ -598,10 +621,10 @@
                     </div>
                 </div>
             </form> --}}
-            <div class="flex items-center justify-center">
-                <img :src="`/storage/${selectedPeminjam.img}`" alt="Foto Peminjam" style="max-width: 500px;">
-
-            </div>
+        <div class="flex justify-center rounded-2xl w-full max-w-xl relative"
+            @click.outside="OpenImgIdentitas = false">
+            <img :src="`/storage/${selectedPeminjam.img}`" alt="Foto Peminjam" class="container">
         </div>
+        {{-- </div> --}}
     </div>
 </div>
