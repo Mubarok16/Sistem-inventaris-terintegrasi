@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('username', 12);
             $table->string('password', 255);
             $table->string('hak_akses', 10);
+            $table->integer('no_hp')->nullable();
             $table->timestamps();
         });
 
@@ -82,55 +83,17 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // table peminjaman rooms
-         Schema::create('peminjaman_rooms', function (Blueprint $table) {
-            $table->string('id_peminjaman_room', 12)->primary();
-            $table->string('kode_transaksi', 12);
-            $table->string('id_room', 12);
-            $table->string('id_user', 12);
+        // table peminjaman
+         Schema::create('peminjaman', function (Blueprint $table) {
+            $table->string('kode_peminjaman', 12)->primary();
             $table->string('no_identitas', 12);
-            $table->text('lampiran_file');
+            $table->string('id_user', 12);
             $table->text('ket_peminjaman');
-            // $table->timestampTz('tgl_transaksi');
-            $table->timeTz('tgl_mulai');
-            $table->timeTz('tgl_selesai');
-            $table->string('status');
-            $table->timestamps();
-
-            // Foreign keys
-            $table->foreign('id_room')
-                  ->references('id_room')
-                  ->on('rooms');
-
-            $table->foreign('id_user')
-                  ->references('id_user')
-                  ->on('users');
-
-            $table->foreign('no_identitas')
-                  ->references('no_identitas')
-                  ->on('peminjam');
-        });
-
-        // table peminjaman items
-        Schema::create('peminjaman_items', function (Blueprint $table) {
-            $table->string('id_peminjaman_item', 12)->primary();
-            $table->string('kode_transaksi', 12);
-            $table->string('id_user', 12);
-            $table->string('id_item', 12);
-            $table->string('no_identitas', 12);
             $table->text('lampiran_file');
-            // $table->timeTz('tgl_transaksi_item');
-            $table->timeTz('tgl_pinjam_item');
-            $table->timeTz('tgl_kembali_item');
-            $table->integer('qty_pinjam_item');
-            $table->string('status_item', 12);
+            $table->dateTime('tgl_tansaksi');
             $table->timestamps();
 
             // Foreign keys
-            $table->foreign('id_item')
-                  ->references('id_item')
-                  ->on('items');
-
             $table->foreign('id_user')
                   ->references('id_user')
                   ->on('users');
@@ -140,25 +103,67 @@ return new class extends Migration
                   ->on('peminjam');
         });
 
-        // table agenda_akademik
-        Schema::create('agenda_akademik', function (Blueprint $table) {
-            $table->string('id_agenda_akademik', 12)->primary();
-            $table->text('nama_agenda_akademik');
-            $table->string('id_room', 12);
-            $table->string('id_item', 12);
-            $table->timeTz('tgl_agenda');
-            $table->timeTz('tgl_agenda_selesai');
+        // table Agenda Fakultas
+         Schema::create('agenda_fakultas', function (Blueprint $table) {
+            $table->string('kode_agenda', 12)->primary();
+            $table->string('id_user', 12);
+            $table->text('nama_agenda');
+            $table->dateTime('tgl_add_agenda');
             $table->timestamps();
 
-            // Relasi ke tabel items
+            // Foreign keys
+            $table->foreign('id_user')
+                  ->references('id_user')
+                  ->on('users');
+        });
+
+        // table usage rooms
+         Schema::create('usage_rooms', function (Blueprint $table) {
+            $table->string('kode_peminjaman', 12)->nullable();
+            $table->string('kode_agenda', 12)->nullable();
+            $table->string('id_room', 12);
+            $table->dateTime('tgl_pinjam_usage_room');
+            $table->dateTime('tgl_kembali_usage_room');
+            $table->text('status_usage_room');
+            $table->timestamps();
+
+            // Foreign keys
+            $table->foreign('id_room')
+                  ->references('id_room')
+                  ->on('rooms');
+
+            $table->foreign('kode_peminjaman')
+                  ->references('kode_peminjaman')
+                  ->on('peminjaman');
+
+            $table->foreign('kode_agenda')
+                  ->references('kode_agenda')
+                  ->on('agenda_fakultas');
+        });
+
+        // table usage items
+        Schema::create('usage_items', function (Blueprint $table) {
+           $table->string('kode_peminjaman', 12)->nullable();
+            $table->string('kode_agenda', 12)->nullable();
+            $table->string('id_item', 12);
+            $table->integer('qty_usage_item');
+            $table->dateTime('tgl_pinjam_usage_item');
+            $table->dateTime('tgl_kembali_usage_item');
+            $table->text('status_usage_item');
+            $table->timestamps();
+
+            // Foreign keys
             $table->foreign('id_item')
                   ->references('id_item')
                   ->on('items');
 
-            // Relasi ke tabel rooms
-            $table->foreign('id_room')
-                  ->references('id_room')
-                  ->on('rooms');
+            $table->foreign('kode_peminjaman')
+                  ->references('kode_peminjaman')
+                  ->on('peminjaman');
+
+            $table->foreign('kode_agenda')
+                  ->references('kode_agenda')
+                  ->on('agenda_fakultas');
         });
     }
 
@@ -173,8 +178,9 @@ return new class extends Migration
         Schema::dropIfExists('tipe_item');
         Schema::dropIfExists('items');
         Schema::dropIfExists('peminjam');
-        Schema::dropIfExists('peminjaman_rooms');
-        Schema::dropIfExists('peminjaman_items');
-        Schema::dropIfExists('agenda_akademik');
+        Schema::dropIfExists('peminjaman');
+        Schema::dropIfExists('agenda_fakultas');
+        Schema::dropIfExists('usage_rooms');
+        Schema::dropIfExists('usage_items');
     }
 };

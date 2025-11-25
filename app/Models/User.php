@@ -62,6 +62,7 @@ class User extends Authenticatable
         'username',
         'password',
         'hak_akses',
+        'no_hp',
         'created_at',
         'updated_at',
     ];

@@ -9,7 +9,6 @@ class Peminjam extends Authenticatable
 {
     protected $table = 'peminjam';
     protected $primaryKey = 'no_identitas';
-    // public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'int';
     

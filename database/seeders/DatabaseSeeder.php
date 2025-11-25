@@ -28,39 +28,40 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => bcrypt('admin'),
             'hak_akses' => 'admin',
+            'no_hp' => '08123423',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'Ka Prodi teknik komputer',
-        //     'username' => 'kaproditkm',
-        //     'password' => bcrypt('kaproditkm'),
-        //     'hak_akses' => 'kaprodi',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
+        User::create([
+            'id_user' => Str::random(12),
+            'nama' => 'Ka Prodi teknik komputer',
+            'username' => 'kaproditkm',
+            'password' => bcrypt('kaproditkm'),
+            'hak_akses' => 'kaprodi',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'Ka Prodi teknik sipil',
-        //     'username' => 'kaprodispl',
-        //     'password' => bcrypt('kaprodispl'),
-        //     'hak_akses' => 'kaprodi',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
+        User::create([
+            'id_user' => Str::random(12),
+            'nama' => 'Ka Prodi teknik sipil',
+            'username' => 'kaprodispl',
+            'password' => bcrypt('kaprodispl'),
+            'hak_akses' => 'kaprodi',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'wakil dekan',
-        //     'username' => 'wadek',
-        //     'password' => bcrypt('wadek'),
-        //     'hak_akses' => 'pimpinan',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
+        User::create([
+            'id_user' => Str::random(12),
+            'nama' => 'wakil dekan',
+            'username' => 'wadek',
+            'password' => bcrypt('wadek'),
+            'hak_akses' => 'pimpinan',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
 
     }

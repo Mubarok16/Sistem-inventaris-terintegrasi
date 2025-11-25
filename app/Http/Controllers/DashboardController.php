@@ -48,12 +48,12 @@ class DashboardController extends Controller
 
         $user = Auth::user()->nama;
 
-        $dataPengajuanPeminjaman = collect(PengelolaanPeminjamanAdmin::getRingkasanPeminjamanGabungan());
+        // $dataPengajuanPeminjaman = collect(PengelolaanPeminjamanAdmin::getRingkasanPeminjamanGabungan());
 
-        $dataPeminjamanApprove = $dataPengajuanPeminjaman->where('status','!=', 'diajukan')->sortByDesc('created_at');
+        // $dataPeminjamanApprove = $dataPengajuanPeminjaman->where('status','!=', 'diajukan')->sortByDesc('created_at');
 
         $halaman = 'contentPengajuanPeminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanApprove'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminDataBarang()

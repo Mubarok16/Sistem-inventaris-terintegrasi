@@ -62,8 +62,8 @@
             <tbody class="">
                 @if ($DataRuangan->isEmpty())
                     <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
-                        <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
-                            <span class="text-red-600 font-semibold">Data kosong!</span>
+                        <td class="px-4 py-3 text-sm font-normal text-center" colspan="6">
+                            <span class="text-gray-700 font-semibold">Data kosong!</span>
                         </td>
                     </tr>
                 @else
@@ -270,7 +270,7 @@
                     @if ($DataTipeRuangan->isEmpty())
                         <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
                             <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
-                                <span class="text-red-600 font-semibold">Data kosong!</span>
+                                <span class="text-gray-600 font-semibold">Data kosong!</span>
                             </td>
                         </tr>
                     @else
