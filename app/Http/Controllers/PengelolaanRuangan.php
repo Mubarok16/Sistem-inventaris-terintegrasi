@@ -134,7 +134,7 @@ class PengelolaanRuangan extends Controller
         }
     }
 
-    public function hapusRuangan(Request $request, $id)
+    public function hapusRuangan($id)
     {
         try {
             // $request->validate([
@@ -161,17 +161,13 @@ class PengelolaanRuangan extends Controller
 
     public function DetailRuangan(Request $request, $id)
     {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
         $DataRuangan = DataRuangan::where('id_room', $id)->first();
         $user = Auth::user()->nama;
         $halaman = 'contentDetailRuangan';
         return view('Page_admin.dashboard-admin', compact('halaman','DataRuangan','user'));
-        // try {
-        //     dd($id);
-        //     $DataRuangan = DataRuangan::where('id_room', $id)->first();
-
-        //     // return view('admin.detailRuangan', compact('DataRuangan'));
-        // } catch (\Exception $e) {
-        //     return redirect()->back()->with('gagal', $e->getMessage());
-        // }
+       
     }
 }

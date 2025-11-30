@@ -1,75 +1,3 @@
-{{-- <div class="row g-3">
-    <div class="col-md-8 ">
-
-        <div class="p-3 bg-white shadow">
-            <h6 class="text-gray-500 pb-2">Agenda Ruangan</h6>
-            <div class="row row-cols-3 g-3">
-                <div class="col">
-                    <a href="javascript:void(0);" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0 dsb-text">Ruang Kelas A</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0 dsb-text">Lab Komputer Jaringan</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                     <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0 dsb-text">Ruang Kelas C</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0 dsb-text">Ruang Kelas D</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0 dsb-text">Ruang Kelas E</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-full">
-                            <p class="m-0 dsb-text">Lab Elektronik</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="" class="text-decoration-none text-dark ">
-                        <div class="border p-3 rounded hover-dashboard-agenda bkg-empty">
-                            <p class="m-0 dsb-text">Lab Sipil</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="col-md-4">
-        <div class="bg-white shadow">
-            .
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="p-3 bg-white shadow">
-            <h6 class="text-gray-500 pb-2">Penggunaan Barang</h6>
-
-        </div>
-    </div>
-</div> --}}
-
 <!-- Top Section: Room Agenda -->
 <h6 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">
         Agenda Ruangan</h6>
@@ -249,3 +177,183 @@
         </div>
     </div>
 </section>
+
+
+{{-- <!-- Tabel Ruang Section -->
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+    <!-- SectionHeader -->
+    <h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">
+        Tabel Ruang</h2>
+    <!-- SearchBar -->
+    <div class="mb-4">
+        <label class="flex flex-col min-w-40 h-12 w-full max-w-sm">
+            <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                <div
+                    class="text-[#60758a] dark:text-slate-400 flex border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-[#111418] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 h-full placeholder:text-[#60758a] dark:placeholder:text-slate-400 px-4 text-base font-normal leading-normal"
+                    placeholder="Cari nama ruangan..." value="" />
+            </div>
+        </label>
+    </div>
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+            <thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-800">
+                <tr>
+                    <th class="px-6 py-3" scope="col">id</th>
+                    <th class="px-6 py-3" scope="col">Image</th>
+                    <th class="px-6 py-3" scope="col">Nama ruangan</th>
+                    <th class="px-6 py-3" scope="col">Type</th>
+                    <th class="px-6 py-3" scope="col">List barang</th>
+                    <th class="px-6 py-3" scope="col">Qty</th>
+                    <th class="px-6 py-3" scope="col">Kondisi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white dark:bg-slate-900 border-b dark:border-slate-800">
+                    <td class="px-6 py-4">R001</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Room image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAWgtJXWUQupoenibEtc1T0SzKPHdsGjEejWeuxUFgZ_fvyO14LJ4onrxbE2dNYA3M-l9B0si56jbwHJvgIvReGjhOjfaUGfazUGXgWcqSRJz15DAAiuIHXH-392hNFidU0OmMwGuiii56KCsAGAW8bL5dQa9KBc0xQxUSj5_Ctqba2_EDEQ9gM0QZnZ-05sxUwc7Gg2r_SBz_VL70MQMLyoIdJtOvYv-gsAaNaJsU1SM-bYU3jDEaQPi50OUHKwP6xIIY4ZrNdDWSp');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Lab Komputer</th>
+                    <td class="px-6 py-4">Laboratorium</td>
+                    <td class="px-6 py-4">PC, Kursi, Meja...</td>
+                    <td class="px-6 py-4">50</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Berfungsi</span>
+                    </td>
+                </tr>
+                <tr class="bg-white dark:bg-slate-900 border-b dark:border-slate-800">
+                    <td class="px-6 py-4">R002</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Room image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVN5ijyFxjHw149eAncfrTsuUkaB7Kgoxqi_jcJdfd07W0Qk_QuiCYahxvMyV-QTa_zQdCOqK6t0BW1ytws3EiBPA7cxM70Y0ynIt7RsqaHhHjgsDoKo7_jJ8izPm3DOrz4zOUev2T7gC4ZWCr8dtt3UWZ3VeRxEHAn1jnYfGliNNP80gXMw81TNnYUNI8eqXrGzAYwKjrngiaRpLBjdYmJn3e9I5aJsS9tjD_HaI8kf6lyruiMhTlUEzpEpCrI7T9yD7yw7HzXPkA');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Ruang Kelas A1</th>
+                    <td class="px-6 py-4">Kelas</td>
+                    <td class="px-6 py-4">Proyektor, Papan...</td>
+                    <td class="px-6 py-4">35</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Berfungsi</span>
+                    </td>
+                </tr>
+                <tr class="bg-white dark:bg-slate-900">
+                    <td class="px-6 py-4">R003</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Room image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjiWqR8DkCN_U2RrePYpAeSqDZC2rF7jUn03M3PjZtVJ2umiAod7QF_hou9s6BDj_1RbjkmKQ-O7JjQHNRL17rRl_hjtGbg02BaOpyrEGx1sO3epM0CNKsJOf_mvila9hYOS_E0487bdTbrF70Lzy4xHlTRNjTEdbHkzMn3xMnbWJ-klb6r-9Jc3hW6PZkKxewMmiu715-MMOsWAAahVGo_V3sChZD7tTPhW4u0LUkxvOJAbEUHPYm4N8AD99YsDBx9HimSoXg1WWU');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Gudang Penyimpanan</th>
+                    <td class="px-6 py-4">Gudang</td>
+                    <td class="px-6 py-4">Peralatan...</td>
+                    <td class="px-6 py-4">120</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Rusak</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<!-- Data Barang Section -->
+<section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 mt-8">
+    <!-- SectionHeader -->
+    <h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">
+        Data barang</h2>
+    <!-- SearchBar -->
+    <div class="mb-4">
+        <label class="flex flex-col min-w-40 h-12 w-full max-w-sm">
+            <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                <div
+                    class="text-[#60758a] dark:text-slate-400 flex border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-[#111418] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 h-full placeholder:text-[#60758a] dark:placeholder:text-slate-400 px-4 text-base font-normal leading-normal"
+                    placeholder="Cari nama barang..." value="" />
+            </div>
+        </label>
+    </div>
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+            <thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-800">
+                <tr>
+                    <th class="px-6 py-3" scope="col">id</th>
+                    <th class="px-6 py-3" scope="col">Image</th>
+                    <th class="px-6 py-3" scope="col">Nama Barang</th>
+                    <th class="px-6 py-3" scope="col">Type</th>
+                    <th class="px-6 py-3" scope="col">Tempat menyimpan</th>
+                    <th class="px-6 py-3" scope="col">Qty</th>
+                    <th class="px-6 py-3" scope="col">Kondisi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-white dark:bg-slate-900 border-b dark:border-slate-800">
+                    <td class="px-6 py-4">B001</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Item image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCxOvh-F4mi0t73IcZyL29pSnjUOxreS2-b8TyXI6e2BefeDBdqAacP3xEmYFhDxtpS-C8ae0TGD8sQ4n1IWq_xfJu9tNRtCky5BSQUiTJZhbstBeZUd1Wv3VETx4qzwgcSaWuki-QftNGhjMDIdBHiPv6U4NqJTuglznQGw1FywR8jSORHQPxv2Ep_SUXPQbishl7T8_pyRcuHUZYNFRCtNH7plUBc0ZcIx0gZAY4qFpeSUHfxxUCQWrQbfU7an6DrnGL6Xlj3t6wi');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Komputer PC Dell</th>
+                    <td class="px-6 py-4">Elektronik</td>
+                    <td class="px-6 py-4">Lab Komputer</td>
+                    <td class="px-6 py-4">25</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Berfungsi</span>
+                    </td>
+                </tr>
+                <tr class="bg-white dark:bg-slate-900 border-b dark:border-slate-800">
+                    <td class="px-6 py-4">B002</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Item image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCigXtiKmKuxrk9TYzzVZ6wFTc4aEyMiJssVm4IZCTzWkTE0XdzLIDmHZAcBVGPGpoLx6tIRXdoqwywHIXnQD58at2UgU3x6a_O33Xck95KzX_XVAyr42wLt_h9vjuW8oMe9CML84xc1EC4oINL7Wbx9c-XB8JKAdktKPxKqDRCGlv0jFn1JjSJrZpHb4dGqspUjGNHE5OtekrM5jHshh4LrKzbcBR9g4JYK2cU0bv5uUTp9s2USTHW83aatXrQkL2EaSZiz_wqFLx2');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Proyektor Epson</th>
+                    <td class="px-6 py-4">Elektronik</td>
+                    <td class="px-6 py-4">Ruang Kelas A1</td>
+                    <td class="px-6 py-4">1</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Rusak</span>
+                    </td>
+                </tr>
+                <tr class="bg-white dark:bg-slate-900">
+                    <td class="px-6 py-4">B003</td>
+                    <td class="px-6 py-4">
+                        <div class="size-10 rounded bg-cover bg-center" data-alt="Item image"
+                            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuClG9uFkDzr1a4mTPy6HeKz8HsME9Sm7V-Mcdjd77we5W4q_Devi21ZYnwZeXZkjckrcGF1wYBivLHOE6wbHWBtgDxT0uk0d-jm_0eFwtNvSEbnowsh97znTnnceJ9EHJJLQ-Upz0JZcCrKf8BZqL4Tptm6nnegd1Q0h77ue3VGe0bVz2H676Qf4-10IbwrOPEp1WPbwEdGdIceqlrtR6YBIS1G-yr_9iMEMjvWtoehBL7uarItbUnEcb7UbNxMIAyMj2bPZXuJRzo7');">
+                        </div>
+                    </td>
+                    <th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                        Kursi Belajar</th>
+                    <td class="px-6 py-4">Mebel</td>
+                    <td class="px-6 py-4">Gudang Penyimpanan</td>
+                    <td class="px-6 py-4">50</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Berfungsi</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section> --}}

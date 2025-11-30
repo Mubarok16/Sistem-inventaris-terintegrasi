@@ -1,3 +1,19 @@
+@if (session('success'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
+        <ul style="margin-bottom: 0;">
+            {{ session('success') }}
+        </ul>
+    </div>
+@endif
+
+@if (session('gagal'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            {{ session('gagal') }}
+        </ul>
+    </div>
+@endif
+
 <!-- Main card for table -->
 <div class="bg-white py-4 px-3 rounded-sm shadow-md">
     <!-- ToolBar -->
@@ -13,11 +29,11 @@
                 </div>
             </label>
         </div>
-        <button @click="AddDataBarang = true"
-            class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
-            <i class="fa-solid fa-plus material-symbols-outlined text-sm"></i>
-            <span>Add Agenda</span>
-        </button>
+
+        <a href="/admin/pengelolaan-agenda/tambah-agenda/"
+            class="no-underline! flex items-center justify-center gap-2 h-10 px-4 bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
+            Add Agenda
+        </a>
     </div>
     <!-- Table -->
     <div class=" py-3 @container">
@@ -26,11 +42,13 @@
                 <thead class="sticky top-0 z-1">
                     <tr class="bg-primary text-white ">
                         <th class="px-4 py-3 text-sm font-medium">
-                            ID</th>
+                            Kode Agenda</th>
                         <th class="px-4 py-3 text-sm font-medium">
-                            Keterangan Agenda</th>
+                            Nama Agenda</th>
                         <th class="px-4 py-3 text-sm font-medium">
-                            Tanggal</th>
+                            Periode mulai</th>
+                        <th class="px-4 py-3 text-sm font-medium">
+                            Periode selesai</th>
                         <th class="px-4 py-3 text-sm font-medium">
                             Jam Mulai</th>
                         <th class="px-4 py-3 text-sm font-medium">
@@ -44,31 +62,56 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="text-gray-700">
-                        <td class="px-4 py-3 text-sm font-normal">1</td>
-                        <td class="px-4 py-3 text-sm font-normal">
-                            Rapat Dosen Awal Semester</td>
-                        <td class="px-4 py-3 text-sm font-normal">2024-08-01
-                        </td>
-                        <td class="px-4 py-3 text-sm font-normal">09:00</td>
-                        <td class="px-4 py-3 text-sm font-normal">11:00</td>
-                        <td class="px-4 py-3 text-sm font-normal">
-                            <span
-                                class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium">Rutin</span>
-                        </td>
-                        <td class="px-4 py-3 text-sm font-normal">Ruang Rapat
-                            A</td>
-                        <td class="px-4 py-3 text-sm font-normal">
-                            <div class="flex items-center gap-2">
-                                <button
-                                    class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark">Detail</button>
-                                <button
-                                    class="px-3 py-1.5 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-background-dark">Approve</button>
-                                <button
-                                    class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-background-dark">Reject</button>
-                            </div>
-                        </td>
-                    </tr>
+                    @if ($DataAgenda->isEmpty())
+                        <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
+                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="6">
+                                <span class="text-gray-700 font-semibold">Data kosong!</span>
+                            </td>
+                        </tr>
+                    @else
+                        @foreach ($DataAgenda as $DataAgenda)
+                            <tr class="text-gray-700">
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    {{ $DataAgenda->kode_agenda }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    {{ $DataAgenda->nama_agenda }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    {{ $DataAgenda->tgl_mulai_agenda }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    {{ $DataAgenda->tgl_selesai_agenda }}
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">09:00</td>
+                                <td class="px-4 py-3 text-sm font-normal">11:00</td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    <span
+                                        class="truncate inline-flex items-center justify-center rounded-full h-7 px-3 bg-blue-100 text-blue-800 text-xs font-medium">
+                                        {{ $DataAgenda->tipe_agenda }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-sm font-normal">Ruang Rapat
+                                    A</td>
+                                <td class="px-4 py-3 text-sm font-normal">
+                                    <div class="flex items-center gap-2">
+                                        <form action="/admin/detail-agenda/detail/{{ $DataAgenda->kode_agenda }}"
+                                            method="get">
+                                            @csrf
+                                            <button
+                                                class="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark">
+                                                Detail
+                                            </button>
+                                        </form>
+                                        {{-- <button
+                                            class="px-3 py-1.5 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-background-dark">Approve</button>
+                                        <button
+                                            class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-background-dark">Reject</button> --}}
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

@@ -19,6 +19,7 @@ class Peminjaman extends Model
         'ket_peminjaman',
         'lampiran_file',
         'tgl_tansaksi',
+        'status_peminjaman',
         'created_at',
         'updated_at',
     ];

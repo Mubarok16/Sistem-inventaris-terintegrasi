@@ -5,8 +5,10 @@ use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
+use App\Http\Controllers\pengelolaanAgenda;
 use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
+use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     // dashboard admin
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
     Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser']);
-    Route::get('/dashboard/admin/pengajuan-peminjaman', [DashboardController::class, 'AdminPengajuanPeminjaman']);
+    Route::get('/dashboard/admin/pengajuan-peminjaman', [DashboardController::class, 'AdminPengajuanPeminjaman'])->name('admin.pengajuan.peminjaman');
     Route::get('/dashboard/admin/data-barang', [DashboardController::class, 'AdminDataBarang']);
     Route::get('/dashboard/admin/data-ruangan', [DashboardController::class, 'AdminDataRuangan']);
     Route::get('/dashboard/admin/agenda', [DashboardController::class, 'AdminAgenda']);
@@ -54,7 +56,18 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/delete-tipe-barang/{id}', [PengelolaanBarang::class, 'hapusTipeBarang']);
     Route::post('/admin/tambah-barang', [PengelolaanBarang::class, 'tambahBarang'])->name('addBarang');
     Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang']);
-    
+
+    // pengelolaan peminjaman
+    Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin']);
+    Route::post('admin/pengajuan-peminjaman/persetujuan', [PengelolaanPeminjamanAdmin::class, 'persetujuan'])->name('persetujuanPeminjaman');
+
+    //Pengelolaan Agenda
+    Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda']);
+    Route::get('/admin/pengelolaan-agenda/tambah-agenda/', [pengelolaanAgenda::class, 'HalamanTambahAgenda']);
+        // route fungsi temporary menambah menghapus barang dan ruang agenda sebelum di simpan permanen di db
+        Route::post('/tambah-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])->name('tambah-agenda');
+        Route::post('/tambah-barang-agenda', [pengelolaanAgenda::class, 'simpanInputBarangAgendaTemporary'])->name('tambah-barang-agenda');
+        Route::post('/hapus-barang-agenda', [pengelolaanAgenda::class, 'hapusInputBarangAgendaTemporary'])->name('hapus-barang-agenda');
 
 
     // -----------------------------------------------------------------------------------------------------

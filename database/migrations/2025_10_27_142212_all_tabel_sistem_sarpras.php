@@ -90,6 +90,7 @@ return new class extends Migration
             $table->string('id_user', 12);
             $table->text('ket_peminjaman');
             $table->text('lampiran_file');
+            $table->text('status_peminjaman');
             $table->dateTime('tgl_tansaksi');
             $table->timestamps();
 
@@ -108,7 +109,9 @@ return new class extends Migration
             $table->string('kode_agenda', 12)->primary();
             $table->string('id_user', 12);
             $table->text('nama_agenda');
-            $table->dateTime('tgl_add_agenda');
+            $table->text('tipe_agenda');
+            $table->dateTime('tgl_mulai_agenda');
+            $table->dateTime('tgl_selesai_agenda');
             $table->timestamps();
 
             // Foreign keys

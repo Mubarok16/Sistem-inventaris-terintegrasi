@@ -33,7 +33,7 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengajuan-peminjaman') }}">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Pengajuan Peminjaman</span>
@@ -65,7 +65,7 @@
             <span>Data Ruangan</span>
         </a>
     </li>
-    <li class="nav-item {{ $halaman === 'contentAgenda' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Pengelolaan Agenda</span>

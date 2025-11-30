@@ -14,7 +14,9 @@ class agendaFakultas extends Model
         'kode_agenda',
         'id_user',
         'nama_agenda',
-        'tgl_add_agenda',
+        'tgl_mulai_agenda',
+        'tgl_selesai_agenda',
+        'tipe_agenda',
         'created_at',
         'updated_at',
     ];

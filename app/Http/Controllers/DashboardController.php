@@ -9,6 +9,8 @@ use App\Models\TipeBarang;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\DataRuangan;
+use Carbon\Carbon;
+use App\Models\Peminjaman;
 use App\Models\PengelolaanPeminjamanAdmin;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
@@ -47,13 +49,26 @@ class DashboardController extends Controller
         }
 
         $user = Auth::user()->nama;
+        // $dataPengajuanPeminjaman = Peminjaman::latest()->get();
 
-        // $dataPengajuanPeminjaman = collect(PengelolaanPeminjamanAdmin::getRingkasanPeminjamanGabungan());
+        $dataPengajuanPeminjaman = DB::table('peminjaman')
+            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
+            ->select('peminjaman.*', 'peminjam.nama_peminjam', 'users.nama') // Pilih kolom yang diperlukan
+            ->where('peminjaman.status_peminjaman', 'diajukan')
+            ->latest()
+            ->get();
 
-        // $dataPeminjamanApprove = $dataPengajuanPeminjaman->where('status','!=', 'diajukan')->sortByDesc('created_at');
+        $dataPeminjamanDisetujui = DB::table('peminjaman')
+            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
+            ->select('peminjaman.*', 'peminjam.nama_peminjam', 'users.nama') // Pilih kolom yang diperlukan
+            ->where('peminjaman.status_peminjaman', '!=', 'diajukan')
+            ->latest()
+            ->get();
 
         $halaman = 'contentPengajuanPeminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanDisetujui'));
     }
 
     public function adminDataBarang()
@@ -96,9 +111,14 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+
+        $DataAgenda = DB::table('agenda_fakultas') // Pilih kolom yang diperlukan
+            ->latest()
+            ->get();
+
         $user = Auth::user()->nama;
         $halaman = 'contentAgenda';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda'));
     }
 
     public function adminPengadaanBarang()
