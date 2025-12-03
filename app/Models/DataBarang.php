@@ -35,7 +35,7 @@ class DataBarang extends Model
         $kata = explode(' ', $Data);
 
         if (count($kata) === 1) {
-            // Jika hanya satu kata (misalnya "Laboratorium" atau "Gudang"),
+            // Jika hanya satu kata (misalnya "Laboratorium"),
             // ambil 3 huruf pertama dan jadikan huruf kapital.
             return $tipe.$urutanDuadigit.strtoupper(substr($Data, 0, 3));
         }

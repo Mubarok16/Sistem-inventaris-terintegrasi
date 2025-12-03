@@ -55,15 +55,16 @@
                                 class="px-3 py-1.5 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-background-dark">
                                 edit
                             </button>
-                            <input type="text" name="kode_peminjaman" value="{{ $DataAgenda->kode_agenda }}"
+                            <input type="text" name="kode_agenda" value="{{ $DataAgenda->kode_agenda }}"
                                 class="hidden">
                         </form>
-                        <form method="POST" action="">
+                        <form method="POST" action="{{ route('hapus-agenda') }}">
+                            @csrf
                             <button
                                 class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-background-dark">
                                 hapus
                             </button>
-                            <input type="text" name="kode_peminjaman" value="{{ $DataAgenda->kode_agenda }}"
+                            <input type="text" name="kode_agenda" value="{{ $DataAgenda->kode_agenda }}"
                                 class="hidden">
                         </form>
                     </div>
@@ -73,7 +74,7 @@
     </section>
 </div>
 
-{{-- data usage brang --}}
+{{-- data usage barang --}}
 <div class="bg-white rounded-md shadow-md my-4 py-4 px-3">
     <h5 class="text-xl font-bold leading-tight tracking-tight mb-4 text-gray-600">Daftar Barang yang digunakan</h5>
 

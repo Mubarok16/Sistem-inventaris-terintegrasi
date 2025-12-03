@@ -36,6 +36,9 @@ class DashboardController extends Controller
         }
         $user = Auth::user()->nama;
         $AkunPeminjams = Peminjam::latest()->get();
+        // dd($DataAgenda = DB::table('peminjam') // Pilih kolom yang diperlukan
+        //     ->latest()
+        //     ->get());
         $AkunUsers = User::latest()->get();
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $halaman = 'contentPengelolaanUser';

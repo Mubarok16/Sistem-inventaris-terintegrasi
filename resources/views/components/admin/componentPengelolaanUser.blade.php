@@ -321,6 +321,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
                                     {{ substr($akunPeminjam->password, 0, 10) }}
+                                    {{-- {{ Crypt::decrypt($akunPeminjam->password) }} --}}
                                 </td>
                                 <td class="px-4 py-3 text-sm font-normal text-slate-500 dark:text-slate-400">
                                     {{ $akunPeminjam->fakultas }}

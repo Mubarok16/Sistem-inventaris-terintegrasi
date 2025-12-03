@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class UsageItems extends Model
 {
     //
-    protected $table = 'Usage_items';
+    protected $table = 'usage_items';
     public $timestamps = true;
+    public $incrementing = false;
     protected $fillable = [
         'kode_peminjaman',
         'kode_agenda',

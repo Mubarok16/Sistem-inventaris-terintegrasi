@@ -56,15 +56,13 @@
                         <th class="px-4 py-3 text-sm font-medium">
                             Tipe Agenda</th>
                         <th class="px-4 py-3 text-sm font-medium">
-                            Ruangan</th>
-                        <th class="px-4 py-3 text-sm font-medium">
                             Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if ($DataAgenda->isEmpty())
                         <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
-                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="6">
+                            <td class="px-4 py-3 text-sm font-normal text-center" colspan="8">
                                 <span class="text-gray-700 font-semibold">Data kosong!</span>
                             </td>
                         </tr>
@@ -91,8 +89,6 @@
                                         {{ $DataAgenda->tipe_agenda }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-3 text-sm font-normal">Ruang Rapat
-                                    A</td>
                                 <td class="px-4 py-3 text-sm font-normal">
                                     <div class="flex items-center gap-2">
                                         <form action="/admin/detail-agenda/detail/{{ $DataAgenda->kode_agenda }}"

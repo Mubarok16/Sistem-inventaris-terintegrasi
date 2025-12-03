@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\agendaFakultas;
+use App\Models\DataBarang;
+use App\Models\DataRuangan;
+use App\Models\UsageItems;
+use App\Models\UsageRooms;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+use function Symfony\Component\Clock\now;
+
 class pengelolaanAgenda extends Controller
 {
-    //belum jadi
-    public function tambahAgenda(Request $request)
+    //fungsi menyimpan usage room dan usage item 1x/minggu
+    public function simpanWeek(Request $request, $tgl_mulai, $tgl_selesai, $jam_mulai, $jam_selesai, $kode_agenda)
     {
-        $Data = DB::table('agenda_fakultas') // Pilih kolom yang diperlukan
-            ->where('kode_agenda', 'AKDK-TKM-SJK')
-            ->latest()
-            ->get();
 
-        $mulai = $Data[0]->tgl_mulai_agenda;
-        $akhir = $Data[0]->tgl_selesai_agenda;
+        $dataAgendaBarangTemp = $request->session()->get('data_input_barang', []);
+        $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
 
-        $startDate = Carbon::parse($mulai); // Senin
-        $endDate = Carbon::parse($akhir); // Minggu
+
+        $startDate = Carbon::parse($tgl_mulai); // Senin
+        $endDate = Carbon::parse($tgl_selesai); // Minggu
         $targetDayOfWeek = $startDate->dayOfWeek; // Mengambil angka hari dari $startDate (yaitu 1 untuk Senin)
 
         $agendasToCreate = [];
@@ -30,21 +34,57 @@ class pengelolaanAgenda extends Controller
         // Loop dari Tanggal Mulai hingga Tanggal Akhir
         while ($currentDate->lessThanOrEqualTo($endDate)) {
 
-            // ✅ KOREKSI: Bandingkan angka hari dalam seminggu
+            // Bandingkan angka hari dalam seminggu
             if ($currentDate->dayOfWeek === $targetDayOfWeek) {
 
                 // --- BUAT AGENDA UNTUK HARI INI ---
-                $agendasToCreate[] = [
-                    'tgl_mulai_usage' => $currentDate->copy()->setTime(9, 0, 0)->toDateTimeString(),
-                    'tgl_selesai_usage' => $currentDate->copy()->setTime(10, 0, 0)->toDateTimeString(),
-                ];
-            }
+                // $agendasToCreate[] = [
+                //     'tgl_mulai_usage' => $currentDate->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
+                //     'tgl_selesai_usage' => $currentDate->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
+                // ];
 
+                foreach ($dataAgendaBarangTemp as $barang) {
+                    //simpan barang ke db usage_barang
+                    UsageItems::create([
+                        'kode_peminjaman' => NULL,
+                        'kode_agenda' => $kode_agenda,
+                        'id_item' => $barang['id_item'],
+                        'qty_usage_item' => $barang['qty_usage'],
+                        'tgl_pinjam_usage_item' => $currentDate->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
+                        'tgl_kembali_usage_item' => $currentDate->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
+                        'status_usage_item' => 'belum digunakan',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                foreach ($dataAgendaRuanganTemp as $ruangan) {
+                    //simpan barang ke db usage_barang
+                    UsageRooms::create([
+                        'kode_peminjaman' => NULL,
+                        'kode_agenda' => $kode_agenda,
+                        'id_room' => $ruangan['id_room'],
+                        'tgl_pinjam_usage_room' => $currentDate->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
+                        'tgl_kembali_usage_room' => $currentDate->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
+                        'status_usage_room' => 'belum digunakan',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+                // $s += 1;
+            }
             // Pindah ke hari berikutnya
             $currentDate->addDay();
         }
-        dd($agendasToCreate);
+
+        // hapus data input sementara dari session
+        $request->session()->forget('data_input_agenda');
+        $request->session()->forget('data_input_barang');
+        $request->session()->forget('data_input_ruangan');
     }
+
+    //fungsi menyimpan usage room dan usage item 1x/hari belum jadi
+    public function simpanDay(Request $request, $tgl_mulai, $tgl_selesai, $jam_mulai, $jam_selesai, $kode_agenda) {}
 
     //return halaman detail agenda
     public function DetailAgenda($id)
@@ -87,15 +127,18 @@ class pengelolaanAgenda extends Controller
         $dataAgendaBarangTemp = $request->session()->get('data_input_barang', []);
         $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
 
-        $dataBarang = DB::table('items')
+        $dataBarang = DataBarang::join('rooms', 'items.id_room', 'rooms.id_room')
+            ->select('items.*', 'rooms.nama_room')
+            ->latest() // Pilih kolom yang diperlukan
+            ->get();
+        // dd($dataBarang);
+
+        $dataRoom = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room')
             ->latest() // Pilih kolom yang diperlukan
             ->get();
 
-        $dataRoom = DB::table('rooms')
-            ->latest() // Pilih kolom yang diperlukan
-            ->get();
-
-        // dd($dataAgendaBarangTemp);
+        // dd($dataAgendaTemp);
 
         $user = Auth::user()->nama;
         $halaman = 'contentTambahAgenda';
@@ -126,27 +169,39 @@ class pengelolaanAgenda extends Controller
             'id_item' => 'required',
         ]);
 
-        $dataBarang = DB::table('items')
+        // memastikan data input agenda temp sudah di isi dahulu sebelum mengisi data barang dan ruang
+        if ($request->session()->get('data_input_agenda', []) === []) {
+            return redirect()->back()->with('gagal', 'pastikan data agenda sudah di isi terlebih dahulu!!');
+        }
+
+        $dataBarang = DataBarang::join('rooms', 'items.id_room', 'rooms.id_room')
+            ->select('items.*', 'rooms.nama_room')
             ->where('id_item', '=', $request->id_item) // Pilih kolom yang diperlukan
             ->get();
         //ambil nama item
         $nama_item = $dataBarang[0]->nama_item;
+        //ambil data tempat menyimpan
+        $nama_room = $dataBarang[0]->nama_room;
 
-        // 1. Ambil data yang sudah ada di session (jika ada)
+        // Ambil data yang sudah ada di session (jika ada)
         $currentData = $request->session()->get('data_input_barang', []);
+        // ambil jmlh aray dari array barangTemp
         $jmlhArray = count($currentData);
-        // 2. Tambahkan data baru dari form
+        // Tambahkan data baru dari form
         $currentData[] = $request->except('_token'); // Tambahkan semua input kecuali token CSRF
+        // tambah nama item ke dalam array 
         $currentData[$jmlhArray]['nama_item'] = $nama_item;
-        // dd($currentData);
+        // tambah nama_room ke array temp
+        $currentData[$jmlhArray]['nama_room'] = $nama_room;
 
+        // dd($currentData);
         // 3. Simpan kembali array yang diperbarui ke session
         $request->session()->put('data_input_barang', $currentData);
 
         // Kirim respons, mungkin ke halaman form berikutnya atau halaman konfirmasi
         return redirect()->back()->with('success', 'Data barang berhasil ditambahkan sementara.');
     }
-
+    // hapus input barang temp
     public function hapusInputBarangAgendaTemporary(Request $request)
     {
         $request->validate([
@@ -162,7 +217,6 @@ class pengelolaanAgenda extends Controller
             if ($dataInputBarang['id_item'] === $request->id_item) {
                 unset($dataAgendaBarangTemp[$key]);
             }
-
         }
 
         $dataAgendaBarangTemp = array_values($dataAgendaBarangTemp);
@@ -171,19 +225,124 @@ class pengelolaanAgenda extends Controller
         return redirect()->back()->with('gagal', 'Barang berhasil dihapus dari daftar sementara.');
     }
 
-    // menyimpan data input barang sementara sebelum disimpan di db usage room
+    // menyimpan data input ruangan sementara sebelum disimpan di db usage room
     public function simpanInputRuanganAgendaTemporary(Request $request)
     {
-        // 1. Ambil data yang sudah ada di session (jika ada)
+        // ambil id_item dari request form
+        $request->validate([
+            'id_room' => 'required',
+        ]);
+
+        // memastikan data input agenda temp sudah di isi dahulu sebelum mengisi data barang dan ruang
+        if ($request->session()->get('data_input_agenda', []) === []) {
+            return redirect()->back()->with('gagal', 'pastikan data agenda sudah di isi terlebih dahulu!!');
+        }
+
+        $dataRuangan = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room')
+            ->where('id_room', '=', $request->id_room) // Pilih kolom yang diperlukan
+            ->get();
+
+        //ambil nama room
+        $nama_room = $dataRuangan[0]->nama_room;
+        //ambil nama tipe room
+        $nama_tipe_room = $dataRuangan[0]->nama_tipe_room;
+
+        // Ambil data yang sudah ada di session (jika ada) ini tidak berisi nama room
         $currentData = $request->session()->get('data_input_ruangan', []);
 
-        // 2. Tambahkan data baru dari form
+        // ambil jmlh aray dari array barangTemp
+        $jmlhArray = count($currentData);
+
+        // Tambahkan data baru dari form
         $currentData[] = $request->except('_token'); // Tambahkan semua input kecuali token CSRF
 
-        // 3. Simpan kembali array yang diperbarui ke session
+        // tambah nama room ke dalam array 
+        $currentData[$jmlhArray]['nama_room'] = $nama_room;
+        $currentData[$jmlhArray]['nama_tipe_room'] = $nama_tipe_room;
+
+        // Simpan kembali array yang diperbarui ke session
         $request->session()->put('data_input_ruangan', $currentData);
 
         // Kirim respons, mungkin ke halaman form berikutnya atau halaman konfirmasi
         return redirect()->back()->with('success', 'Data barang berhasil ditambahkan sementara.');
+    }
+    // hapus input Ruangan temp
+    public function hapusInputRuanganAgendaTemporary(Request $request)
+    {
+        $request->validate([
+            'id_room' => 'required',
+        ]);
+
+        // mengambil data input barang temp yg ada di session
+        $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
+
+        //loop untuk mencari id_room yg di input
+        foreach ($dataAgendaRuanganTemp as $key => $dataInputRuangan) {
+
+            if ($dataInputRuangan['id_room'] === $request->id_room) {
+                unset($dataAgendaRuanganTemp[$key]);
+            }
+        }
+
+        $dataAgendaRuanganTemp = array_values($dataAgendaRuanganTemp);
+        $request->session()->put('data_input_ruangan', $dataAgendaRuanganTemp);
+
+        return redirect()->back()->with('gagal', 'Ruangan berhasil dihapus dari daftar sementara.');
+    }
+
+    // simpan agenda temp ke db
+    public function simpanAgendaTemporary(Request $request)
+    {
+        // data id admin/staff
+        $iduser = Auth::user()->id_user;
+        // ambil data array agenda temp
+        $dataAgendaTemp = $request->session()->get('data_input_agenda', []);
+        // get data agenda
+        $nama_agenda = $dataAgendaTemp[0]['nama_agenda'];
+        $tipe_agenda = $dataAgendaTemp[0]['tipe'];
+        $tgl_mulai = $dataAgendaTemp[0]['tgl-mulai'];
+        $tgl_sellesai = $dataAgendaTemp[0]['tgl-selesai'];
+
+        // generate id agenda dari nama dan tipe agenda
+        $GenerateIdAgenda = new agendaFakultas();
+        $kode_agenda = $GenerateIdAgenda->generateIdAgenda($nama_agenda, $tipe_agenda);
+
+        //simpan agenda ke db
+        agendaFakultas::create([
+            'kode_agenda' => $kode_agenda,
+            'id_user' => $iduser,
+            'nama_agenda' => $nama_agenda,
+            'tgl_mulai_agenda' => $tgl_mulai,
+            'tgl_selesai_agenda' => $tgl_sellesai,
+            'tipe_agenda' => $tipe_agenda,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // mengambil data input agenda repeat mingguan/harian dalam agenda tersebut
+        if ($dataAgendaTemp[0]['repeat'] === 'mingguan') {
+            // menyimpan data jika inputan agenda dijalankan 1 kali dalam 1 minggu
+            $this->simpanWeek($request, $dataAgendaTemp[0]['tgl-mulai'], $dataAgendaTemp[0]['tgl-selesai'], $dataAgendaTemp[0]['jam_mulai'], $dataAgendaTemp[0]['jam_selesai'], $kode_agenda);
+            // kembali ke halaman agenda
+            return redirect()->route('dashboard-admin-agenda')->with('success', 'Data berhasil di simpan.');
+        } elseif ($dataAgendaTemp[0]['repeat'] === 'harian') {
+            // meyimpan data jika inputan agenda dijalankan 1 kali dalam 1 hari
+            dd($dataAgendaTemp[0]['repeat']);
+        }
+    }
+
+    public function hapusAgenda(Request $request)
+    {
+        $request->validate([
+            'kode_agenda' => 'required',
+        ]);
+
+        $hapusUsageItem = UsageItems::where('kode_agenda', '=', $request->kode_agenda)->delete();
+        $hapusUsageRoom = UsageRooms::where('kode_agenda', '=', $request->kode_agenda)->delete();
+        $hapusAgenda = agendaFakultas::where('kode_agenda', '=', $request->kode_agenda)->delete();
+
+        return redirect()->route('dashboard-admin-agenda')->with('success', 'Data berhasil di hapus.');
+        // dd($hapusAgenda);
     }
 }

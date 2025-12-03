@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class UsageRooms extends Model
 {
     //
-    protected $table = 'peminjaman_rooms';
+    protected $table = 'usage_rooms';
+    public $incrementing = false;
     public $timestamps = true;
     protected $fillable = [
         'kode_peminjaman',
