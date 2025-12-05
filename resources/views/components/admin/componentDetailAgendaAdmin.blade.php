@@ -130,10 +130,10 @@
                                 {{ date('d-m-Y', strtotime($detailBarang->tgl_kembali_usage_item)) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ date('H-i-s', strtotime($detailBarang->tgl_pinjam_usage_item)) }}
+                                {{ date('H : i', strtotime($detailBarang->tgl_pinjam_usage_item)) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ date('H-i-s', strtotime($detailBarang->tgl_kembali_usage_item)) }}
+                                {{ date('H : i', strtotime($detailBarang->tgl_kembali_usage_item)) }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $detailBarang->status_usage_item }}
@@ -195,10 +195,10 @@
                                 {{ date('d-m-Y', strtotime($detailRuangan->tgl_kembali_usage_room)) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ date('H-i-s', strtotime($detailRuangan->tgl_pinjam_usage_room)) }}
+                                {{ date('H : i', strtotime($detailRuangan->tgl_pinjam_usage_room)) }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ date('H-i-s', strtotime($detailRuangan->tgl_kembali_usage_room)) }}
+                                {{ date('H : i', strtotime($detailRuangan->tgl_kembali_usage_room)) }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $detailRuangan->status_usage_room }}

@@ -89,7 +89,7 @@
         </div>
     </section>
 
-    <!-- Section 2: Inventaris Dipinjam -->
+    <!-- Section 2: data pengajuan yg sudah approve  dan sdng Dipinjam -->
     <section class="bg-white dark:bg-gray-900/50 rounded-md p-6 shadow-sm mb-4">
         <!-- SectionHeader -->
         <h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">

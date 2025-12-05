@@ -14,8 +14,7 @@
     </div>
 @endif
 
-<!-- Main Content -->
-
+<!-- menampilkan data barang -->
 <div x-data="{ AddDataBarang: false, EditDataBarang: false, selectedDataBarang: {}, DeleteDataBarang: false }" class="bg-white py-4 px-3 rounded-sm shadow-md">
     <!-- PageHeading & Actions -->
     <!-- ToolBar -->
@@ -68,7 +67,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if($DataTipeBarang->isEmpty())
+                    @if($DataBarang->isEmpty())
                         <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
                             <td class="px-4 py-3 text-sm font-normal text-center" colspan="8">
                                 <span class="text-gray-700 font-semibold">Data kosong!</span>
@@ -246,9 +245,7 @@
     </div>
 </div>
 
-
-    {{-- ====================================== tipe item ------------------------------------------------------------}}
-
+{{-- menampilkan data tipe barang --}}
 <div x-data="{ AddTipeBarang: false, EditTipeBarang: false, selectedTipeBarang: {}, DeleteTipeBarang: false }" class="bg-white rounded-md shadow-md my-4 py-4 px-3">
     <h5 class="text-xl font-bold leading-tight tracking-tight mb-4 text-gray-600">Data Tipe Barang</h5>
     <!-- ToolBar -->

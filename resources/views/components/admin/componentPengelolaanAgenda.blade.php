@@ -14,9 +14,9 @@
     </div>
 @endif
 
-<!-- Main card for table -->
+<!-- menampilkan data agenda fakultas kbm rapat dan seminar -->
 <div class="bg-white py-4 px-3 rounded-sm shadow-md">
-    <!-- ToolBar -->
+    <!-- button untuk menambahkan  -->
     <div class="flex justify-between items-center gap-4 mb-2">
         <div class="flex-1 max-w-md">
             <label class="flex flex-col w-full">
@@ -35,7 +35,7 @@
             Add Agenda
         </a>
     </div>
-    <!-- Table -->
+    <!-- Table list agenda yg berjalan -->
     <div class=" py-3 @container">
         <div class="flex overflow-hidden">
             <table class="w-full text-left">
@@ -112,7 +112,7 @@
             </table>
         </div>
     </div>
-    <!-- Table Pagination -->
+    <!-- table tidak berguna skrng tapi mungkin nanti -->
     <div class="flex justify-between items-center px-6 py-3 border-t border-gray-200 dark:border-white/10">
         <p class="text-sm text-gray-600 dark:text-gray-400">Showing <span
                 class="font-semibold text-gray-800 dark:text-gray-200">1</span> to <span

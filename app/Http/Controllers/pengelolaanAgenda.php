@@ -19,16 +19,16 @@ class pengelolaanAgenda extends Controller
     //fungsi menyimpan usage room dan usage item 1x/minggu
     public function simpanWeek(Request $request, $tgl_mulai, $tgl_selesai, $jam_mulai, $jam_selesai, $kode_agenda)
     {
-
+        // mengambil data input agenda barang dan ruangan
         $dataAgendaBarangTemp = $request->session()->get('data_input_barang', []);
         $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
 
+        // parsing tgl mulai dan tgl selesai sesuai dengan carbon(bawaan laravel) 
+        $startDate = Carbon::parse($tgl_mulai); 
+        $endDate = Carbon::parse($tgl_selesai); 
+        
+        $targetDayOfWeek = $startDate->dayOfWeek; // Mengambil angka hari dari $startDate 1/2/dan strsnya untuk senin/selasa/dan strsnya
 
-        $startDate = Carbon::parse($tgl_mulai); // Senin
-        $endDate = Carbon::parse($tgl_selesai); // Minggu
-        $targetDayOfWeek = $startDate->dayOfWeek; // Mengambil angka hari dari $startDate (yaitu 1 untuk Senin)
-
-        $agendasToCreate = [];
         $currentDate = $startDate->copy();
 
         // Loop dari Tanggal Mulai hingga Tanggal Akhir
@@ -37,12 +37,7 @@ class pengelolaanAgenda extends Controller
             // Bandingkan angka hari dalam seminggu
             if ($currentDate->dayOfWeek === $targetDayOfWeek) {
 
-                // --- BUAT AGENDA UNTUK HARI INI ---
-                // $agendasToCreate[] = [
-                //     'tgl_mulai_usage' => $currentDate->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
-                //     'tgl_selesai_usage' => $currentDate->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
-                // ];
-
+                // loop untuk menyimpan lebih dari 1 brang yg dinputkan dari array input barang di session
                 foreach ($dataAgendaBarangTemp as $barang) {
                     //simpan barang ke db usage_barang
                     UsageItems::create([
@@ -58,6 +53,7 @@ class pengelolaanAgenda extends Controller
                     ]);
                 }
 
+                // loop untuk menyimpan lebih dari 1 ruangan yg dinputkan dari array input barang di session
                 foreach ($dataAgendaRuanganTemp as $ruangan) {
                     //simpan barang ke db usage_barang
                     UsageRooms::create([
@@ -71,13 +67,12 @@ class pengelolaanAgenda extends Controller
                         'updated_at' => now(),
                     ]);
                 }
-                // $s += 1;
             }
             // Pindah ke hari berikutnya
             $currentDate->addDay();
         }
 
-        // hapus data input sementara dari session
+        // hapus data input temp dari session
         $request->session()->forget('data_input_agenda');
         $request->session()->forget('data_input_barang');
         $request->session()->forget('data_input_ruangan');
@@ -88,11 +83,13 @@ class pengelolaanAgenda extends Controller
 
     //return halaman detail agenda
     public function DetailAgenda($id)
-    {
+    {   
+        // menentukan user yang login itu apakah role admin atau bukan jika bukan akan di arahkan eror 403 
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
 
+        // mengambil data agenda dari table agenda
         $DataAgenda = DB::table('agenda_fakultas') // Pilih kolom yang diperlukan
             ->join('users', 'agenda_fakultas.id_user', '=', 'users.id_user')
             ->select('agenda_fakultas.*', 'users.nama')
@@ -100,23 +97,24 @@ class pengelolaanAgenda extends Controller
             ->latest()
             ->get();
 
+        // mengambil data usage barang dari table usage barang
         $dataDetailUsageBarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
             ->select('usage_items.*', 'items.nama_item') // Pilih kolom yang diperlukan
             ->where('usage_items.kode_agenda', $id)
             ->get();
 
+        // mengambil data usage ruangan dari table usage ruangan
         $dataDetailUsageRuangan = DB::table('usage_rooms')
             ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
             ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('usage_rooms.*', 'rooms.nama_room', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->where('usage_rooms.kode_agenda', $id)
             ->get();
-        // dd($dataDetailUsageRuangan);
-
-        // dd($DataAgenda);
-
+        
+        // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
+        // menyimpan halaman variable
         $halaman = 'contentDetailAgenda';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataDetailUsageBarang', 'dataDetailUsageRuangan'));
     }
@@ -332,6 +330,7 @@ class pengelolaanAgenda extends Controller
         }
     }
 
+    // menghapus agenda dari db di table agenda fakultas dan menghapus usage nya di usage barang dan ruangan
     public function hapusAgenda(Request $request)
     {
         $request->validate([
@@ -343,6 +342,5 @@ class pengelolaanAgenda extends Controller
         $hapusAgenda = agendaFakultas::where('kode_agenda', '=', $request->kode_agenda)->delete();
 
         return redirect()->route('dashboard-admin-agenda')->with('success', 'Data berhasil di hapus.');
-        // dd($hapusAgenda);
     }
 }

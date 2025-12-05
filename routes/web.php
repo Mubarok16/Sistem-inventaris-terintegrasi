@@ -5,16 +5,13 @@ use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
+use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\pengelolaanAgenda;
 use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
-// Route::get('/', function () {
-//     return view('BlankPage');
-// });
 
 // routes for authentication
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest'); // menampilkan halaman login
@@ -96,8 +93,14 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa']);
 
     //route untuk halaman content dashboard mahasiswa
-    Route::get('/dashboard/mahasiswa/peminjaman-barang', [DashboardController::class, 'mahasiswaPeminjamanBarang']);
-    Route::get('/dashboard/mahasiswa/peminjaman-ruang', [DashboardController::class, 'mahasiswaPeminjamanRuang']);
-    Route::get('/dashboard/mahasiswa/list-peminjaman', [DashboardController::class, 'mahasiswaListPeminjaman']);
-    Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat']);
+    // peminjaman barang
+    Route::get('/dashboard/mahasiswa/peminjaman-barang', [DashboardController::class, 'mahasiswaPeminjamanBarang'])->name('mhs-peminjaman-barang');
+
+        Route::post('/cek-ketersediaan-barang', [peminjamanbarangController::class, 'cekKetersediaanBarang'])->name('cek_ketersediaan-barang');
+
+    Route::get('/dashboard/mahasiswa/peminjaman-ruang', [DashboardController::class, 'mahasiswaPeminjamanRuang'])->name('mhs-peminjaman-ruang');
+    Route::get('/dashboard/mahasiswa/list-peminjaman', [DashboardController::class, 'mahasiswaListPeminjaman'])->name('mhs-list-peminjaman');
+    Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat'])->name('mhs-riwayat');
+
+    
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataBarang;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Peminjam;
 use App\Models\TipeRuangan;
@@ -15,9 +16,10 @@ use App\Models\PengelolaanPeminjamanAdmin;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 
-// class return view dashboard
+// controlller untuk halaman awal di dshboard setiap user atau peminjam
 class DashboardController extends Controller
 {
+    // --- ADMIN/STAFF ---------------------------------------------------------------------------------------
     // method untuk agar admin hanya bisa mengakses halaman sesuai dengan hak aksesnya
     public function admin()
     {
@@ -76,19 +78,26 @@ class DashboardController extends Controller
 
     public function adminDataBarang()
     {
+        // cek jika user yg login bukan admin akan di arahkan ke halaman unauthorize
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+        // mengambil data ruangan
         $DataRuangan = DataRuangan::get();
+        // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $DataBarang = DB::table('items')
             ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
             ->latest()
             ->get();
+        // mengambil data tipe barang
         $DataTipeBarang = TipeBarang::get();
+        // mengambil data user yang sedang login
         $user = Auth::user()->nama;
+        // membuat variable dengan isi content data barang
         $halaman = 'contentDataBarang';
+        // mengirimkan view ke halaman dahsboard pengelolaan barang dengan mengirimkan variable yg di butuhkan di halaman
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeBarang', 'DataRuangan', 'DataBarang'));
     }
 
@@ -136,7 +145,7 @@ class DashboardController extends Controller
 
 
 
-    // --- IGNORE ---------------------------------------------------------------------------------------
+    // --- PIMPINAN ---------------------------------------------------------------------------------------
 
     // method untuk agar pimpinan fakultas hanya bisa mengakses halaman sesuai dengan hak aksesnya
     public function pimpinan()
@@ -150,7 +159,7 @@ class DashboardController extends Controller
 
 
 
-    // --- IGNORE ---------------------------------------------------------------------------------------
+    // --- KAPRODI ---------------------------------------------------------------------------------------
 
     // method untuk agar kaprodi hanya bisa mengakses halaman sesuai dengan hak aksesnya
     public function kaprodi()
@@ -164,9 +173,11 @@ class DashboardController extends Controller
 
 
 
-    // --- IGNORE ---------------------------------------------------------------------------------------
+    // --- MAHASISWA ---------------------------------------------------------------------------------------
 
     // method untuk agar mahasiswa hanya bisa mengakses halaman sesuai dengan hak aksesnya
+
+    // memanggil halaman dashboard peminjam(mahasiswa)
     public function mahasiswa()
     {
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
@@ -174,25 +185,43 @@ class DashboardController extends Controller
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
     }
 
-    // method untuk menampilkan semua halaman dashboard mahasiswa
+    // method untuk menampilkan semua halaman peminjaman barang mahasiswa
     public function mahasiswaPeminjamanBarang()
     {
+        // mengambil semua data barang dan nama tipe barang dan nama ruangan
+        $dataTablePengajuanPeminjaman = DataBarang::join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->latest()
+            ->get();
+
+        // dd($dataTablePengajuanPeminjaman);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentPeminjamanBarang'; // variable untuk menampilkan content peminjaman barang
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman'));
     }
+
+    // method untuk menampilkan semua halaman peminjaman ruangan mahasiswa
     public function mahasiswaPeminjamanRuang()
     {
+
+        // mengambil nama peminjam yg sedang login
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentPeminjamanRuang'; // variable untuk menampilkan content peminjaman ruang
+        // return ke halaman pengajuan peminjaman user dengan menyisipkan data yg dibutuhkan
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
     }
+
+    // method untuk menampilkan semua halaman peminjaman barang mahasiswa
     public function mahasiswaListPeminjaman()
     {
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentListPeminjaman'; // variable untuk menampilkan content list peminjaman
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
     }
+
+    // method untuk menampilkan semua halaman riwayat peminjaman
     public function mahasiswaRiwayat()
     {
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
