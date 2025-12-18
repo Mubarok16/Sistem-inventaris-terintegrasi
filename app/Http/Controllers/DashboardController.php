@@ -13,8 +13,10 @@ use App\Models\DataRuangan;
 use Carbon\Carbon;
 use App\Models\Peminjaman;
 use App\Models\PengelolaanPeminjamanAdmin;
+use App\Models\UsageItems;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 // controlller untuk halaman awal di dshboard setiap user atau peminjam
 class DashboardController extends Controller
@@ -195,7 +197,6 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        // dd($dataTablePengajuanPeminjaman);
 
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentPeminjamanBarang'; // variable untuk menampilkan content peminjaman barang
@@ -206,19 +207,39 @@ class DashboardController extends Controller
     public function mahasiswaPeminjamanRuang()
     {
 
+        // mengambil semua data barang dan nama tipe barang dan nama ruangan
+        $dataTablePengajuanPeminjaman = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->latest()
+            ->get();
+
+
+        // dd($dataTablePengajuanPeminjaman);
         // mengambil nama peminjam yg sedang login
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentPeminjamanRuang'; // variable untuk menampilkan content peminjaman ruang
         // return ke halaman pengajuan peminjaman user dengan menyisipkan data yg dibutuhkan
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman'));
     }
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
     public function mahasiswaListPeminjaman()
-    {
+    {   
+        // mengambil session cart ruangan
+        $cart_ruangan= session()->get('cart_ruangan');
+        // mengambil session cart yg berisi list barang yg diajukan peminjaman
+        $cart_session = session()->get('cart', []);
+
+        // mengubah session cart_ruangan menjadi objek collection
+        $listRuanganDiajukan = new Collection($cart_ruangan);
+        // mengubah session cart barang menjadi objek collection
+        $listBarangDiajukan = new Collection($cart_session);
+
+        // dd($listRuanganDiajukan);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentListPeminjaman'; // variable untuk menampilkan content list peminjaman
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'listBarangDiajukan', 'listRuanganDiajukan'));
     }
 
     // method untuk menampilkan semua halaman riwayat peminjaman

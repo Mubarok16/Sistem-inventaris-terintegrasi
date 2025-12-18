@@ -4,37 +4,73 @@
 
 @section('content')
     {{-- Sidebar --}}
-        @include('Page_mhs.sidebar')
+    @include('Page_mhs.sidebar')
 
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                {{-- Navbar --}}
-                @include('components.dashboard.navbar')
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {{-- Navbar --}}
+            @include('components.dashboard.navbar')
 
-                <div class="container-fluid" id="container-wrapper">
-                    {{-- isi content --}}
-                    
-                    
-                    {{-- @include('components.mahasiswa.'. ($halaman === 'contentDashbord' ? 'contentDashbord' : ($halaman === 'contentPeminjamanBarang' ? 'contentPeminjamanBarang' : 'contentPeminjamanBarang'))) --}}
-                    @if ($halaman === 'contentDashbord')
-                        <h4>Dashboard</h4>
-                        @include('components.mahasiswa.contentDashbordMhs')
-                    @elseif ($halaman === 'contentPeminjamanBarang')
-                        <h4>Peminjaman Barang</h4>
-                        @include('components.mahasiswa.contentPeminjamanBarang')
-                    @elseif ($halaman === 'contentPeminjamanRuang')
-                        <h4>Peminjaman Ruang</h4>
-                        @include('components.mahasiswa.contentPeminjamanRuang')
-                    @elseif ($halaman === 'contentListPeminjaman')
-                        <h4>Cart Peminjaman</h4>
-                        @include('components.mahasiswa.contentListPeminjaman')
-                    @elseif ($halaman === 'contentRiwayat')
-                        <h4>Riwayat</h4>
-                        @include('components.mahasiswa.contentRiwayat')
-                    @endif
-                    {{-- end isi content --}}
-                </div>
+            <div class="container-fluid" id="container-wrapper">
+                {{-- isi content --}}
+
+
+                @if ($halaman === 'contentDashbord')
+                    <h4>Dashboard</h4>
+                    @include('components.mahasiswa.contentDashbordMhs')
+                @elseif ($halaman === 'contentPeminjamanBarang')
+                    <h4>Peminjaman Barang</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Peminjaman-Barang</a>
+                    </div>
+                    @include('components.mahasiswa.contentPeminjamanBarang')
+                @elseif ($halaman === 'contentDetailPeminjamanBarang')
+                    <h4>Detail Peminjaman Barang</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('mhs-peminjaman-barang') }}"
+                            class="text-gray-400! no-underline!">Peminjaman-Barang</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">detail-peminjaman-barang</a>
+                    </div>
+                    @include('components.mahasiswa.contentDetailPeminjamanbarang')
+                @elseif ($halaman === 'contentPeminjamanRuang')
+                    <h4>Peminjaman Ruang</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Peminjaman-Ruangan</a>
+                    </div>
+                    @include('components.mahasiswa.contentPeminjamanRuang')
+                @elseif ($halaman === 'contentDetailPeminjamanRuangan')
+                    <h4>Detail Peminjaman Ruangan</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('mhs-peminjaman-ruang') }}"
+                            class="text-gray-400! no-underline!">Peminjaman-Ruangan</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">detail-peminjaman-ruangan</a>
+                    </div>
+                    @include('components.mahasiswa.contentDetailPeminjamanRuangan')
+                @elseif ($halaman === 'contentListPeminjaman')
+                    <h4>Cart Peminjaman</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Cart-peminjaman</a>
+                    </div>
+                    @include('components.mahasiswa.contentListPeminjaman')
+                @elseif ($halaman === 'contentRiwayat')
+                    <h4>Riwayat</h4>
+                    @include('components.mahasiswa.contentRiwayat')
+                @endif
+                {{-- end isi content --}}
             </div>
         </div>
-    
+    </div>
+
 @endsection

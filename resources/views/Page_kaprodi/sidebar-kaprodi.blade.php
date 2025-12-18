@@ -16,8 +16,8 @@
     <div class="sidebar-heading">
         Features
     </div>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-target="#collapseBootstrap"
+    {{-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseBootstrap"
             aria-expanded="true" aria-controls="collapseBootstrap">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Bootstrap UI</span>
@@ -33,7 +33,54 @@
                 <a class="collapse-item" href="#">Progress Bars</a>
             </div>
         </div>
+    </li> --}}
+    <li class="nav-item" x-data="{ open: false }">
+
+        <a href="#" @click.prevent="open = !open"
+            class="nav-link flex! items-center transition duration-150 ease-in-out"
+            :class="{ 'bg-gray-200': open }">
+
+            <i class="far fa-fw fa-window-maximize"></i>
+
+            <span class="flex-1">Bootstrap UI</span>
+
+            <i class="fas fa-angle-down w-4 h-4 transition-transform duration-200"
+                :class="{ 'transform rotate-180': open, 'transform rotate-0': !open }"></i>
+        </a>
+
+        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="opacity-0 scale-y-0" x-transition:enter-end="opacity-100 scale-y-100"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-y-100"
+            x-transition:leave-end="opacity-0 scale-y-0" class="origin-top ml-4 pt-1 pb-2 space-y-1">
+
+            <a href="#"
+                class="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! rounded-md">Alerts</a>
+            <a href="#"
+                class="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! rounded-md">Buttons</a>
+            <a href="#"
+                class="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! rounded-md">Dropdowns</a>
+            <a href="#"
+                class="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! rounded-md">Modals</a>
+        </div>
     </li>
+    {{-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
+            aria-expanded="true" aria-controls="collapseBootstrap">
+            <i class="far fa-fw fa-window-maximize"></i>
+            <span>Bootstrap UI</span>
+        </a>
+        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Bootstrap UI</h6>
+                <a class="collapse-item" href="alerts.html">Alerts</a>
+                <a class="collapse-item" href="buttons.html">Buttons</a>
+                <a class="collapse-item" href="dropdowns.html">Dropdowns</a>
+                <a class="collapse-item" href="modals.html">Modals</a>
+                <a class="collapse-item" href="popovers.html">Popovers</a>
+                <a class="collapse-item" href="progress-bar.html">Progress Bars</a>
+            </div>
+        </div>
+    </li> --}}
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">

@@ -1,142 +1,197 @@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-    <!-- Left Column: Carts -->
-    <div class="lg:col-span-2 flex flex-col gap-8">
-        <!-- Cart Peminjaman Barang -->
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6">
-            <h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">
-                Cart Peminjaman Barang</h2>
-            <div class="overflow-x-auto @container">
-                <div class="border border-[#dbe0e6] dark:border-gray-700 rounded-lg overflow-hidden">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-background-light dark:bg-background-dark">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Nama</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Tgl Pinjam</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Tgl Kembali</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Qty</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-[#dbe0e6] dark:divide-gray-700">
-                            <tr>
-                                <td class="px-4 py-3 text-[#111418] dark:text-white">Proyektor</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">25/10/2024</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">26/10/2024</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">1</td>
-                                <td class="px-4 py-3">
-                                    <button class="text-destructive font-bold flex items-center gap-1 hover:underline">
-                                        <span class="material-symbols-outlined text-base">delete</span>
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 text-[#111418] dark:text-white">Kabel HDMI</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">25/10/2024</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">26/10/2024</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">2</td>
-                                <td class="px-4 py-3">
-                                    <button class="text-destructive font-bold flex items-center gap-1 hover:underline">
-                                        <span class="material-symbols-outlined text-base">delete</span>
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- Cart Peminjaman Ruangan -->
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6">
-            <h2 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">
-                Cart Peminjaman Ruangan</h2>
-            <div class="overflow-x-auto @container">
-                <div class="border border-[#dbe0e6] dark:border-gray-700 rounded-lg overflow-hidden">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-background-light dark:bg-background-dark">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Nama</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Tgl Pinjam</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Jam Mulai</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Jam Selesai</th>
-                                <th class="px-4 py-3 text-left text-[#111418] dark:text-gray-300 font-medium">
-                                    Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-[#dbe0e6] dark:divide-gray-700">
-                            <tr>
-                                <td class="px-4 py-3 text-[#111418] dark:text-white">Ruang Meeting A1
-                                </td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">28/10/2024</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">09:00</td>
-                                <td class="px-4 py-3 text-[#60758a] dark:text-gray-400">11:00</td>
-                                <td class="px-4 py-3">
-                                    <button class="text-destructive font-bold flex items-center gap-1 hover:underline">
-                                        <span class="material-symbols-outlined text-base">delete</span>
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Empty state example -->
-                            <!-- <tr>
-                                                <td colspan="6" class="text-center p-8 text-gray-500 dark:text-gray-400">
-                                                    Keranjang ruangan masih kosong.
-                                                </td>
-                                            </tr> -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+@if (session('success'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
+        <ul style="margin-bottom: 0;">
+            {{ session('success') }}
+        </ul>
     </div>
-    <!-- Right Column: Submission Form -->
-    <div class="lg:col-span-1 space-y-8">
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6">
-            <h3 class="text-[#111418] dark:text-white text-lg font-bold mb-4">Data Pengaju</h3>
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">Nama</span>
-                    <span class="font-medium text-[#111418] dark:text-white">Ahmad</span>
+@endif
+
+@if (session('gagal'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            {{ session('gagal') }}
+        </ul>
+    </div>
+@endif
+
+<!-- Content Grid: Items (Left) + Summary (Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Left Column: Cart Items List -->
+    <div class="lg:col-span-8 flex flex-col gap-4">
+        <!-- Header for List (Desktop only) -->
+        <div
+            class="hidden md:flex justify-between items-center pb-2 border-b border-gray-300 text-[#617589] text-sm font-medium">
+            <span class="pl-4">Cart Barang</span>
+        </div>
+        <!-- cart barang -->
+        @foreach ($listBarangDiajukan as $cartbarang)
+            {{-- @dump($cartbarang) --}}
+            <div class="flex flex-col md:flex-row gap-4 bg-white rounded-xl p-3 shadow-sm border border-[#f0f2f">
+                <div class="flex items-start gap-4 flex-1">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-24 md:size-[100px] shrink-0"
+                        data-alt="Nike Air running shoes side profile on grey background"
+                        style='background-image: url("/storage/{{ $cartbarang['img_item'] }}");'>
+                    </div>
+                    <div class="flex flex-1 flex-col justify-between h-full min-h-[100px]">
+                        <div>
+                            <div class="items-center">
+                                <p class="text-[#111418] text-lg font-bold leading-normal m-0!">
+                                    {{ $cartbarang['nama_item'] }}
+                                </p>
+                            </div>
+                            <p class="text-[#617589] text-sm font-normal leading-normal">
+                                {{ $cartbarang['nama_tipe_item'] }}
+                            </p>
+                        </div>
+                        {{-- <p class="text-primary text-base font-bold leading-normal mt-2 md:mt-auto">Rp
+                            1.500.000
+                        </p> --}}
+                    </div>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500 dark:text-gray-400">Identitas</span>
-                    <span class="font-medium text-[#111418] dark:text-white">56120XXXXXX</span>
+                <div
+                    class="flex md:flex-col items-center md:items-end justify-between gap-4 shrink-0 border-t md:border-t-0 border-[#f0f2f4] pt-4 md:pt-0 mt-2 md:mt-0">
+                    <div class="flex items-center gap-2 text-[#111418] bg-[#f0f2f4] rounded-lg p-1"
+                        x-data="{ qty: {{ $cartbarang['qty_pinjam'] }} }">
+                        <button
+                            class="flex h-8 w-8 items-center justify-center rounded-md bg-white shadow-sm cursor-pointer hover:text-primary transition-colors"
+                            @click="qty = Math.max(0, qty - 1)" :disabled="qty <= 0">
+                            <span class="material-symbols-outlined text-[16px]"></span>
+                            &minus;
+                        </button>
+                        <input x-model="qty" min="0"
+                            class="w-8 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 border-none font-semibold text-sm"
+                            readonly="" type="text" />
+                        <button @click="qty = Math.min(qty + 1)" :disabled="qty >= {{ $cartbarang['qty_item'] }}"
+                            class="flex h-8 w-8 items-center justify-center rounded-md bg-white shadow-sm cursor-pointer hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[16px]"></span>
+                            &plus;
+                        </button>
+                    </div>
+                    <form method="POST" action="{{ route('hapus-item-cart') }}">
+                        @csrf
+                        <input type="text" name="id_item" class="hidden"
+                            value="{{ $cartbarang['id_item'] }}">
+                        <button
+                            class=" md:flex items-center gap-1 text-[#617589] hover:text-red-500 text-sm font-medium transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Hapus</span>
+                        </button>
+                    </form>
                 </div>
             </div>
+        @endforeach
+
+        <!-- Header for List (Desktop only) -->
+        <div
+            class="hidden md:flex justify-between items-center pb-2 border-b border-gray-300 text-[#617589] text-sm font-medium">
+            <span class="pl-4">Cart Ruangan</span>
         </div>
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6">
-            <h3 class="text-[#111418] dark:text-white text-lg font-bold mb-4">File Pengajuan</h3>
-            <form class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="keterangan">Isi
-                        Keterangan Peminjaman</label>
-                    <textarea
-                        class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-primary focus:ring-primary"
-                        id="keterangan" name="keterangan" rows="4"></textarea>
+
+         <!-- cart barang -->
+        @foreach ($listRuanganDiajukan as $cartruangan)
+            {{-- @dump($cartbarang) --}}
+            <div class="flex flex-col md:flex-row gap-4 bg-white rounded-xl p-3 shadow-sm border border-[#f0f2f">
+                <div class="flex items-start gap-4 flex-1">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-24 md:size-[100px] shrink-0"
+                        data-alt="Nike Air running shoes side profile on grey background"
+                        style='background-image: url("/storage/{{ $cartruangan['gambar_room'] }}");'>
+                    </div>
+                    <div class="flex flex-1 flex-col justify-between h-full min-h-[100px]">
+                        <div>
+                            <div class="items-center">
+                                <p class="text-[#111418] text-lg font-bold leading-normal m-0!">
+                                    {{ $cartruangan['nama_room'] }}
+                                </p>
+                            </div>
+                            <p class="text-[#617589] text-sm font-normal leading-normal">
+                                {{ $cartruangan['nama_tipe_room'] }}
+                            </p>
+                        </div>
+                        {{-- <p class="text-primary text-base font-bold leading-normal mt-2 md:mt-auto">Rp
+                            1.500.000
+                        </p> --}}
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="lampiran">Lampiran</label>
-                    <input
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30 cursor-pointer"
-                        id="lampiran" name="lampiran" type="file" />
+                <div
+                    class="flex md:flex-col items-center md:items-end justify-between gap-4 shrink-0 border-t md:border-t-0 border-[#f0f2f4] pt-4 md:pt-0 mt-2 md:mt-0">
+                    <div class="flex items-center gap-2 text-[#111418] bg-[#f0f2f4] rounded-lg p-1"
+                        x-data="{ qty: 1 }">
+                        <button readonly=""
+                            class="flex h-8 w-8 items-center justify-center rounded-md bg-white shadow-sm cursor-pointer hover:text-primary transition-colors"
+                            >
+                            <span class="material-symbols-outlined text-[16px]"></span>
+                            &minus;
+                        </button>
+                        <input x-model="qty" min="0"
+                            class="w-8 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 border-none font-semibold text-sm"
+                            readonly="" type="text" />
+                        <button readonly
+                            class="flex h-8 w-8 items-center justify-center rounded-md bg-white shadow-sm cursor-pointer hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[16px]"></span>
+                            &plus;
+                        </button>
+                    </div>
+                    <form method="POST" action="{{ route('hapus-item-cart') }}">
+                        @csrf
+                        <input type="text" name="id_item" class="hidden"
+                            value="{{ $cartruangan['id_room'] }}">
+                        <button
+                            class=" md:flex items-center gap-1 text-[#617589] hover:text-red-500 text-sm font-medium transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Hapus</span>
+                        </button>
+                    </form>
                 </div>
+            </div>
+        @endforeach
+    </div>
+
+
+    <!-- Right Column: Order Summary (Sticky) -->
+    <div class="lg:col-span-4">
+        <div class="sticky top-24 flex flex-col gap-6 bg-whi rounded-xl p-6 shadow-sm border border-[#f0f2f4]">
+            <h3 class="text-[#111418] text-xl font-bold leading-tight">Ringkasan
+                Pesanan</h3>
+            <div class="flex flex-col gap-3 pb-6 border-b border-[#f0f2f4]">
+                <div class="flex justify-between items-center">
+                    <p class="text-[#617589] text-base font-normal">Subtotal</p>
+                    <p class="text-[#111418] text-base font-medium">Rp 2.900.000</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="text-[#617589] text-base font-normal">Diskon (Promo)</p>
+                    <p class="text-green-600 text-base font-medium">- Rp 0</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="text-[#617589] text-base font-normal">Estimasi Pajak (11%)</p>
+                    <p class="text-[#111418] text-base font-medium">Rp 319.000</p>
+                </div>
+            </div>
+            <!-- Promo Code Input -->
+            <div class="flex gap-2">
+                <input
+                    class="form-input flex-1 min-w-0 rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary"
+                    placeholder="Kode Promo" />
                 <button
-                    class="w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                    type="submit">
-                    Ajukan Peminjaman
+                    class="flex items-center justify-center rounded-lg bg-[#f0f2f4] px-4 py-2 text-sm font-bold text-[#111418] hover:bg-[#e0e2e5] transition-colors">
+                    Pakai
                 </button>
-            </form>
+            </div>
+            <div class="flex justify-between items-center pt-2">
+                <p class="text-[#111418] text-lg font-bold">Total</p>
+                <p class="text-[#111418] text-2xl font-black text-primary">Rp 3.219.000
+                </p>
+            </div>
+            <button
+                class="flex w-full cursor-pointer items-center justify-center rounded-lg bg-primary py-3 text-white text-base font-bold leading-normal hover:bg-blue-600 transition-colors shadow-md shadow-blue-500/20">
+                Lanjutkan ke Pembayaran
+            </button>
+            <div class="flex justify-center mt-2">
+                <a class="text-sm font-medium text-[#617589] hover:text-primary flex items-center gap-1 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    Lanjut Belanja
+                </a>
+            </div>
         </div>
     </div>
 </div>
