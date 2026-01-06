@@ -19,5 +19,7 @@ class UsageRooms extends Model
         'status_usage_room',
         'created_at',
         'updated_at',
+        'jam_mulai_usage_room',
+        'jam_selesai_usage_room',
     ];
 }

@@ -7,7 +7,7 @@
         <div class="sidebar-brand-text mx-3">SIPRA</div> {{-- Sistem inteGrasi peMinjaman sarana prasarana dan Agenda kegiatan --}}
     </a>
     <hr class="sidebar-divider my-0">
-    <li class="nav-item {{ $halaman === 'contentDashbord' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentDashbord' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -16,7 +16,7 @@
     <div class="sidebar-heading">
         Features
     </div>
-    <li class="nav-item {{ $halaman === 'contentPengelolaanUser' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentPengelolaanUser' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengelolaan-user') }}">
             <i class="far fa-fw fa-window-maximize"></i>
             <span>Pengelolaan User</span>
@@ -33,7 +33,7 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengajuan-peminjaman') }}">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Pengajuan Peminjaman</span>
@@ -46,7 +46,7 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentDataBarang' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentDataBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/data-barang') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Data Barang</span>
@@ -59,19 +59,19 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/data-ruangan') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Data Ruangan</span>
         </a>
     </li>
-    <li class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Pengelolaan Agenda</span>
         </a>
     </li>
-    <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'active' : '' }}">
+    <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/pengadaan-barang') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Pengadaan Barang</span>

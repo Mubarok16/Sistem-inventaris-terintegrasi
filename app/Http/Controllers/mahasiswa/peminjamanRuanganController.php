@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataRuangan;
 use App\Models\UsageRooms;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class peminjamanRuanganController extends Controller
@@ -46,6 +47,7 @@ class peminjamanRuanganController extends Controller
             ->wheredate('tgl_pinjam_usage_room', '=', $tglForTblUsageRuang)
             ->where('status_usage_room', '!=', 'selesai')
             ->where('status_usage_room', '!=', 'ditolak')
+            ->where('status_usage_room', '!=', 'diajukan')
             ->orderBy('tgl_pinjam_usage_room', 'asc')
             ->get();
 
@@ -82,7 +84,6 @@ class peminjamanRuanganController extends Controller
                     'gambar_room' => $dataRuanganDb[0]->gambar_room,
                 ]
             ]);
-
         } else {
             // menyimpan data input peminjaman ruangan ke list peminjaman
             // jika di session cart_barang sudah ada data, data baru akan ditambahkan setelahnya
@@ -108,5 +109,37 @@ class peminjamanRuanganController extends Controller
 
         // kembali ke halaman detail peminjaman barang
         return back()->with('success', 'barang berhasil ditambahkan ke cart peminjaman!');
+    }
+
+    // menghapus ruangan dari cart peminjaman
+    public function hapusroomcart(Request $request)
+    {
+
+        $idroomHapus = $request->input('id_room');
+        // 1. Ambil array dari sesi dan konversi ke Collection
+        $cartBarang = new Collection(session()->get('cart_ruangan', []));
+
+        // 3. Hapus elemen di mana nilai itemnya sama dengan $idroommHapus
+        $cartBarang = $cartBarang->reject(function ($room) use ($idroomHapus) {
+            // PERBAIKAN: Akses kunci 'id_item' di dalam array $item
+            return $room['id_room'] === $idroomHapus;
+        })->values(); // Penting: ->values() mereset kunci (keys) menjadi 0, 1, 2...
+
+        // 4. Simpan kembali Collection yang telah diperbarui ke sesi
+        session()->put('cart_ruangan', $cartBarang->toArray());
+
+        return back()->with('gagal', 'ruangan berhasil dihapus dari cart peminjaman!');
+    }
+
+    // fungsi untuk jika user ingin mencari tgl yg dia inginkan 
+    public function gantiTgl(Request $request)
+    {
+        // menyimpan tgl chosed di session
+        session()->put('tgl_chosed_room', $request->input('ganti_tgl'));
+        
+        $id = $request->input('id');
+        // dd($ketersediaan);
+
+        return redirect()->route('mhs-detail-peminjaman-ruang', $id);
     }
 }

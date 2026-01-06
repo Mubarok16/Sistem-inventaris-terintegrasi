@@ -74,25 +74,6 @@
                     @csrf
                     <!-- Actions -->
                     <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                        {{-- <!-- Quantity -->
-                        <div class="flex items-center border border-gray-200 rounded-lg h-12 w-32 bg-white"
-                            x-data="{ qty: 0 }">
-                            <button type="button"
-                                class="w-10 h-full flex items-center justify-center text-gray-500 hover:text-primary"
-                                @click="qty = Math.max(0, qty - 1)" :disabled="qty <= 0">
-                                <span class="material-symbols-outlined text-[18px]"></span>
-                                &minus;
-                            </button>
-                            <input name="qty_pinjam" x-model="qty" min="0"
-                                class="w-full h-full text-center border-none bg-transparent focus:outline-none text-[#111418] font-medium p-0"
-                                type="number" value="1" />
-                            <button type="button"
-                                class="w-10 h-full flex items-center justify-center text-gray-500 hover:text-primary"
-                                @click="qty = Math.min(qty + 1)">
-                                <span class="material-symbols-outlined text-[18px]"></span>
-                                &plus;
-                            </button>
-                        </div> --}}
                         <!-- Add to Cart -->
                         <input type="text" name="id_room" class="hidden" value="{{ $item->id_room }}">
                         <button type="submit"
@@ -122,7 +103,7 @@
                 Jadwal Penggunaan Barang
             </h3>
             <div>
-                <form action="{{ route('ganti-tgl-chosed-barang') }}" method="POST" class="flex gap-0 max-w-md">
+                <form action="{{ route('ganti-tgl-chosed-ruang') }}" method="POST" class="flex gap-0 max-w-md">
                     @csrf
                     <div class="relative flex-grow">
                         <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -144,7 +125,6 @@
                         <tr>
                             <th class="px-6 py-4 w-32">Waktu</th>
                             <th class="px-6 py-4">Aktivitas</th>
-                            <th class="px-6 py-4">Jumlah Digunakan</th>
                             <th class="px-6 py-4">Kategori</th>
                             <th class="px-6 py-4">Status</th>
                         </tr>
@@ -170,11 +150,6 @@
                                             @else
                                                 {{ $item->ket_peminjaman }}
                                             @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="font-medium text-[#111418]">
-                                            {{ $item->qty_usage_room }} Unit
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">

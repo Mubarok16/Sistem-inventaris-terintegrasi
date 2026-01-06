@@ -29,10 +29,10 @@
             <span>Peminjaman Ruang</span>
         </a>
     </li>
-    <li class="nav-item m-0" x-data="{ open: {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' ? 'true' : 'false' }} }">
+    <li class="nav-item m-0" x-data="{ open: {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'true' : 'false' }} }">
 
         <a href="#" @click.prevent="open = !open"
-            class="nav-link collapsed flex! items-center transition duration-150 ease-in-out {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' ? 'bg-gray-200' : '' }}">
+            class="nav-link collapsed flex! items-center transition duration-150 ease-in-out {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'bg-gray-200' : '' }}">
 
             <i class="fas fa-list"></i>
 
@@ -47,7 +47,7 @@
             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-y-100"
             x-transition:leave-end="opacity-0 scale-y-0" class="origin-top ml-4 pt-1 pb-2 space-y-1 py-2 collapse-inner">
 
-            <a href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}" class="block px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! {{ $halaman === 'contentListPeminjaman' ? 'bg-gray-200' : '' }}">
+            <a href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}" class="block px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'bg-gray-200' : '' }}">
                 <i class="fas fa-shopping-cart"></i>
                 <span>Cart Peminjaman</span>
             </a>

@@ -87,12 +87,13 @@ return new class extends Migration
          Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('kode_peminjaman', 12)->primary();
             $table->string('no_identitas', 12);
-            $table->string('id_user', 12);
+            $table->string('id_user', 12)->nullable();
             $table->text('ket_peminjaman');
             $table->text('lampiran_file');
-            $table->text('status_peminjaman');
             $table->dateTime('tgl_tansaksi');
             $table->timestamps();
+            $table->text('status_peminjaman');
+            $table->text('catatan_pengelola');
 
             // Foreign keys
             $table->foreign('id_user')

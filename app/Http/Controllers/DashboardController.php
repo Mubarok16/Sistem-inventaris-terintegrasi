@@ -17,6 +17,7 @@ use App\Models\UsageItems;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Services\Admin\PengelolaanPeminjamanService;
 
 // controlller untuk halaman awal di dshboard setiap user atau peminjam
 class DashboardController extends Controller
@@ -58,24 +59,48 @@ class DashboardController extends Controller
         $user = Auth::user()->nama;
         // $dataPengajuanPeminjaman = Peminjaman::latest()->get();
 
-        $dataPengajuanPeminjaman = DB::table('peminjaman')
-            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
-            ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
-            ->select('peminjaman.*', 'peminjam.nama_peminjam', 'users.nama') // Pilih kolom yang diperlukan
-            ->where('peminjaman.status_peminjaman', 'diajukan')
-            ->latest()
-            ->get();
+        // $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+        //     ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+        //     ->leftJoin('usage_rooms', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+        //     ->select('peminjaman.*', 'peminjam.nama_peminjam', 'usage_items.tgl_pinjam_usage_item', 'usage_items.tgl_kembali_usage_item', 'usage_rooms.tgl_pinjam_usage_room', 'usage_rooms.tgl_kembali_usage_room', 'usage_rooms.jam_mulai_usage_room', 'usage_rooms.jam_selesai_usage_room', 'usage_items.jam_mulai_usage_item', 'usage_items.jam_selesai_usage_item') // Pilih kolom yang diperlukan
+        //     ->where('peminjaman.status_peminjaman', 'diajukan')
+        //     ->orderBy('peminjaman.created_at', 'asc')
+        //     ->get();
 
-        $dataPeminjamanDisetujui = DB::table('peminjaman')
-            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
-            ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
-            ->select('peminjaman.*', 'peminjam.nama_peminjam', 'users.nama') // Pilih kolom yang diperlukan
-            ->where('peminjaman.status_peminjaman', '!=', 'diajukan')
+        // dd($dataPengajuanPeminjaman);
+
+        $dataPeminjamanDisetujui = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            // ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
+            ->select('peminjaman.*', 'peminjam.nama_peminjam') // Pilih kolom yang diperlukan
+            ->where('peminjaman.status_peminjaman', '!=', 'terjadwal')
             ->latest()
             ->get();
+        
+        // sorting data display by status peminjaman
+        $status_penggunaan = null;
+
+        if (session()->get('status-peminjaman') === null) {
+            $status_penggunaan = 'semua';
+        }else{
+            $status_penggunaan = session()->get('status-peminjaman');
+        }
+        // mengambil data dari db berdasarkan status nya
+        $PengelolaanPeminjamanService = new PengelolaanPeminjamanService;
+        $dataPengajuanPeminjaman = $PengelolaanPeminjamanService->dataPenggunaanBarangByStatus($status_penggunaan);
+
+        // mengambil data total Peminjaman yg sudah di terjadwal dan sedang digunakan
+        $totalPeminjaman = $PengelolaanPeminjamanService->hitungTotalPeminjaman();
+
+        // mengambil data total yg diajukan
+        $totalDiajukan = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('diajukan');
+        // mengambil data total yg dipinjam
+        $totalDipinjam = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('dipinjam');
+        // mengambil data total yg terlambat dikembalikan
+        $totalTerlambat = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('terlambat');
+        // dd($totalPeminjaman);
 
         $halaman = 'contentPengajuanPeminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanDisetujui'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanDisetujui', 'status_penggunaan', 'totalPeminjaman', 'totalDiajukan', 'totalDipinjam', 'totalTerlambat'));
     }
 
     public function adminDataBarang()
@@ -224,9 +249,9 @@ class DashboardController extends Controller
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
     public function mahasiswaListPeminjaman()
-    {   
+    {
         // mengambil session cart ruangan
-        $cart_ruangan= session()->get('cart_ruangan');
+        $cart_ruangan = session()->get('cart_ruangan');
         // mengambil session cart yg berisi list barang yg diajukan peminjaman
         $cart_session = session()->get('cart', []);
 
@@ -235,11 +260,15 @@ class DashboardController extends Controller
         // mengubah session cart barang menjadi objek collection
         $listBarangDiajukan = new Collection($cart_session);
 
+        $jmlhRuang = $listRuanganDiajukan->count();
+        $jmlhBrng = $listBarangDiajukan->sum('qty_pinjam');
+
         // dd($listRuanganDiajukan);
 
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $no_identitas = Auth::guard('peminjam')->user()->no_identitas;
         $halaman = 'contentListPeminjaman'; // variable untuk menampilkan content list peminjaman
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'listBarangDiajukan', 'listRuanganDiajukan'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'no_identitas', 'listBarangDiajukan', 'listRuanganDiajukan', 'jmlhBrng', 'jmlhRuang'));
     }
 
     // method untuk menampilkan semua halaman riwayat peminjaman

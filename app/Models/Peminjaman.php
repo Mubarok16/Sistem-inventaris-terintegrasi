@@ -11,6 +11,7 @@ class Peminjaman extends Model
     protected $table = 'peminjaman';
     protected $primaryKey = 'kode_peminjaman';
     public $incrementing = false;
+    // protected $keyType = 'string';
     
     protected $fillable = [
         'kode_peminjaman',
@@ -51,4 +52,18 @@ class Peminjaman extends Model
     //     return DB::select($sql);
     // }
 
+    // public function usageItem()
+    // {
+    //     return $this->hasOne(UsageItems::class, 'kode_peminjaman', 'kode_peminjaman');
+    // }
+
+    // public function usageRoom()
+    // {
+    //     return $this->hasOne(UsageRooms::class, 'kode_peminjaman', 'kode_peminjaman');
+    // }
+
+    // public function peminjam()
+    // {
+    //     return $this->hasOne(Peminjam::class, 'no_identitas', 'no_identitas');
+    // }
 }

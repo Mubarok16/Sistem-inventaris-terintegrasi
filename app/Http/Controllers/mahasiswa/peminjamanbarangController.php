@@ -53,6 +53,7 @@ class peminjamanbarangController extends Controller
             ->wheredate('tgl_pinjam_usage_item', '=', $tglForTblUsageBrng)
             ->where('status_usage_item', '!=', 'selesai')
             ->where('status_usage_item', '!=', 'ditolak')
+            ->where('status_usage_item', '!=', 'diajukan')
             ->orderBy('tgl_pinjam_usage_item', 'asc')
             ->get();
         

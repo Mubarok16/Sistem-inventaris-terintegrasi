@@ -20,5 +20,7 @@ class UsageItems extends Model
         'status_usage_item',
         'created_at',
         'updated_at',
+        'jam_mulai_usage_item',
+        'jam_selesai_usage_item',
     ];
 }

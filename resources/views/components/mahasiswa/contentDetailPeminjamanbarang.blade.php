@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="items-baseline">
-                    <span class="text-xl font-bold text-gray-600">Jumlah Barang : {{ $item->qty_item }} Unit</span>
+                    <span class="text-xl font-normal text-gray-600">Max pinjam : {{ $item->qty_item }} Unit</span>
                 </div>
                 <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2" role="alert">
                     <div class="flex items-center">

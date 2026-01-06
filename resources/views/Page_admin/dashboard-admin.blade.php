@@ -6,7 +6,7 @@
     {{-- Sidebar --}}
     @include('Page_admin.sidebar-admin')
 
-    <div id="content-wrapper" class="d-flex flex-column bg-[#f8fdff]!">
+    <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             {{-- Navbar --}}
             @include('components.dashboard.navbar')

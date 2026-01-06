@@ -9,11 +9,10 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             {{-- Navbar --}}
-            @include('components.dashboard.navbar')
+            @include('Page_mhs.navbarmhs')
 
             <div class="container-fluid" id="container-wrapper">
                 {{-- isi content --}}
-
 
                 @if ($halaman === 'contentDashbord')
                     <h4>Dashboard</h4>
@@ -64,6 +63,17 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Cart-peminjaman</a>
                     </div>
                     @include('components.mahasiswa.contentListPeminjaman')
+                @elseif ($halaman === 'contentDetailTransaksiPeminjamanMhs')
+                    <h4>Detail Transaksi</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('mhs-list-peminjaman') }}"
+                            class="text-gray-400! no-underline!">Cart-peminjaman</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">detail-transaksi</a>
+                    </div>
+                    @include('components.mahasiswa.contentDetailTransaksi')
                 @elseif ($halaman === 'contentRiwayat')
                     <h4>Riwayat</h4>
                     @include('components.mahasiswa.contentRiwayat')

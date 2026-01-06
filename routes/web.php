@@ -7,6 +7,7 @@ use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
 use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\mahasiswa\peminjamanRuanganController;
+use App\Http\Controllers\mahasiswa\PengajuanPeminjamanController;
 use App\Http\Controllers\pengelolaanAgenda;
 use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
@@ -58,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     // pengelolaan peminjaman
     Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin']);
     Route::post('admin/pengajuan-peminjaman/persetujuan', [PengelolaanPeminjamanAdmin::class, 'persetujuan'])->name('persetujuanPeminjaman');
+    Route::post('admin/pengajuan-peminjaman/pilih-data-pengelolaan-peminjaman-by-status', [PengelolaanPeminjamanAdmin::class, 'pilihDataPengajuanPeminjamanAdmin'])->name('pilih-data-pengelolaan-peminjaman-by-status');
 
     //Pengelolaan Agenda
     Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda']);
@@ -109,12 +111,22 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::get('/dashboard/mahasiswa/peminjaman-ruang', [DashboardController::class, 'mahasiswaPeminjamanRuang'])->name('mhs-peminjaman-ruang');
     // detail peminjaman ruang
     Route::get('/dashboard/mahasiswa/detail-peminjaman-ruang/{id}', [peminjamanRuanganController::class, 'DetailPeminjamanRuangan'])->name('mhs-detail-peminjaman-ruang');
+   
          // menambahkan ruangan ke cart
         Route::post('/dashboard/mahasiswa/add-cart-ruangan', [peminjamanRuanganController::class, 'ruanganAddCart'])->name('mahasiswa-add-cart-ruangan');
-
+        // manghapus barang dari cart
+        Route::post('/hapus-room-cart', [peminjamanruanganController::class, 'hapusroomcart'])->name('hapus-room-cart');
+        // mengubah tanggal peminjaman barang yang dipilih
+        Route::post('mahasiswa/ganti-tgl-chosed-ruang', [peminjamanRuanganController::class, 'gantiTgl'])->name('ganti-tgl-chosed-ruang');
 
     // list peminjaman cart
     Route::get('/dashboard/mahasiswa/list-peminjaman', [DashboardController::class, 'mahasiswaListPeminjaman'])->name('mhs-list-peminjaman');
+    //detail transaksi peminjaman
+    Route::get('/dashboard/mahasiswa/detail-transaksi', [PengajuanPeminjamanController::class, 'mahasiswaDetailTransaksi'])->name('mhs-detail-transaksi');
+     // ajukan peminjaman
+    Route::post('/dashboard/mahasiswa/pengajuan-peminjaman', [PengajuanPeminjamanController::class, 'PengajuanPeminjaman'])->name('mhs-pengajuan-peminjaman');
+
+    
     Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat'])->name('mhs-riwayat');
 
     
