@@ -18,6 +18,7 @@ use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Services\Admin\PengelolaanPeminjamanService;
+use App\Services\mahasiswa\RiwayatPeminjamanService;
 
 // controlller untuk halaman awal di dshboard setiap user atau peminjam
 class DashboardController extends Controller
@@ -274,8 +275,30 @@ class DashboardController extends Controller
     // method untuk menampilkan semua halaman riwayat peminjaman
     public function mahasiswaRiwayat()
     {
+        $RiwayatService = new RiwayatPeminjamanService;
+
+        $idUser = Auth::guard('peminjam')->user()->no_identitas;
+
+        // $dataPeminjamanByPeminjam = DB::table('peminjaman')
+        //     ->where('no_identitas', '=', $idUser)
+        //     ->get();
+
+        // filter riwayat berdasarkan status tertentu
+        $status_penggunaan = null;
+
+        if (session()->get('status-riwayat') === null) {
+            $status_penggunaan = 'semua';
+        }else{
+            $status_penggunaan = session()->get('status-riwayat');
+        }
+
+        $dataPeminjamanByPeminjam = $RiwayatService->dataPeminjamanByStatus($status_penggunaan);
+
+
+        // dd($status_penggunaan);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayat'; // variable untuk menampilkan content riwayat
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjamanByPeminjam', 'status_penggunaan'));
     }
 }

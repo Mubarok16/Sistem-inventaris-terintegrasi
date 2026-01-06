@@ -8,6 +8,7 @@ use App\Http\Controllers\HapusAkun;
 use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\mahasiswa\peminjamanRuanganController;
 use App\Http\Controllers\mahasiswa\PengajuanPeminjamanController;
+use App\Http\Controllers\mahasiswa\RiwayarController;
 use App\Http\Controllers\pengelolaanAgenda;
 use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
@@ -126,8 +127,10 @@ Route::middleware(['auth:peminjam'])->group(function () {
      // ajukan peminjaman
     Route::post('/dashboard/mahasiswa/pengajuan-peminjaman', [PengajuanPeminjamanController::class, 'PengajuanPeminjaman'])->name('mhs-pengajuan-peminjaman');
 
-    
+    //riwayat
     Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat'])->name('mhs-riwayat');
+    //simpan riwayat session
+    Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
 
     
 });

@@ -16,11 +16,19 @@
 
                 @if ($halaman === 'contentDashbord')
                     <h4>Dashboard</h4>
+                     <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline! font-medium">
+                            Dahsboard-mahasiswa
+                        </a>
+                        <span class="text-gray-500">/</span>
+                    </div>
                     @include('components.mahasiswa.contentDashbordMhs')
                 @elseif ($halaman === 'contentPeminjamanBarang')
                     <h4>Peminjaman Barang</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">
+                            Dahsboard-mahasiswa
+                        </a>
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">Peminjaman-Barang</a>
                     </div>
@@ -28,7 +36,7 @@
                 @elseif ($halaman === 'contentDetailPeminjamanBarang')
                     <h4>Detail Peminjaman Barang</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="{{ route('mhs-peminjaman-barang') }}"
                             class="text-gray-400! no-underline!">Peminjaman-Barang</a>
@@ -39,7 +47,7 @@
                 @elseif ($halaman === 'contentPeminjamanRuang')
                     <h4>Peminjaman Ruang</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">Peminjaman-Ruangan</a>
                     </div>
@@ -47,7 +55,7 @@
                 @elseif ($halaman === 'contentDetailPeminjamanRuangan')
                     <h4>Detail Peminjaman Ruangan</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="{{ route('mhs-peminjaman-ruang') }}"
                             class="text-gray-400! no-underline!">Peminjaman-Ruangan</a>
@@ -58,7 +66,7 @@
                 @elseif ($halaman === 'contentListPeminjaman')
                     <h4>Cart Peminjaman</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">Cart-peminjaman</a>
                     </div>
@@ -66,7 +74,7 @@
                 @elseif ($halaman === 'contentDetailTransaksiPeminjamanMhs')
                     <h4>Detail Transaksi</h4>
                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="{{ route('mhs-list-peminjaman') }}"
                             class="text-gray-400! no-underline!">Cart-peminjaman</a>
@@ -75,7 +83,13 @@
                     </div>
                     @include('components.mahasiswa.contentDetailTransaksi')
                 @elseif ($halaman === 'contentRiwayat')
-                    <h4>Riwayat</h4>
+                    <h4>Riwayat Peminjaman</h4>
+                     <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('mhs-list-peminjaman') }}"
+                            class="text-gray-400! no-underline! font-medium">Riwayat-peminjaman</a>
+                    </div>
                     @include('components.mahasiswa.contentRiwayat')
                 @endif
                 {{-- end isi content --}}
