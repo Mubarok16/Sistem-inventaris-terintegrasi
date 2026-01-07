@@ -129,6 +129,8 @@ Route::middleware(['auth:peminjam'])->group(function () {
 
     //riwayat
     Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat'])->name('mhs-riwayat');
+    // detail transaksi mahasiswa
+    Route::get('/dashboard/mahasiswa/riwayat/detail-transaksi/{id}', [RiwayarController::class, 'mahasiswaRiwayatDetail'])->name('mhs-riwayat-detail');
     //simpan riwayat session
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
 

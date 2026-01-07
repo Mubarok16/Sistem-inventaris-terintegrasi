@@ -89,10 +89,6 @@
                                     <span>Fakultas {{ $dataPeminjaman->fakultas }},
                                         {{ $dataPeminjaman->prodi }}</span>
                                 </div>
-                                {{-- <div class="flex items-center gap-2 text-sm text-slate-600">
-                                <i class="fa-solid fa-building-columns text-base"></i>
-                                <span>teknik komputer</span>
-                            </div> --}}
                             </div>
                         </div>
                     </div>
@@ -100,15 +96,15 @@
                 <!-- Timeline & Purpose Card -->
                 <div
                     class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between border-b border-slate-100 pb-4">
                         <h5 class="font-semibold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
                         <button
-                            class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                            <i class="fa-solid fa-print text-lg text-white"></i>
-                            <span class="text-white">Lampiran file</span>
+                            class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                            <i class="fa-solid fa-print text-md text-white"></i>
+                            <span class="text-white text-md">Lampiran file</span>
                         </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -143,106 +139,10 @@
             </div>
         @endforeach
 
-        <!-- bentrok -->
-        @if (!$itemBentrok->isEmpty() || !$roomBentrok->isEmpty())
-
-            <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-start">
-                <div class="p-3.5 bg-red-100 rounded-lg shrink-0 text-red-600">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <div class="flex-1 w-full">
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="text-base font-bold text-red-800">Terdeteksi Bentrokan Jadwal</h4>
-                        <span
-                            class="text-xs font-bold px-2.5 py-1 bg-red-100 text-red-700 rounded border border-red-200">Perlu
-                            Peninjauan</span>
-                    </div>
-                    <p class="text-sm text-red-700 mb-2 leading-relaxed">
-                        Sistem mendeteksi adanya tumpang tindih jadwal penggunaan dalam
-                        transaksi ini. Mohon verifikasi atau hubungi peminjam untuk penjadwalan ulang sebelum
-                        menyetujui.
-                    </p>
-                    @foreach ($itemBentrok as $item)
-                        <div class="bg-white rounded-lg border border-red-100 overflow-hidden shadow-sm mb-2">
-                            <div class="py-2 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <div class="flex items-start sm:items-center gap-3">
-                                    <div
-                                        class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
-                                        <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ asset('storage/' . $item['img_item']) }}')">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span
-                                            class="text-sm font-semibold text-slate-900">{{ $item['nama_item'] }}</span>
-                                        <p class="text-xs text-red-600 flex flex-wrap items-center gap-1 mt-0.5">
-                                            <i class="fa-solid fa-calendar-xmark text-[14px]"></i>
-                                            Bentrok dengan
-                                            @if ($item['tipe_agenda'] != null)
-                                                @if ($item['tipe_agenda'] === 'kegiatan belajar mengajar')
-                                                    KBM
-                                                @elseif ($item['tipe_agenda'] === 'seminar')
-                                                    seminar
-                                                @elseif ($item['tipe_agenda'] === 'rapat pimpinan')
-                                                    rapat pimpinan
-                                                @endif
-                                            @endif
-                                            :
-                                            <span
-                                                class="font-bold">{{ $item['nama_agenda'] === null ? $item['ket_peminjaman'] : $item['nama_agenda'] }}</span>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    @endforeach
-                    @foreach ($roomBentrok as $room)
-                        <div class="bg-white rounded-lg border border-red-100 overflow-hidden mb-2 shadow-sm">
-                            <div class="py-2 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <div class="flex items-start sm:items-center gap-3">
-                                    <div
-                                        class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
-                                        <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ asset('storage/' . $room['gambar_room']) }}')">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span class="text-sm font-semibold text-slate-900">Ruang
-                                            {{ $room['nama_room'] }}</span>
-                                        <p class="text-xs text-red-600 flex flex-wrap items-center gap-1 mt-0.5">
-                                            <i class="fa-solid fa-calendar-xmark text-[14px]"></i>
-                                            Bentrok dengan
-                                            @if ($room['tipe_agenda'] != null)
-                                                @if ($room['tipe_agenda'] === 'kegiatan belajar mengajar')
-                                                    KBM
-                                                @elseif ($room['tipe_agenda'] === 'seminar')
-                                                    seminar
-                                                @elseif ($room['tipe_agenda'] === 'rapat pimpinan')
-                                                    rapat pimpinan
-                                                @endif
-                                            @endif
-                                            :
-                                            <span class="font-bold">
-                                                {{ $room['nama_agenda'] === null ? $room['ket_peminjaman'] : $room['nama_agenda'] }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    @endforeach
-
-                </div>
-            </div>
-        @else
-        @endif
-
         <!-- Items & room List -->
         <div x-data="{ open: false }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div @click="open = !open"
-                class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 cursor-pointer">
+                class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-white cursor-pointer">
                 <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
                 <div class="flex items-center text-slate-500">
                     <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm"
@@ -374,29 +274,36 @@
 
         <!-- Action Area -->
         <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-            <h5 class="font-semibold text-slate-900 mb-4">Catatan Staff &amp; Aksi</h5>
-            <div class="flex flex-col gap-6">
-                <form method="POST" action="{{ route('persetujuanPeminjaman') }}">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 rounded-lg shadow-sm">
+                <div class="flex items-center"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
+                    <span class="text-sm text-yellow-800 leading-none"> 
+                        Pastikan menunjukkan QR CODE dibawah saat melakukan pengambilan barang dan pengembalian
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <form method="POST" action="">
                     @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2" for="notes">Catatan Tambahan
-                            (Opsional)</label>
-                        <textarea name="catatan"
-                            class="w-full rounded-lg border-1 border-slate-300 bg-white text-slate-900! focus:outline-none focus:ring-primary sm:text-sm p-3"
-                            placeholder="Tambahkan catatan untuk peminjam..." rows="3"></textarea>
-                    </div>
                     <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
-
                         @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
                             <div class="items-center gap-4 mb-2">
-                                <button type="submit" name="aksi" value="approve"
+                                <button type="submit" name="aksi" value="QR"
                                     class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
-                                    Approve
+                                    <i class="fas fa-qrcode"></i>
+                                    QR Code
                                 </button>
-                                <button type="submit" name="aksi" value="reject"
-                                    class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
-                                    Reject
-                                </button>
+                                @if (
+                                    $dataPeminjaman->status_peminjaman === 'dipinjam' ||
+                                        $dataPeminjaman->status_peminjaman === 'selesai' ||
+                                        $dataPeminjaman->status_peminjaman === 'terlambat' ||
+                                        $dataPeminjaman->status_peminjaman === 'ditolak')
+                                @else
+                                    <button type="submit" name="aksi" value="batal peminjaman"
+                                        class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
+                                        batal meminjam
+                                    </button>
+                                @endif
+
                                 <input type="text" name="kode_peminjaman"
                                     value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
                             </div>

@@ -295,7 +295,7 @@ class DashboardController extends Controller
         $dataPeminjamanByPeminjam = $RiwayatService->dataPeminjamanByStatus($status_penggunaan);
 
 
-        // dd($status_penggunaan);
+        // dd($dataPeminjamanByPeminjam);
 
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayat'; // variable untuk menampilkan content riwayat

@@ -252,6 +252,10 @@
                             class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan === 'terlambat' ? 'bg-white rounded shadow-sm' : '' }} transition-all whitespace-nowrap">
                             Terlambat
                         </button>
+                        <button value="dibatalkan" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan === 'dibatalkan' ? 'bg-white rounded shadow-sm' : '' }} transition-all whitespace-nowrap">
+                            Dibatalkan
+                        </button>
                         <button value="selesai" name="status"
                             class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan === 'selesai' ? 'bg-white rounded shadow-sm' : '' }} transition-all whitespace-nowrap">
                             Selesai
@@ -262,16 +266,16 @@
             </form>
 
             <!-- Content List -->
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-3 mb-6">
 
                 <!-- Item -->
                 @if ($dataPeminjamanByPeminjam->isEmpty())
                     <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 mb-2 rounded-lg">
                         <div class="flex items-center"> <i
-                                class="fa-solid fa-triangle-exclamation text-yellow-400 mr-3"></i>
-                            <p class="text-sm text-yellow-700 leading-none"> Belum ada data riwayat peminjaman untuk
+                                class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
+                            <span class="text-sm text-yellow-700 leading-none"> Belum ada data riwayat peminjaman untuk
                                 kategori ini.
-                            </p>
+                            </span>
                         </div>
                     </div>
                 @else
@@ -291,7 +295,7 @@
 
                                         @if ($riwayat->status_peminjaman === 'diajukan')
                                             <span
-                                                class="bg-orange-100 text-orange-700 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-orange-200">
+                                                class="bg-amber-100 text-amber-700 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-amber-200">
                                                 menunggu persetujuan
                                             </span>
                                         @elseif ($riwayat->status_peminjaman === 'ditolak')
@@ -314,6 +318,11 @@
                                                 class="bg-red-100 text-red-700 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-red-200">
                                                 terlambat dikembalikan!
                                             </span>
+                                        @elseif ($riwayat->status_peminjaman === 'dibatalkan')
+                                            <span
+                                                class="bg-gray-100 text-gray-700 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-gray-200">
+                                                dibatalkan
+                                            </span>
                                         @elseif ($riwayat->status_peminjaman === 'selesai')
                                             <span
                                                 class="bg-green-100 text-green-700 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-green-200">
@@ -328,23 +337,43 @@
 
                                         <div class="flex items-center gap-2">
                                             <i class="fa-regular fa-calendar"></i>
-                                            <span class="text-xs">24 Okt 2023 -
+                                            <span class="text-xs">
+                                                {{ date('d M Y', strtotime($riwayat->tgl_pinjam_usage_item != null ? $riwayat->tgl_pinjam_usage_item : $riwayat->tgl_pinjam_usage_room)) }}
+                                                -
                                                 <span class="text-orange-600 font-medium">
-                                                    26 Okt 2023
+                                                    {{ date('d M Y', strtotime($riwayat->tgl_kembali_usage_item != null ? $riwayat->tgl_kembali_usage_item : $riwayat->tgl_kembali_usage_room)) }}
                                                 </span>
                                             </span>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <i class="fa-solid fa-clock text-slate-400"></i>
-                                            <span class="text-xs">2 Item Total</span>
+                                            <span class="text-xs">
+                                                @if ($riwayat->jam_mulai_usage_item != null)
+                                                    {{ date('H:i', strtotime($riwayat->jam_mulai_usage_item)) }}
+                                                    -
+                                                    {{ date('H:i', strtotime($riwayat->jam_selesai_usage_item)) }}
+                                                @elseif($riwayat->jam_mulai_usage_room != null)
+                                                    {{ date('H:i', strtotime($riwayat->jam_mulai_usage_room)) }}
+                                                    -
+                                                    {{ date('H:i', strtotime($riwayat->jam_selesai_usage_room)) }}
+                                                @else
+                                                    Durasi Penuh
+                                                @endif
+                                                
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4 self-end md:self-center">
-                                    <button
-                                        class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-100! text-slate-700 rounded-lg! text-sm font-medium transition-colors ">
-                                        <span>Detail</span>
-                                    </button>
+                                    <form
+                                        action="{{ route('mhs-riwayat-detail', ['id' => $riwayat->kode_peminjaman]) }}"
+                                        method="get">
+                                        @csrf
+                                        <button value=""
+                                            class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-100! text-slate-700 rounded-lg! text-sm font-medium transition-colors ">
+                                            <span>Detail</span>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

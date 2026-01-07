@@ -91,6 +91,18 @@
                             class="text-gray-400! no-underline! font-medium">Riwayat-peminjaman</a>
                     </div>
                     @include('components.mahasiswa.contentRiwayat')
+                @elseif ($halaman === 'contentRiwayatDetail')
+                    <h4>Riwayat Peminjaman</h4>
+                     <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('mhs-riwayat') }}"
+                            class="text-gray-400! no-underline!">Riwayat-peminjaman</a>
+                        <span class="text-gray-500">/</span>
+                        <a href=""
+                            class="text-gray-400! no-underline! font-medium">Riwayat-detail-transaksi</a>
+                    </div>
+                    @include('components.mahasiswa.contentDetailRiwayat')
                 @endif
                 {{-- end isi content --}}
             </div>
