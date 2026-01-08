@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\UsageItems;
+use App\Models\UsageRooms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -83,9 +85,45 @@ class RiwayarController extends Controller
         // });
 
         // dd($itemBentrok, $roomBentrok);
-        
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayatDetail';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali'));
+    }
+
+    public function QrDanBatalPeminjaman(Request $request)
+    {
+        $kode_peminjaman = $request->input('kode_peminjaman');
+        $status_peminjaman = $request->input('status_peminjaman');
+        $aksi = $request->input('aksi');
+
+        if ($aksi === 'QR') {
+            // return ke halaman qr code
+            return view('components.mahasiswa.contentQRcode', compact('kode_peminjaman','status_peminjaman'));
+        } else {
+            // update status jika dibatalkan user
+            DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)
+                ->update([
+                    'status_peminjaman' => 'dibatalkan',
+                    'updated_at' => now(),
+                ]);
+
+            UsageItems::where('kode_peminjaman', $request->kode_peminjaman)
+                ->update([
+                    'status_usage_item' => 'dibatalkan',
+                    'updated_at' => now(),
+                ]);
+
+            UsageRooms::where('kode_peminjaman', $request->kode_peminjaman)
+                ->update([
+                    'status_usage_room' => 'dibatalkan',
+                    'updated_at' => now(),
+                ]);
+
+            return back()->with('success', 'transaksi ' . $kode_peminjaman . ' dibatalkan');
+        }
+
+        // dd($kode_peminjaman);
+
     }
 }

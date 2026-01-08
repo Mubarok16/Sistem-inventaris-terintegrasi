@@ -15,13 +15,15 @@
                 {{-- isi content --}}
 
                 @if ($halaman === 'contentDashbord')
-                    <h4>Dashboard</h4>
+                    {{-- <h4>Dashboard</h4>
                      <div class="pb-4">
                         <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline! font-medium">
                             Dahsboard-mahasiswa
                         </a>
                         <span class="text-gray-500">/</span>
-                    </div>
+                    </div> --}}
+                    <h4 class="text-2xl md:text-3xl font-bold text-text-main">Selamat Datang, {{ $user }}! 👋</h4>
+                    <p class="text-text-secondary">Berikut adalah informasi terkini mengenai pinjaman anda dan agenda fakultas hari ini.</p>
                     @include('components.mahasiswa.contentDashbordMhs')
                 @elseif ($halaman === 'contentPeminjamanBarang')
                     <h4>Peminjaman Barang</h4>
@@ -84,7 +86,7 @@
                     @include('components.mahasiswa.contentDetailTransaksi')
                 @elseif ($halaman === 'contentRiwayat')
                     <h4>Riwayat Peminjaman</h4>
-                     <div class="pb-4">
+                    <div class="pb-4">
                         <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
                         <a href="{{ route('mhs-list-peminjaman') }}"
@@ -93,14 +95,12 @@
                     @include('components.mahasiswa.contentRiwayat')
                 @elseif ($halaman === 'contentRiwayatDetail')
                     <h4>Riwayat Peminjaman</h4>
-                     <div class="pb-4">
+                    <div class="pb-4">
                         <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
-                        <a href="{{ route('mhs-riwayat') }}"
-                            class="text-gray-400! no-underline!">Riwayat-peminjaman</a>
+                        <a href="{{ route('mhs-riwayat') }}" class="text-gray-400! no-underline!">Riwayat-peminjaman</a>
                         <span class="text-gray-500">/</span>
-                        <a href=""
-                            class="text-gray-400! no-underline! font-medium">Riwayat-detail-transaksi</a>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Riwayat-detail-transaksi</a>
                     </div>
                     @include('components.mahasiswa.contentDetailRiwayat')
                 @endif

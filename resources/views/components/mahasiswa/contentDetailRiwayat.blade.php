@@ -247,7 +247,8 @@
                                                 <span>{{ date('H:i', strtotime($detailRuangan->jam_mulai_usage_room)) }}
                                                     -
                                                     {{ date('H:i', strtotime($detailRuangan->jam_selesai_usage_room)) }}
-                                                    WIB</span>
+                                                    WIB
+                                                </span>
                                             </div>
                                         </div>
                                     @else
@@ -276,16 +277,17 @@
         <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 rounded-lg shadow-sm">
                 <div class="flex items-center"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
-                    <span class="text-sm text-yellow-800 leading-none"> 
+                    <span class="text-sm text-yellow-800 leading-none">
                         Pastikan menunjukkan QR CODE dibawah saat melakukan pengambilan barang dan pengembalian
                     </span>
                 </div>
             </div>
             <div class="flex flex-col gap-4">
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('QR-dan-batal-peminjaman') }}">
                     @csrf
                     <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
                         @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                            
                             <div class="items-center gap-4 mb-2">
                                 <button type="submit" name="aksi" value="QR"
                                     class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
@@ -296,9 +298,10 @@
                                     $dataPeminjaman->status_peminjaman === 'dipinjam' ||
                                         $dataPeminjaman->status_peminjaman === 'selesai' ||
                                         $dataPeminjaman->status_peminjaman === 'terlambat' ||
+                                        $dataPeminjaman->status_peminjaman === 'dibatalkan' ||
                                         $dataPeminjaman->status_peminjaman === 'ditolak')
                                 @else
-                                    <button type="submit" name="aksi" value="batal peminjaman"
+                                    <button type="submit" name="aksi" value="batal"
                                         class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
                                         batal meminjam
                                     </button>
@@ -306,6 +309,8 @@
 
                                 <input type="text" name="kode_peminjaman"
                                     value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
+                                <input type="text" name="status_peminjaman"
+                                    value="{{ $dataPeminjaman->status_peminjaman }}" class="hidden">
                             </div>
                         @endforeach
                     </div>

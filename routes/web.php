@@ -133,6 +133,9 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::get('/dashboard/mahasiswa/riwayat/detail-transaksi/{id}', [RiwayarController::class, 'mahasiswaRiwayatDetail'])->name('mhs-riwayat-detail');
     //simpan riwayat session
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
+    // btn batal dan cetak qr user
+    Route::post('cetak-QRriwayat-dan-batal-peminjaman', [RiwayarController::class, 'QrDanBatalPeminjaman'])->name('QR-dan-batal-peminjaman');
+    
 
     
 });

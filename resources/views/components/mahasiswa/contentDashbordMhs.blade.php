@@ -70,29 +70,32 @@
     </div>
 </div> --}}
 
-<!-- Top Section: Room Agenda -->
+{{-- <!-- Top Section: Room Agenda -->
 <h6 class="text-[#111418] dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">
-        Agenda Ruangan</h6>
+    Agenda Ruangan</h6>
 <section class="flex flex-col gap-6">
     <!-- SectionHeader -->
-    
+
     <!-- ImageGrid / Room Status Cards -->
     <div class="overflow-x-auto pb-4">
-        
+
         <div class="flex flex-nowrap gap-3">
-            <a href="javascript:void(0);" class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
+            <a href="javascript:void(0);"
+                class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
                 <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
                     data-alt="Photo of Room A, a modern meeting space."
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA5uHVhv4FD2kFfQfGJUy_VxwICdOGGExUhdDRgn9Mnp5Krm87S8xITvOoLRJxUw6DEDHSCvdXDG4ETIRe6P_4eI-wMdGlFPnIb5ftL2pxM7BTzIz4OVk82y2Luv4wKV3IS_iM6Fnlow1PPwz81T5luw8a51e9DPsmNcOnM1BgWc1P3iFWZiUNBt_9gqN29JkdbdSsFY76st2PRtmyjvbXkeN7p0VdwOt5fwAD7g79WI1vHXoy0iF385M4y0p4QcXal6uCoSd7lTc2w");'>
                 </div>
                 <div class="flex items-center justify-between">
                     <p class="text-[#111418] text-base font-medium leading-normal">Ruangan A</p>
-                    <span class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-100">
+                    <span
+                        class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-100">
                         Digunakan
                     </span>
                 </div>
             </a>
-            <a href="javascript:void(0);" class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
+            <a href="javascript:void(0);"
+                class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
                 <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
                     data-alt="Photo of Room B, a collaborative workspace."
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7F7VmHbwPbDSya2Ktr8fBR04CiFxQygAphyRgNRMNve-4VXSzAgZfPn04vrf6mzq_JCNtVh5YrqXVgEr182kby1AtA4dvZUMMk8UFL3Id3rcPfG09256tT3gAAFzzZQMJDPFFbPHFW8uh6Y46OOQKZz1Uk_z9McxEBIZydLMtRr0-BPUh5UYHeCnAJJA0rwFvxWEOCoIMDsx-wcDSnLvsJsnzb6o7pjW49KU8jAEJeASDL9c1R6FMOWzTKrNR6Nx6gbez9T8hYE35");'>
@@ -103,19 +106,22 @@
                         class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">Tersedia</span>
                 </div>
             </a>
-            <a href="javascript:void(0);" class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
+            <a href="javascript:void(0);"
+                class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
                 <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
                     data-alt="Photo of Room A, a modern meeting space."
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA5uHVhv4FD2kFfQfGJUy_VxwICdOGGExUhdDRgn9Mnp5Krm87S8xITvOoLRJxUw6DEDHSCvdXDG4ETIRe6P_4eI-wMdGlFPnIb5ftL2pxM7BTzIz4OVk82y2Luv4wKV3IS_iM6Fnlow1PPwz81T5luw8a51e9DPsmNcOnM1BgWc1P3iFWZiUNBt_9gqN29JkdbdSsFY76st2PRtmyjvbXkeN7p0VdwOt5fwAD7g79WI1vHXoy0iF385M4y0p4QcXal6uCoSd7lTc2w");'>
                 </div>
                 <div class="flex items-center justify-between">
                     <p class="text-[#111418] text-base font-medium leading-normal">Ruangan A</p>
-                    <span class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-100">
+                    <span
+                        class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-100">
                         Digunakan
                     </span>
                 </div>
             </a>
-            <a href="javascript:void(0);" class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
+            <a href="javascript:void(0);"
+                class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
                 <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
                     data-alt="Photo of Room B, a collaborative workspace."
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7F7VmHbwPbDSya2Ktr8fBR04CiFxQygAphyRgNRMNve-4VXSzAgZfPn04vrf6mzq_JCNtVh5YrqXVgEr182kby1AtA4dvZUMMk8UFL3Id3rcPfG09256tT3gAAFzzZQMJDPFFbPHFW8uh6Y46OOQKZz1Uk_z9McxEBIZydLMtRr0-BPUh5UYHeCnAJJA0rwFvxWEOCoIMDsx-wcDSnLvsJsnzb6o7pjW49KU8jAEJeASDL9c1R6FMOWzTKrNR6Nx6gbez9T8hYE35");'>
@@ -126,7 +132,8 @@
                         class="text-sm font-medium px-2.5 py-0.5 rounded-full bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">Tersedia</span>
                 </div>
             </a>
-            <a href="javascript:void(0);" class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
+            <a href="javascript:void(0);"
+                class="text-decoration-none hover-dashboard-agenda flex flex-col gap-3 p-4 rounded-lg shadow-sm w-full min-w-[280px] sm:w-1/2 md:w-1/3 flex-shrink-0">
                 <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
                     data-alt="Photo of Room B, a collaborative workspace."
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7F7VmHbwPbDSya2Ktr8fBR04CiFxQygAphyRgNRMNve-4VXSzAgZfPn04vrf6mzq_JCNtVh5YrqXVgEr182kby1AtA4dvZUMMk8UFL3Id3rcPfG09256tT3gAAFzzZQMJDPFFbPHFW8uh6Y46OOQKZz1Uk_z9McxEBIZydLMtRr0-BPUh5UYHeCnAJJA0rwFvxWEOCoIMDsx-wcDSnLvsJsnzb6o7pjW49KU8jAEJeASDL9c1R6FMOWzTKrNR6Nx6gbez9T8hYE35");'>
@@ -248,4 +255,96 @@
             </table>
         </div>
     </div>
-</section>
+</section> --}}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+
+<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+    {{-- count peminjaman --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div
+            class="bg-surface-light px-5 py-3 rounded-xl border border-[#e7ecf3] shadow-sm flex flex-col justify-between group hover:border-primary/50 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+                <div class="bg-blue-50 p-2.5 rounded-lg text-primary">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <span
+                    class="px-2.5 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold border border-red-100">Due
+                    Today</span>
+            </div>
+            <div>
+                <p class="text-text-secondary text-sm font-medium mb-1">Peminjaman</p>
+                <div class="flex items-baseline gap-2">
+                    <h5 class="text-2xl font-bold text-text-main">2 Peminjaman</h5>
+                    {{-- <span class="text-xs text-text-secondary">active now</span> --}}
+                </div>
+            </div>
+        </div>
+        <div
+            class="bg-surface-light px-5 py-3 rounded-xl border border-[#e7ecf3] shadow-sm flex flex-col justify-between hover:border-primary/50 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+                <div class="bg-red-50 p-2.5 rounded-lg text-red-600">
+                    
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                {{-- <span
+                    class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-100">
+                    Confirmed
+                </span> --}}
+            </div>
+            <div>
+                <p class="text-text-secondary text-sm font-medium mb-1">Lewat waktu pinjam</p>
+                <div class="flex items-baseline gap-2">
+                    <h5 class="text-2xl font-bold text-text-main">2 Peminjaman</h5>
+                    <span class="text-xs text-text-secondary">Until 16:00</span>
+                </div>
+            </div>
+        </div>
+        <div
+            class="bg-surface-light px-5 py-3 rounded-xl border border-[#e7ecf3] shadow-sm flex flex-col justify-between hover:border-primary/50 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+                <div class="bg-orange-50 p-2.5 rounded-lg text-orange-600">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+            </div>
+            <div>
+                <p class="text-text-secondary text-sm font-medium mb-1">Menunggu persetujuan</p>
+                <div class="flex items-baseline gap-2">
+                    <h5 class="text-2xl font-bold text-text-main">1 Pengajuan</h5>
+                    <span class="text-xs text-text-secondary">In Review</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-lg font-bold text-text-main mb-4">Agenda Penggunaan Ruangan</h3>
+        <div id="calendar" class="mb-4 border-t-1 pt-4 border-gray-300"></div>
+        
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let calendarEl = document.getElementById('calendar');
+
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: '/events',
+            selectable: true,
+            eventClick: function(info) {
+                alert(info.event.title);
+            }
+        });
+
+        calendar.render();
+    });
+</script>
