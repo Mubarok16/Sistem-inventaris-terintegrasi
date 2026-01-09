@@ -257,9 +257,6 @@
     </div>
 </section> --}}
 
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-
 
 <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
     {{-- count peminjaman --}}
@@ -270,9 +267,7 @@
                 <div class="bg-blue-50 p-2.5 rounded-lg text-primary">
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
-                <span
-                    class="px-2.5 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold border border-red-100">Due
-                    Today</span>
+                
             </div>
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Peminjaman</p>
@@ -298,7 +293,7 @@
                 <p class="text-text-secondary text-sm font-medium mb-1">Lewat waktu pinjam</p>
                 <div class="flex items-baseline gap-2">
                     <h5 class="text-2xl font-bold text-text-main">2 Peminjaman</h5>
-                    <span class="text-xs text-text-secondary">Until 16:00</span>
+                    {{-- <span class="text-xs text-text-secondary">Until 16:00</span> --}}
                 </div>
             </div>
         </div>
@@ -313,38 +308,16 @@
                 <p class="text-text-secondary text-sm font-medium mb-1">Menunggu persetujuan</p>
                 <div class="flex items-baseline gap-2">
                     <h5 class="text-2xl font-bold text-text-main">1 Pengajuan</h5>
-                    <span class="text-xs text-text-secondary">In Review</span>
+                    {{-- <span class="text-xs text-text-secondary">In Review</span> --}}
                 </div>
             </div>
         </div>
     </div>
     <div>
         <h3 class="text-lg font-bold text-text-main mb-4">Agenda Penggunaan Ruangan</h3>
-        <div id="calendar" class="mb-4 border-t-1 pt-4 border-gray-300"></div>
+        <div id="calendar" class="mb-4 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
         
     </div>
 </div>
 
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let calendarEl = document.getElementById('calendar');
-
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            events: '/events',
-            selectable: true,
-            eventClick: function(info) {
-                alert(info.event.title);
-            }
-        });
-
-        calendar.render();
-    });
-</script>

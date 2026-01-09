@@ -2,15 +2,103 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+/* full calnder */
+@import "@fullcalendar/core/index.css";
+@import "@fullcalendar/daygrid/index.css";
+@import "@fullcalendar/timegrid/index.css";
+@import "@fullcalendar/list/index.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views.blade.php';
-@source '../../storage/framework/views/*.php'; 
-@source '..*.blade.php'; 
-@source '..*.js'; 
+@source '../../storage/framework/views/*.php';
+@source '..*.blade.php';
+@source '..*.js';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/* Calendar container */
 
+/* Mobile adjustments */
+@media (max-width: 640px) {
+    .fc-tailwind .fc-toolbar {
+        @apply flex flex-col gap-2 items-center;
+    }
+
+    /* Title */
+    .fc-tailwind .fc-toolbar-title {
+        font-size: 0.8rem;
+        /* kecil & rapi */
+        font-weight: 600;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Button group */
+    .fc-tailwind .fc-toolbar-chunk {
+        @apply flex justify-center gap-2;
+    }
+
+    /* Buttons */
+    .fc-tailwind .fc-button {
+        @apply px-2 py-1 text-xs;
+    }
+}
+
+/* List view mobile */
+.fc-tailwind .fc-list-event-title {
+    @apply font-medium;
+}
+
+.fc-tailwind .fc-list-event-time {
+    @apply text-sm text-gray-500;
+}
+
+
+.fc-tailwind .fc {
+    @apply font-sans text-gray-800;
+}
+
+/* Header title */
+.fc-tailwind .fc-toolbar-title {
+    @apply text-xl font-semibold text-gray-700;
+}
+
+/* Toolbar buttons */
+.fc-tailwind .fc-button {
+    @apply bg-gray-100 text-gray-700 border border-gray-300 rounded-lg px-3 py-1 hover:bg-blue-500 hover:text-white transition duration-200;
+}
+
+.fc-tailwind .fc-button-primary:not(:disabled).fc-button-active {
+    @apply bg-blue-600 text-white;
+}
+
+/* Calendar grid */
+.fc-tailwind .fc-daygrid-day-frame {
+    @apply hover:bg-blue-50 transition;
+}
+
+/* Today highlight */
+.fc-tailwind .fc-day-today {
+    @apply bg-blue-100;
+}
+
+/* Event style */
+.fc-tailwind .fc-event {
+    @apply bg-blue-500 border-none rounded-lg px-2 py-1 text-white text-sm;
+}
+
+.fc-tailwind .fc-event:hover {
+    @apply bg-blue-600 cursor-pointer;
+}
+
+/* Event time */
+.fc-tailwind .fc-event-time {
+    @apply font-semibold;
+}
+
+/* Week / day grid lines */
+.fc-tailwind .fc-scrollgrid {
+    @apply border-gray-200;
+}

@@ -10,6 +10,39 @@ window.Alpine = Alpine; // <-- Membuat Alpine tersedia secara global
 
 Alpine.start();
 
+// full calender
+import { Calendar } from '@fullcalendar/core'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
+// optional
+import interactionPlugin from '@fullcalendar/interaction'
+
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar')
+
+    if (!calendarEl) return
+
+    const calendar = new Calendar(calendarEl, {
+        plugins: [
+            dayGridPlugin,
+            timeGridPlugin,
+            listPlugin,
+            interactionPlugin
+        ],
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        events: '/events'
+    })
+
+    calendar.render()
+})
+
 
 
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';

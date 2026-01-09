@@ -5,6 +5,7 @@ use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
+use App\Http\Controllers\mahasiswa\calenderController;
 use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\mahasiswa\peminjamanRuanganController;
 use App\Http\Controllers\mahasiswa\PengajuanPeminjamanController;
@@ -92,10 +93,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/kaprodi', [DashboardController::class, 'kaprodi']);
 });
 
+// mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
+// Route::get('/events', [calenderController::class, 'calender']);
+
 // routes for dashboard peminjam (mahasiswa)
 Route::middleware(['auth:peminjam'])->group(function () {
+    // dashbord
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard-mhs');
-
+        // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
+        Route::get('/events', [calenderController::class, 'calender']);
     //route untuk halaman content dashboard mahasiswa
     // peminjaman barang
     Route::get('/dashboard/mahasiswa/peminjaman-barang', [DashboardController::class, 'mahasiswaPeminjamanBarang'])->name('mhs-peminjaman-barang');
