@@ -7,7 +7,7 @@ use App\Models\Peminjaman;
 class RiwayatPeminjamanService
 {
      // mengambil data jadwal penggunaan barang atau ruangan berdasarkan status
-    public function dataPeminjamanByStatus($status)
+    public function dataPeminjamanByStatus($status, $id)
     {
         $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
             ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
@@ -23,6 +23,7 @@ class RiwayatPeminjamanService
                 usage_rooms.jam_selesai_usage_room, 
                 usage_items.jam_mulai_usage_item, 
                 usage_items.jam_selesai_usage_item')
+            ->where('peminjaman.no_identitas', '=', $id)
 
             ->when($status !== 'semua', function ($query) use ($status) {
                 return $query->where('peminjaman.status_peminjaman', $status);

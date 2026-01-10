@@ -15,6 +15,8 @@ class calenderController extends Controller
             ->leftJoin('agenda_fakultas', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
             ->leftJoin('peminjaman', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
             ->select(
+                'usage_rooms.kode_agenda',
+                'usage_rooms.kode_peminjaman',
                 'agenda_fakultas.nama_agenda',
                 'peminjaman.ket_peminjaman',
                 'usage_rooms.tgl_pinjam_usage_room',
@@ -53,11 +55,13 @@ class calenderController extends Controller
                 foreach ($period as $date) {
 
                     $events[] = [
+                        'id' => $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda,
                         'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman : $agenda->nama_agenda,
                         'start' => $date->format('Y-m-d') . ' ' . $agenda->jam_mulai_usage_room,
                         'end'   => $date->format('Y-m-d') . ' ' . $agenda->jam_selesai_usage_room,
                         'allDay' => false,
                         'color' => $this->statusColor($agenda->status_usage_room),
+                        'url'   => route('agenda-mhs', $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda),
                     ];
                 }
             }
@@ -65,11 +69,13 @@ class calenderController extends Controller
             else {
 
                 $events[] = [
+                    'id' => $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda,
                     'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman : $agenda->nama_agenda,
                     'start' => $agenda->tgl_pinjam_usage_room,
                     'end'   => $agenda->tgl_kembali_usage_room,
-                    'allDay' => true,
+                    // 'allDay' => true,
                     'color' => $this->statusColor($agenda->status_usage_room),
+                    'url'   => route('agenda-mhs', $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda),
                 ];
             }
         }

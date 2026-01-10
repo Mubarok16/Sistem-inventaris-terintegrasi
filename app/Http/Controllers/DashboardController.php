@@ -208,9 +208,29 @@ class DashboardController extends Controller
     // memanggil halaman dashboard peminjam(mahasiswa)
     public function mahasiswa()
     {
+
+        $no_identitas = Auth::guard('peminjam')->user()->no_identitas;
+
+        $dataPeminjamanByMhs = DB::table('peminjaman')
+            ->where('no_identitas', '=', $no_identitas)
+            ->whereIn('status_peminjaman',['terjadwal', 'digunakan'])
+            ->count();
+
+        $dataPeminjamanLewatByMhs = DB::table('peminjaman')
+            ->where('no_identitas', '=', $no_identitas)
+            ->whereIn('status_peminjaman',['terlambat'])
+            ->count();
+
+        $dataPeminjamanDiajukanByMhs = DB::table('peminjaman')
+            ->where('no_identitas', '=', $no_identitas)
+            ->whereIn('status_peminjaman',['diajukan'])
+            ->count();
+
+        // dd($dataPeminjamanDiajukanByMhs);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentDashbord'; // variable untuk menampilkan content dashboard
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjamanByMhs', 'dataPeminjamanLewatByMhs', 'dataPeminjamanDiajukanByMhs'));
     }
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
@@ -292,7 +312,7 @@ class DashboardController extends Controller
             $status_penggunaan = session()->get('status-riwayat');
         }
 
-        $dataPeminjamanByPeminjam = $RiwayatService->dataPeminjamanByStatus($status_penggunaan);
+        $dataPeminjamanByPeminjam = $RiwayatService->dataPeminjamanByStatus($status_penggunaan, $idUser);
 
 
         // dd($dataPeminjamanByPeminjam);

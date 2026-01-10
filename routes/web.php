@@ -93,13 +93,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/kaprodi', [DashboardController::class, 'kaprodi']);
 });
 
-// mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
-// Route::get('/events', [calenderController::class, 'calender']);
 
 // routes for dashboard peminjam (mahasiswa)
 Route::middleware(['auth:peminjam'])->group(function () {
     // dashbord
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard-mhs');
+    // agenda detail agenda di calender
+    Route::get('/dashboard/mahasiswa/agenda/{id}', [DashboardController::class, 'mahasiswa'])->name('agenda-mhs');
         // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
         Route::get('/events', [calenderController::class, 'calender']);
     //route untuk halaman content dashboard mahasiswa

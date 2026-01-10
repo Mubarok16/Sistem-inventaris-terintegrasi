@@ -272,7 +272,7 @@
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Peminjaman</p>
                 <div class="flex items-baseline gap-2">
-                    <h5 class="text-2xl font-bold text-text-main">2 Peminjaman</h5>
+                    <h5 class="text-2xl font-bold text-text-main">{{ $dataPeminjamanByMhs }} Peminjaman</h5>
                     {{-- <span class="text-xs text-text-secondary">active now</span> --}}
                 </div>
             </div>
@@ -292,7 +292,7 @@
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Lewat waktu pinjam</p>
                 <div class="flex items-baseline gap-2">
-                    <h5 class="text-2xl font-bold text-text-main">2 Peminjaman</h5>
+                    <h5 class="text-2xl font-bold text-text-main">{{ $dataPeminjamanLewatByMhs }} Peminjaman</h5>
                     {{-- <span class="text-xs text-text-secondary">Until 16:00</span> --}}
                 </div>
             </div>
@@ -307,7 +307,7 @@
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Menunggu persetujuan</p>
                 <div class="flex items-baseline gap-2">
-                    <h5 class="text-2xl font-bold text-text-main">1 Pengajuan</h5>
+                    <h5 class="text-2xl font-bold text-text-main">{{ $dataPeminjamanDiajukanByMhs }} Pengajuan</h5>
                     {{-- <span class="text-xs text-text-secondary">In Review</span> --}}
                 </div>
             </div>
