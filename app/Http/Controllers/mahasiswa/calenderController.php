@@ -41,6 +41,8 @@ class calenderController extends Controller
 
         // return response()->json($events);
 
+
+
         foreach ($agendas as $agenda) {
 
             // loop per hari
@@ -49,6 +51,9 @@ class calenderController extends Controller
                 $agenda->tgl_kembali_usage_room
             );
 
+            // $events[] = [
+            //     'data' => $period,
+            // ];
 
             // 🔹 CASE 1: JAM ADA (BUKAN FULL DAY)
             if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room) {
@@ -73,7 +78,7 @@ class calenderController extends Controller
                     'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman : $agenda->nama_agenda,
                     'start' => $agenda->tgl_pinjam_usage_room,
                     'end'   => $agenda->tgl_kembali_usage_room,
-                    // 'allDay' => true,
+                    'allDay' => true,
                     'color' => $this->statusColor($agenda->status_usage_room),
                     'url'   => route('agenda-mhs', $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda),
                 ];

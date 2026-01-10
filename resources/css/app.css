@@ -51,9 +51,9 @@
     @apply font-medium;
 }
 
-.fc-tailwind .fc-list-event-time {
-    @apply text-sm text-gray-500;
-}
+/* .fc-tailwind .fc-list-event-time {
+    @apply text-sm text-white;
+} */
 
 
 .fc-tailwind .fc {
@@ -80,9 +80,13 @@
 }
 
 /* Today highlight */
-.fc-tailwind .fc-day-today {
-    @apply bg-blue-100;
+/* .fc-tailwind .fc-day-today {
+    @apply bg-blue-400;
+} */
+ .fc-tailwind {
+    --fc-today-bg-color: theme(colors.blue.200);
 }
+
 
 /* Event style */
 .fc-tailwind .fc-event {
@@ -101,4 +105,34 @@
 /* Week / day grid lines */
 .fc-tailwind .fc-scrollgrid {
     @apply border-gray-200;
+}
+
+
+/* ===== LIST DAY VIEW FIX ===== */
+.fc-tailwind .fc-list-event {
+    @apply bg-white border border-gray-200 rounded-lg mb-2;
+}
+
+.fc-tailwind .fc-list-event:hover {
+    @apply bg-blue-50;
+}
+
+/* Jam */
+.fc-tailwind .fc-list-event-time {
+    @apply text-sm text-gray-500 font-medium;
+}
+
+/* Judul */
+.fc-tailwind .fc-list-event-title {
+    @apply text-gray-800 font-semibold;
+}
+
+/* Link default FC */
+.fc-tailwind .fc-list-event-title a {
+    @apply text-gray-800 no-underline;
+}
+
+.fc-tailwind .fc-list-event:hover .fc-list-event-title,
+.fc-tailwind .fc-list-event:hover .fc-list-event-time {
+    @apply text-gray-900;
 }

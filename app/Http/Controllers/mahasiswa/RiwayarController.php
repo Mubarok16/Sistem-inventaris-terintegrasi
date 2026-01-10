@@ -70,22 +70,6 @@ class RiwayarController extends Controller
             }
         }
 
-        // cek jadwal agenda
-        // $PengelolaanPeminjamanService = new PengelolaanPeminjamanService;
-        // $dataBentrokJadwal = $PengelolaanPeminjamanService->cekPeminjamanAgenda($id, $tglPinjam, $tglKembali);
-
-        // // mengambil data barang yg bentrok return dari service cek jadwal
-        // $itemBentrok = $dataBentrokJadwal['barang']->filter(function ($item) {
-        //     return $item['status'] === 'BENTROK';
-        // });
-
-        // // mengambil data ruangan yg bentrok return dari service cek jadwal
-        // $roomBentrok = $dataBentrokJadwal['ruangan']->filter(function ($room) {
-        //     return $room['status'] === 'BENTROK';
-        // });
-
-        // dd($itemBentrok, $roomBentrok);
-
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayatDetail';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali'));

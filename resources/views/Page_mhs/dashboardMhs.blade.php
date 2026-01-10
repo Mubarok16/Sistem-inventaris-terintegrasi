@@ -15,16 +15,20 @@
                 {{-- isi content --}}
 
                 @if ($halaman === 'contentDashbord')
-                    {{-- <h4>Dashboard</h4>
-                     <div class="pb-4">
-                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline! font-medium">
-                            Dahsboard-mahasiswa
-                        </a>
-                        <span class="text-gray-500">/</span>
-                    </div> --}}
+                    
                     <h4 class="text-2xl md:text-3xl font-bold text-text-main">Selamat Datang, {{ $user }}! 👋</h4>
                     <p class="text-text-secondary">Berikut adalah informasi terkini mengenai pinjaman anda dan agenda fakultas hari ini.</p>
                     @include('components.mahasiswa.contentDashbordMhs')
+                @elseif ($halaman === 'contentDetailAgenda')
+                    <h4>Detail Agenda</h4>
+                    <div class="pb-4">
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">
+                            Dahsboard-mahasiswa
+                        </a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Detail-Agenda</a>
+                    </div>
+                    @include('components.mahasiswa.contentDetailAgendaMhs')
                 @elseif ($halaman === 'contentPeminjamanBarang')
                     <h4>Peminjaman Barang</h4>
                     <div class="pb-4">

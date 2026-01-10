@@ -1,0 +1,266 @@
+@if (session('success'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
+        <ul style="margin-bottom: 0;">
+            {{ session('success') }}
+        </ul>
+    </div>
+@endif
+
+@if (session('gagal'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            {{ session('gagal') }}
+        </ul>
+    </div>
+@endif
+
+{{-- <hr class="border-1 border-gray-100 my-2"> --}}
+<main class="flex-1 overflow-y-auto bg-background-light px-2 mb-5">
+    <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Page Heading -->
+        @foreach ($headerAgenda as $agenda)
+            {{-- <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h5 class="text-md! font-bold text-slate-900 tracking-tight">
+                            Peminjaman : {{ $agenda->kode_peminjaman ?? $agenda->kode_agenda }}
+                        </h5>
+                    </div>
+                    <span class="text-slate-500">Diajukan pada
+                        {{ date('d F Y, h:i', strtotime($agenda->created_at)) }} WIB</span>
+                </div>
+            </div> --}}
+            <!-- Info Cards Grid -->
+            <div class="">
+
+                <!-- Timeline & Purpose Card -->
+                <div
+                    class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between border-b border-slate-100 pb-4">
+                        <h5 class="font-semibold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-primary"></i>
+                            Detail Tanggal Penggunaan &amp; Nama Agenda
+                        </h5>
+                        {{-- <button
+                            class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                            <i class="fa-solid fa-print text-md text-white"></i>
+                            <span class="text-white text-md">Lampiran file</span>
+                        </button> --}}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                    Penggunaan</span>
+                                <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                    <i class="fa-solid fa-right-to-bracket text-green-600"></i>
+                                    {{ date('d F Y', strtotime($tglPinjam)) }}
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                    Penggunaan</span>
+                                <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                    <i class="fa-solid fa-right-from-bracket text-red-500"></i>
+                                    {{ date('d F Y', strtotime($tglKembali)) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Agenda</span>
+                            <p
+                                class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                {{-- {{ $agenda->ket_peminjaman ?? $agenda->tipe_agenda.' '.$agenda->nama_agenda }} --}}
+                                @if (!isset($agenda->ket_peminjaman))
+                                    @if ($agenda->tipe_agenda === 'kegiatan belajar mengajar')
+                                        {{ 'matakuliah '.$agenda->nama_agenda }}
+                                    @elseif ($agenda->tipe_agenda === 'Seminar')
+                                        {{ 'seminar '.$agenda->nama_agenda }}
+                                    @else
+                                        {{ 'Rapat Pimpinan '.$agenda->nama_agenda }}
+                                    @endif
+                                @else
+                                    {{ $agenda->ket_peminjaman }}
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+        <!-- Items & room List -->
+        <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div @click="open = !open"
+                class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-white cursor-pointer">
+                <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
+                <div class="flex items-center text-slate-500">
+                    <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm"
+                        :class="open ? 'rotate-180' : 'rotate-0'"></i>
+                </div>
+            </div>
+
+            <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+                class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold tracking-wider">
+                            <th class="px-6 py-3">Detail Item</th>
+                            <th class="px-6 py-3">Jadwal Penggunaan</th>
+                            <th class="px-6 py-3 text-center">Jumlah</th>
+                            <th class="px-6 py-3">Kondisi Awal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <!-- Barang -->
+                        @foreach ($usage_item as $detailBarang)
+                            <tr class="group hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
+                                            data-alt="Meeting Room Interior"
+                                            style="background-image: url('{{ asset('storage/' . $detailBarang->img_item) }}')">
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-900">
+                                                {{ $detailBarang->nama_item }}
+                                            </p>
+                                            <p class="text-xs text-slate-500">
+                                                {{ $detailBarang->id_item }}
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if ($detailBarang->jam_mulai_usage_item != null && $detailBarang->jam_selesai_usage_item != null)
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                <span>Setiap hari</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
+                                                <span>{{ date('H:i', strtotime($detailBarang->jam_mulai_usage_item)) }}
+                                                    -
+                                                    {{ date('H:i', strtotime($detailBarang->jam_selesai_usage_item)) }}
+                                                    WIB</span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-2 text-sm text-slate-600">
+                                            <i class="fa-solid fa-clock text-base"></i>
+                                            <span>Durasi Penuh</span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
+                                    {{ $detailBarang->qty_usage_item }} Unit
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-green-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check text-base"></i>
+                                        {{ $detailBarang->kondisi_item }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                        <!-- rauang -->
+                        @foreach ($usage_room as $detailRuangan)
+                            <tr class="group hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
+                                            data-alt="Meeting Room Interior"
+                                            style="background-image: url('{{ asset('storage/' . $detailRuangan->gambar_room) }}')">
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-900">
+                                                {{ $detailRuangan->nama_tipe_room }}
+                                                {{ $detailRuangan->nama_room }}
+                                            </p>
+                                            <p class="text-xs text-slate-500">Lantai 2</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if ($detailRuangan->jam_mulai_usage_room != null && $detailRuangan->jam_selesai_usage_room != null)
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                <span>Setiap hari</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
+                                                <span>{{ date('H:i', strtotime($detailRuangan->jam_mulai_usage_room)) }}
+                                                    -
+                                                    {{ date('H:i', strtotime($detailRuangan->jam_selesai_usage_room)) }}
+                                                    WIB
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-2 text-sm text-slate-600">
+                                            <i class="fa-solid fa-clock text-base"></i>
+                                            <span>Durasi Penuh</span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
+                                    -</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-green-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check text-base"></i>
+                                        Baik
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Action Area -->
+        {{-- <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 rounded-lg shadow-sm">
+                <div class="flex items-center"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
+                    <span class="text-sm text-yellow-800 leading-none">
+                        Pastikan menunjukkan QR CODE dibawah saat melakukan pengambilan barang dan pengembalian
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <form method="POST" action="{{ route('QR-dan-batal-peminjaman') }}">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
+                        @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                            
+                            <div class="items-center gap-4 mb-2">
+                                <button type="submit" name="aksi" value="QR"
+                                    class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
+                                    <i class="fas fa-qrcode"></i>
+                                    QR Code
+                                </button>
+                                @if ($dataPeminjaman->status_peminjaman === 'dipinjam' || $dataPeminjaman->status_peminjaman === 'selesai' || $dataPeminjaman->status_peminjaman === 'terlambat' || $dataPeminjaman->status_peminjaman === 'dibatalkan' || $dataPeminjaman->status_peminjaman === 'ditolak')
+                                @else
+                                    <button type="submit" name="aksi" value="batal"
+                                        class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
+                                        batal meminjam
+                                    </button>
+                                @endif
+
+                                <input type="text" name="kode_peminjaman"
+                                    value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
+                                <input type="text" name="status_peminjaman"
+                                    value="{{ $dataPeminjaman->status_peminjaman }}" class="hidden">
+                            </div>
+                        @endforeach
+                    </div>
+                </form>
+            </div>
+        </div> --}}
+    </div>
+</main>

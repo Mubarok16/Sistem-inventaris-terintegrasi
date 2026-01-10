@@ -35,8 +35,14 @@ document.addEventListener('DOMContentLoaded', function () {
         headerToolbar: {
             left: 'prev,next',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
+            right: 'dayGridMonth,timeGridWeek,listDay'
         },
+
+        navLinks: true, // klik tanggal juga aktif
+        dateClick(info) {
+            calendar.changeView('listDay', info.dateStr)
+        },
+        
         events: '/events'
     })
 
