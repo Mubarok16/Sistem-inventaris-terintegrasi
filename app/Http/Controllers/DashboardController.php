@@ -42,11 +42,16 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
         $user = Auth::user()->nama;
-        $AkunPeminjams = Peminjam::latest()->get();
+        $AkunPeminjams = DB::table('peminjam')
+            ->orderBy('created_at', 'desc')
+            ->get();
         // dd($DataAgenda = DB::table('peminjam') // Pilih kolom yang diperlukan
         //     ->latest()
         //     ->get());
-        $AkunUsers = User::latest()->get();
+        $AkunUsers = DB::table('users')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $halaman = 'contentPengelolaanUser';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunPeminjams', 'AkunUsers', 'JmlhAdmin'));

@@ -30,7 +30,7 @@ Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar'
 Route::middleware(['auth'])->group(function () {
     // dashboard admin
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
-    Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser']);
+    Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser'])->name('pengelolaan-user');
     Route::get('/dashboard/admin/pengajuan-peminjaman', [DashboardController::class, 'AdminPengajuanPeminjaman'])->name('admin.pengajuan.peminjaman');
     Route::get('/dashboard/admin/data-barang', [DashboardController::class, 'AdminDataBarang']);
     Route::get('/dashboard/admin/data-ruangan', [DashboardController::class, 'AdminDataRuangan']);
@@ -40,10 +40,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/daftar-akun-admin', [CreateAkun::class, 'simpanAkunAdmin'])->name('addAkunAdmin');
     Route::post('/edit-akun/{id}', [EditAkun::class, 'EditAkunUser']);
     Route::post('/hapus-akun/{id}', [HapusAkun::class, 'HapusAkunAdmin']);
+    Route::get('/dashboard/admin/edit-akun/{id}', [EditAkun::class, 'editAkun'])->name('page-edit-akun');
+
 
     Route::post('/tambah-akun-peminjam', [CreateAkun::class, 'showCreateAkunPeminjamFormAdmin'])->name('addAkunPeminjam');
     Route::post('/admin/edit-akun-peminjam/{id}', [EditAkun::class, 'EditAkunPeminjam']);
-    Route::post('/admin/hapus-akun-peminjam/{id}', [HapusAkun::class, 'HapusAkunPeminjam']);
+    Route::post('/admin/hapus-akun-peminjam/', [HapusAkun::class, 'HapusAkunPeminjam'])->name('hapus-akun-mhs');
     // pengelolaan ruangan
     Route::post('admin/tambah-tipe-ruangan', [PengelolaanRuangan::class, 'simpanTipeRuangan'])->name('addTipeRuangan');
     Route::post('/admin/edit-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'editTipeRuangan']);

@@ -5,12 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Peminjam;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 
 
 class EditAkun extends Controller
 {
+    // page edit akun
+    public function editAkun($id){
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        // mengamil data peminjam by id
+        $dataPeminjam = DB::table('peminjam')
+            ->where('no_identitas', '=', $id)
+            ->get();
+
+        // mengambil data user
+        $dataUser = DB::table('users')
+            ->where('id_user', '=', $id)
+            ->get();
+
+        // dd($dataPeminjam, $dataUser);
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentEditUser';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataUser', 'dataPeminjam'));
+    }
     public function EditAkunUser(Request $request, $id)
     {
         try {

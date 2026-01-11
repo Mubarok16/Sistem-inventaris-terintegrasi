@@ -18,7 +18,22 @@
                     @include('components.admin.componentDashboardAdm')
                 @elseif ($halaman === 'contentPengelolaanUser')
                     <h4>Pengelolaan User</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-Pengguna</a>
+                    </div>
                     @include('components.admin.componentPengelolaanUser')
+                @elseif ($halaman === 'contentEditUser')
+                    <h4>Pengelolaan User</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('pengelolaan-user') }}" class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">edit-akun-Pengguna</a>
+                    </div>
+                    @include('components.admin.componentEditAkunUserAdmin')
                 @elseif ($halaman === 'contentPengajuanPeminjaman')
                     <h4>Pengajuan Peminjaman</h4>
                     <div>
