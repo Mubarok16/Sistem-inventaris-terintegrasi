@@ -25,15 +25,27 @@
                     </div>
                     @include('components.admin.componentPengelolaanUser')
                 @elseif ($halaman === 'contentEditUser')
-                    <h4>Pengelolaan User</h4>
+                    <h4>Edit User</h4>
                     <div>
                         <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
                         <span class="text-gray-500">/</span>
-                        <a href="{{ route('pengelolaan-user') }}" class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
+                        <a href="{{ route('pengelolaan-user') }}"
+                            class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">edit-akun-Pengguna</a>
                     </div>
                     @include('components.admin.componentEditAkunUserAdmin')
+                @elseif ($halaman === 'contentAddAllUserByAdmin')
+                    <h4>Tambah User</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('pengelolaan-user') }}"
+                            class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">add-akun-Pengguna</a>
+                    </div>
+                    @include('components.admin.componentAddAkunUserAllByAdmin')
                 @elseif ($halaman === 'contentPengajuanPeminjaman')
                     <h4>Pengajuan Peminjaman</h4>
                     <div>
@@ -70,6 +82,16 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-agenda</a>
                     </div>
                     @include('components.admin.componentPengelolaanAgenda')
+                @elseif ($halaman === 'contentImportAgenda')
+                    <h4>Import Agenda</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="/dashboard/admin/agenda" class="text-gray-400! no-underline!">Pengelolaan-agenda</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Import-agenda</a>
+                    </div>
+                    @include('components.admin.componentImportAgenda')
                 @elseif ($halaman === 'contentDetailAgenda')
                     <h4>Detail Agenda</h4>
                     <div>

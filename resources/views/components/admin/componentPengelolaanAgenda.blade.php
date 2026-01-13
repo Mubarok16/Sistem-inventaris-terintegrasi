@@ -15,7 +15,7 @@
 @endif
 
 <!-- menampilkan data agenda fakultas kbm rapat dan seminar -->
-<div class="bg-white py-4 px-3 rounded-sm shadow-md">
+<div class="bg-white py-4 px-3 rounded-sm shadow-md mb-4">
     <!-- button untuk menambahkan  -->
     <div class="flex justify-between items-center gap-4 mb-2">
         <div class="flex-1 max-w-md">
@@ -127,12 +127,11 @@
     </div>
 </div>
 
-<body class="bg-background-light text-slate-900 font-display">
-    <div class="flex h-screen w-full overflow-hidden">
-        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative mb-4!">
             <div
-                class="px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border-b border-slate-200 shrink-0">
-                <div class="flex items-center gap-4">
+                class="px-8 py-6 bg-white border-b border-slate-200 shrink-0">
+                {{-- <div class="flex items-center gap-4">
                     <h4 class="text-xl font-bold text-slate-900">Oktober 2023</h4>
                     <div class="flex items-center bg-slate-100 rounded-lg p-0.5">
                         <button
@@ -144,9 +143,9 @@
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="bg-slate-100 rounded-lg p-1 flex text-sm font-medium">
+                </div> --}}
+                <div class="flex items-center justify-end gap-3">
+                    {{-- <div class="bg-slate-100 rounded-lg p-1 flex text-sm font-medium">
                         <button
                             class="px-3 py-1.5 border-0 rounded-md! bg-white shadow-md text-slate-900">Bulan</button>
                         <button
@@ -155,15 +154,24 @@
                             class="px-3 py-1.5 border-0 rounded-md! text-slate-500 hover:text-slate-900">Hari</button>
                         <button
                             class="px-3 py-1.5 border-0 rounded-md! text-slate-500 hover:text-slate-900">Agenda</button>
-                    </div>
+                    </div> --}}
+                    <form action="{{ route('dashboard-admin-page-import-agenda') }}" method="get">
+                        <button
+                            class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 border-0 rounded-lg! font-medium transition-colors shadow-sm shadow-blue-200">
+                            {{-- <i class="fa-solid fa-plus text-[20px]"></i> --}}
+                            <i class="fa-solid fa-file-import text-[20px]"></i>
+                            <span class="hidden sm:inline">Import Agenda</span>
+                        </button>
+                    </form>
                     <button
-                        class="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 border-0 rounded-lg! font-medium transition-colors shadow-sm shadow-blue-200">
+                        class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 border-0 rounded-lg! font-medium transition-colors shadow-sm shadow-blue-200">
                         <i class="fa-solid fa-plus text-[20px]"></i>
                         <span class="hidden sm:inline">Buat Agenda</span>
                     </button>
                 </div>
+                <div id="calendar" class="my-2 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
             </div>
-            <div class="flex-1 flex overflow-hidden bg-white">
+            {{-- <div class="flex-1 flex overflow-hidden bg-white">
                 <div class="flex-1 flex flex-col h-full overflow-hidden">
                     <div class="grid grid-cols-7 border-b border-slate-200 shrink-0">
                         <div class="p-3 text-center text-sm font-medium text-slate-500">Min</div>
@@ -502,104 +510,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div
-                    class="w-80 border-l border-slate-200 hidden xl:flex flex-col bg-slate-50">
-                    <div class="p-4 border-b border-slate-200">
-                        <h3 class="text-sm font-semibold text-slate-900 mb-4">Agenda Mendatang</h3>
-                        <div class="space-y-3">
-                            <div class="flex gap-3">
-                                <div class="flex flex-col items-center min-w-[3rem]">
-                                    <span class="text-xs font-semibold text-slate-500 uppercase">Okt</span>
-                                    <span class="text-xl font-bold text-slate-900">24</span>
-                                </div>
-                                <div
-                                    class="flex-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
-                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
-                                    <h4 class="text-sm font-bold text-slate-900 truncate">Seminar
-                                        Nasional AI</h4>
-                                    <p class="text-xs text-slate-500 mt-1">09:00 - 12:00 WIB</p>
-                                    <div class="mt-2 flex items-center gap-1.5">
-                                        <span
-                                            class="material-symbols-outlined text-[14px] text-slate-400">meeting_room</span>
-                                        <span class="text-xs text-slate-600">Aula Utama</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="flex flex-col items-center min-w-[3rem]">
-                                    <span class="text-xs font-semibold text-slate-500 uppercase">Okt</span>
-                                    <span class="text-xl font-bold text-slate-900">25</span>
-                                </div>
-                                <div
-                                    class="flex-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
-                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500"></div>
-                                    <h4 class="text-sm font-bold text-slate-900 truncate">Rapat Dosen
-                                        Sem. Ganjil</h4>
-                                    <p class="text-xs text-slate-500 mt-1">13:00 - 15:00 WIB</p>
-                                    <div class="mt-2 flex items-center gap-1.5">
-                                        <span
-                                            class="material-symbols-outlined text-[14px] text-slate-400">meeting_room</span>
-                                        <span class="text-xs text-slate-600">R. Sidang 1</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex gap-3 opacity-60">
-                                <div class="flex flex-col items-center min-w-[3rem]">
-                                    <span class="text-xs font-semibold text-slate-500 uppercase">Okt</span>
-                                    <span class="text-xl font-bold text-slate-900">26</span>
-                                </div>
-                                <div
-                                    class="flex-1 bg-white p-3 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
-                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-slate-400"></div>
-                                    <h4 class="text-sm font-bold text-slate-900 truncate">Workshop
-                                        Robotika</h4>
-                                    <p class="text-xs text-slate-500 mt-1">08:00 - 16:00 WIB</p>
-                                    <div class="mt-2 flex items-center gap-1.5">
-                                        <span
-                                            class="material-symbols-outlined text-[14px] text-slate-400">meeting_room</span>
-                                        <span class="text-xs text-slate-600">Lab Komputer 3</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-sm font-semibold text-slate-900 mb-3">Filter Ruangan</h3>
-                        <div class="space-y-2">
-                            <label
-                                class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 cursor-pointer">
-                                <input checked="" class="rounded border-slate-300 text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="size-2.5 rounded-full bg-blue-500"></span>
-                                Aula Utama
-                            </label>
-                            <label
-                                class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 cursor-pointer">
-                                <input checked="" class="rounded border-slate-300 text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="size-2.5 rounded-full bg-emerald-500"></span>
-                                Lab Komputer 1-3
-                            </label>
-                            <label
-                                class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 cursor-pointer">
-                                <input checked="" class="rounded border-slate-300 text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="size-2.5 rounded-full bg-amber-500"></span>
-                                R. Sidang
-                            </label>
-                            <label
-                                class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 cursor-pointer">
-                                <input class="rounded border-slate-300 text-primary focus:ring-primary"
-                                    type="checkbox" />
-                                <span class="size-2.5 rounded-full bg-purple-500"></span>
-                                Auditorium
-                            </label>
-                        </div>
-                    </div>
-                </div> --}}
-            </div>
+            </div> --}}
         </main>
-    </div>
-
-</body>
 

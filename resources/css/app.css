@@ -44,9 +44,15 @@
     .fc-tailwind .fc-button {
         @apply px-2 py-1 text-xs;
     }
+
+    .fc .fc-col-header-cell-cushion {
+    @apply no-underline text-xs;
+}
 }
 
 /* List view mobile */
+
+
 .fc-tailwind .fc-list-event-title {
     @apply font-medium;
 }
@@ -54,7 +60,9 @@
 /* .fc-tailwind .fc-list-event-time {
     @apply text-sm text-white;
 } */
-
+.fc .fc-col-header-cell-cushion {
+    @apply no-underline;
+}
 
 .fc-tailwind .fc {
     @apply font-sans text-gray-800;

@@ -22,6 +22,8 @@ class Peminjam extends Authenticatable
         'img_identitas',
         'created_at',
         'updated_at',
+        'status',
+        'tahun_masuk'
     ];
     // public function usesTimestamps()
     // {

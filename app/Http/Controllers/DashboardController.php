@@ -18,8 +18,10 @@ use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Services\Admin\PengelolaanPeminjamanService;
+use App\Services\Admin\PengelolaanUserService;
 use App\Services\mahasiswa\DetailAgendaService;
 use App\Services\mahasiswa\RiwayatPeminjamanService;
+use Illuminate\Support\Facades\Session;
 
 // controlller untuk halaman awal di dshboard setiap user atau peminjam
 class DashboardController extends Controller
@@ -41,20 +43,35 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
-        $user = Auth::user()->nama;
-        $AkunPeminjams = DB::table('peminjam')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        // dd($DataAgenda = DB::table('peminjam') // Pilih kolom yang diperlukan
-        //     ->latest()
-        //     ->get());
-        $AkunUsers = DB::table('users')
-            ->orderBy('created_at', 'desc')
-            ->get();
+
+        $PengelolaanUserService = new PengelolaanUserService;
+
+        if (Session::get('filter-role') === null) {
+            Session::put('filter-role', 'all');
+        }
+
+        if (Session::get('filter-status') === null) {
+            Session::put('filter-status', 'active');
+        }
+
+        $role = Session::get('filter-role');
+        $status = Session::get('filter-status');
+
+        $filter = $PengelolaanUserService->dataAllUsersByFilter($role, $status);
+        // $filterStatus = $PengelolaanUserService->dataAllUsersByStatus($status);
+        
+        $AkunPeminjams = $filter['AkunPeminjams'];
+        // dd($AkunPeminjams);
+        $AkunUsers = $filter['AkunUsers'];
 
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
+        $jmlhPenggunaAll = User::where('status', 'active')->count() + Peminjam::where('status', 'active')->count();
+        $jmlhMhs = Peminjam::where('status', 'active')->count();
+        $jmlhMhsTA = Peminjam::where('status', 'unactive')->count();
+
+        $user = Auth::user()->nama;
         $halaman = 'contentPengelolaanUser';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunPeminjams', 'AkunUsers', 'JmlhAdmin'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunPeminjams', 'AkunUsers', 'JmlhAdmin', 'jmlhPenggunaAll', 'jmlhMhs', 'jmlhMhsTA', 'role', 'status'));
     }
 
     public function adminPengajuanPeminjaman()
@@ -82,13 +99,13 @@ class DashboardController extends Controller
             ->where('peminjaman.status_peminjaman', '!=', 'terjadwal')
             ->latest()
             ->get();
-        
+
         // sorting data display by status peminjaman
         $status_penggunaan = null;
 
         if (session()->get('status-peminjaman') === null) {
             $status_penggunaan = 'semua';
-        }else{
+        } else {
             $status_penggunaan = session()->get('status-peminjaman');
         }
         // mengambil data dari db berdasarkan status nya
@@ -219,17 +236,17 @@ class DashboardController extends Controller
 
         $dataPeminjamanByMhs = DB::table('peminjaman')
             ->where('no_identitas', '=', $no_identitas)
-            ->whereIn('status_peminjaman',['terjadwal', 'digunakan'])
+            ->whereIn('status_peminjaman', ['terjadwal', 'digunakan'])
             ->count();
 
         $dataPeminjamanLewatByMhs = DB::table('peminjaman')
             ->where('no_identitas', '=', $no_identitas)
-            ->whereIn('status_peminjaman',['terlambat'])
+            ->whereIn('status_peminjaman', ['terlambat'])
             ->count();
 
         $dataPeminjamanDiajukanByMhs = DB::table('peminjaman')
             ->where('no_identitas', '=', $no_identitas)
-            ->whereIn('status_peminjaman',['diajukan'])
+            ->whereIn('status_peminjaman', ['diajukan'])
             ->count();
 
         // dd($dataPeminjamanDiajukanByMhs);
@@ -240,17 +257,18 @@ class DashboardController extends Controller
     }
 
     // memanggil halaman detail agenda dari calender di user
-    public function mahasiswaAgenda($id){
+    public function mahasiswaAgenda($id)
+    {
 
         $detailAgendaService = new DetailAgendaService;
-        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id);    
+        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id);
 
         $headerAgenda = $dataAgenda['header'];
         $usage_room = $dataAgenda['usage_ruang'];
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
         $tglKembali = $dataAgenda['tgl_kembali'];
-        
+
         // dd($headerAgenda);
         // $dataDetailPengajuanPeminjaman = DB::table('peminjaman')
         //     ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
@@ -299,7 +317,7 @@ class DashboardController extends Controller
         // dd($id);
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentDetailAgenda'; // variable untuk menampilkan content dashboard
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user','headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'tglKembali'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'tglKembali'));
     }
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
@@ -377,7 +395,7 @@ class DashboardController extends Controller
 
         if (session()->get('status-riwayat') === null) {
             $status_penggunaan = 'semua';
-        }else{
+        } else {
             $status_penggunaan = session()->get('status-riwayat');
         }
 

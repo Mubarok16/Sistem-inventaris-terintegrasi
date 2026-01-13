@@ -65,6 +65,7 @@ class User extends Authenticatable
         'no_hp',
         'created_at',
         'updated_at',
+        'status',
     ];
    
 }

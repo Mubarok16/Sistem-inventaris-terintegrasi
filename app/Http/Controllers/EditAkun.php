@@ -8,13 +8,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
-
+use Illuminate\Support\Facades\Storage;
 
 class EditAkun extends Controller
 {
     // page edit akun
-    public function editAkun($id){
+    public function editAkun($id)
+    {
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
@@ -22,19 +22,21 @@ class EditAkun extends Controller
         // mengamil data peminjam by id
         $dataPeminjam = DB::table('peminjam')
             ->where('no_identitas', '=', $id)
-            ->get();
+            ->first();
 
         // mengambil data user
         $dataUser = DB::table('users')
             ->where('id_user', '=', $id)
-            ->get();
+            ->first();
 
         // dd($dataPeminjam, $dataUser);
-
+        $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $user = Auth::user()->nama;
         $halaman = 'contentEditUser';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataUser', 'dataPeminjam'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataUser', 'dataPeminjam', 'JmlhAdmin'));
     }
+
+    // edit akun pimpinan dan admin
     public function EditAkunUser(Request $request, $id)
     {
         try {
@@ -42,7 +44,8 @@ class EditAkun extends Controller
                 'nama' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'max:12',
-                'hak_akses' => 'required|string',
+                'role' => 'required|string',
+                'no_hp' => 'required'
             ]);
 
             if (User::where('username', $request->username)->count() > 1) {
@@ -51,11 +54,18 @@ class EditAkun extends Controller
 
             $User = User::where('id_user', $id)->firstOrFail();
 
+            if ($request->input('status') != null) {
+                $User->update([
+                    'status' => $request->input('status'),
+                ]);
+            }
+
             if ($request->password === null) {
                 $User->update([
                     'nama' => $request->nama,
                     'username' => $request->username,
-                    'hak_akses' => $request->hak_akses,
+                    'hak_akses' => $request->role,
+                    'no_hp' => $request->no_hp,
                     'updated_at' => now(),
                 ]);
             } else {
@@ -63,7 +73,8 @@ class EditAkun extends Controller
                     'nama' => $request->nama,
                     'username' => $request->username,
                     'password' => Hash::make($request->password),
-                    'hak_akses' => $request->hak_akses,
+                    'hak_akses' => $request->role,
+                    'no_hp' => $request->no_hp,
                     'updated_at' => now(),
                 ]);
             }
@@ -74,8 +85,10 @@ class EditAkun extends Controller
         }
     }
 
+    // update akun peminjam
     public function EditAkunPeminjam(Request $request, $id)
     {
+        // dd($request->all());
         try {
             $request->validate([
                 'nama_peminjam' => 'required|string|max:100',
@@ -84,8 +97,30 @@ class EditAkun extends Controller
                 'prodi' => 'required|string',
             ]);
 
+            // cek apakah username sudah ada di db
             if (Peminjam::where('username', $request->username)->count() > 1) {
                 return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
+            }
+
+            // ambil data peminjam by id atau no_identitas
+            $mahasiswa = DB::table('peminjam')->where('no_identitas', $id)->first();
+            // Cek apakah user punya foto dan file-nya benar-benar ada di storage
+            if ($request->hasFile('img_identitas')) {
+
+                // Hapus foto lama jika ada (agar storage tidak penuh)
+                if ($mahasiswa->img_identitas && Storage::disk('public')->exists($mahasiswa->img_identitas)) {
+                    Storage::disk('public')->delete($mahasiswa->img_identitas);
+                }
+
+                // Simpan file baru ke folder 'identitas' di disk 'public'
+                $path = $request->file('img_identitas')->store('uploads/identitas', 'public');
+
+                // update gambar ke db
+                DB::table('peminjam')
+                    ->where('no_identitas', $id)
+                    ->update([
+                        'img_identitas' => $path,
+                    ]);
             }
 
             $fakultas = '';
@@ -108,31 +143,39 @@ class EditAkun extends Controller
             }
 
             if ($request->password === null) {
-                $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
-                $peminjam->update([
+                // $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
+                $update = [
                     'nama_peminjam' => $request->nama_peminjam,
                     'username' => $request->username,
                     'fakultas' => $fakultas,
                     'prodi' => $request->prodi,
+                    'tahun_masuk' => $request->tahun_masuk,
+                    'status' => $request->status,
                     'updated_at' => now(),
-                ]);
+                ];
             } else {
-                $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
-                $peminjam->update([
+                // $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
+                $update = [
                     'nama_peminjam' => $request->nama_peminjam,
                     'username' => $request->username,
                     'password' => Hash::make($request->password),
                     'fakultas' => $fakultas,
                     'prodi' => $request->prodi,
+                    'tahun_masuk' => $request->tahun_masuk,
+                    'status' => $request->status,
                     'updated_at' => now(),
-                ]);
+                ];
             }
+
+            // Update ke Database
+            DB::table('peminjam')
+                ->where('no_identitas', $id)
+                ->update($update);
 
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama_peminjam . ' berhasil diperbarui!');
         } catch (\Exception $e) {
-            // return redirect()->back()->with('gagal', 'Akun gagal diperbarui!');
-            dd('Error saat update:', $e->getMessage());
+            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!');
         }
     }
 }

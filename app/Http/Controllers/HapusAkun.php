@@ -8,23 +8,14 @@ use App\Models\User;
 
 class HapusAkun extends Controller
 {
-    public function HapusAkunAdmin(Request $request)
+    public function HapusAkunAdmin($id)
     {
-        try {
-            $request->validate([
-                'id_user' => 'required|string',
-            ]);
 
-            // dd($request->all());
 
-            $user = User::where('id_user', $request->id_user)->first();
-            $user->delete();
+        $user = User::where('id_user', $id)->first();
+        $user->delete();
 
-            return redirect()->back()->with('success', 'Akun berhasil dihapus!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', $e->getMessage());
-        }
+        return redirect()->back()->with('success', 'Akun berhasil dihapus!');
     }
 
     public function HapusAkunPeminjam(Request $request)
@@ -40,7 +31,6 @@ class HapusAkun extends Controller
             $user->delete();
 
             return redirect()->back()->with('success', 'Akun berhasil dihapus!');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('gagal', $e->getMessage());
         }

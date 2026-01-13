@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Peminjam;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CreateAkun extends Controller
 {
+    // page signin akun peminjam
     public function showCreateAkunFormPeminjam()
     {
         return view('BuatAkun'); // retun menampilkan view login.blade.php
         // }
     }
 
+    // simpan akun peminjam ke db dari signin
     public function SimpanAkunPeminjam(Request $request)
     {
         try {
@@ -79,9 +83,12 @@ class CreateAkun extends Controller
         }
     }
 
+    // simpan akun peminjam (mhs) dari admin
     public function showCreateAkunPeminjamFormAdmin(Request $request)
     {
+        // dd($request->file('img_identitas'));
         try {
+
             $request->validate([
                 'no_identitas' => 'required|integer|unique:peminjam,no_identitas',
                 'nama_peminjam' => 'required|string|max:100',
@@ -89,6 +96,8 @@ class CreateAkun extends Controller
                 'password' => 'required|string|max:12',
                 'prodi' => 'required|string',
                 'img_identitas' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'status' => 'required',
+                'tahun_masuk' => 'required'
             ]);
 
             // cek username sudah ada atau belum
@@ -120,6 +129,7 @@ class CreateAkun extends Controller
             } elseif ($request->prodi === 'kesehatan masyarakat') {
                 $fakultas = 'kesehatan masyarakat';
             }
+
             // Simpan data ke database
             Peminjam::create([
                 'no_identitas' => $request->no_identitas,
@@ -131,11 +141,13 @@ class CreateAkun extends Controller
                 'img_identitas' => $imgPath,
                 'created_at' => now(),
                 'updated_at' => now(),
+                'status' => $request->status,
+                'tahun_masuk' => $request->tahun_masuk,
             ]);
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama . ' berhasil dibuat!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal dibuat!');
+            return redirect()->back()->with('gagal', 'Akun gagal dibuat!'.$e);
             // dd('Error saat update:', $e->getMessage());
 
         }
@@ -143,15 +155,29 @@ class CreateAkun extends Controller
 
     // ------------------------ tambah akun admin (staff sarpras) ------------------------
 
+    // page buat akun pengguna dari sisi admin
+    public function buatAkunPenggunaByAdmin()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentAddAllUserByAdmin';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+    }
+    // simpan akun admin
     public function SimpanAkunAdmin(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:100',
             'username' => 'required|string|max:50',
             'password' => 'required|string|max:8',
-            // 'hak_akses' => 'required|string',
+            'role' => 'required|string',
+            'status' => 'string',
+            'no_hp' => 'integer'
         ]);
-
+        // dd($request->all());
         if (User::where('username', $request->username)->exists()) {
             return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
         }
@@ -173,6 +199,7 @@ class CreateAkun extends Controller
             'hak_akses' => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
+            'status' => $request->status,
         ]);
 
         return redirect()->back()->with('success', 'Akun admin berhasil dibuat!');

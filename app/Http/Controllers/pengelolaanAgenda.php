@@ -16,6 +16,18 @@ use function Symfony\Component\Clock\now;
 
 class pengelolaanAgenda extends Controller
 {
+    // page halaman import agenda
+    public function pageImportAgenda()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentImportAgenda';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+    }
+
     //fungsi menyimpan usage room dan usage item 1x/minggu
     public function simpanWeek(Request $request, $tgl_mulai, $tgl_selesai, $jam_mulai, $jam_selesai, $kode_agenda)
     {
@@ -24,9 +36,9 @@ class pengelolaanAgenda extends Controller
         $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
 
         // parsing tgl mulai dan tgl selesai sesuai dengan carbon(bawaan laravel) 
-        $startDate = Carbon::parse($tgl_mulai); 
-        $endDate = Carbon::parse($tgl_selesai); 
-        
+        $startDate = Carbon::parse($tgl_mulai);
+        $endDate = Carbon::parse($tgl_selesai);
+
         $targetDayOfWeek = $startDate->dayOfWeek; // Mengambil angka hari dari $startDate 1/2/dan strsnya untuk senin/selasa/dan strsnya
 
         $currentDate = $startDate->copy();
@@ -83,7 +95,7 @@ class pengelolaanAgenda extends Controller
 
     //return halaman detail agenda
     public function DetailAgenda($id)
-    {   
+    {
         // menentukan user yang login itu apakah role admin atau bukan jika bukan akan di arahkan eror 403 
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
@@ -111,7 +123,7 @@ class pengelolaanAgenda extends Controller
             ->select('usage_rooms.*', 'rooms.nama_room', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->where('usage_rooms.kode_agenda', $id)
             ->get();
-        
+
         // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
         // menyimpan halaman variable

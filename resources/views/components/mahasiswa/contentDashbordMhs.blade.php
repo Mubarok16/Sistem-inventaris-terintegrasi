@@ -284,10 +284,6 @@
                     
                     <i class="fa-solid fa-circle-exclamation"></i>
                 </div>
-                {{-- <span
-                    class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-100">
-                    Confirmed
-                </span> --}}
             </div>
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Lewat waktu pinjam</p>
