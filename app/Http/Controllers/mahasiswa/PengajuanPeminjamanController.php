@@ -137,48 +137,6 @@ class PengajuanPeminjamanController extends Controller
             }
         }
 
-        // Loop dari Tanggal Mulai hingga Tanggal Akhir
-        // while ($tglPinjamCarbon->lessThanOrEqualTo($tglBatasCarbon)){
-
-        //         // loop untuk menyimpan lebih dari 1 brang yg dinputkan dari array input barang di session
-        //         if ($cartBarang != null) {
-        //             foreach ($cartBarang as $barang) {
-        //                 //simpan barang ke db usage_barang
-        //                 UsageItems::create([
-        //                     'kode_peminjaman' => $kode_peminjaman,
-        //                     'kode_agenda' => NULL,
-        //                     'id_item' => $barang['id_item'],
-        //                     'qty_usage_item' => $barang['qty_pinjam'],
-        //                     'tgl_pinjam_usage_item' => $tglPinjamCarbon->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
-        //                     'tgl_kembali_usage_item' => $tglPinjamCarbon->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
-        //                     'status_usage_item' => 'diajukan',
-        //                     'created_at' => now(),
-        //                     'updated_at' => now(),
-        //                 ]);
-        //             }
-        //         }
-
-        //         // loop untuk menyimpan lebih dari 1 ruangan yg dinputkan dari array input barang di session
-        //         if ($cartRuangan != null) {
-        //             foreach ($cartRuangan as $ruangan) {
-        //                 //simpan barang ke db usage_barang
-        //                 UsageRooms::create([
-        //                     'kode_peminjaman' => $kode_peminjaman,
-        //                     'kode_agenda' => NULL,
-        //                     'id_room' => $ruangan['id_room'],
-        //                     'tgl_pinjam_usage_room' => $tglPinjamCarbon->copy()->setTimeFromTimeString($jam_mulai)->toDateTimeString(),
-        //                     'tgl_kembali_usage_room' => $tglPinjamCarbon->copy()->setTimeFromTimeString($jam_selesai)->toDateTimeString(),
-        //                     'status_usage_room' => 'diajukan',
-        //                     'created_at' => now(),
-        //                     'updated_at' => now(),
-        //                 ]);
-        //             }
-        //         }
-
-        //     // Pindah ke hari berikutnya
-        //     $tglPinjamCarbon->addDay();
-        // }
-
         // menghapus session cart setelah pengajuan peminjaman berhasil
         session()->forget('cart');
         session()->forget('cart_ruangan');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\AgendaImport;
 use App\Models\agendaFakultas;
 use App\Models\DataBarang;
 use App\Models\DataRuangan;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel; // Wajib di-import
 
 use function Symfony\Component\Clock\now;
 
@@ -26,6 +28,103 @@ class pengelolaanAgenda extends Controller
         $user = Auth::user()->nama;
         $halaman = 'contentImportAgenda';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+    }
+
+    // fungsi tambah agenda import
+    public function addAgendaImport(Request $request)
+    {   
+        // $user = Auth::user()->id_user;
+
+        $tgl_mulai   = $request->input('tgl_mulai');
+        $tgl_selesai = $request->input('tgl_selesai');
+
+        try {
+            $request->validate([
+                'fileAgenda' => 'required|mimes:csv,xlsx,xls'
+            ]);
+
+
+            $import = new AgendaImport($tgl_mulai, $tgl_selesai);
+            Excel::import($import, $request->file('fileAgenda'));
+
+            $hasil = $import->dataHasilOlahan;
+
+            // dd($hasil);
+
+            // mengambil id_room dan nama room 
+            $mapRuangan = DataRuangan::pluck('id_room', 'nama_room')->toArray();
+
+            // menggabungkan array dari file import ke array baru yg mengubah nama ruangan menjadi id_room
+            $agendaFakultas = collect($hasil)->map(function ($item) use ($mapRuangan) {
+
+                // memecah jam jadi jam mulai dan jam selesai
+                $jam_raw = $item['jam']; // "9:00 - 12:00"
+                $parts = explode(' - ', $jam_raw); // Memecah string berdasarkan " - "
+
+                $jam_mulai   = $parts[0] ?? null; // "9:00"
+                $jam_selesai = $parts[1] ?? null; // "12:00"
+
+                if ($item['tanggal'] === null) {
+                    $tgl_mulai_agenda = $item['tgl_mulai'];
+                    $tgl_selesai_agenda = $item['tgl_selesai'];
+                }else{
+                    $tgl_mulai_agenda = $item['tanggal'];
+                    $tgl_selesai_agenda = $item['tanggal'];
+                }
+                
+                // return kembali ke sesuai struktur db agenda fakultas
+                return [
+                    'kode_agenda' => $item['kode_agenda'],
+                    'id_user' => Auth::user()->id_user,
+                    'nama_agenda' => $item['nama_agenda'],
+                    'id_room'  => $mapRuangan[$item['ruangan']] ?? null, // mengambil id_room berdasarkan nama room yg diambil dari file import
+                    'hari'        => $item['hari'],
+                    'jam_mulai'   => $jam_mulai,
+                    'jam_selesai' => $jam_selesai,
+                    'tgl_mulai_agenda'   => $tgl_mulai_agenda,
+                    'tgl_selesai_agenda' => $tgl_selesai_agenda,
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ];
+            })->toArray();
+
+            // menggabungkan array dari file import ke array baru yg mengubah nama ruangan menjadi id_room
+            $usage_room = collect($hasil)->map(function ($item) use ($mapRuangan) {
+
+                // memecah jam jadi jam mulai dan jam selesai
+                $jam_raw = $item['jam']; // "9:00 - 12:00"
+                $parts = explode(' - ', $jam_raw); // Memecah string berdasarkan " - "
+
+                $jam_mulai   = $parts[0] ?? null; // "9:00"
+                $jam_selesai = $parts[1] ?? null; // "12:00"
+
+                if ($item['tanggal'] === null) {
+                    $tgl_mulai_agenda = $item['tgl_mulai'];
+                    $tgl_selesai_agenda = $item['tgl_selesai'];
+                }else{
+                    $tgl_mulai_agenda = $item['tanggal'];
+                    $tgl_selesai_agenda = $item['tanggal'];
+                }
+
+                return [
+                    'kode_agenda' => $item['kode_agenda'],
+                    'kode_peminjaman' => null,
+                    'id_room'  => $mapRuangan[$item['ruangan']] ?? null, // mengambil id_room berdasarkan nama room yg diambil dari file import
+                    'hari'        => $item['hari'],
+                    'jam_mulai'   => $jam_mulai,
+                    'jam_selesai' => $jam_selesai,
+                    'tgl_mulai_agenda'   => $tgl_mulai_agenda,
+                    'tgl_selesai_agenda' => $tgl_selesai_agenda,
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ];
+            })->toArray();
+
+            dd($agendaFakultas);
+
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 
     //fungsi menyimpan usage room dan usage item 1x/minggu

@@ -67,17 +67,18 @@
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Agenda</span>
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama
+                                Agenda</span>
                             <p
                                 class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
                                 {{-- {{ $agenda->ket_peminjaman ?? $agenda->tipe_agenda.' '.$agenda->nama_agenda }} --}}
                                 @if (!isset($agenda->ket_peminjaman))
                                     @if ($agenda->tipe_agenda === 'kegiatan belajar mengajar')
-                                        {{ 'matakuliah '.$agenda->nama_agenda }}
+                                        {{ 'matakuliah ' . $agenda->nama_agenda }}
                                     @elseif ($agenda->tipe_agenda === 'Seminar')
-                                        {{ 'seminar '.$agenda->nama_agenda }}
+                                        {{ 'seminar ' . $agenda->nama_agenda }}
                                     @else
-                                        {{ 'Rapat Pimpinan '.$agenda->nama_agenda }}
+                                        {{ 'Rapat Pimpinan ' . $agenda->nama_agenda }}
                                     @endif
                                 @else
                                     {{ $agenda->ket_peminjaman }}
@@ -117,36 +118,37 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <!-- Barang -->
-                        @foreach ($usage_item as $detailBarang)
+                        {{-- @foreach ($usage_item as $detailBarang) --}}
+                        @if ($usage_item != null)
                             <tr class="group hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailBarang->img_item) }}')">
+                                            style="background-image: url('{{ asset('storage/' . $usage_item->img_item) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
-                                                {{ $detailBarang->nama_item }}
+                                                {{ $usage_item->nama_item }}
                                             </p>
                                             <p class="text-xs text-slate-500">
-                                                {{ $detailBarang->id_item }}
+                                                {{ $usage_item->id_item }}
 
                                             </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($detailBarang->jam_mulai_usage_item != null && $detailBarang->jam_selesai_usage_item != null)
+                                    @if ($usage_item->jam_mulai_usage_item != null && $usage_item->jam_selesai_usage_item != null)
                                         <div class="flex flex-col gap-1">
                                             <div class="flex items-center gap-2 text-sm text-slate-600">
                                                 <i class="fa-solid fa-calendar-days text-base text-primary"></i>
                                                 <span>Setiap hari</span>
                                             </div>
                                             <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($detailBarang->jam_mulai_usage_item)) }}
+                                                <span>{{ date('H:i', strtotime($usage_item->jam_mulai_usage_item)) }}
                                                     -
-                                                    {{ date('H:i', strtotime($detailBarang->jam_selesai_usage_item)) }}
+                                                    {{ date('H:i', strtotime($usage_item->jam_selesai_usage_item)) }}
                                                     WIB</span>
                                             </div>
                                         </div>
@@ -158,45 +160,47 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
-                                    {{ $detailBarang->qty_usage_item }} Unit
+                                    {{ $usage_item->qty_usage_item }} Unit
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="text-sm text-green-600 flex items-center gap-1">
                                         <i class="fa-solid fa-circle-check text-base"></i>
-                                        {{ $detailBarang->kondisi_item }}
+                                        {{ $usage_item->kondisi_item }}
                                     </span>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
+                        {{-- @endforeach --}}
                         <!-- rauang -->
-                        @foreach ($usage_room as $detailRuangan)
+                        {{-- @foreach ($usage_room as $detailRuangan) --}}
+                        @if ($usage_room != null)
                             <tr class="group hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailRuangan->gambar_room) }}')">
+                                            style="background-image: url('{{ asset('storage/' . $usage_room->gambar_room) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
-                                                {{ $detailRuangan->nama_tipe_room }}
-                                                {{ $detailRuangan->nama_room }}
+                                                {{ $usage_room->nama_tipe_room }}
+                                                {{ $usage_room->nama_room }}
                                             </p>
                                             <p class="text-xs text-slate-500">Lantai 2</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($detailRuangan->jam_mulai_usage_room != null && $detailRuangan->jam_selesai_usage_room != null)
+                                    @if ($usage_room->jam_mulai_usage_room != null && $usage_room->jam_selesai_usage_room != null)
                                         <div class="flex flex-col gap-1">
                                             <div class="flex items-center gap-2 text-sm text-slate-600">
                                                 <i class="fa-solid fa-calendar-days text-base text-primary"></i>
                                                 <span>Setiap hari</span>
                                             </div>
                                             <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($detailRuangan->jam_mulai_usage_room)) }}
+                                                <span>{{ date('H:i', strtotime($usage_room->jam_mulai_usage_room)) }}
                                                     -
-                                                    {{ date('H:i', strtotime($detailRuangan->jam_selesai_usage_room)) }}
+                                                    {{ date('H:i', strtotime($usage_room->jam_selesai_usage_room)) }}
                                                     WIB
                                                 </span>
                                             </div>
@@ -217,7 +221,8 @@
                                     </span>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
+                        {{-- @endforeach --}}
                     </tbody>
                 </table>
             </div>

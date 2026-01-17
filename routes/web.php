@@ -83,9 +83,13 @@ Route::middleware(['auth'])->group(function () {
     //Pengelolaan Agenda ========================================================================================================================
     // page import agenda
     Route::get('/dashboard/admin/page-import-agenda', [pengelolaanAgenda::class, 'pageImportAgenda'])->name('dashboard-admin-page-import-agenda');
-
+    // page detail agenda
     Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda']);
+    // page tambah agenda
     Route::get('/admin/pengelolaan-agenda/tambah-agenda/', [pengelolaanAgenda::class, 'HalamanTambahAgenda']);
+
+    // fungsi tambah agenda import
+    Route::post('/tambah-agenda-impor', [pengelolaanAgenda::class, 'addAgendaImport'])->name('tambah-agenda-import');
 
     // route fungsi temporary menambah menghapus barang dan ruang dan agenda sebelum di simpan permanen di db
     Route::post('/tambah-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])->name('tambah-agenda');
