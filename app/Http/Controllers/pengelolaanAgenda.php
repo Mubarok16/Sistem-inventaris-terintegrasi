@@ -10,6 +10,7 @@ use App\Models\UsageItems;
 use App\Models\UsageRooms;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel; // Wajib di-import
@@ -32,7 +33,7 @@ class pengelolaanAgenda extends Controller
 
     // fungsi tambah agenda import
     public function addAgendaImport(Request $request)
-    {   
+    {
         // $user = Auth::user()->id_user;
 
         $tgl_mulai   = $request->input('tgl_mulai');
@@ -67,20 +68,17 @@ class pengelolaanAgenda extends Controller
                 if ($item['tanggal'] === null) {
                     $tgl_mulai_agenda = $item['tgl_mulai'];
                     $tgl_selesai_agenda = $item['tgl_selesai'];
-                }else{
+                } else {
                     $tgl_mulai_agenda = $item['tanggal'];
                     $tgl_selesai_agenda = $item['tanggal'];
                 }
-                
+
                 // return kembali ke sesuai struktur db agenda fakultas
                 return [
                     'kode_agenda' => $item['kode_agenda'],
                     'id_user' => Auth::user()->id_user,
                     'nama_agenda' => $item['nama_agenda'],
-                    'id_room'  => $mapRuangan[$item['ruangan']] ?? null, // mengambil id_room berdasarkan nama room yg diambil dari file import
-                    'hari'        => $item['hari'],
-                    'jam_mulai'   => $jam_mulai,
-                    'jam_selesai' => $jam_selesai,
+                    'tipe_agenda'        => $item['hari'] === null ? 'pts/pas' : 'kegiatan belajar mengejar',
                     'tgl_mulai_agenda'   => $tgl_mulai_agenda,
                     'tgl_selesai_agenda' => $tgl_selesai_agenda,
                     'created_at'  => now(),
@@ -89,7 +87,7 @@ class pengelolaanAgenda extends Controller
             })->toArray();
 
             // menggabungkan array dari file import ke array baru yg mengubah nama ruangan menjadi id_room
-            $usage_room = collect($hasil)->map(function ($item) use ($mapRuangan) {
+            $usage_room = collect($hasil)->flatMap(function ($item) use ($mapRuangan) {
 
                 // memecah jam jadi jam mulai dan jam selesai
                 $jam_raw = $item['jam']; // "9:00 - 12:00"
@@ -101,27 +99,113 @@ class pengelolaanAgenda extends Controller
                 if ($item['tanggal'] === null) {
                     $tgl_mulai_agenda = $item['tgl_mulai'];
                     $tgl_selesai_agenda = $item['tgl_selesai'];
-                }else{
+                } else {
                     $tgl_mulai_agenda = $item['tanggal'];
                     $tgl_selesai_agenda = $item['tanggal'];
                 }
 
-                return [
-                    'kode_agenda' => $item['kode_agenda'],
-                    'kode_peminjaman' => null,
-                    'id_room'  => $mapRuangan[$item['ruangan']] ?? null, // mengambil id_room berdasarkan nama room yg diambil dari file import
-                    'hari'        => $item['hari'],
-                    'jam_mulai'   => $jam_mulai,
-                    'jam_selesai' => $jam_selesai,
-                    'tgl_mulai_agenda'   => $tgl_mulai_agenda,
-                    'tgl_selesai_agenda' => $tgl_selesai_agenda,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
-                ];
+                $dataRoom = [];
+                // // perode untuk usage room ketika inport untuk import harian
+                // if ($item['hari'] === null) {
+                //     $period = CarbonPeriod::create($tgl_mulai_agenda, $tgl_selesai_agenda);
+                //     foreach ($period as $date) {       // Loop untuk Tanggal per Hari
+                //         $dataRoom[] = [
+                //             'kode_peminjaman' => NULL,
+                //             'kode_agenda' => $item['kode_agenda'],
+                //             'id_room' => $mapRuangan[$item['ruangan']] ?? null,
+                //             'tgl_pinjam_usage_room' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
+                //             'tgl_kembali_usage_room' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
+                //             'status_usage_room' => 'terjadwal',
+                //             'created_at' => now(),
+                //             'updated_at' => now(),
+                //             'jam_mulai_usage_room' => $jam_mulai,
+                //             'jam_selesai_usage_room' => $jam_selesai,
+                //         ];
+                //     }
+                // }else{
+                //     // perode untuk usage room ketika inport untuk import mingguan
+                //     $period = CarbonPeriod::create($tgl_mulai_agenda, '1 week', $tgl_selesai_agenda);
+                //     foreach ($period as $date) {       // Loop untuk Tanggal per Minggu
+                //         $dataRoom[] = [
+                //             'kode_peminjaman' => NULL,
+                //             'kode_agenda' => $item['kode_agenda'],
+                //             'id_room' => $mapRuangan[$item['ruangan']] ?? null,
+                //             'tgl_pinjam_usage_room' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
+                //             'tgl_kembali_usage_room' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
+                //             'status_usage_room' => 'terjadwal',
+                //             'created_at' => now(),
+                //             'updated_at' => now(),
+                //             'jam_mulai_usage_room' => $jam_mulai,
+                //             'jam_selesai_usage_room' => $jam_selesai,
+                //         ];
+                //     }
+                // }
+
+                // Ambil tanggal mulai asli
+                $startDate = Carbon::parse($tgl_mulai_agenda);
+
+                // Jika ada input 'hari' (misal: 'Senin', 'Selasa')
+                if ($item['hari'] !== null) {
+                    // Terjemahkan hari ke Bahasa Inggris jika input Anda Bahasa Indonesia
+                    // Atau langsung gunakan jika inputnya 'Monday', 'Tuesday', dsb.
+                    $mapHari = [
+                        'senin'  => 'Monday',
+                        'selasa' => 'Tuesday',
+                        'rabu'   => 'Wednesday',
+                        'kamis'  => 'Thursday',
+                        'jumat'  => 'Friday',
+                        'sabtu'  => 'Saturday',
+                        'minggu' => 'Sunday',
+                    ];
+
+                    $hariInggris = $mapHari[$item['hari']] ?? $item['hari'];
+
+                    // Cek apakah hari ini sudah sesuai dengan hari yang diinginkan?
+                    // Jika belum, cari tanggal "hari" tersebut yang akan datang
+                    if ($startDate->format('l') !== $hariInggris) {
+                        $startDate->next($hariInggris);
+                    }
+                }
+
+                // Buat periode berdasarkan tanggal yang sudah disesuaikan
+                if ($item['hari'] === null) {
+                    $period = CarbonPeriod::create($startDate, $tgl_selesai_agenda);
+                } else {
+                    // Sekarang $startDate sudah bukan lagi tgl 25 (Minggu), 
+                    // tapi sudah pindah ke hari yang sesuai (misal Senin tgl 26)
+                    $period = CarbonPeriod::create($startDate, '1 week', $tgl_selesai_agenda);
+                }
+
+                foreach ($period as $date) {
+                    $currentDate = $date->toDateString();
+                    $dataRoom[] = [
+                        'kode_peminjaman' => NULL,
+                        'kode_agenda' => $item['kode_agenda'],
+                        'id_room' => $mapRuangan[$item['ruangan']] ?? null,
+                        'tgl_pinjam_usage_room' => $currentDate,
+                        'tgl_kembali_usage_room' => $currentDate,
+                        'status_usage_room' => 'terjadwal',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'jam_mulai_usage_room' => $jam_mulai,
+                        'jam_selesai_usage_room' => $jam_selesai,
+                    ];
+                }
+
+                return $dataRoom;
             })->toArray();
 
-            dd($agendaFakultas);
+            // dd($agendaFakultas, $usage_room);
 
+            if ($agendaFakultas != null) {
+                DB::table('agenda_fakultas')->insert($agendaFakultas);
+            }
+
+            if ($usage_room != null) {
+                DB::table('usage_rooms')->insert($usage_room);
+            }
+
+            return redirect()->route('dashboard-admin-agenda')->with('success', 'Data Agenda Berhasil Diimport!');
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -223,6 +307,7 @@ class pengelolaanAgenda extends Controller
             ->where('usage_rooms.kode_agenda', $id)
             ->get();
 
+        // dd($DataAgenda);
         // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
         // menyimpan halaman variable

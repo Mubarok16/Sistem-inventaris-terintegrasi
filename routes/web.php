@@ -29,6 +29,7 @@ Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar'
 
 // routes for dashboard admin
 Route::middleware(['auth'])->group(function () {
+
     // dashboard admin
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
     Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser'])->name('pengelolaan-user');
@@ -84,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     // page import agenda
     Route::get('/dashboard/admin/page-import-agenda', [pengelolaanAgenda::class, 'pageImportAgenda'])->name('dashboard-admin-page-import-agenda');
     // page detail agenda
-    Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda']);
+    Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda'])->name('admin-detail-agenda');
     // page tambah agenda
     Route::get('/admin/pengelolaan-agenda/tambah-agenda/', [pengelolaanAgenda::class, 'HalamanTambahAgenda']);
 
@@ -122,10 +123,12 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth:peminjam'])->group(function () {
     // dashbord
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard-mhs');
-    // agenda detail agenda di calender
-    Route::get('/dashboard/mahasiswa/agenda/{id}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-mhs');
-    // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
-    Route::get('/events', [calenderController::class, 'calender']);
+
+    // // agenda detail agenda di calender
+    // Route::get('/dashboard/mahasiswa/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-mhs');
+    // // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
+    // Route::get('/events', [calenderController::class, 'calender']);
+
     //route untuk halaman content dashboard mahasiswa
     // peminjaman barang
     Route::get('/dashboard/mahasiswa/peminjaman-barang', [DashboardController::class, 'mahasiswaPeminjamanBarang'])->name('mhs-peminjaman-barang');

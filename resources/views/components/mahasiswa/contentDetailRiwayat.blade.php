@@ -140,10 +140,10 @@
         @endforeach
 
         <!-- Items & room List -->
-        <div x-data="{ open: false }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div @click="open = !open"
                 class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-white cursor-pointer">
-                <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
+                <h5 class="font-semibold text-slate-900">Daftar Penggunaan Barang &amp; Ruangan</h5>
                 <div class="flex items-center text-slate-500">
                     <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm"
                         :class="open ? 'rotate-180' : 'rotate-0'"></i>
@@ -159,112 +159,129 @@
                     <thead>
                         <tr
                             class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold tracking-wider">
-                            <th class="px-6 py-3">Detail Item</th>
+                            {{-- <th class="px-6 py-3">Detail Item</th> --}}
                             <th class="px-6 py-3">Jadwal Penggunaan</th>
-                            <th class="px-6 py-3 text-center">Jumlah</th>
-                            <th class="px-6 py-3">Kondisi Awal</th>
+                            {{-- <th class="px-6 py-3 text-center">Jumlah</th> --}}
+                            <th class="px-6 py-3">Kondisi</th>
+                            <th class="px-6 py-3">Status Peminjaman</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <!-- Barang -->
-                        @foreach ($dataDetailPengajuanPeminjamanBarang as $detailBarang)
-                            <tr class="group hover:bg-slate-50 transition-colors">
+                    <tbody class="divide-y divide-slate-100" x-data="{ selected: null }">
+                        {{-- barang dan ruangan --}}
+                        @foreach ($DetailRiwayatPerHari as $detail)
+                            @php $rowId = $loop->index; @endphp
+                            <tr @click="selected !== {{ $rowId }} ? selected = {{ $rowId }} : selected = null"
+                                class="group cursor-pointer hover:bg-slate-50 transition-colors"
+                                :class="selected === {{ $rowId }} ? 'bg-slate-50' : ''">
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
-                                            data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailBarang->img_item) }}')">
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-slate-900">
-                                                {{ $detailBarang->nama_item }}
-                                            </p>
-                                            <p class="text-xs text-slate-500">
-                                                {{ $detailBarang->id_item }}
-
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @if ($detailBarang->jam_mulai_usage_item != null && $detailBarang->jam_selesai_usage_item != null)
+                                    @if ($detail['jam_mulai'] != null && $detail['jam_selesai'] != null)
                                         <div class="flex flex-col gap-1">
                                             <div class="flex items-center gap-2 text-sm text-slate-600">
                                                 <i class="fa-solid fa-calendar-days text-base text-primary"></i>
-                                                <span>Setiap hari</span>
+                                                <span>
+                                                    {{ date('d M Y', strtotime($detail['tanggal'])) }}
+                                                </span>
                                             </div>
-                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($detailBarang->jam_mulai_usage_item)) }}
+                                            <div class="flex items-center gap-2 text-sm text-slate-500">
+                                                <i class="fa-solid fa-clock text-base"></i>
+                                                <span>{{ date('H:i', strtotime($detail['jam_mulai'])) }}
                                                     -
-                                                    {{ date('H:i', strtotime($detailBarang->jam_selesai_usage_item)) }}
+                                                    {{ date('H:i', strtotime($detail['jam_selesai'])) }}
                                                     WIB</span>
                                             </div>
                                         </div>
                                     @else
                                         <div class="flex items-center gap-2 text-sm text-slate-600">
-                                            <i class="fa-solid fa-clock text-base"></i>
-                                            <span>Durasi Penuh</span>
+                                            <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                            <span>
+                                                {{ date('d F Y', strtotime($detail['tanggal'])) }}
+                                            </span>
                                         </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
-                                    {{ $detailBarang->qty_usage_item }} Unit
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-sm text-green-600 flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check text-base"></i>
-                                        {{ $detailBarang->kondisi_item }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                        <!-- rauang -->
-                        @foreach ($dataDetailPengajuanPeminjamanRuangan as $detailRuangan)
-                            <tr class="group hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
-                                            data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailRuangan->gambar_room) }}')">
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-slate-900">
-                                                {{ $detailRuangan->nama_tipe_room }}
-                                                {{ $detailRuangan->nama_room }}
-                                            </p>
-                                            <p class="text-xs text-slate-500">Lantai 2</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @if ($detailRuangan->jam_mulai_usage_room != null && $detailRuangan->jam_selesai_usage_room != null)
-                                        <div class="flex flex-col gap-1">
-                                            <div class="flex items-center gap-2 text-sm text-slate-600">
-                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
-                                                <span>Setiap hari</span>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($detailRuangan->jam_mulai_usage_room)) }}
-                                                    -
-                                                    {{ date('H:i', strtotime($detailRuangan->jam_selesai_usage_room)) }}
-                                                    WIB
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @else
                                         <div class="flex items-center gap-2 text-sm text-slate-600">
                                             <i class="fa-solid fa-clock text-base"></i>
-                                            <span>Durasi Penuh</span>
+                                            <span>Full day</span>
                                         </div>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
-                                    -</td>
                                 <td class="px-6 py-4">
                                     <span class="text-sm text-green-600 flex items-center gap-1">
                                         <i class="fa-solid fa-circle-check text-base"></i>
-                                        Baik
+                                        {{ $detail['kondisi'] }}
                                     </span>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {{-- {{ $detail['status'] }} --}}
+                                    @if ($detail['status'] === 'diajukan')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                            Menunggu Persetujuan
+                                        </span>
+                                    @elseif($detail['status'] === 'terjadwal')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                                            Terjadwal
+                                        </span>
+                                    @elseif($detail['status'] === 'digunakan')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                                            Sedang Digunakan
+                                        </span>
+                                    @elseif($detail['status'] === 'terlambat')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700 border border-red-200">
+                                            Terlambat
+                                        </span>
+                                    @elseif($detail['status'] === 'ditolak')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700 border border-red-200">
+                                            Ditolak
+                                        </span>
+                                    @elseif($detail['status'] === 'selesai')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700 border border-green-200">
+                                            Selesai
+                                        </span>
+                                    @endif
+                                </td>
+
+                            </tr>
+
+                            <tr x-show="selected === {{ $rowId }}" x-cloak x-transition>
+                                <td colspan="3" class="px-6 py-0 bg-slate-50/50">
+                                    <div class="flex flex-col border-x border-slate-100">
+                                        @foreach ($detail['barang_ruang'] as $item)
+                                            <div
+                                                class="flex items-center justify-between px-10 py-3 border-b border-slate-100 last:border-none">
+                                                <div class="flex items-center gap-4">
+                                                    <div
+                                                        class="w-10 h-10 flex items-center justify-center rounded-full {{ isset($item['nama_room']) ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600' }}">
+                                                        @if (isset($item['nama_room']))
+                                                            <i class="fa-solid fa-door-open"></i>
+                                                        @else
+                                                            <i class="fa-solid fa-box"></i>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="flex flex-col">
+                                                        <span class="text-sm font-semibold text-slate-700">
+                                                            {{ $item['nama_room'] ?? $item['nama_item'] }}
+                                                        </span>
+                                                        <span class="text-xs text-slate-500">
+                                                            {{ $item['nama_tipe_room'] ?? $item['nama_tipe_item'] }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                @if (isset($item['qty']))
+                                                    <div
+                                                        class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                                                        Jumlah: <span class="text-primary">{{ $item['qty'] }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -287,7 +304,6 @@
                     @csrf
                     <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
                         @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
-                            
                             <div class="items-center gap-4 mb-2">
                                 <button type="submit" name="aksi" value="QR"
                                     class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">

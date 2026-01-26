@@ -257,23 +257,22 @@ class DashboardController extends Controller
     }
 
     // memanggil halaman detail agenda dari calender di user
-    public function mahasiswaAgenda($id)
+    public function mahasiswaAgenda($id, $date)
     {
 
         $detailAgendaService = new DetailAgendaService;
-        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id);
+        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id, $date);
 
         $headerAgenda = $dataAgenda['header'];
         $usage_room = $dataAgenda['usage_ruang'];
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
-        $tglKembali = $dataAgenda['tgl_kembali'];
 
-        // dd($headerAgenda, $tglKembali);
+        // dd($usage_room);
         
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentDetailAgenda'; // variable untuk menampilkan content dashboard
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'tglKembali'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
     }
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
@@ -341,10 +340,6 @@ class DashboardController extends Controller
         $RiwayatService = new RiwayatPeminjamanService;
 
         $idUser = Auth::guard('peminjam')->user()->no_identitas;
-
-        // $dataPeminjamanByPeminjam = DB::table('peminjaman')
-        //     ->where('no_identitas', '=', $idUser)
-        //     ->get();
 
         // filter riwayat berdasarkan status tertentu
         $status_penggunaan = null;

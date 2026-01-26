@@ -91,7 +91,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm font-normal">
                                     <div class="flex items-center gap-2">
-                                        <form action="/admin/detail-agenda/detail/{{ $DataAgenda->kode_agenda }}"
+                                        <form action="{{ route('admin-detail-agenda', ['id' => urlencode($DataAgenda->kode_agenda)]) }}"
                                             method="get">
                                             @csrf
                                             <button

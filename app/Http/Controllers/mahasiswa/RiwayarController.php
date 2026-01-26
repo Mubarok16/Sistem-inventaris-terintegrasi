@@ -5,6 +5,7 @@ namespace App\Http\Controllers\mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\UsageItems;
 use App\Models\UsageRooms;
+use App\Services\mahasiswa\RiwayatPeminjamanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -58,21 +59,30 @@ class RiwayarController extends Controller
         $tglPinjam = null;
         $tglKembali = null;
 
-        if ($tglPinjamItem) {
-            foreach ($tglPinjamItem as $value) {
-                $tglPinjam = $value->tgl_pinjam_usage_item;
-                $tglKembali = $value->tgl_kembali_usage_item;
-            }
-        } else {
-            foreach ($tglPinjamRoom as $value) {
-                $tglPinjam = $value->tgl_pinjam_usage_room;
-                $tglKembali = $value->tgl_kembali_usage_room;
-            }
+        // if ($tglPinjamItem) {
+        foreach ($dataDetailPengajuanPeminjaman as $value) {
+            $tglPinjam = $value->tgl_pinjam;
+            $tglKembali = $value->tgl_kembali;
         }
+        // } else {
+        foreach ($dataDetailPengajuanPeminjaman as $value) {
+            $tglPinjam = $value->tgl_pinjam;
+            $tglKembali = $value->tgl_kembali;
+        }
+        // }   
+
+        $riwayatPeminjamanService = new RiwayatPeminjamanService();
+
+        $riwayat = $riwayatPeminjamanService->dataDetailPeminjaman($id);
+
+        $DetailRiwayatPerHari = $riwayat;
+        // dd($riwayat);
+
+        // dd($dataDetailPengajuanPeminjamanBarang, $dataDetailPengajuanPeminjamanRuangan);
 
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayatDetail';
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali'));
     }
 
     public function QrDanBatalPeminjaman(Request $request)
@@ -83,7 +93,7 @@ class RiwayarController extends Controller
 
         if ($aksi === 'QR') {
             // return ke halaman qr code
-            return view('components.mahasiswa.contentQRcode', compact('kode_peminjaman','status_peminjaman'));
+            return view('components.mahasiswa.contentQRcode', compact('kode_peminjaman', 'status_peminjaman'));
         } else {
             // update status jika dibatalkan user
             DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use function Symfony\Component\Clock\now;
@@ -28,19 +29,6 @@ class PengajuanPeminjamanController extends Controller
     // proses pengajuan peminjaman
     public function PengajuanPeminjaman(Request $request)
     {
-        // validasi input form pengajuan peminjaman
-        // try {
-        //     $request->validate([
-        //         'nama_kegiatan' => 'required',
-        //         'tgl_pinjam' => 'required',
-        //         'tgl_kembali' => 'required',
-        //         'lampiran_file' => 'required',
-        //         'id_peminjam' => 'required'
-        //     ]);
-        // } catch (\Throwable $th) {
-        //     return redirect()->back()->with('gagal', 'pastikan semua form telah diisi dengan benar.');
-        // }
-
         // mengambil data dari input request
         $nama_kegiatan = $request->input('nama_kegiatan');
         $id_peminjam = $request->input('id_peminjam');
@@ -73,19 +61,18 @@ class PengajuanPeminjamanController extends Controller
             $jamMulai = $jam_mulai;
             $jamSelesai = $jam_selesai;
         }
-        
-        // dd($jamMulai, $jamSelesai);
+
+        // Tentukan Rentang Tanggal
+        $period = CarbonPeriod::create($request->tgl_pinjam, $request->tgl_kembali);
 
         // proses penyimpanan pengajuan peminjaman ke database
         $kode_peminjaman = Str::random(12);
-
-        // dd($tglPinjamCarbon, $tglKembaliCarbon, $jam_mulai, $jam_selesai, $repeat);
 
         // menyimpan file lampiran ke folder private/lampiran_file
         $path = $request->file('lampiran_file')->store('lampiran_file', 'local');
 
         //menyimpan data peminjaman ke database
-        Peminjaman::create([
+        DB::table('peminjaman')->insert([
             'kode_peminjaman' => $kode_peminjaman, // kode_peminjaman
             'no_identitas' => $id_peminjam,
             'id_user' => null, // id_user
@@ -94,48 +81,107 @@ class PengajuanPeminjamanController extends Controller
             'tgl_tansaksi' => Carbon::now(), // tgl_transaksi
             'created_at' => Carbon::now(), // dibuat pada
             'updated_at' => Carbon::now(), // diupdate pada
-            'status_peminjaman' => 'diajukan' // status_peminjaman
+            'status_peminjaman' => 'diajukan', // status_peminjaman
+            'tgl_pinjam' => $tglPinjamCarbon,
+            'tgl_kembali' => $tglKembaliCarbon,
         ]);
 
+        // jika jam mulai dan jam selesai ada maka peminjaman itu kategori spesifik
+        // if ($jam_mulai != null && $jam_selesai != null) {
 
-        // loop untuk menyimpan lebih dari 1 brang yg dinputkan dari array input barang di session
+        // Array untuk Insert Usage Room 
+        $dataRoom = [];
+        if ($cartRuangan != null) {
+            foreach ($cartRuangan as $ruangan) { // Loop untuk jika meminjam banyak ruangan Ruangan
+                foreach ($period as $date) {       // Loop untuk Tanggal per Hari
+                    $dataRoom[] = [
+                        'kode_peminjaman' => $kode_peminjaman,
+                        'kode_agenda' => NULL,
+                        'id_room' => $ruangan['id_room'],
+                        'tgl_pinjam_usage_room' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
+                        'tgl_kembali_usage_room' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
+                        'status_usage_room' => 'diajukan',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'jam_mulai_usage_room' => $jamMulai,
+                        'jam_selesai_usage_room' => $jamSelesai,
+                    ];
+                }
+            }
+        }
+
+        // Array untuk Insert Usage Item
+        $dataItem = [];
         if ($cartBarang != null) {
             foreach ($cartBarang as $barang) {
-                //simpan barang ke db usage_barang
-                UsageItems::create([
-                    'kode_peminjaman' => $kode_peminjaman,
-                    'kode_agenda' => NULL,
-                    'id_item' => $barang['id_item'],
-                    'qty_usage_item' => $barang['qty_pinjam'],
-                    'tgl_pinjam_usage_item' => $tglPinjamCarbon,
-                    'tgl_kembali_usage_item' => $tglKembaliCarbon,
-                    'status_usage_item' => 'diajukan',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'jam_mulai_usage_item' => $jamMulai,
-                    'jam_selesai_usage_item' => $jamSelesai,
-                ]);
+                foreach ($period as $date) {
+                    $dataItem[] = [
+                        'kode_peminjaman' => $kode_peminjaman,
+                        'kode_agenda' => NULL,
+                        'id_item' => $barang['id_item'],
+                        'qty_usage_item' => $barang['qty_pinjam'],
+                        'tgl_pinjam_usage_item' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
+                        'tgl_kembali_usage_item' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
+                        'status_usage_item' => 'diajukan',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'jam_mulai_usage_item' => $jamMulai,
+                        'jam_selesai_usage_item' => $jamSelesai,
+                    ];
+                }
             }
         }
 
-        // loop untuk menyimpan lebih dari 1 ruangan yg dinputkan dari array input barang di session
-        if ($cartRuangan != null) {
-            foreach ($cartRuangan as $ruangan) {
-                //simpan barang ke db usage_barang
-                UsageRooms::create([
-                    'kode_peminjaman' => $kode_peminjaman,
-                    'kode_agenda' => NULL,
-                    'id_room' => $ruangan['id_room'],
-                    'tgl_pinjam_usage_room' => $tglPinjamCarbon,
-                    'tgl_kembali_usage_room' => $tglKembaliCarbon,
-                    'status_usage_room' => 'diajukan',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'jam_mulai_usage_room' => $jamMulai,
-                    'jam_selesai_usage_room' => $jamSelesai,
-                ]);
-            }
+        // Melakukan Insert ke Database usage_room
+        if ($dataRoom != null) {
+            DB::table('usage_rooms')->insert($dataRoom);
         }
+        // Melakukan Insert ke Database usage_item
+        if ($dataItem != null) {
+            DB::table('usage_items')->insert($dataItem);
+        }
+
+        // } else { // jika jam mulai dan jam selesai tidak ada maka peminjaman itu kategori full day
+
+        //     // loop untuk menyimpan lebih dari 1 brang yg dinputkan dari array input barang di session
+        //     if ($cartBarang != null) {
+        //         foreach ($cartBarang as $barang) {
+        //             //simpan barang ke db usage_barang
+        //             UsageItems::create([
+        //                 'kode_peminjaman' => $kode_peminjaman,
+        //                 'kode_agenda' => NULL,
+        //                 'id_item' => $barang['id_item'],
+        //                 'qty_usage_item' => $barang['qty_pinjam'],
+        //                 'tgl_pinjam_usage_item' => $tglPinjamCarbon,
+        //                 'tgl_kembali_usage_item' => $tglKembaliCarbon,
+        //                 'status_usage_item' => 'diajukan',
+        //                 'created_at' => now(),
+        //                 'updated_at' => now(),
+        //                 'jam_mulai_usage_item' => $jamMulai,
+        //                 'jam_selesai_usage_item' => $jamSelesai,
+        //             ]);
+        //         }
+        //     }
+
+        //     // loop untuk menyimpan lebih dari 1 ruangan yg dinputkan dari array input barang di session
+        //     if ($cartRuangan != null) {
+        //         foreach ($cartRuangan as $ruangan) {
+        //             //simpan barang ke db usage_barang
+        //             UsageRooms::create([
+        //                 'kode_peminjaman' => $kode_peminjaman,
+        //                 'kode_agenda' => NULL,
+        //                 'id_room' => $ruangan['id_room'],
+        //                 'tgl_pinjam_usage_room' => $tglPinjamCarbon,
+        //                 'tgl_kembali_usage_room' => $tglKembaliCarbon,
+        //                 'status_usage_room' => 'diajukan',
+        //                 'created_at' => now(),
+        //                 'updated_at' => now(),
+        //                 'jam_mulai_usage_room' => $jamMulai,
+        //                 'jam_selesai_usage_room' => $jamSelesai,
+        //             ]);
+        //         }
+        //     }
+        // }
 
         // menghapus session cart setelah pengajuan peminjaman berhasil
         session()->forget('cart');

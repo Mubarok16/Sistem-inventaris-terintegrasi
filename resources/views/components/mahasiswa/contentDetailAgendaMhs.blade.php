@@ -57,28 +57,21 @@
                                     {{ date('d F Y', strtotime($tglPinjam)) }}
                                 </div>
                             </div>
-                            <div class="flex flex-col">
-                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
-                                    Penggunaan</span>
-                                <div class="flex items-center gap-2 text-slate-900 font-medium">
-                                    <i class="fa-solid fa-right-from-bracket text-red-500"></i>
-                                    {{ date('d F Y', strtotime($tglKembali)) }}
-                                </div>
-                            </div>
                         </div>
                         <div class="space-y-2">
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama
                                 Agenda</span>
                             <p
                                 class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
-                                {{-- {{ $agenda->ket_peminjaman ?? $agenda->tipe_agenda.' '.$agenda->nama_agenda }} --}}
                                 @if (!isset($agenda->ket_peminjaman))
                                     @if ($agenda->tipe_agenda === 'kegiatan belajar mengajar')
                                         {{ 'matakuliah ' . $agenda->nama_agenda }}
                                     @elseif ($agenda->tipe_agenda === 'Seminar')
                                         {{ 'seminar ' . $agenda->nama_agenda }}
-                                    @else
+                                    @elseif ($agenda->tipe_agenda === 'Rapat Pimpinan')
                                         {{ 'Rapat Pimpinan ' . $agenda->nama_agenda }}
+                                    @else
+                                        {{ 'PTS/PAS ' . $agenda->nama_agenda }}
                                     @endif
                                 @else
                                     {{ $agenda->ket_peminjaman }}
@@ -118,111 +111,138 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <!-- Barang -->
-                        {{-- @foreach ($usage_item as $detailBarang) --}}
                         @if ($usage_item != null)
-                            <tr class="group hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
-                                            data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $usage_item->img_item) }}')">
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-slate-900">
-                                                {{ $usage_item->nama_item }}
-                                            </p>
-                                            <p class="text-xs text-slate-500">
-                                                {{ $usage_item->id_item }}
+                            @foreach ($usage_item as $usage_item)
+                                {{-- @if ($usage_item != null) --}}
+                                <tr class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
+                                                data-alt="Meeting Room Interior"
+                                                style="background-image: url('{{ asset('storage/' . $usage_item->img_item) }}')">
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-slate-900">
+                                                    {{ $usage_item->nama_item }}
+                                                </p>
+                                                <p class="text-xs text-slate-500">
+                                                    {{ $usage_item->id_item }}
 
-                                            </p>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @if ($usage_item->jam_mulai_usage_item != null && $usage_item->jam_selesai_usage_item != null)
-                                        <div class="flex flex-col gap-1">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if ($usage_item->jam_mulai_usage_item != null && $usage_item->jam_selesai_usage_item != null)
+                                            <div class="flex flex-col gap-1">
+                                                <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                    <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                    <span>
+                                                        {{-- Setiap hari --}}
+                                                        {{ date('d M y', strtotime($usage_item->tgl_pinjam_usage_item)) }}
+                                                    </span>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-sm text-slate-500">
+                                                    <i class="fa-solid fa-clock text-base"></i>
+                                                    <span>
+                                                        {{ date('H:i', strtotime($usage_item->jam_mulai_usage_item)) }}
+                                                        -
+                                                        {{ date('H:i', strtotime($usage_item->jam_selesai_usage_item)) }}
+                                                        WIB</span>
+                                                </div>
+                                            </div>
+                                        @else
                                             <div class="flex items-center gap-2 text-sm text-slate-600">
                                                 <i class="fa-solid fa-calendar-days text-base text-primary"></i>
-                                                <span>Setiap hari</span>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($usage_item->jam_mulai_usage_item)) }}
-                                                    -
-                                                    {{ date('H:i', strtotime($usage_item->jam_selesai_usage_item)) }}
-                                                    WIB</span>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="flex items-center gap-2 text-sm text-slate-600">
-                                            <i class="fa-solid fa-clock text-base"></i>
-                                            <span>Durasi Penuh</span>
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
-                                    {{ $usage_item->qty_usage_item }} Unit
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-sm text-green-600 flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check text-base"></i>
-                                        {{ $usage_item->kondisi_item }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endif
-                        {{-- @endforeach --}}
-                        <!-- rauang -->
-                        {{-- @foreach ($usage_room as $detailRuangan) --}}
-                        @if ($usage_room != null)
-                            <tr class="group hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
-                                            data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $usage_room->gambar_room) }}')">
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-slate-900">
-                                                {{ $usage_room->nama_tipe_room }}
-                                                {{ $usage_room->nama_room }}
-                                            </p>
-                                            <p class="text-xs text-slate-500">Lantai 2</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @if ($usage_room->jam_mulai_usage_room != null && $usage_room->jam_selesai_usage_room != null)
-                                        <div class="flex flex-col gap-1">
-                                            <div class="flex items-center gap-2 text-sm text-slate-600">
-                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
-                                                <span>Setiap hari</span>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
-                                                <span>{{ date('H:i', strtotime($usage_room->jam_mulai_usage_room)) }}
-                                                    -
-                                                    {{ date('H:i', strtotime($usage_room->jam_selesai_usage_room)) }}
-                                                    WIB
+                                                <span>
+                                                    {{-- Setiap hari --}}
+                                                    {{ date('d M y', strtotime($usage_item->tgl_pinjam_usage_item)) }}
                                                 </span>
                                             </div>
-                                        </div>
-                                    @else
-                                        <div class="flex items-center gap-2 text-sm text-slate-600">
-                                            <i class="fa-solid fa-clock text-base"></i>
-                                            <span>Durasi Penuh</span>
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
-                                    -</td>
-                                <td class="px-6 py-4">
-                                    <span class="text-sm text-green-600 flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check text-base"></i>
-                                        Baik
-                                    </span>
-                                </td>
-                            </tr>
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-clock text-base"></i>
+                                                <span>Full day</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
+                                        {{ $usage_item->qty_usage_item }} Unit
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-green-600 flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-check text-base"></i>
+                                            {{ $usage_item->kondisi_item }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {{-- @endif --}}
+                            @endforeach
                         @endif
-                        {{-- @endforeach --}}
+                        <!-- rauang -->
+                        @if ($usage_room != null)
+                            @foreach ($usage_room as $usage_room)
+                                {{-- @if ($usage_room != null) --}}
+                                <tr class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
+                                                data-alt="Meeting Room Interior"
+                                                style="background-image: url('{{ asset('storage/' . $usage_room->gambar_room) }}')">
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-slate-900">
+                                                    {{ $usage_room->nama_tipe_room }}
+                                                    {{ $usage_room->nama_room }}
+                                                </p>
+                                                <p class="text-xs text-slate-500">Lantai 2</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if ($usage_room->jam_mulai_usage_room != null && $usage_room->jam_selesai_usage_room != null)
+                                            <div class="flex flex-col gap-1">
+                                                <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                    <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                    <span>
+                                                        {{-- Setiap hari --}}
+                                                        {{ date('d M y', strtotime($usage_room->tgl_pinjam_usage_room)) }}
+                                                    </span>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-sm text-slate-500">
+                                                    <i class="fa-solid fa-clock text-base"></i>
+                                                    <span>{{ date('H:i', strtotime($usage_room->jam_mulai_usage_room)) }}
+                                                        -
+                                                        {{ date('H:i', strtotime($usage_room->jam_selesai_usage_room)) }}
+                                                        WIB
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                <span>
+                                                    {{-- Setiap hari --}}
+                                                    {{ date('d M y', strtotime($usage_room->tgl_pinjam_usage_room)) }}
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-clock text-base"></i>
+                                                <span>Full day</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
+                                        -</td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-green-600 flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-check text-base"></i>
+                                            Baik
+                                        </span>
+                                    </td>
+                                </tr>
+                                {{-- @endif --}}
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

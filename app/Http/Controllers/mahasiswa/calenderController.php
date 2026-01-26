@@ -11,37 +11,36 @@ class calenderController extends Controller
 {
     public function calender()
     {
-        $agendas = DB::table('usage_rooms')
-            ->leftJoin('agenda_fakultas', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
-            ->leftJoin('peminjaman', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+
+        // Ambil data dari Agenda Fakultas
+        $agenda_fakultas = DB::table('agenda_fakultas')
+            ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
             ->select(
-                'usage_rooms.kode_agenda',
-                'usage_rooms.kode_peminjaman',
-                'agenda_fakultas.nama_agenda',
-                'peminjaman.ket_peminjaman',
+                'agenda_fakultas.kode_agenda as id_ref',
+                'agenda_fakultas.nama_agenda as title_ref',
                 'usage_rooms.tgl_pinjam_usage_room',
                 'usage_rooms.tgl_kembali_usage_room',
                 'usage_rooms.jam_mulai_usage_room',
                 'usage_rooms.jam_selesai_usage_room',
                 'usage_rooms.status_usage_room'
             )
-            // ->whereIn('usage_rooms.status_usage_room',['terjadwal', 'digunakan'])
+            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai']);
+
+        // Gabungan (Union) dengan data dari Peminjaman
+        $agendas = DB::table('peminjaman')
+            ->join('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
+            ->select(
+                'peminjaman.kode_peminjaman as id_ref',
+                'peminjaman.ket_peminjaman as title_ref',
+                'usage_rooms.tgl_pinjam_usage_room',
+                'usage_rooms.tgl_kembali_usage_room',
+                'usage_rooms.jam_mulai_usage_room',
+                'usage_rooms.jam_selesai_usage_room',
+                'usage_rooms.status_usage_room'
+            )
+            ->union($agenda_fakultas)
+            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
             ->get();
-
-        // $events = $agendas->map(function ($agenda) {
-
-        //     return [
-        //         // 'id'    => $agenda->kode_agenda,
-        //         'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman: $agenda->nama_agenda,
-        //         'start' => $agenda->tgl_pinjam_usage_room,
-        //         'end'   => $agenda->tgl_kembali_usage_room,
-        //         'color' => $this->statusColor($agenda->status_usage_room),
-        //     ];
-        // });
-
-        // return response()->json($events);
-
-
 
         foreach ($agendas as $agenda) {
 
@@ -51,51 +50,72 @@ class calenderController extends Controller
                 $agenda->tgl_kembali_usage_room
             );
 
-            // $events[] = [
-            //     'data' => $period,
-            // ];
+            // JAM ADA (BUKAN FULL DAY)
+            foreach ($period as $date) {
 
-            // 🔹 CASE 1: JAM ADA (BUKAN FULL DAY)
-            if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room) {
-                foreach ($period as $date) {
+                $formattedDate = $date->format('Y-m-d');
+
+                if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room) {
 
                     $events[] = [
-                        'id' => $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda,
-                        'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman : $agenda->nama_agenda,
-                        'start' => $date->format('Y-m-d') . ' ' . $agenda->jam_mulai_usage_room,
-                        'end'   => $date->format('Y-m-d') . ' ' . $agenda->jam_selesai_usage_room,
+                        'id' => $agenda->id_ref,
+                        'title' => $agenda->title_ref,
+                        'start' => $formattedDate . 'T' . $agenda->jam_mulai_usage_room,
+                        'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
                         'allDay' => false,
-                        'color' => $this->statusColor($agenda->status_usage_room),
-                        'url'   => route('agenda-mhs', $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda),
+                        'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
+                        'url'   => route('agenda-mhs', [
+                            urlencode($agenda->id_ref),
+                            $date->format('Y-m-d')
+                        ]),
                     ];
                 }
-            }
-            // 🔹 CASE 2: JAM NULL (FULL DAY)
-            else {
+                // JAM NULL (FULL DAY)
+                else {
 
-                $events[] = [
-                    'id' => $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda,
-                    'title' => $agenda->nama_agenda === null ? $agenda->ket_peminjaman : $agenda->nama_agenda,
-                    'start' => $agenda->tgl_pinjam_usage_room,
-                    'end'   => $agenda->tgl_kembali_usage_room,
-                    'allDay' => true,
-                    'color' => $this->statusColor($agenda->status_usage_room),
-                    'url'   => route('agenda-mhs', $agenda->kode_agenda === null ? $agenda->kode_peminjaman : $agenda->kode_agenda),
-                ];
+                    $events[] = [
+                        'id' => $agenda->id_ref,
+                        'title' => $agenda->title_ref,
+                        'start' => $formattedDate,
+                        'end'   => $formattedDate,
+                        'allDay' => true,
+                        'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
+                        'url'   => route('agenda-mhs', [
+                            urlencode($agenda->id_ref),
+                            $date->format('Y-m-d')
+                        ]),
+                    ];
+                }
             }
         }
 
         return response()->json($events);
     }
 
-    private function statusColor($status)
+    private function statusColor($status, $id)
     {
-        return match ($status) {
-            'diajukan' => '#facc15', // kuning
-            'disetujui' => '#22c55e', // hijau
-            'selesai' => '#3b82f6', // biru
-            'ditolak' => '#ef4444', // merah
-            default => '#64748b',
-        };
+        // Cek apakah id ada di tabel peminjaman
+        $peminjaman = DB::table('peminjaman')
+            ->where('kode_peminjaman', $id)
+            ->first();
+        // Jika ada, berarti data berasal dari peminjaman
+        if ($peminjaman) {
+
+            return match ($status) {
+                'terjadwal' => '#facc15', // kuning
+                'digunakan' => '#22c55e', // hijau
+                default => '#64748b' // abu-abu
+
+            };
+
+        // Jika tidak ada, berarti data berasal dari agenda fakultas
+        } else {
+            return match ($status) {
+                'terjadwal' => '#3b82f6', // biru
+                'digunakan' => '#22c55e', // hijau
+                default => '#64748b' // abu-abu
+            };
+        }
+
     }
 }

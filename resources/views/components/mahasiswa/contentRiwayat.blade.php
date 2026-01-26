@@ -357,7 +357,7 @@
                                                     -
                                                     {{ date('H:i', strtotime($riwayat->jam_selesai_usage_room)) }}
                                                 @else
-                                                    Durasi Penuh
+                                                    Full day
                                                 @endif
                                                 
                                             </span>

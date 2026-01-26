@@ -1,17 +1,5 @@
 <main x-data="{ activeTab: 'Mata Kuliah' }"  class="flex-1 flex flex-col h-full overflow-hidden bg-background-light mt-4">
 
-    {{-- <div class="bg-white p-1 rounded-xl border border-slate-200 inline-flex shadow-sm mb-3 gap-2">
-        <button class="px-6 py-2.5 rounded-lg! text-sm font-bold bg-primary text-white shadow-md">
-            Mata Kuliah
-        </button>
-        <button class="px-6 py-2.5 rounded-lg! text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-            PTS
-        </button>
-        <button class="px-6 py-2.5 rounded-lg! text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-            PAS
-        </button>
-    </div> --}}
-
     <div class="bg-white p-1 rounded-xl border border-slate-200 inline-flex shadow-sm mb-3 gap-2">
         <button @click="activeTab = 'Mata Kuliah'"
             :class="activeTab === 'Mata Kuliah' ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'"
@@ -61,7 +49,7 @@
                                     <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                         Tanggal Mulai agenda
                                     </label>
-                                    <input name="tgl_mulai"
+                                    <input name="tgl_mulai" required
                                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                         type="date" />
                                 </div>
@@ -69,7 +57,7 @@
                                     <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                         Tanggal Selesai Agenda
                                     </label>
-                                    <input name="tgl_selesai"
+                                    <input name="tgl_selesai" required
                                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                         type="date" />
                                 </div>
@@ -87,7 +75,7 @@
                                 <!-- Nama file -->
                                 <p id="fileName" class="text-sm font-semibold text-primary hidden"></p>
                                 <input name="fileAgenda" accept=".csv,.xls,.xlsx" class="hidden" id="fileInput"
-                                    type="file" />
+                                    type="file" required />
                                 <button type="button"
                                     class="px-4 py-2 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg! shadow-lg shadow-blue-200 transition-all"
                                     onclick="document.getElementById('fileInput').click()">
@@ -153,7 +141,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    {{-- <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
                             <div class="flex items-center gap-3">
                                 <h3 class="text-base font-bold text-slate-900">Pratinjau Data</h3>
@@ -312,7 +300,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <footer class="px-8 py-5 bg-white border-t border-slate-200 flex items-center justify-end gap-3 shrink-0">
@@ -373,7 +361,7 @@
                                 <!-- Nama file -->
                                 <p id="fileNamePTSPAS" class="text-sm font-semibold text-primary hidden"></p>
                                 <input name="fileAgenda" accept=".csv,.xls,.xlsx" class="hidden" id="fileInputPTSPAS"
-                                    type="file" />
+                                    type="file" required />
                                 <button type="button"
                                     class="px-4 py-2 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg! shadow-lg shadow-blue-200 transition-all"
                                     onclick="document.getElementById('fileInputPTSPAS').click()">
@@ -439,7 +427,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    {{-- <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
                             <div class="flex items-center gap-3">
                                 <h3 class="text-base font-bold text-slate-900">Pratinjau Data</h3>
@@ -598,7 +586,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <footer class="px-8 py-5 bg-white border-t border-slate-200 flex items-center justify-end gap-3 shrink-0">

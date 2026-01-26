@@ -42,66 +42,6 @@
                     </div>
                 </div>
 
-                {{-- <div
-                    class="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm transition-all group hover:border-primary/40">
-                    <div class="flex items-center justify-between">
-                        <label class="cursor-pointer select-none" for="recurring-toggle">
-                            <div class="font-semibold text-sm text-slate-900 flex items-center gap-2">
-                                <i class="fa fa-repeat"></i>
-                                Opsi Berulang
-                            </div>
-                            <div class="text-[10px] text-slate-500 mt-0.5 ml-7">Ulangi transaksi
-                                ini secara berkala</div>
-                        </label>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="recurring-toggle" class="sr-only peer" checked>
-                            <div
-                                class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
-                            </div>
-                        </label>
-                    </div>
-                    <div class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-3">
-                        <div class="w-full">
-                            <label class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">
-                                Jam Mulai
-                            </label>
-                            <input type="time" name="jam_mulai"
-                                class="block w-full! form-input flex-1 min-w-0 rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary"
-                                placeholder="tanggal kembali" />
-
-                        </div>
-                        <div class="w-full">
-                            <label class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">
-                                Jam Selesai
-                            </label>
-                            <input type="time" name="jam_selesai"
-                                class="block w-full! form-input flex-1 min-w-0 rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary"
-                                placeholder="tanggal kembali" />
-                        </div>
-                        <div class="col-span-2 w-full!">
-                            <label class="text-[12px] font-semibold text-slate-500 mb-1 block uppercase tracking-wider">
-                                Frekuensi
-                            </label>
-                            <select name="repeat"
-                                class="block w-full! rounded-lg border-slate-300 bg-slate-50 text-[12px] py-2 px-2 focus:border-primary focus:ring-primary text-slate-900">
-                                <option>Harian</option>
-                                <option>Mingguan</option>
-                            </select>
-                        </div>
-                        <div class="col-span-2 mt-1">
-                            <div class="flex gap-2 bg-blue-50 text-blue-700 p-2.5 rounded-lg border border-blue-100">
-                                <i class="fa-solid fa-circle-info" style="color: #007bff;"></i>
-                                <p class="text-[12px] leading-relaxed font-medium">
-                                    Jadwal: Setiap hari pukul <span class="font-bold">09:00 - 12:00</span>, mulai
-                                    <span class="font-bold">25 Okt</span> selama <span class="font-bold">3
-                                        hari
-                                    </span>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-
                 <div x-data="{ isRecurring: 'none' }" class="flex flex-col gap-2">
 
                     {{-- opsi peminjaman full --}}
@@ -193,26 +133,6 @@
                                 <input type="date" name="tgl_kembali" :disabled="isRecurring !== 'spesifik'"
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
                             </div>
-
-                            {{-- <div class="col-span-2">
-                                <label
-                                    class="text-[12px] font-semibold text-slate-500 mb-1 block uppercase tracking-wider">Frekuensi</label>
-                                <input type="text" name="repeat" readonly value="Harian"
-                                    :disabled="isRecurring !== 'full'"
-                                    class="block w-full rounded-lg text-gray-700 border border-[#dce0e5] bg-gray-200 px-3 py-2 text-sm disabled:bg-slate-100" />
-                                <select name="repeat" :disabled="!isRecurring"
-                                    class="block w-full rounded-lg border border-[#dce0e5] bg-white text-[12px] py-2 px-2 focus:border-primary focus:ring-primary text-slate-900 disabled:opacity-50">
-                                    <option>Setiap Hari</option>
-                                    <option>Setiap Minggu</option>
-                                </select>
-                            </div> --}}
-
-                            {{-- <div class="w-full">
-                                <label class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">Jam
-                                    Mulai</label>
-                                <input type="time" name="jam_mulai" :disabled="isRecurring !== 'spesifik'"
-                                    class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
-                            </div> --}}
 
                             <div class="w-full">
                                 <label class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">
