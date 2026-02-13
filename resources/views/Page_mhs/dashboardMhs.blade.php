@@ -15,7 +15,6 @@
                 {{-- isi content --}}
 
                 @if ($halaman === 'contentDashbord')
-                    
                     <h4 class="text-2xl md:text-3xl font-bold text-text-main">Selamat Datang, {{ $user }}! 👋</h4>
                     <p class="text-text-secondary">Berikut adalah informasi terkini mengenai pinjaman anda dan agenda fakultas hari ini.</p>
                     @include('components.mahasiswa.contentDashbordMhs')

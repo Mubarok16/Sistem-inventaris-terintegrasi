@@ -118,7 +118,7 @@
                                     Peminjaman</span>
                                 <div class="flex items-center gap-2 text-slate-900 font-medium">
                                     <i class="fa-solid fa-right-to-bracket text-green-600"></i>
-                                    {{ date('d F Y', strtotime($tglPinjam)) }}
+                                    {{ date('d F Y', strtotime($dataPeminjaman->tgl_pinjam)) }}
                                 </div>
                             </div>
                             <div class="flex flex-col">
@@ -126,7 +126,7 @@
                                     Pengembalian</span>
                                 <div class="flex items-center gap-2 text-slate-900 font-medium">
                                     <i class="fa-solid fa-right-from-bracket text-red-500"></i>
-                                    {{ date('d F Y', strtotime($tglKembali)) }}
+                                    {{ date('d F Y', strtotime($dataPeminjaman->tgl_kembali)) }}
                                 </div>
                             </div>
                         </div>

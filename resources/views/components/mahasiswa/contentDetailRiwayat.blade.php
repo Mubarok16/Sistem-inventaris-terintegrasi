@@ -167,6 +167,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" x-data="{ selected: null }">
+
                         {{-- barang dan ruangan --}}
                         @foreach ($DetailRiwayatPerHari as $detail)
                             @php $rowId = $loop->index; @endphp
@@ -285,6 +286,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        
                     </tbody>
                 </table>
             </div>

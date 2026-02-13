@@ -16,6 +16,7 @@ use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use App\Http\Controllers\PengelolaanUserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 // routes for authentication
@@ -26,6 +27,30 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // pr
 // route for create akun peminjam (mahasiswa)
 Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPeminjam'])->middleware('guest'); // menampilkan halaman buat akun peminjam
 Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar')->middleware('guest');
+
+// mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
+// Route::get('/events-calender', [calenderController::class, 'calender']);
+
+// agenda detail agenda di calender
+// Route::get('/dashboard/mahasiswa/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-mhs');
+
+// URL: /peminjam/dashboard
+Route::middleware(['auth:peminjam'])->prefix('peminjam')->group(function () {
+    Route::get('/events-calender', [calenderController::class, 'calender']);
+});
+// URL: /admin/dashboard
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/events-calender', [calenderController::class, 'calender']);
+});
+
+Route::prefix('admin')->as('admin.')->group(function () {
+    Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
+});
+
+Route::prefix('peminjam')->as('peminjam.')->group(function () {
+    Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-calender');
+});
+
 
 // routes for dashboard admin
 Route::middleware(['auth'])->group(function () {
@@ -88,12 +113,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/detail-agenda/detail/{id}', [pengelolaanAgenda::class, 'DetailAgenda'])->name('admin-detail-agenda');
     // page tambah agenda
     Route::get('/admin/pengelolaan-agenda/tambah-agenda/', [pengelolaanAgenda::class, 'HalamanTambahAgenda']);
+    // page edit agenda
+    Route::get('/admin/pengelolaan-agenda/edit-agenda/{id}', [pengelolaanAgenda::class, 'HalamanEditAgenda'])->name('edit-agenda-admin');
 
     // fungsi tambah agenda import
     Route::post('/tambah-agenda-impor', [pengelolaanAgenda::class, 'addAgendaImport'])->name('tambah-agenda-import');
 
     // route fungsi temporary menambah menghapus barang dan ruang dan agenda sebelum di simpan permanen di db
-    Route::post('/tambah-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])->name('tambah-agenda');
+    Route::post('/edit-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])->name('edit-agenda');
     //barang
     Route::post('/tambah-barang-agenda', [pengelolaanAgenda::class, 'simpanInputBarangAgendaTemporary'])->name('tambah-barang-agenda');
     Route::post('/hapus-barang-agenda', [pengelolaanAgenda::class, 'hapusInputBarangAgendaTemporary'])->name('hapus-barang-agenda');
@@ -124,9 +151,7 @@ Route::middleware(['auth:peminjam'])->group(function () {
     // dashbord
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard-mhs');
 
-    // // agenda detail agenda di calender
-    // Route::get('/dashboard/mahasiswa/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-mhs');
-    // // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
+    // mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
     // Route::get('/events', [calenderController::class, 'calender']);
 
     //route untuk halaman content dashboard mahasiswa
@@ -163,7 +188,7 @@ Route::middleware(['auth:peminjam'])->group(function () {
     //riwayat
     Route::get('/dashboard/mahasiswa/riwayat', [DashboardController::class, 'mahasiswaRiwayat'])->name('mhs-riwayat');
     // detail transaksi mahasiswa
-    Route::get('/dashboard/mahasiswa/riwayat/detail-transaksi/{id}', [RiwayarController::class, 'mahasiswaRiwayatDetail'])->name('mhs-riwayat-detail');
+    Route::get('/dashboard/mahasiswa/riwayat/detail-riwayat/{id}', [RiwayarController::class, 'mahasiswaRiwayatDetail'])->name('mhs-riwayat-detail');
     //simpan riwayat session
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
     // btn batal dan cetak qr user

@@ -52,7 +52,7 @@ class PengelolaanPeminjamanAdmin extends Controller
         $tglPinjam = null;
         $tglKembali = null;
 
-        if ($tglPinjamItem) {
+        if (!$tglPinjamItem->isEmpty()) {
             foreach ($tglPinjamItem as $value) {
                 $tglPinjam = $value->tgl_pinjam_usage_item;
                 $tglKembali = $value->tgl_kembali_usage_item;
@@ -78,7 +78,7 @@ class PengelolaanPeminjamanAdmin extends Controller
             return $room['status'] === 'BENTROK';
         });
 
-        // dd($itemBentrok, $roomBentrok);
+        // dd($itemBentrok);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailPenminjaman';

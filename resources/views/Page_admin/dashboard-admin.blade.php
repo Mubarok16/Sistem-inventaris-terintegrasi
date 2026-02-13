@@ -82,6 +82,16 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-agenda</a>
                     </div>
                     @include('components.admin.componentPengelolaanAgenda')
+                @elseif ($halaman === 'contentDetailAgendaCalender')
+                    <h4>Detail Agenda</h4>
+                    <div class="pb-4">
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="/dashboard/admin/agenda" class="text-gray-400! no-underline!">Pengelolaan-agenda</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Detail-agenda</a>
+                    </div>
+                    @include('components.admin.contentDetailAgendaCalender')
                 @elseif ($halaman === 'contentImportAgenda')
                     <h4>Import Agenda</h4>
                     <div>
@@ -112,6 +122,18 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">tambah-agenda</a>
                     </div>
                     @include('components.admin.componentTambahAgenda')
+                @elseif ($halaman === 'contentEditAgenda')
+                    <h4>Edit Agenda</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="/dashboard/admin/agenda" class="text-gray-400! no-underline!">Pengelolaan-agenda</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('admin-detail-agenda',  ['id' => urlencode($id)]) }}" class="text-gray-400! no-underline!">detail-agenda</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">edit-agenda</a>
+                    </div>
+                    @include('components.admin.componentEditAgendaAdm')
                 @elseif ($halaman === 'contentPengadaanBarang')
                     <h4>Pengadaan Barang</h4>
                     @include('components.admin.componentPengadaanBarang')

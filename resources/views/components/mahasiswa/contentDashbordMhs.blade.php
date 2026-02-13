@@ -52,7 +52,7 @@
     </div>
     <div>
         <h3 class="text-lg font-bold text-text-main mb-4">Agenda Penggunaan Ruangan</h3>
-        <div id="calendar" class="mb-4 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
+        <div id="calendar" data-url="{{ url('/peminjam/events-calender') }}" class="mb-4 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
         
     </div>
 </div>

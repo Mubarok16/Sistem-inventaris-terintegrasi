@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
             calendar.changeView('listDay', info.dateStr)
         },
         
-        events: '/events'
+        events: calendarEl.getAttribute('data-url'),
     })
 
     calendar.render()

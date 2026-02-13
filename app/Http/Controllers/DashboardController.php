@@ -59,7 +59,7 @@ class DashboardController extends Controller
 
         $filter = $PengelolaanUserService->dataAllUsersByFilter($role, $status);
         // $filterStatus = $PengelolaanUserService->dataAllUsersByStatus($status);
-        
+
         $AkunPeminjams = $filter['AkunPeminjams'];
         // dd($AkunPeminjams);
         $AkunUsers = $filter['AkunUsers'];
@@ -179,9 +179,55 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
+        $dataAgendas = DB::table('agenda_fakultas')
+            // ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            ->leftJoin('usage_items', 'usage_items.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+            ->leftJoin('usage_rooms', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+            ->selectRaw('DISTINCT ON (agenda_fakultas.kode_agenda) 
+                agenda_fakultas.*,
+                usage_items.tgl_pinjam_usage_item, 
+                usage_items.tgl_kembali_usage_item, 
+                usage_rooms.tgl_pinjam_usage_room, 
+                usage_rooms.tgl_kembali_usage_room, 
+                usage_rooms.jam_mulai_usage_room, 
+                usage_rooms.jam_selesai_usage_room, 
+                usage_items.jam_mulai_usage_item, 
+                usage_items.jam_selesai_usage_item')
+            // ->where('peminjaman.no_identitas', '=', $id)
+
+            // ->when($status !== 'semua', function ($query) use ($status) {
+            //     return $query->where('peminjaman.status_peminjaman', $status);
+            // })
+            // ->where('peminjaman.status_peminjaman', $status)
+            ->orderBy('agenda_fakultas.kode_agenda') // Mengelompokkan berdasarkan kode unik
+            ->orderBy('agenda_fakultas.created_at', 'asc')
+            ->get();
+
+        // dd($dataAgendas);
+
         $user = Auth::user()->nama;
         $halaman = 'contentAgenda';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataAgendas'));
+    }
+
+    // detail agenda di admin
+    public function adminDetailAgenda($id, $date)
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $detailAgendaService = new DetailAgendaService;
+        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id, $date);
+
+        $headerAgenda = $dataAgenda['header'];
+        $usage_room = $dataAgenda['usage_ruang'];
+        $usage_item = $dataAgenda['usage_barang'];
+        $tglPinjam = $dataAgenda['tgl_pinjam'];
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentDetailAgendaCalender';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
     }
 
     public function adminPengadaanBarang()
@@ -268,8 +314,6 @@ class DashboardController extends Controller
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
 
-        // dd($usage_room);
-        
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentDetailAgenda'; // variable untuk menampilkan content dashboard
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
