@@ -392,7 +392,7 @@
                             </h3>
                             <span
                                 class="text-xs font-medium text-slate-700 uppercase tracking-wide">
-                                qty: {{ $dataBarang->qty_usage ?? '-' }}
+                                qty: {{ $dataBarang->qty_usage_item ?? '-' }}
                             </span>
                         </div>
                     </div>

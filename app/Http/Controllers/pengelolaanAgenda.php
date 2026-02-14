@@ -352,6 +352,8 @@ class pengelolaanAgenda extends Controller
 
         $dataAgendaPerhari = $riwayat;
 
+        // dd($dataAgendaPerhari);
+
         // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
         // menyimpan halaman variable
@@ -634,8 +636,10 @@ class pengelolaanAgenda extends Controller
 
         // jika item yg di inputkan maka push qty_usage di session databarangruang
         if ($itemcek > 0) {
-            $databarang[0]->qty_usage = $request->qty_usage;
+            $databarang[0]->qty_usage_item = $request->qty_usage;
         }
+
+        // dd($databarang);
 
         $dataColectionBarangRuang = $databarang->concat($dataruang);
 
@@ -784,21 +788,118 @@ class pengelolaanAgenda extends Controller
         // perulangan usage room atau barang jika setiap hari atau perminggu
         if ($dataAgenda[0]->loop_hari === 'setiap hari') {
 
-            dd('perhari');
+            // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
 
-            //simpan agenda ke db
-            // DB::table('agenda_fakultas')
-            //     ->where('kode_agenda', )
-            //     ->update([
-            //         'kode_agenda' => $kode_agenda,
-            //         'id_user' => $iduser,
-            //         'nama_agenda' => $nama_agenda,
-            //         'tgl_mulai_agenda' => $tgl_mulai,
-            //         'tgl_selesai_agenda' => $tgl_selesai,
-            //         'tipe_agenda' => $nama_agenda,
-            //         'loop_hari' => $loop_hari,
-            //         'updated_at' => now()
-            //     ]);
+            DB::beginTransaction();
+
+            try {
+                // Update table agenda fakultas
+                DB::table('agenda_fakultas')
+                    ->where('kode_agenda',)
+                    ->update([
+                        'kode_agenda' => $kode_agenda,
+                        'id_user' => $iduser,
+                        'nama_agenda' => $nama_agenda,
+                        'tgl_mulai_agenda' => $tgl_mulai,
+                        'tgl_selesai_agenda' => $tgl_selesai,
+                        'tipe_agenda' => $nama_agenda,
+                        'loop_hari' => $loop_hari,
+                        'updated_at' => now()
+                    ]);
+
+                // hapus data usage room atau item yg lama selain yg statusnya sedang digunakan dan sudah selesai
+                DB::table('usage_rooms')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_room', 'terjadwal')->delete();
+                DB::table('usage_items')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_item', 'terjadwal')->delete();
+
+                // 3. Siapkan daftar tanggal (Hanya ini loop yang diperlukan untuk logika bisnis)
+                $mapHari = [
+                    'senin'  => 'monday',
+                    'selasa' => 'tuesday',
+                    'rabu'   => 'wednesday',
+                    'kamis'  => 'thursday',
+                    'jumat'  => 'friday',
+                    'sabtu'  => 'saturday',
+                    'minggu' => 'sunday',
+                ];
+
+                // ubah nama hari menjadi menggunakan b.inggris
+                $hariInggris = $mapHari[strtolower($loop_hari)] ?? strtolower($loop_hari);
+
+                $targetDates = [];
+
+                // berjlan hanya jika hari ini sudah melewati tgl agenda berfungsi agar saat menginputkan data baru tidak redudant dengan data yg sudah terlewat
+                if (Carbon::parse($tgl_mulai)->startOfDay() < now()) {
+                    $end = Carbon::parse($tgl_selesai)->endOfDay();
+                    $period = CarbonPeriod::create(now(), $end);
+                } else {
+                    $start = Carbon::parse($tgl_mulai)->startOfDay();
+                    $end = Carbon::parse($tgl_selesai)->endOfDay();
+                    $period = CarbonPeriod::create($start, $end);
+                }
+
+                // menyimpan tgl setiap hari tertentu yg di inputkan user
+                foreach ($period as $date) {
+                    // if (strtolower($date->translatedFormat('l')) == strtolower($hariInggris)) {
+                        $targetDates[] = $date->format('Y-m-d');
+                    // }
+                }
+
+                // dd($targetDates);
+
+                // memisahkan Data Room dan Data Item dari Array Campuran
+                $finalRooms = [];
+                $finalItems = [];
+
+                foreach ($targetDates as $tanggal) {
+                    foreach ($semuaDataBrngRuang as $data) {
+
+                        // Cek apakah ini objek Room (memiliki id_room)
+                        if (isset($data->id_room)) {
+                            $finalRooms[] = [
+                                'kode_peminjaman' => null,
+                                'kode_agenda' => $kode_agenda,
+                                'id_room'     => $data->id_room,
+                                'tgl_pinjam_usage_room'   => $tanggal . ' 00:00:00',
+                                'tgl_kembali_usage_room'   => $tanggal . ' 23:59:00',
+                                'status_usage_room'   => 'terjadwal',
+                                'created_at'  => now(),
+                                'updated_at'  => now(),
+                                'jam_mulai_usage_room'  => $jam_mulai,
+                                'jam_selesai_usage_room'  => $jam_selesai,
+                            ];
+                        }
+                        // Cek apakah ini objek Item (memiliki id_item)
+                        elseif (isset($data->id_item)) {
+                            $finalItems[] = [
+                                'kode_peminjaman' => null,
+                                'kode_agenda' => $kode_agenda,
+                                'id_item'     => $data->id_item,
+                                'qty_usage_item' => $data->qty_usage_item,
+                                'tgl_pinjam_usage_item'   => $tanggal . ' 00:00:00',
+                                'tgl_kembali_usage_item'   => $tanggal . ' 23:59:00',
+                                'status_usage_item'   => 'terjadwal',
+                                'created_at'  => now(),
+                                'updated_at'  => now(),
+                                'jam_mulai_usage_item'  => $jam_mulai,
+                                'jam_selesai_usage_item'  => $jam_selesai,
+                            ];
+                        }
+                    }
+                }
+
+                // dd($finalRooms, $finalItems);
+
+                // Insert Sekaligus ke db
+                if (!empty($finalRooms)) DB::table('usage_rooms')->insert($finalRooms);
+                if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
+
+                DB::commit();
+                return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+
         } else {
             // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
 
@@ -877,7 +978,7 @@ class pengelolaanAgenda extends Controller
                                 'created_at'  => now(),
                                 'updated_at'  => now(),
                                 'jam_mulai_usage_room'  => $jam_mulai,
-                                'jam_mulai_usage_room'  => $jam_selesai,
+                                'jam_selesai_usage_room'  => $jam_selesai,
                             ];
                         }
                         // Cek apakah ini objek Item (memiliki id_item)
@@ -886,7 +987,7 @@ class pengelolaanAgenda extends Controller
                                 'kode_peminjaman' => null,
                                 'kode_agenda' => $kode_agenda,
                                 'id_item'     => $data->id_item,
-                                'qty_usage_item' => $data->qty_usage,
+                                'qty_usage_item' => $data->qty_usage_item,
                                 'tgl_pinjam_usage_item'   => $tanggal . ' 00:00:00',
                                 'tgl_kembali_usage_item'   => $tanggal . ' 23:59:00',
                                 'status_usage_item'   => 'terjadwal',
@@ -906,7 +1007,7 @@ class pengelolaanAgenda extends Controller
                 if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
 
                 DB::commit();
-                return redirect()->back()->with('succes', 'berhasil memperbarui agenda!');
+                return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
             } catch (\Exception $e) {
                 DB::rollback();
                 return response()->json(['error' => $e->getMessage()], 500);
@@ -956,6 +1057,8 @@ class pengelolaanAgenda extends Controller
         $request->validate([
             'kode_agenda' => 'required',
         ]);
+
+        // dd($request->kode_agenda);
 
         $hapusUsageItem = UsageItems::where('kode_agenda', '=', $request->kode_agenda)->delete();
         $hapusUsageRoom = UsageRooms::where('kode_agenda', '=', $request->kode_agenda)->delete();

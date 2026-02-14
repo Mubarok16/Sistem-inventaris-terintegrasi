@@ -28,16 +28,27 @@
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
-                        <form action="{{ route('edit-agenda-admin', ['id' => urlencode($dataPeminjaman->kode_agenda)]) }}"
-                            method="get">
-                            @csrf
-                            <button
-                                class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm">
-                                {{-- <i class="fa-solid fa-print text-lg text-white"></i> --}}
-                                <i class="fas fa-edit text-white"></i>
-                                <span class="text-white">Edit</span>
-                            </button>
-                        </form>
+                        <div class="flex gap-2">
+                            <form action="{{ route('edit-agenda-admin', ['id' => urlencode($dataPeminjaman->kode_agenda)]) }}"
+                                method="get">
+                                @csrf
+                                <button
+                                    class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm">
+                                    <i class="fas fa-edit text-white"></i>
+                                    <span class="text-white">Edit</span>
+                                </button>
+                            </form>
+                            <form action="{{ route('hapus-agenda') }}"
+                                method="post">
+                                @csrf
+                                <input type="text" name="kode_agenda" class="hidden" value="{{ $dataPeminjaman->kode_agenda }}">
+                                <button
+                                    class="flex items-center gap-2 px-4 py-2 bg-red-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-red-700 transition-colors shadow-sm">
+                                    <i class="fas fa-trash text-white"></i>
+                                    <span class="text-white">hapus</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
