@@ -19,7 +19,7 @@
         <!-- Page Heading -->
         @foreach ($dataAgenda as $dataPeminjaman)
             <div class="w-full!">
-                <!-- Timeline & Purpose Card -->
+                <!-- detail jdawal dan keperluan -->
                 <div
                     class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
@@ -111,12 +111,7 @@
                                     Hari
                                 </span>
                                 <br>
-                                {{-- <input type="text" name="nama_agenda" id="nama_agenda"
-                                    value="{{ $dataPeminjaman->nama_agenda }}" onchange="this.form.submit()"
-                                    class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full"> --}}
-                                <select name="loop_agenda" class="form-control" 
-                                {{-- onchange="this.form.submit()" --}}
-                                >
+                                <select name="loop_agenda" class="form-control">
                                     @php
                                         // Daftar semua hari untuk isi dropdown
                                         $semua_hari = [
@@ -345,7 +340,7 @@
         </div>
 
 
-        <!-- Product Grid -->
+        <!-- tampilan barang dan runagan sementara -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             @foreach ($semuaData as $dataBarang)
                 <!-- Product Card 1 -->

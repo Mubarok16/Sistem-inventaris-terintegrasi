@@ -66,13 +66,40 @@
                     </div>
                     @include('components.admin.componentDetailPengajuanPeminjaman')
                 @elseif ($halaman === 'contentDataBarang')
-                    <h4>Data Barang</h4>
+                    <h4>Pengeloaan Barang</h4>
+                    <div class="pb-4">
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-Barang</a>
+                    </div>
                     @include('components.admin.componentDataBarang')
-                @elseif ($halaman === 'contentDetailRuangan')
-                    <h4>Detail Ruangan</h4>
+                @elseif ($halaman === 'contentEditBarang')
+                    <h4>Edit Barang</h4>
+                    <div class="pb-4">
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('peng-barang') }}" class="text-gray-400! no-underline!">Pengelolaan-barang</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Edit-barang</a>
+                    </div>
                     {{-- @include('components.admin.componentDataRuangan') --}}
+                @elseif ($halaman === 'contentDetailRuangan')
+                    <h4>Edit Ruangan</h4>
+                    <div class="pb-4">
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('peng-ruang') }}" class="text-gray-400! no-underline!">Pengelolaan-raungan</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Edit-ruangan</a>
+                    </div>
+                    @include('components.admin.componentEditRuangan')
                 @elseif ($halaman === 'contentDataRuangan')
                     <h4>Pengelolaan Ruangan</h4>
+                    <div class="pb-4">
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-ruangan</a>
+                    </div>
                     @include('components.admin.componentDataRuangan')
                 @elseif ($halaman === 'contentAgenda')
                     <h4>Agenda</h4>

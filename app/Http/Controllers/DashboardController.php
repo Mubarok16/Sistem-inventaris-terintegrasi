@@ -163,7 +163,34 @@ class DashboardController extends Controller
             ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->latest()
             ->get();
+
+        $barang = DB::table('items')
+            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->select(
+                'id_room',
+                'nama_tipe_item',
+                'nama_item',
+                'qty_item'
+            )
+            ->get()
+            ->groupBy('id_room');
+
+        $DataRuangan->map(function ($room) use ($barang) {
+            // Masukkan daftar barang ke dalam properti baru bernama 'items'
+            // Jika tidak ada barang di room tersebut, berikan array kosong
+            $room->items = $barang->get($room->id_room) ?? collect([]);
+            // Simpan total jumlah asli barang
+            $room->total_items_count = $room->items->count();
+
+            // Ambil hanya 3 barang pertama untuk ditampilkan
+            $room->items = $room->items->take(3);
+            return $room;
+        });
+
         $DataTipeRuangan = TipeRuangan::get();
+
+        // dd($DataRuangan);
+
         $user = Auth::user()->nama;
         $halaman = 'contentDataRuangan';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan'));

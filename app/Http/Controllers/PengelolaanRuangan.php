@@ -164,10 +164,19 @@ class PengelolaanRuangan extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
-        $DataRuangan = DataRuangan::where('id_room', $id)->first();
+
+        $DataRuangan = DataRuangan::where('id_room', $id)
+            ->get()->toArray();
+
+        $tipeRuangan = TipeRuangan::get();
+
+        session(['dataRuangTemp' => $DataRuangan]);
+
+        dd(session('dataRuangTemp'));
+
         $user = Auth::user()->nama;
         $halaman = 'contentDetailRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman','DataRuangan','user'));
+        return view('Page_admin.dashboard-admin', compact('halaman','DataRuangan','user', 'tipeRuangan'));
        
     }
 }

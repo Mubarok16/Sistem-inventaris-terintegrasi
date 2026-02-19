@@ -16,421 +16,534 @@
 
 {{-- data peminjam --}}
 <div class="flex flex-col gap-8 mt-4">
-    <!-- Section 1: Permohonan Peminjaman -->
-    <section class="bg-white rounded-md p-6 shadow-sm">
-        <!-- SectionHeader -->
-        <h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-2">
-            Data Agenda</h3>
-        <!-- Table -->
-        <div class="@container pb-2">
-            <div class="text-gray-600">
+    <!-- detail kerperluan -->
 
-                @forelse ($dataAgendaTemp as $DataAgenda)
-                    <form method="POST" action="{{ route('tambah-agenda') }}">
+    <div class="w-full!">
+        <!-- detail jdawal dan keperluan -->
+        @if ($dataAgenda->isEmpty())
+            <div class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <h5 class="font-semibold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-check text-primary"></i>
+                        Detail Jadwal &amp; Keperluan
+                    </h5>
+                    <form action="{{ route('simpan-tambah-agenda') }}" method="post">
                         @csrf
-                        <table>
-                            <tr>
-                                <td>Nama Agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="text" class="form-control" name="nama_agenda"
-                                        value="{{ $DataAgenda['nama_agenda'] }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Periode mulai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="date" name="tgl-mulai" class="form-control"
-                                        value="{{ $DataAgenda['tgl-mulai'] }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Periode selesai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="date" name="tgl-selesai" class="form-control"
-                                        value="{{ $DataAgenda['tgl-selesai'] }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Repeat Periode</td>
-                                <td class="pl-4! pb-2 flex gap-2">
-                                    <div class="flex items-center">
-                                        <input id="default-radio-1" type="radio" value="harian" name="repeat"
-                                            {{ $DataAgenda['repeat'] === 'harian' ? 'checked' : '' }}
-                                            class="w-4 h-4 text-blue-500 bg-neutral-secondary-medium rounded-full">
-                                        <label for="default-radio-1"
-                                            class="select-none ms-2 text-sm font-medium text-heading">
-                                            harian
-                                        </label>
+                        <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                            <i class="fas fa-check-circle text-white"></i>
+                            <span class="text-white">Simpan Agenda</span>
+                        </button>
+                    </form>
+                </div>
+                <form action="{{ route('kunci-agenda-tambah-agenda') }}" method="post">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-4">
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                Kode Agenda
+                            </span>
+                            <br>
+                            <input type="text" name="kode_agenda" id="kode_agenda"
+                                class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                Nama Agenda
+                            </span>
+                            <br>
+                            <input type="text" name="nama_agenda" id="nama_agenda"
+                                class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+
+                            <div class="flex flex-col mt-2!">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                    Mulai Agenda</span>
+                                <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                    <i class="fa-solid fa-right-to-bracket text-green-600"></i>
+                                    <input type="date" name="tgl_mulai_agenda" id="tgl_mulai_agenda">
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                    selesai agenda</span>
+                                <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                    <i class="fa-solid fa-right-from-bracket text-red-500"></i>
+                                    <input type="date" name="tgl_selesai_agenda" id="tgl_selesai_agenda">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                Tipe Agenda
+                            </span>
+                            <br>
+                            <select name="tipe_agenda"
+                                class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+                                @php
+                                    // Daftar semua hari untuk isi dropdown
+                                    $tipe = ['kegiatan belajar mengajar', 'rapat', 'pts/pas'];
+                                @endphp
+
+                                @foreach ($tipe as $tipe)
+                                    <option>
+                                        {{ $tipe }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                Hari
+                            </span>
+                            <br>
+                            <select name="loop_agenda"
+                                class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+                                @php
+                                    // Daftar semua hari untuk isi dropdown
+                                    $semua_hari = [
+                                        'setiap hari',
+                                        'senin',
+                                        'selasa',
+                                        'rabu',
+                                        'kamis',
+                                        'jumat',
+                                        'sabtu',
+                                        'minggu',
+                                    ];
+                                @endphp
+
+                                @foreach ($semua_hari as $hari)
+                                    <option>
+                                        {{ $hari }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-group mb-3">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Tipe Jam
+                                </span>
+                                <br>
+                                <select name="tipe_jam" id="tipe_waktu"
+                                    class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full"
+                                    onchange="toggleJam()">
+                                    <option value="full day">
+                                        Full Day
+                                    </option>
+                                    <option value="spesifik" selected>
+                                        Spesifik
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="input_jam_container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Jam Mulai:</label>
+                                        <input type="time" name="jam_mulai"
+                                            class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full"
+                                            id="jam_mulai">
                                     </div>
-                                    <div class="flex items-center">
-                                        <input id="default-radio-2" type="radio" value="mingguan"
-                                            {{ $DataAgenda['repeat'] === 'mingguan' ? 'checked' : '' }} name="repeat"
-                                            class="w-4 h-4 text-blue-500 bg-neutral-secondary-medium rounded-full">
-                                        <label for="default-radio-2"
-                                            class="select-none ms-2 text-sm font-medium text-heading">
-                                            mingguan
-                                        </label>
+                                    <div class="col-md-6">
+                                        <label>Jam Selesai:</label>
+                                        <input type="time" name="jam_selesai"
+                                            class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full"
+                                            id="jam_selesai">
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jam mulai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="time" name="jam_mulai" class="form-control"
-                                        value="{{ $DataAgenda['jam_mulai'] }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jam selesai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="time" name="jam_selesai" class="form-control"
-                                        value="{{ $DataAgenda['jam_selesai'] }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tipe agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <select name="tipe" class="form-select">
-                                        <option value="{{ $DataAgenda['tipe'] }}">{{ $DataAgenda['tipe'] }}</option>
-                                        <option value="kegiatan belajar mengajar"
-                                            class="{{ $DataAgenda['tipe'] === 'kegiatan belajar mengajar' ? 'hidden' : '' }}">
-                                            kegiatan belajar mengajar</option>
-                                        <option value="Rapat pimpinan"
-                                            class="{{ $DataAgenda['tipe'] === 'Rapat pimpinan' ? 'hidden' : '' }}">
-                                            Rapat
-                                            pimpinan</option>
-                                        <option value="seminar/sidang"
-                                            class="{{ $DataAgenda['tipe'] === 'seminar/sidang' ? 'hidden' : '' }}">seminar/sidang
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm w-full justify-center mt-3">
+                        <i class="fas fa-key text-white"></i>
+                        <span class="text-white">kunci sementara detail jadwal dan keperluan</span>
+                    </button>
+                </form>
+            </div>
+        @else
+            @foreach ($dataAgenda as $dataPeminjaman)
+                <!-- detail jdawal dan keperluan -->
+                <div
+                    class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h5 class="font-semibold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-primary"></i>
+                            Detail Jadwal &amp; Keperluan
+                        </h5>
+                        <form action="{{ route('simpan-tambah-agenda') }}" method="post">
+                            @csrf
+                            {{-- <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}"> --}}
+                            <button type="submit"
+                                class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                <i class="fas fa-check-circle text-white"></i>
+                                <span class="text-white">Simpan Agenda</span>
+                            </button>
+                        </form>
+                    </div>
+                    <form action="{{ route('kunci-agenda-tambah-agenda') }}" method="post">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="space-y-4">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Kode Agenda
+                                </span>
+                                <br>
+                                <input type="text" name="kode_agenda" id="kode_agenda"
+                                    value="{{ $dataPeminjaman->kode_agenda }}" {{-- onchange="this.form.submit()" --}}
+                                    class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Nama Agenda
+                                </span>
+                                <br>
+                                <input type="text" name="nama_agenda" id="nama_agenda"
+                                    value="{{ $dataPeminjaman->nama_agenda }}" {{-- onchange="this.form.submit()" --}}
+                                    class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+
+                                <div class="flex flex-col mt-2!">
+                                    <span
+                                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                        Mulai Agenda</span>
+                                    <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                        <i class="fa-solid fa-right-to-bracket text-green-600"></i>
+                                        <input type="date" name="tgl_mulai_agenda" id="tgl_mulai_agenda"
+                                            value="{{ date('Y-m-d', strtotime($dataPeminjaman->tgl_mulai_agenda)) }}"
+                                            {{-- onchange="this.form.submit()" --}}>
+                                        {{-- {{ date('d F Y', strtotime($dataPeminjaman->tgl_mulai_agenda)) }} --}}
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tanggal
+                                        selesai agenda</span>
+                                    <div class="flex items-center gap-2 text-slate-900 font-medium">
+                                        <i class="fa-solid fa-right-from-bracket text-red-500"></i>
+                                        <input type="date" name="tgl_selesai_agenda" id="tgl_selesai_agenda"
+                                            value="{{ date('Y-m-d', strtotime($dataPeminjaman->tgl_selesai_agenda)) }}"
+                                            {{-- onchange="this.form.submit()" --}}>
+                                        {{-- {{ date('d F Y', strtotime($dataPeminjaman->tgl_selesai_agenda)) }} --}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Tipe Agenda
+                                </span>
+                                <br>
+                                <select name="tipe_agenda" class="form-control" {{-- onchange="this.form.submit()" --}}>
+                                    @php
+                                        // Daftar semua hari untuk isi dropdown
+                                        $tipe = ['kegiatan belajar mengajar', 'rapat', 'pts/pas'];
+                                    @endphp
+
+                                    @foreach ($tipe as $tipe)
+                                        <option value="{{ $tipe }}"
+                                            {{ $dataPeminjaman->tipe_agenda == $tipe ? 'selected' : '' }}>
+                                            {{ $tipe }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Hari
+                                </span>
+                                <br>
+                                <select name="loop_agenda" class="form-control">
+                                    @php
+                                        // Daftar semua hari untuk isi dropdown
+                                        $semua_hari = [
+                                            'setiap hari',
+                                            'senin',
+                                            'selasa',
+                                            'rabu',
+                                            'kamis',
+                                            'jumat',
+                                            'sabtu',
+                                            'minggu',
+                                        ];
+                                    @endphp
+
+                                    @foreach ($semua_hari as $hari)
+                                        <option value="{{ $hari }} "
+                                            {{ $dataPeminjaman->loop_hari == $hari ? 'selected' : '' }}>
+                                            {{ $hari }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="form-group mb-3">
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                        Jam
+                                    </span>
+                                    <br>
+                                    <select name="tipe_jam" id="tipe_waktu" class="form-control"
+                                        onchange="toggleJam()">
+                                        <option value="full day"
+                                            {{ $dataPeminjaman->tipe_jam === 'full day' ? 'selected' : '' }}>Full
+                                            Day
+                                        </option>
+                                        <option value="spesifik"
+                                            {{ $dataPeminjaman->tipe_jam === 'spesifik' ? 'selected' : '' }}>
+                                            Spesifik
                                         </option>
                                     </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="flex gap-2 mt-2">
-                            <button
-                                class="px-3 py-1.5 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                                kunci perubahan
-                            </button>
-                        </div>
-                    </form>
-                @empty
-                    <form method="POST" action="{{ route('tambah-agenda') }}">
-                        @csrf
-                        <table>
-                            <tr>
-                                <td>Nama Agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="text" class="form-control" name="nama_agenda" placeholder=" "
-                                        required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Periode mulai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="date" name="tgl-mulai" class="form-control">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Periode selesai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="date" name="tgl-selesai" class="form-control">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Repeat Periode</td>
-                                <td class="pl-4! pb-2 flex gap-2">
-                                    <div class="flex items-center">
-                                        <input type="radio" value="harian" name="repeat"
-                                            class="w-4 h-4 text-blue-500 bg-neutral-secondary-medium rounded-full">
-                                        <label for="default-radio-1"
-                                            class="select-none ms-2 text-sm font-medium text-heading">
-                                            harian
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input type="radio" value="mingguan" name="repeat"
-                                            class="w-4 h-4 text-blue-500 bg-neutral-secondary-medium rounded-full">
-                                        <label for="default-radio-2"
-                                            class="select-none ms-2 text-sm font-medium text-heading">
-                                            mingguan
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jam mulai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="time" name="jam_mulai" class="form-control" value="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jam selesai agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <input type="time" name="jam_selesai" class="form-control" value="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tipe agenda</td>
-                                <td class="pl-4! pb-2">
-                                    <select name="tipe" class="form-select">
-                                        <option value="kegiatan belajar mengajar">kegiatan belajar mengajar</option>
-                                        <option value="Rapat pimpinan">Rapat pimpinan</option>
-                                        <option value="seminar/sidang">seminar/sidang</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="flex gap-2 mt-2">
-                            <button
-                                class="px-3 py-1.5 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                                kunci perubahan
-                            </button>
-                        </div>
-                    </form>
-                @endforelse
+                                </div>
 
+                                <div id="input_jam_container"
+                                    {{ $dataPeminjaman->tipe_jam === 'full day' ? 'style=display:none;' : 'style=display:block;' }}>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Jam Mulai:</label>
+                                            <input type="time" name="jam_mulai" class="form-control"
+                                                id="jam_mulai"
+                                                value="{{ $dataPeminjaman->tipe_jam === 'full day' ? '' : $dataPeminjaman->jam_mulai }}"
+                                                {{-- onchange="this.form.submit()" --}}>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Jam Selesai:</label>
+                                            <input type="time" name="jam_selesai" class="form-control"
+                                                id="jam_selesai"
+                                                value="{{ $dataPeminjaman->tipe_jam === 'full day' ? '' : $dataPeminjaman->jam_selesai }}"
+                                                {{-- onchange="this.form.submit()" --}}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm w-full justify-center mt-3">
+                            <i class="fas fa-key text-white"></i>
+                            <span class="text-white">kunci perubahan detail jadwal dan keperluan</span>
+                        </button>
+                    </form>
+                </div>
+            @endforeach
+        @endif
+
+    </div>
+</div>
+
+
+{{-- tampilan add barang dan ruang dan tampilan semua data barang dan ruangan --}}
+<div class="mt-5 mb-3">
+    <div x-data="{
+        showPicker: false,
+        currentTab: 'barang',
+        products: [],
+        init() { this.products = productsData }
+    }" x-init="init()">
+
+        <div
+            class="flex flex-col md:flex-row items-center justify-start md:justify-between border-b border-slate-100 pb-4 gap-4">
+            <h5 class="font-semibold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-check text-primary"></i>
+                Detail Barang &amp; Ruangan yang Digunakan
+            </h5>
+            <button @click="showPicker = true"
+                class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm">
+                {{-- <i class="fa-solid fa-print text-lg text-white"></i> --}}
+                <i class="fas fa-plus text-white"></i>
+                <span class="text-white">add barang atau ruangan</span>
+            </button>
+        </div>
+
+        <div x-show="showPicker" x-transition.opacity
+            class="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4 md:p-10"
+            x-cloak>
+
+            <div @click.away="showPicker = false"
+                class="bg-gray-50 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+
+                <div class="bg-white border-b border-gray-300">
+                    <div class="py-3 px-6 flex justify-between items-center">
+                        <h5 class="text-xl font-bold text-gray-800">
+                            <i class="fa-solid fa-box text-primary"></i>
+                            Pilih Barang atau Ruangan Yang ingin ditambahkan
+                        </h5>
+
+                        <button @click="showPicker = false"
+                            class="text-gray-400 hover:text-red-500 text-3xl font-light">
+                            &times;
+                        </button>
+                    </div>
+
+                    <div class="flex px-5 space-x-6 gap-3">
+                        <button @click="currentTab = 'barang'"
+                            :class="currentTab === 'barang' ? 'text-indigo-600 border-indigo-600' :
+                                'text-gray-500 border-transparent hover:text-gray-700'"
+                            class="pb-3 border-b-1 font-normal transition">
+                            Daftar Barang
+                        </button>
+                        <button @click="currentTab = 'ruangan'"
+                            :class="currentTab === 'ruangan' ? 'text-indigo-600 border-indigo-600' :
+                                'text-gray-500 border-transparent hover:text-gray-700'"
+                            class="pb-3 border-b-1 font-normal transition">
+                            Daftar Ruangan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-6 overflow-y-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        <template x-for="item in products.filter(i => i.category === currentTab)"
+                            :key="item.id">
+
+                            <!-- Product Card 1 -->
+                            <article
+                                class="group relative flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-0">
+                                <!-- Image Container -->
+                                <div class="relative aspect-square overflow-hidden bg-gray-200 ">
+                                    <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
+                                        data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
+                                        :style="`background-image: url('{{ asset('storage') }}/${item.img_item}')`">
+                                    </div>
+                                    <!-- Quick Action Overlay -->
+                                    <div
+                                        class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <button
+                                            class="bg-white text-slate-900 hover:bg-primary hover:text-white transition-colors p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                            <span class="material-symbols-outlined text-[20px]"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Content -->
+                                <div class="px-3 py-3 flex flex-col gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                            x-text="item.nama_tipe_item"></span>
+                                        <div class="flex items-center gap-1 text-green-500">
+                                            stok:
+                                            <span class="material-symbols-outlined text-[16px] leading-none"
+                                                x-text="item.qty_item">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('kunci-barang-ruang-tambah-agenda') }}" method="post">
+                                        @csrf
+                                        <div class="flex justify-between">
+                                            <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors"
+                                                x-text="item.nama_item">
+                                            </h3>
+                                            <input x-show="currentTab === 'barang'" type="number" name="qty_usage"
+                                                class="w-10 border-1 border-slate-300 rounded-md px-1" value="0">
+                                            <input name="qty_item" type="text" :value="item.qty_item" hidden>
+                                        </div>
+                                        <div class="flex items-center justify-between mt-auto pt-2">
+                                            <div class="flex gap-2 w-full">
+                                                {{-- <input name="id_agenda" type="text" value="{{ $id }}"
+                                                    hidden> --}}
+                                                <input name="id_item_room" type="text" :value="item.id"
+                                                    hidden>
+                                                <button type="submit" id="pilih_barangruang"
+                                                    class="py-1 px-2 text-white bg-blue-500 hover:bg-blue-300 flex justify-center items-center text-center gap-1 w-full rounded ">
+                                                    Pilih <span
+                                                        x-text="currentTab === 'barang' ? 'Barang' : 'Ruangan'"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </article>
+                        </template>
+
+                    </div>
+
+                    <div x-show="products.filter(i => i.category === currentTab).length === 0"
+                        class="text-center py-20 text-gray-400">
+                        Tidak ada data ditemukan.
+                    </div>
+                </div>
+
+                {{-- <div class="bg-white p-4 border-t text-right">
+                        <button @click="showPicker = false"
+                            class="px-6 py-2 bg-gray-100 rounded-lg text-gray-600 hover:bg-gray-200 transition">
+                            Selesai
+                        </button>
+                    </div> --}}
             </div>
         </div>
-    </section>
+    </div>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+    </style>
 </div>
 
-{{-- data usage barang --}}
-<div x-data="{ AddDataBarang: false, EditDataBarang: false, selectedDataBarang: {}, DeleteDataBarang: false }" class="bg-white rounded-md shadow-md my-4 py-4 px-3">
-    <div class="flex justify-betwean items-center gap-4 mb-2">
-        <h5 class="flex-1 text-xl font-bold leading-tight tracking-tight mb-4 text-gray-600">Daftar Barang yang
-            digunakan</h5>
-        <button @click="AddDataBarang = true"
-            class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
-            <span>Add Barang</span>
-        </button>
-    </div>
-    <div class="relative overflow-x-auto bg-neutral-primary-soft">
-        <table class="w-full text-left table-striped text-sm">
-            <thead class="sticky top-0 z-1 bg-primary">
-                <tr class="text-white">
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        Kode Barang
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        Nama Barang
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        tempat menyimpan
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        qty usage
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        aksi
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($dataAgendaBarangTemp as $dataBarangTemp)
-                    <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+<!-- tampilan barang dan runagan sementara -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-5">
+    @foreach ($semuaData as $dataBarang)
+        <!-- Product Card 1 -->
+        <article
+            class="group relative flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-0">
+            <!-- Image Container -->
+            <div class="relative aspect-square overflow-hidden bg-gray-200 ">
+                <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
+                    data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
+                    style='background-image: url("/storage/{{ $dataBarang->img_item ?? $dataBarang->gambar_room }}");'>
+                </div>
+                <!-- Quick Action Overlay -->
+                <div class="absolute top-2 right-2 z-[10] pointer-events-auto">
+                    <form action="{{ route('hapus-barang-ruang-tambah-agenda') }}" method="post">
+                        @csrf
 
-                        <th scope="row" class="px-6 py-4 font-normal!">
-                            {{ $dataBarangTemp['id_item'] }}
-                        </th>
-                        <th scope="row" class="px-6 py-4 font-normal!">
-                            {{ $dataBarangTemp['nama_item'] }}
-                        </th>
-                        <th scope="row" class="px-6 py-4 font-normal!">
-                            {{ $dataBarangTemp['nama_room'] }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $dataBarangTemp['qty_usage'] }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <form action="{{ route('hapus-barang-agenda') }}" method="POST">
-                                @csrf
-                                <input type="text" name="id_item" class="hidden"
-                                    value="{{ $dataBarangTemp['id_item'] }}">
-                                <button
-                                    class="py-1 px-2 text-white bg-red-500 hover:bg-red-400 flex items-center gap-1">
-                                    <i class="material-symbols-outlined text-xs fa-solid fa-trash-can"></i>
-                                    <span>Hapus</span>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
-                        <td class="px-4 py-3 text-sm font-normal text-center" colspan="5">
-                            <span class="text-gray-700 font-semibold">Data kosong!</span>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                        <input name="id_item_room" type="text"
+                            value="{{ $dataBarang->id_room ?? $dataBarang->id_item }}" hidden>
 
-    {{-- show add tipe ruangan --}}
-    <div x-show="AddDataBarang"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
-        x-transition x-cloak>
-        <div @click.outside="AddDataBarang = false"
-            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
-
-            <button @click="AddDataBarang = false"
-                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-
-            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Add Barang</h2>
-
-            <form method="POST" action="{{ route('tambah-barang-agenda') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row gy-2 overflow-hidden">
-                    <div class="col-12 m-0">
-                        <div class="input-group mb-2">
-                            <span class="input-group-text">
-                                <i class="fa-solid fa-home"></i>
-                            </span>
-                            <select name="id_item" class="form-select" required>
-                                <option value="">--- Pilih Barang ---</option>
-                                @foreach ($dataBarang as $dataBarang)
-                                    <option value="{{ $dataBarang->id_item }}">
-                                        {{ $dataBarang->nama_item }}
-                                        Ruang
-                                        {{ $dataBarang->nama_room }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 m-0">
-                        <div class="form-floating mb-2">
-                            <input type="number" class="form-control" name="qty_usage" placeholder=" " required>
-                            <label class="form-label">Qty usage</label>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-grid">
-                            <button class="btn btn-primary w-100" type="submit">kunci perubahan</button>
-                        </div>
+                        <button type="submit"
+                            class="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-lg! shadow-lg transition-all duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-red-700 hover:scale-110 active:scale-90">
+                            <i class="fas fa-times text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Content -->
+            <div class="px-3 py-3 flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                        {{ $dataBarang->nama_tipe_item ?? $dataBarang->nama_tipe_room }}
+                    </span>
+                    <div class="flex items-center gap-1 text-green-500">
+                        <span
+                            class="material-symbols-outlined text-[16px] leading-none">{{ $dataBarang->kondisi_item ?? $dataBarang->kondisi_room }}</span>
+                        {{-- <span class="text-xs font-semibold text-slate-600 ">5.0</span> --}}
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-{{-- data usage ruangan --}}
-<div x-data="{ AddDataRuangan: false }" class="bg-white rounded-md shadow-md my-4 py-4 px-3">
-    <div class="flex justify-betwean items-center gap-4 mb-2">
-        <h5 class="flex-1 text-xl font-bold leading-tight tracking-tight mb-4 text-gray-600">Daftar ruangan yang
-            digunakan
-        </h5>
-        <button @click="AddDataRuangan = true"
-            class="flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm leading-normal tracking-wide hover:bg-primary/90 transition-colors">
-            <span>Add Ruangan</span>
-        </button>
-    </div>
-    <div class="relative overflow-x-auto bg-neutral-primary-soft">
-        <table class="w-full text-left table-striped text-sm">
-            <thead class="sticky top-0 z-1 bg-primary">
-                <tr class="text-white">
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        Kode Ruangan
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        Nama Ruangan
-                    </th>
-                    {{-- <th scope="col" class="px-6 py-3 font-medium">
-                        tanggal selesai
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        jam mulai
-                    </th>
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        jam selesai
-                    </th> --}}
-                    <th scope="col" class="px-6 py-3 font-medium">
-                        Aksi
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($dataAgendaRuanganTemp as $dataRuanganTemp)
-                    <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
-                        <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                            {{ $dataRuanganTemp['id_room'] }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $dataRuanganTemp['nama_tipe_room'] }}
-                            {{ $dataRuanganTemp['nama_room'] }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <form action="{{ route('hapus-ruangan-agenda') }}" method="POST">
-                                @csrf
-                                <input type="text" name="id_room" class="hidden"
-                                    value="{{ $dataRuanganTemp['id_room'] }}">
-                                <button
-                                    class="py-1 px-2 text-white bg-red-500 hover:bg-red-400 flex items-center gap-1">
-                                    <i class="material-symbols-outlined text-xs fa-solid fa-trash-can"></i>
-                                    <span>Hapus</span>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr class="border-b border-slate-200 odd:bg-gray-200 even:bg-white">
-                        <td class="px-4 py-3 text-sm font-normal text-center" colspan="3">
-                            <span class="text-gray-700 font-semibold">Data kosong!</span>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    {{-- show add tipe ruangan --}}
-    <div x-show="AddDataRuangan"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
-        x-transition x-cloak>
-        <div @click.outside="AddDataRuangan = false"
-            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
-
-            <button @click="AddDataRuangan = false"
-                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-
-            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Add Ruangan</h2>
-
-            <form method="POST" action="{{ route('tambah-ruangan-agenda') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="row gy-2 overflow-hidden">
-                    <div class="col-12 m-0">
-                        <div class="input-group mb-2">
-                            <span class="input-group-text">
-                                <i class="fa-solid fa-home"></i>
-                            </span>
-                            <select name="id_room" class="form-select" required>
-                                <option value="">--- Pilih Ruangan ---</option>
-                                @foreach ($dataRoom as $dataRoom)
-                                    <option value="{{ $dataRoom->id_room }}">
-                                        {{ $dataRoom->nama_tipe_room }}
-                                        {{ $dataRoom->nama_room }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-grid">
-                            <button class="btn btn-primary w-100" type="submit">kunci perubahan</button>
-                        </div>
-                    </div>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors">
+                        {{ $dataBarang->nama_item ?? $dataBarang->nama_room }}
+                    </h3>
+                    <span class="text-xs font-medium text-slate-700 uppercase tracking-wide">
+                        qty: {{ $dataBarang->qty_usage_item ?? '-' }}
+                    </span>
                 </div>
-            </form>
-        </div>
-    </div>
+            </div>
+        </article>
+    @endforeach
 </div>
 
-{{-- tombol menyimpan agenda ke db --}}
-<div class="my-4 ">
-    <form action="{{ route('simpan-agenda') }}" method="POST">
-        @csrf
-        <button class="px-3 py-1.5 text-sm font-medium text-white bg-green-500 rounded-md! hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-background-dark w-full">
-            simpan agenda
-        </button>
-    </form>
-</div>
+<script>
+    // Render data collection sebagai JSON
+    const productsData = @json($allBarangRuang);
+
+    function toggleJam() {
+        const tipeWaktu = document.getElementById('tipe_waktu').value;
+        const containerJam = document.getElementById('input_jam_container');
+        const Jam_mulai = document.getElementById('jam_mulai');
+        const Jam_selesai = document.getElementById('jam_selesai');
+
+        if (tipeWaktu === 'spesifik') {
+            containerJam.style.display = 'block';
+        } else {
+            containerJam.style.display = 'none';
+        }
+    }
+</script>

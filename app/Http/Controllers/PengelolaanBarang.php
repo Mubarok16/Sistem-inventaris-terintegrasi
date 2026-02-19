@@ -2,12 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataBarang;
+use App\Models\DataRuangan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
 class PengelolaanBarang extends Controller
 {
+
+    public function haleditBarang($id){
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+        $DataBarang = DataBarang::where('id_item', $id)->first();
+        $user = Auth::user()->nama;
+        $halaman = 'contentEditBarang';
+        return view('Page_admin.dashboard-admin', compact('halaman','DataBarang','user'));
+    }
+
     public function simpanTipeBarang(Request $request)
     {
         // dd($request->all());
