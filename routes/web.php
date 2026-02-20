@@ -93,6 +93,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/tambah-ruangan', [PengelolaanRuangan::class, 'tambahRuangan'])->name('addRuangan');
     Route::post('/admin/delete-ruangan/{id}', [PengelolaanRuangan::class, 'hapusRuangan']);
     Route::get('/admin/data-ruangan/edit/{id}', [PengelolaanRuangan::class, 'DetailRuangan'])->name('edit-ruangan');
+    Route::post('/edit-ruangan-informasi-dasar', [PengelolaanRuangan::class, 'editRuanganInfoDasar'])->name('edit-ruangan-informasi-dasar');
+    Route::post('/edit-ruangan-kondisi', [PengelolaanRuangan::class, 'editRuanganKondisi'])->name('edit-ruangan-kondisi');
+    Route::post('/edit-ruangan-visibility', [PengelolaanRuangan::class, 'editRuanganVisibility'])->name('edit-ruangan-visibility');
+
 
     // pengelolaan barang ======================================================================================================================
     Route::post('admin/tambah-tipe-barang', [PengelolaanBarang::class, 'simpanTipeBarang'])->name('addTipeBarang');

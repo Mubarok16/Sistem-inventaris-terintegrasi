@@ -166,17 +166,150 @@ class PengelolaanRuangan extends Controller
         }
 
         $DataRuangan = DataRuangan::where('id_room', $id)
-            ->get()->toArray();
+            ->get();
 
         $tipeRuangan = TipeRuangan::get();
 
-        session(['dataRuangTemp' => $DataRuangan]);
+        $dataBarangYgDruangan = DB::table('items')
+            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->where('items.id_room', '=', $id)
+            ->select(
+                'items.id_item',
+                'items.nama_item',
+                'items.img_item',
+                'items.qty_item',
+                'tipe_item.nama_tipe_item'
+            )
+            ->get();
 
-        dd(session('dataRuangTemp'));
+        // session(['dataRuangTemp' => $DataRuangan]);
+        // session(['dataBarangYgDruangan' => $dataBarangYgDruangan]);
+
+        // dd($DataRuangan);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman','DataRuangan','user', 'tipeRuangan'));
-       
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan'));
+    }
+
+    // fungsi untuk edit informasi dasar ruangan
+    public function editRuanganInfoDasar(Request $request)
+    {
+        $DataRuang_lama = DataRuangan::where('nama_room', $request->nama_room)
+            ->where('id_tipe_room', $request->tipe_room)
+            ->whereNot('id_room', $request->id_room)
+            ->count();
+
+        if ($DataRuang_lama > 0) {
+            return redirect()->back()->with('gagal', 'Nama ruangan dan tipe ruangan sudah ada!');
+        }
+
+        // jika tidak ada gambar baru yang di upload, maka simpan perubahan data ruangan tanpa mengubah gambar
+        if (!isset($request->gambar_room)) {
+            // simapan perubahan data ruangan tanpa mengubah gambar
+            $ruangan = DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'nama_room' => $request->nama_room,
+                    'id_tipe_room' => $request->tipe_room,
+                    // 'kondisi_room' => $request->kondisi_room,
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->back()->with('success', 'data informasi dasar berhasil diperbarui!');
+        } else {
+
+            $gambar_lama = DataRuangan::where('id_room', $request->id_room)
+                ->select('gambar_room')
+                ->first();
+
+            // dd($gambar_lama['gambar_room']);
+
+            // Cek apakah file ada sebelum dihapus agar tidak error
+            if (Storage::disk('public')->exists($gambar_lama['gambar_room'])) {
+                Storage::disk('public')->delete($gambar_lama['gambar_room']);
+            }
+
+            // ambil path gambar baru dari request
+            $file = $request->gambar_room;
+            // simpan file baru
+            $path = $file->store('uploads/ruangan/', 'public');
+
+            // simpan data ruangan yang sudah di update ke database
+            $ruangan = DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'nama_room' => $request->nama_room,
+                    'id_tipe_room' => $request->tipe_room,
+                    // 'kondisi_room' => $request->kondisi_room,
+                    'gambar_room' => $path,
+                    'updated_at' => now(),
+                ]);
+            return redirect()->back()->with('success', 'data informasi dasar berhasil diperbarui!');
+        }
+    }
+
+    public function editRuanganKondisi(Request $request)
+    {
+        // dd($request->all());
+
+        if (isset($request->kondisi)) {
+            // kondisi diubah menjadi baik
+            DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'kondisi_room' => 'Baik',
+                    'updated_at' => now(),
+                ]);
+            return redirect()->back()->with('success', 'data kondisi berhasil diperbarui!');
+        } else {
+            // kondisi diubah menjadi rusak
+            DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'kondisi_room' => 'Rusak',
+                    'visibility_room' => '0',
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->back()->with('success', 'data kondisi berhasil diperbarui!');
+        }
+    }
+
+    public function editRuanganVisibility(Request $request)
+    {
+        // dd($request->all());
+
+        if (isset($request->visibility)) {
+
+            $kondisi_room = DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->where('kondisi_room', 'Baik')
+                ->count();
+
+            // visibility diubah menjadi bisa terlihat, maka kondisi room harus baik
+            if ($kondisi_room === 0) {
+                return redirect()->back()->with('gagal', 'Ruangan yang rusak tidak dapat diubah menjadi bisa dipinjamkan, silakan ubah kondisi ruangan menjadi baik terlebih dahulu!');
+            }
+
+            // kondisi diubah menjadi bisa dipinjamkan
+            DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'visibility_room' => '1',
+                    'updated_at' => now(),
+                ]);
+            return redirect()->back()->with('success', 'data visibility berhasil diperbarui!');
+        } else {
+            // visibility diubah menjadi tidak bisa dipinjamkan
+            DB::table('rooms')
+                ->where('id_room', $request->id_room)
+                ->update([
+                    'visibility_room' => '0',
+                    'updated_at' => now(),
+                ]);
+
+            return redirect()->back()->with('success', 'data visibility berhasil diperbarui!');
+        }
     }
 }
