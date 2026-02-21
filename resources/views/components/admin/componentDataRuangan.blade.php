@@ -43,6 +43,7 @@
 
         {{-- data ruangan --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false, OpenImgRuangan: false }">
+
             {{-- add raungan baru --}}
             <div
                 class="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 text-center min-h-[400px] hover:border-primary/40 hover:bg-white transition-all group">
@@ -73,8 +74,7 @@
                                 </span>
                                 <h5 class="text-xl font-bold text-slate-900">{{ $ruang->nama_room }}</h5>
                             </div>
-                            <span
-                                class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
+                            <span class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
                                 Tersedia
                             </span>
                         </div>
@@ -117,14 +117,15 @@
                             </ul>
                             @if ($ruang->total_items_count > 3)
                                 <div class="items-center flex justify-center">
-                                    <a href="/admin/data-ruangan/detail/{{ $ruang->id_room }}" class="text-sm">lebih
-                                        banyak</a>
+                                    <a href="{{ route('edit-ruangan', ['id' => $ruang->id_room]) }}" class="text-sm">
+                                        lebih banyak
+                                    </a>
                                 </div>
                             @endif
                         </div>
                     </div>
                     <div class="p-4 bg-slate-50 border-t border-slate-100 mt-auto flex gap-2">
-                        <a href="{{ route('edit-ruangan', ['id' => $ruang->id_room ]) }}"
+                        <a href="{{ route('edit-ruangan', ['id' => $ruang->id_room]) }}"
                             class="flex-grow bg-white hover:bg-primary hover:text-white text-primary py-2.5 rounded-lg font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-primary/20 shadow-sm no-underline!">
                             <i class="fa-solid fa-pen-to-square"></i>
                             edit
@@ -412,7 +413,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <footer class="mt-12 pt-8 border-t border-slate-200 text-center text-slate-400 text-sm">
                 <p>© 2024 Sistem Peminjaman Fakultas. Administrasi Tipe Ruangan v1.3</p>
             </footer>

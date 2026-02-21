@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/edit-ruangan-informasi-dasar', [PengelolaanRuangan::class, 'editRuanganInfoDasar'])->name('edit-ruangan-informasi-dasar');
     Route::post('/edit-ruangan-kondisi', [PengelolaanRuangan::class, 'editRuanganKondisi'])->name('edit-ruangan-kondisi');
     Route::post('/edit-ruangan-visibility', [PengelolaanRuangan::class, 'editRuanganVisibility'])->name('edit-ruangan-visibility');
+    Route::post('/edit-ruangan-pindah-barang', [PengelolaanRuangan::class, 'editRuanganPindahBarang'])->name('edit-ruangan-pindah-barang');
 
 
     // pengelolaan barang ======================================================================================================================
@@ -105,6 +106,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/tambah-barang', [PengelolaanBarang::class, 'tambahBarang'])->name('addBarang');
     Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang']);
     Route::get('/admin/data-barang/edit/{id}', [PengelolaanBarang::class, 'haleditBarang'])->name('edit-barang');
+    Route::post('/edit-barang-informasi-dasar', [PengelolaanBarang::class, 'editBarangInfoDasar'])->name('edit-barang-informasi-dasar');
+    Route::post('/edit-barang-kondisi', [PengelolaanBarang::class, 'editBarangKondisi'])->name('edit-barang-kondisi');
+    Route::post('/edit-barang-visibility', [PengelolaanBarang::class, 'editBarangVisibility'])->name('edit-barang-visibility');
 
 
     // pengelolaan peminjaman ==================================================================================================================

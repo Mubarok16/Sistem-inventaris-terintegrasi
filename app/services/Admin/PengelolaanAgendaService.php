@@ -103,7 +103,8 @@ class PengelolaanAgendaService
                 'items.kondisi_item',
                 'items.img_item',
                 'items.qty_item',
-                'tipe_item.nama_tipe_item'
+                'tipe_item.nama_tipe_item',
+                'items.id_room'
             )
             ->get()
             ->map(function ($item) {

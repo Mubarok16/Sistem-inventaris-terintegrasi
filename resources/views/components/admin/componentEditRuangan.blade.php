@@ -123,22 +123,137 @@
 
             {{-- barang yg ada di raungannya --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                {{-- tombol tambah --}}
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center"
+                    x-data="{
+                        showPicker: false,
+                        currentTab: 'barang',
+                        products: [],
+                        init() { this.products = productsData }
+                    }" x-init="init()">
+
                     <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-boxes-stacked text-primary"></i>
                         Daftar Barang Yang Tersimpan
                     </h2>
-                    {{-- <form action="" method="post">
-                        @csrf
-                    </form> --}}
                     @foreach ($DataRuangan as $ruang)
                         <input type="text" name="id_room" value="{{ $ruang->id_room }}" hidden>
-                        <button type="submit"
+                        <button @click="showPicker = true"
                             class="text-primary text-sm font-bold hover:underline flex items-center gap-1">
                             <i class="fa-solid fa-plus-circle"></i> Tambah Barang Ke Ruangan
                         </button>
                     @endforeach
+
+                    {{-- all ruangan --}}
+                    <div x-show="showPicker" x-transition.opacity
+                        class="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4 md:p-10"
+                        x-cloak>
+
+                        <div @click.away="showPicker = false"
+                            class="bg-gray-50 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+
+                            <div class="bg-white border-b border-gray-300">
+                                <div class="py-3 px-6 flex justify-between items-center">
+                                    <h5 class="text-xl font-bold text-gray-800">
+                                        <i class="fa-solid fa-box text-primary"></i>
+                                        Pilih Barang atau Ruangan Yang ingin dipindahkan ke rungan ini
+                                    </h5>
+
+                                    <button @click="showPicker = false"
+                                        class="text-gray-400 hover:text-red-500 text-3xl font-light">
+                                        &times;
+                                    </button>
+                                </div>
+
+                                <div class="flex px-5 space-x-6 gap-3">
+                                    <button @click="currentTab = 'barang'"
+                                        :class="currentTab === 'barang' ? 'text-indigo-600 border-indigo-600' :
+                                            'text-gray-500 border-transparent hover:text-gray-700'"
+                                        class="pb-3 border-b-1 font-normal transition">
+                                        Daftar Barang
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-6 overflow-y-auto">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                                    <template x-for="item in products.filter(i => i.category === currentTab)"
+                                        :key="item.id">
+
+                                        <!-- Product Card 1 -->
+                                        <article
+                                            class="group relative flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-0">
+                                            <!-- Image Container -->
+                                            <div class="relative aspect-square overflow-hidden bg-gray-200 ">
+                                                <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
+                                                    data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
+                                                    :style="`background-image: url('{{ asset('storage') }}/${item.img_item}')`">
+                                                </div>
+                                                <!-- Quick Action Overlay -->
+                                                <div
+                                                    class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                    <button
+                                                        class="bg-white text-slate-900 hover:bg-primary hover:text-white transition-colors p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                                        <span class="material-symbols-outlined text-[20px]"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- Content -->
+                                            <div class="px-3 py-3 flex flex-col gap-2">
+                                                <div class="flex items-center justify-between">
+                                                    <span
+                                                        class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                                        x-text="item.nama_tipe_item"></span>
+                                                    <div class="flex items-center gap-1 text-green-500">
+                                                        stok:
+                                                        <span
+                                                            class="material-symbols-outlined text-[16px] leading-none"
+                                                            x-text="item.qty_item">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <form action="{{ route('edit-ruangan-pindah-barang') }}"
+                                                    method="post">
+                                                    @csrf
+                                                    <div class="flex justify-between">
+                                                        <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors"
+                                                            x-text="item.nama_item">
+                                                        </h3>
+                                                        <input name="qty_item" type="text" :value="item.qty_item"
+                                                            hidden>
+                                                    </div>
+                                                    <div class="flex items-center justify-between mt-auto pt-2">
+                                                        <div class="flex gap-2 w-full">
+                                                            <input name="id_item_room" type="text"
+                                                                :value="item.id" hidden>
+                                                            <input name="id_room_sekarang" type="text"
+                                                                value="{{ $id }}" hidden>
+                                                            <button type="submit" id="pilih_barangruang" :disabled="item.id_room === '{{ $id }}'"
+                                                                :class="item.id_room == '{{ $id ?? '' }}' ? 'bg-gray-400 opacity-50 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-300'"
+                                                                class="py-1 px-2 text-white flex justify-center items-center text-center gap-1 w-full rounded ">
+                                                                Pindahkan <span
+                                                                    x-text="currentTab === 'barang' ? 'Barang' : 'Ruangan'"></span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </article>
+                                    </template>
+
+                                </div>
+
+                                <div x-show="products.filter(i => i.category === currentTab).length === 0"
+                                    class="text-center py-20 text-gray-400">
+                                    Tidak ada data ditemukan.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- list barang --}}
                 <div class="p-6">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -271,6 +386,9 @@
 </main>
 
 <script>
+
+    const productsData = @json($allBarangRuang);
+
     function imageUploader(existingUrl = null) {
         return {
             isDragging: false,

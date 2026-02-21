@@ -82,7 +82,7 @@
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">Edit-barang</a>
                     </div>
-                    {{-- @include('components.admin.componentDataRuangan') --}}
+                    @include('components.admin.componentEditBarang')
                 @elseif ($halaman === 'contentDetailRuangan')
                     <h4>Edit Ruangan</h4>
                     <div class="pb-4">

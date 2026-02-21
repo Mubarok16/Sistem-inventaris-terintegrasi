@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TipeRuangan;
 use App\Models\DataRuangan;
+use App\Services\Admin\PengelolaanAgendaService;
 use Illuminate\Support\Facades\Auth;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,7 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('gagal', 'Terjadi kesalahan saat menambahkan tipe ruangan' . $e->getMessage());
         }
     }
-
+    // fungsi untuk edit tipe ruangan
     public function editTipeRuangan(Request $request, $id)
     {
         // dd($request->all());
@@ -65,7 +66,7 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('gagal', 'Terjadi kesalahan saat menambahkan tipe ruangan' . $e->getMessage());
         }
     }
-
+    // fungsi untuk menghapus tipe ruangan
     public function hapusTipeRuangan(Request $request, $id)
     {
         try {
@@ -85,7 +86,6 @@ class PengelolaanRuangan extends Controller
     }
 
     // fungsi untuk menambah ruangan baru =============================================================
-
     public function tambahRuangan(Request $request)
     {
         try {
@@ -133,7 +133,7 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('gagal', $e->getMessage());
         }
     }
-
+    // fungsi untuk menghapus ruangan
     public function hapusRuangan($id)
     {
         try {
@@ -159,6 +159,7 @@ class PengelolaanRuangan extends Controller
         }
     }
 
+    // halaman edit ruangan ==================================================================================================================
     public function DetailRuangan(Request $request, $id)
     {
         if (Auth::user()->hak_akses  !== "admin") {
@@ -169,6 +170,10 @@ class PengelolaanRuangan extends Controller
             ->get();
 
         $tipeRuangan = TipeRuangan::get();
+
+        // mengambil semua data barang dan ruangan
+        $PengelolaanAgendaService = new PengelolaanAgendaService;
+        $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
 
         $dataBarangYgDruangan = DB::table('items')
             ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
@@ -185,11 +190,11 @@ class PengelolaanRuangan extends Controller
         // session(['dataRuangTemp' => $DataRuangan]);
         // session(['dataBarangYgDruangan' => $dataBarangYgDruangan]);
 
-        // dd($DataRuangan);
+        // dd($allBarangRuang);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan', 'allBarangRuang', 'id'));
     }
 
     // fungsi untuk edit informasi dasar ruangan
@@ -248,7 +253,7 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('success', 'data informasi dasar berhasil diperbarui!');
         }
     }
-
+    // fungsi untuk edit kondisi ruangan
     public function editRuanganKondisi(Request $request)
     {
         // dd($request->all());
@@ -275,7 +280,7 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('success', 'data kondisi berhasil diperbarui!');
         }
     }
-
+    // fungsi untuk edit visibility ruangan
     public function editRuanganVisibility(Request $request)
     {
         // dd($request->all());
@@ -311,5 +316,23 @@ class PengelolaanRuangan extends Controller
 
             return redirect()->back()->with('success', 'data visibility berhasil diperbarui!');
         }
+    }
+
+    // fungsi untuk memindahkan barang dari satu ruangan ke ruangan lain
+    public function editRuanganPindahBarang(Request $request)
+    {
+        // dd($request->all());
+
+        $id_item = $request->id_item_room;
+        $id_room_sekarang = $request->id_room_sekarang;
+
+        DB::table('items')
+            ->where('id_item', $id_item)
+            ->update([
+                'id_room' => $id_room_sekarang,
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->back()->with('success', 'Barang berhasil dipindahkan!');
     }
 }

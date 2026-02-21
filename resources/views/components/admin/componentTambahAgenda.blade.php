@@ -320,7 +320,6 @@
     </div>
 </div>
 
-
 {{-- tampilan add barang dan ruang dan tampilan semua data barang dan ruangan --}}
 <div class="mt-5 mb-3">
     <div x-data="{

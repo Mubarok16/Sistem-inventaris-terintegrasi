@@ -529,7 +529,6 @@ class pengelolaanAgenda extends Controller
         // mengambil data tambh agenda yg di input admin
         $dataAgenda = collect(session('data_add_agenda_temp'));
 
-        // dd(session('data_add_agenda_barang_ruang'));
         // mengambil semua data barang dan ruangan
         $PengelolaanAgendaService = new PengelolaanAgendaService;
         $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
