@@ -14,7 +14,20 @@
             <div class="container-fluid px-2 sm:px-4!" id="container-wrapper">
                 {{-- isi content --}}
                 @if ($halaman === 'contentDashbord')
-                    <h4>Dashboard Staff</h4>
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h4>Dashboard</h4>
+                            <div>
+                                <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                                <span class="text-gray-500">/</span>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
+                            <i class="fa-solid fa-calendar-days text-primary"></i>
+                            Kamis, 24 Oktober 2024
+                        </div>
+                    </div>
                     @include('components.admin.componentDashboardAdm')
                 @elseif ($halaman === 'contentPengelolaanUser')
                     <h4>Pengelolaan User</h4>
@@ -156,7 +169,8 @@
                         <span class="text-gray-500">/</span>
                         <a href="/dashboard/admin/agenda" class="text-gray-400! no-underline!">Pengelolaan-agenda</a>
                         <span class="text-gray-500">/</span>
-                        <a href="{{ route('admin-detail-agenda',  ['id' => urlencode($id)]) }}" class="text-gray-400! no-underline!">detail-agenda</a>
+                        <a href="{{ route('admin-detail-agenda', ['id' => urlencode($id)]) }}"
+                            class="text-gray-400! no-underline!">detail-agenda</a>
                         <span class="text-gray-500">/</span>
                         <a href="" class="text-gray-400! no-underline! font-medium">edit-agenda</a>
                     </div>

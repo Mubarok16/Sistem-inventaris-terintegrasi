@@ -33,9 +33,65 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+
+        $startDate = Carbon::now()->subDays(7)->toDateString();
+        $endDate = Carbon::now()->toDateString();
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanBarang = DB::table('usage_items')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_item) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            ->where('status_usage_item', 'terjadwal')
+            ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_item)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanRuangan = DB::table('usage_rooms')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_room) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            ->where('status_usage_room', 'terjadwal')
+            ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // Buat range 7 hari ke belakang menggunakan Carbon Period
+        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+
+        $finalData = [];
+        $finalDataRuangan = [];
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d');
+
+            $finalData[] = [
+                'tanggal' => $date->format('d - M'),
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanBarang->get($formattedDate, 0)
+            ];
+
+            $finalDataRuangan[] = [
+                'tanggal' => $formattedDate,
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanRuangan->get($formattedDate, 0)
+            ];
+        }
+
+        // memisahkan untuk keperluan Chart
+        $labels = collect($finalData)->pluck('tanggal');
+        $countsBarang = collect($finalData)->pluck('total');
+        $countsRuangan = collect($finalDataRuangan)->pluck('total');
+
         $user = Auth::user()->nama;
         $halaman = 'contentDashbord';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan'));
     }
 
     public function adminPengelolaanUser()
