@@ -25,10 +25,29 @@
                         <div
                             class="flex items-center gap-3 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
                             <i class="fa-solid fa-calendar-days text-primary"></i>
-                            Kamis, 24 Oktober 2024
+                            {{-- Kamis, 24 Oktober 2024 --}}
+                            {{ now()->format('D, d M Y') }}
                         </div>
                     </div>
                     @include('components.admin.componentDashboardAdm')
+                @elseif ($halaman === 'contentAgendaBerlangsung')
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h4>Agenda yang Berlangsung</h4>
+                            <div>
+                                <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                                <span class="text-gray-500">/</span>
+                                <a href="" class="text-gray-400! no-underline! font-medium">Agenda-yang-berlangsung</a>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
+                            <i class="fa-solid fa-calendar-days text-primary"></i>
+                            {{-- Kamis, 24 Oktober 2024 --}}
+                            {{ now()->format('D, d M Y') }}
+                        </div>
+                    </div>
+                    {{-- @include('components.admin.componentPengelolaanUser') --}}
                 @elseif ($halaman === 'contentPengelolaanUser')
                     <h4>Pengelolaan User</h4>
                     <div>

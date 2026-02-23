@@ -64,6 +64,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/admin/agenda', [DashboardController::class, 'AdminAgenda'])->name('dashboard-admin-agenda');
     Route::get('/dashboard/admin/pengadaan-barang', [DashboardController::class, 'AdminPengadaanBarang']);
 
+    // page dashboard admin =========================================================================================================================
+    Route::get('/dashboard/agenda-berlangsung', [DashboardController::class, 'agendaBerlangsung'])->name('dashboard-agenda-berlangsung');
+
+
     // page pengeloaan user ================================================================================================================
 
     // page edit akun all
@@ -112,7 +116,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // pengelolaan peminjaman ==================================================================================================================
-    Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin']);
+    Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin'])->name('admin.detailPeminjaman');
     Route::post('admin/pengajuan-peminjaman/persetujuan', [PengelolaanPeminjamanAdmin::class, 'persetujuan'])->name('persetujuanPeminjaman');
     Route::post('admin/pengajuan-peminjaman/pilih-data-pengelolaan-peminjaman-by-status', [PengelolaanPeminjamanAdmin::class, 'pilihDataPengajuanPeminjamanAdmin'])->name('pilih-data-pengelolaan-peminjaman-by-status');
 

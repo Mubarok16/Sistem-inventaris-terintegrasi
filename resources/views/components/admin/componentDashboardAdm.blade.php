@@ -52,7 +52,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-<main class="flex-1 py-8 px-2">
+<main class="flex-1 py-2 px-2 mb-4">
 
     <!-- summary -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -61,10 +61,10 @@
                 <div class="p-2 bg-blue-100 rounded-lg text-primary">
                     <i class="fa-solid fa-clipboard-list text-primary"></i>
                 </div>
-                <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">+12%</span>
+                {{-- <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">+12%</span> --}}
             </div>
-            <p class="text-slate-500 text-sm font-medium">Peminjaman Aktif</p>
-            <h3 class="text-2xl font-black text-slate-900 mt-1">24
+            <p class="text-slate-500 text-sm font-medium">Semua Peminjaman</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $totalPeminjamanAktif }}
                 <span class="text-sm font-normal text-slate-400">Total</span>
             </h3>
         </div>
@@ -73,10 +73,10 @@
                 <div class="p-2 bg-amber-100 rounded-lg text-amber-600">
                     <i class="fa-solid fa-door-open"></i>
                 </div>
-                <span class="text-slate-400 text-xs font-bold bg-slate-50 px-2 py-1 rounded-full">Tetap</span>
+                {{-- <span class="text-slate-400 text-xs font-bold bg-slate-50 px-2 py-1 rounded-full">Tetap</span> --}}
             </div>
-            <p class="text-slate-500 text-sm font-medium">Ruangan Tersedia</p>
-            <h3 class="text-2xl font-black text-slate-900 mt-1">12 <span
+            <p class="text-slate-500 text-sm font-medium">Total Ruangan</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $totalRuangan }} <span
                     class="text-sm font-normal text-slate-400">Unit</span></h3>
         </div>
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -84,10 +84,10 @@
                 <div class="p-2 bg-emerald-100 rounded-lg text-emerald-600">
                     <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
-                <span class="text-rose-600 text-xs font-bold bg-rose-50 px-2 py-1 rounded-full">-3%</span>
+                {{-- <span class="text-rose-600 text-xs font-bold bg-rose-50 px-2 py-1 rounded-full">-3%</span> --}}
             </div>
-            <p class="text-slate-500 text-sm font-medium">Barang Tersedia</p>
-            <h3 class="text-2xl font-black text-slate-900 mt-1">45 <span
+            <p class="text-slate-500 text-sm font-medium">Total Barang</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $totalBarang }} <span
                     class="text-sm font-normal text-slate-400">Unit</span></h3>
         </div>
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -95,16 +95,16 @@
                 <div class="p-2 bg-purple-100 rounded-lg text-purple-600">
                     <i class="fa-solid fa-calendar-days"></i>
                 </div>
-                <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">+5</span>
+                {{-- <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">+5</span> --}}
             </div>
             <p class="text-slate-500 text-sm font-medium">Agenda Hari Ini</p>
-            <h3 class="text-2xl font-black text-slate-900 mt-1">8 <span
-                    class="text-sm font-normal text-slate-400">Acara</span></h3>
+            <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $AgendaToday }} <span
+                    class="text-sm font-normal text-slate-400">Agenda</span></h3>
         </div>
     </div>
-    {{--  --}}
+    {{-- isi konten --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Activity Area -->
+        <!-- chart dan peminjaman Area -->
         <div class="lg:col-span-2 space-y-8">
             <!-- chart -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -161,7 +161,7 @@
                 <div class="p-6 border-bottom border-slate-100 flex justify-between items-center">
                     <h4 class="font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list text-primary"></i>
-                        Peminjaman Yang Perlu Ditinjau
+                        Pengajuan peminjaman
                     </h4>
                     <button class="text-primary text-xs font-bold hover:underline">Lihat Semua</button>
                 </div>
@@ -172,168 +172,112 @@
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                     Peminjam</th>
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    Aset / Ruang</th>
+                                    Keterangan Peminjaman</th>
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    Durasi</th>
+                                    Durasi Peminjaman</th>
                                 <th
                                     class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">
                                     Status</th>
+                                {{-- <th
+                                    class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">
+                                    aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Portrait of a male student"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbUDtCcJ7UXuGCZeMTJrVN4vgLkvEV-TsdZLqtmc42BI_qwMIyB3PFREyMnP5XdvpN71SwJjpfxxJ6l5To6ZEQkxTRJVRbpxLPpGt8fH6l_wyvWltgvawpinRnoABC0RZ5qeW5tU_ny9ghnPmHgrNRo4T1V07uleeuxrGpS3HMaGvieFbV6CtWFU86dQm9wjRMEBFx6t-_oTUkD6wtkOcVL_KJujVceNN9blwAQodLMX9-K9aStu7WSX7-wHWzEOc9JevFxw-4dI0" />
+                            @forelse ($pengajuanPeminjaman as $pp)
+                                <tr class="hover:bg-blue-50 transition-colors cursor-pointer" onclick="window.location='{{ route('admin.detailPeminjaman', $pp->kode_peminjaman) }}'">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <span
+                                                class="text-sm font-semibold text-slate-700">{{ $pp->nama_peminjam }}</span>
                                         </div>
-                                        <span class="text-sm font-semibold text-slate-700">Ahmad Fauzi</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-medium text-slate-700">Lab. Komputer 03</p>
-                                    <p class="text-[10px] text-slate-400">Ruangan</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm text-slate-600 font-medium">08:00 - 12:00</p>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Disetujui</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Portrait of a female student"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpQD7HrZ-nNr5qBrhC9WBbeUY_aHy4wI8OyjO_S9G6szb15f4gP6rnE65bWKc03bTRuMz4kvqTgTd1RILyMMCwoXHMaQtEyiSZvfDVc55LPrQaCMOK3DJnjBl_mMOk88v5kVfeO0sXRg2NNpK7-PijkLRBLlXURszweGNHExpXlV5PXW_GHivQQRr3I8ibi5ogpdXXCa5SGj_DK3xJhyXU3XqyvraE26ekWp-hHWZTZu5_44ufUGzBTqlhD2F8XF8nrASpfbomGz0" />
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="text-sm font-medium text-slate-700">{{ $pp->ket_peminjaman }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="text-sm text-slate-600 font-medium">{{ date('d M y', strtotime($pp->tgl_pinjam)) }}</span>
+                                        - <span
+                                            class="text-sm text-slate-600 font-medium">{{ date('d M y', strtotime($pp->tgl_kembali)) }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                                            {{ $pp->status_peminjaman }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <div>
+                                            <i class="fa-solid fa-calendar-xmark text-3xl text-red-300"></i>
                                         </div>
-                                        <span class="text-sm font-semibold text-slate-700">Siti Aminah</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-medium text-slate-700">Projector Epson X10</p>
-                                    <p class="text-[10px] text-slate-400">Barang</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm text-slate-600 font-medium">2 Hari</p>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Menunggu</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
-                                            <img class="w-full h-full object-cover"
-                                                data-alt="Portrait of a male staff member"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT0KUB_LSmsOC21Ruv8UM993asIkgDSv_iVZ_kWO1BOlwgKTycnnExWBTPiivFulrA86rnF7RgCnCcsH50crOg_1U6bTxztLqaglNfVn40gNCeMFtdHvqw11TirYTkivVKSmHu-SjSAIbrknwBcaEKsAQCyqKTwIkUEirRynIFBCnQt67E4J9hUUqA3oPnwUgVDp0Ak-BIIQ0YR9al3Kc1RYF_ylye_SYZ1Bajw2-EM1GLnR6_0wrTXtF4IMILhEatBsqg1IiB4II" />
-                                        </div>
-                                        <span class="text-sm font-semibold text-slate-700">Budi Santoso</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-medium text-slate-700">Ruang Aula Utama</p>
-                                    <p class="text-[10px] text-slate-400">Ruangan</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm text-slate-600 font-medium">13:00 - 17:00</p>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Selesai</span>
-                                </td>
-                            </tr>
+                                        <div class="text-slate-400 text-sm">Tidak ada pengajuan peminjaman</div>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- Sidebar Widget Area -->
+        <!-- agenda berlangsung -->
         <div class="space-y-8">
-            <!-- Upcoming Agenda Widget -->
+            <!-- detail agenda today -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <div class="flex justify-between items-center mb-6">
-                    <h4 class="font-bold text-slate-900 flex items-center gap-2">
+                    <h5 class="font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-calendar-minus text-primary"></i>
-                        Agenda Mendatang
-                    </h4>
+                        Agenda Berlangsung
+                    </h5>
                 </div>
                 <div class="space-y-6">
-                    <div class="flex gap-4 group">
-                        <div
-                            class="flex-shrink-0 w-12 h-14 bg-slate-50 border border-slate-100 rounded-lg flex flex-col items-center justify-center">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Okt</span>
-                            <span class="text-lg font-black text-primary leading-none">25</span>
+                    @forelse ($Agendaberlangsung as $agenda)
+                        <div class="flex gap-4 group">
+                            <div
+                                class="flex-shrink-0 w-12 h-14 bg-slate-50 border border-slate-100 rounded-lg flex flex-col items-center justify-center">
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase">{{ date('M', strtotime($agenda->tgl_pinjam_usage_room)) }}</span>
+                                <span
+                                    class="text-lg font-black text-primary leading-none">{{ date('d', strtotime($agenda->tgl_pinjam_usage_room)) }}</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
+                                    {{ $agenda->nama_agenda ?? $agenda->ket_peminjaman }}</p>
+                                <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                    <i class="fa-regular fa-clock text-[14px] text-blue-500"></i>
+                                    {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
+                                    {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
+                                </p>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <i class="fa-solid fa-building text-[14px] text-blue-500"></i>
+                                    Ruang {{ $agenda->nama_room }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
-                                Rapat Senat Fakultas</p>
-                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">schedule</span> 09:00 -
-                                11:30
-                            </p>
-                            <p class="text-xs text-slate-500 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">location_on</span> Ruang
-                                Rapat 01
-                            </p>
+                    @empty
+                        <div class="text-center py-4">
+                            <div>
+                                <i class="fa-solid fa-calendar-xmark text-3xl text-red-300"></i>
+                            </div>
+                            <div class="text-slate-400 text-sm">Tidak ada agenda berlangsung</div>
                         </div>
-                    </div>
-                    <div class="flex gap-4 group">
-                        <div
-                            class="flex-shrink-0 w-12 h-14 bg-slate-50 border border-slate-100 rounded-lg flex flex-col items-center justify-center">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Okt</span>
-                            <span class="text-lg font-black text-primary leading-none">25</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
-                                Workshop Jurnalistik</p>
-                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">schedule</span> 13:00 -
-                                15:00
-                            </p>
-                            <p class="text-xs text-slate-500 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">location_on</span> Lab.
-                                Multimedia
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 group">
-                        <div
-                            class="flex-shrink-0 w-12 h-14 bg-slate-50 border border-slate-100 rounded-lg flex flex-col items-center justify-center">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">Okt</span>
-                            <span class="text-lg font-black text-primary leading-none">26</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
-                                Ujian Kompetensi Dasar</p>
-                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">schedule</span> 08:00 -
-                                10:00
-                            </p>
-                            <p class="text-xs text-slate-500 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">location_on</span> Lab.
-                                Komputer 02
-                            </p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
-                <button
-                    class="w-full mt-8 py-2.5 bg-slate-50 text-slate-600 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
+                <a href="{{ route('dashboard-agenda-berlangsung') }}"
+                    class="w-full mt-8 py-2.5 bg-slate-50 text-slate-600! text-xs font-bold rounded-lg! border border-slate-200 hover:bg-blue-100 transition-colors no-underline! w-full flex items-center justify-center gap-2">
                     Buka Kalender Lengkap
-                </button>
+                </a>
             </div>
             <!-- Quick Actions Card -->
-            <div class="bg-primary p-6 rounded-xl shadow-lg shadow-primary/20 text-white relative overflow-hidden">
+            {{-- <div class="bg-primary p-6 rounded-xl shadow-lg shadow-primary/20 text-white relative overflow-hidden">
                 <div class="relative z-10">
                     <h4 class="font-bold mb-2">Aksi Cepat</h4>
                     <p class="text-blue-100 text-xs mb-6">Mulai peminjaman baru untuk mahasiswa atau staf
@@ -353,7 +297,7 @@
                 </div>
                 <!-- Decorative circle -->
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </main>

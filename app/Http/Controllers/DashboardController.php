@@ -43,7 +43,8 @@ class DashboardController extends Controller
                 DB::raw('DATE(tgl_pinjam_usage_item) as tanggal'),
                 DB::raw('count(*) as total')
             )
-            ->where('status_usage_item', 'terjadwal')
+            ->whereNotIn('status_usage_item', ['terjadwal', 'dibatalkan'])
+            ->where('kode_agenda', null)
             ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
             ->orderBy(DB::raw('DATE(tgl_pinjam_usage_item)'), 'asc')
@@ -56,12 +57,54 @@ class DashboardController extends Controller
                 DB::raw('DATE(tgl_pinjam_usage_room) as tanggal'),
                 DB::raw('count(*) as total')
             )
-            ->where('status_usage_room', 'terjadwal')
+            ->where('kode_agenda', null)
+            ->whereNotIn('status_usage_room', ['diajukan', 'dibatalkan'])
             ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
             ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
             ->get()
             ->pluck('total', 'tanggal');
+
+        // total ruangan
+        $totalRuangan = DB::table('rooms')
+            ->count();
+
+        // total barang
+        $totalBarang = DB::table('items')
+            ->select('qty_item')
+            ->sum('qty_item');
+
+        // agenda hari ini
+        $AgendaToday = DB::table('usage_rooms')
+            ->select(
+                'tgl_pinjam_usage_room'
+            )
+            ->whereDate('tgl_pinjam_usage_room', now()->format('Y-m-d'))
+            ->count();
+
+        // peminjaman aktif
+        $totalPeminjamanAktif = DB::table('peminjaman')
+            ->get()
+            ->count();
+
+        // agenda yang sedang berlangsung
+        $Agendaberlangsung = DB::table('usage_rooms')
+            ->leftJoin('agenda_fakultas', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+            ->leftJoin('peminjaman', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+            ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+            ->select(
+                'rooms.nama_room',
+                'usage_rooms.tgl_pinjam_usage_room',
+                'usage_rooms.jam_mulai_usage_room',
+                'usage_rooms.jam_selesai_usage_room',
+                'agenda_fakultas.nama_agenda',
+                'peminjaman.ket_peminjaman'
+            )
+            ->whereDate('usage_rooms.tgl_pinjam_usage_room', now()->format('Y-m-d'))
+            ->where('usage_rooms.status_usage_room', 'digunakan')
+            ->orderBy('usage_rooms.created_at', 'desc')
+            ->limit(3)
+            ->get();
 
         // Buat range 7 hari ke belakang menggunakan Carbon Period
         $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
@@ -89,9 +132,38 @@ class DashboardController extends Controller
         $countsBarang = collect($finalData)->pluck('total');
         $countsRuangan = collect($finalDataRuangan)->pluck('total');
 
+        // Pengajuan Peminjaman
+        $pengajuanPeminjaman = DB::table('peminjaman')
+            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            ->select(
+                'peminjaman.kode_peminjaman',
+                'peminjaman.ket_peminjaman',
+                'peminjaman.tgl_pinjam',
+                'peminjaman.tgl_kembali',
+                'peminjaman.status_peminjaman',
+                'peminjam.nama_peminjam'
+            ) // Pilih kolom yang diperlukan
+            ->where('peminjaman.status_peminjaman', 'diajukan')
+            ->orderBy('peminjaman.created_at', 'asc')
+            ->get();
+
+        // dd($pengajuanPeminjaman);
+
         $user = Auth::user()->nama;
         $halaman = 'contentDashbord';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan', 'totalPeminjamanAktif', 'totalBarang', 'totalRuangan', 'AgendaToday', 'Agendaberlangsung', 'pengajuanPeminjaman'));
+    }
+
+    // page agenda yang berlangsung di dashboard admin
+    public function agendaBerlangsung()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentAgendaBerlangsung';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
     public function adminPengelolaanUser()
