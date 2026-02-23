@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\agendaBerlangsung;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use App\Http\Controllers\PengelolaanUserController;
+use App\Models\agendaFakultas;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,10 +67,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/admin/pengadaan-barang', [DashboardController::class, 'AdminPengadaanBarang']);
 
     // page dashboard admin =========================================================================================================================
+    // page agenda berlangsung
     Route::get('/dashboard/agenda-berlangsung', [DashboardController::class, 'agendaBerlangsung'])->name('dashboard-agenda-berlangsung');
+    // page detail agenda berlangsung (mengarahkan ke page detail peminjaman dan detail agenda)
+    Route::get('/admin/detail-agenda-berlangsung/{id}', [agendaBerlangsung::class, 'DetailAgendaBerlangsung'])->name('admin.details-content:agenda-berlangsung');
 
 
-    // page pengeloaan user ================================================================================================================
+    // page pengeloaan user =========================================================================================================================
 
     // page edit akun all
     Route::get('/dashboard/admin/edit-akun/{id}', [EditAkun::class, 'editAkun'])->name('page-edit-akun');

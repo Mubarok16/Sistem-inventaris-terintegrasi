@@ -14,8 +14,8 @@
             <div class="container-fluid px-2 sm:px-4!" id="container-wrapper">
                 {{-- isi content --}}
                 @if ($halaman === 'contentDashbord')
-                    <div class="flex justify-between items-center mb-8">
-                        <div>
+                    <div class="flex flex-col md:flex-row md:justify-between gap-3 items-start mb-8">
+                        <div class="item-start">
                             <h4>Dashboard</h4>
                             <div>
                                 <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div
-                            class="flex items-center gap-3 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
+                            class="flex items-center gap-3 w-full md:w-auto bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
                             <i class="fa-solid fa-calendar-days text-primary"></i>
                             {{-- Kamis, 24 Oktober 2024 --}}
                             {{ now()->format('D, d M Y') }}
@@ -31,7 +31,7 @@
                     </div>
                     @include('components.admin.componentDashboardAdm')
                 @elseif ($halaman === 'contentAgendaBerlangsung')
-                    <div class="flex justify-between items-center mb-8">
+                    <div class="flex flex-col md:flex-row md:justify-between gap-3 items-start mb-8">
                         <div>
                             <h4>Agenda yang Berlangsung</h4>
                             <div>
@@ -41,13 +41,19 @@
                             </div>
                         </div>
                         <div
-                            class="flex items-center gap-3 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
-                            <i class="fa-solid fa-calendar-days text-primary"></i>
-                            {{-- Kamis, 24 Oktober 2024 --}}
-                            {{ now()->format('D, d M Y') }}
+                            class="flex flex-col w-full md:w-auto items-start gap-1 bg-white p-2 px-4 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-600">
+                            <div>
+                                <i class="fa-solid fa-clock text-primary"></i>
+                                <span id="realtime-clock"></span>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-calendar-days text-primary"></i>
+                                {{ now()->format('D, d M Y') }}
+                            </div>
+                            
                         </div>
                     </div>
-                    {{-- @include('components.admin.componentPengelolaanUser') --}}
+                    @include('components.admin.componentAgendaBerlangsung')
                 @elseif ($halaman === 'contentPengelolaanUser')
                     <h4>Pengelolaan User</h4>
                     <div>

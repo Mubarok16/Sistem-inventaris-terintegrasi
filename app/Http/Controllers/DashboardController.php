@@ -161,9 +161,26 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        // agenda yang sedang berlangsung
+        $Agendaberlangsung = DB::table('usage_rooms')
+            ->leftJoin('agenda_fakultas', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+            ->leftJoin('peminjaman', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+            ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+            ->select(
+                'rooms.nama_room',
+                'usage_rooms.tgl_pinjam_usage_room',
+                'usage_rooms.jam_mulai_usage_room',
+                'usage_rooms.jam_selesai_usage_room',
+                'agenda_fakultas.nama_agenda',
+                'peminjaman.ket_peminjaman'
+            )
+            ->whereDate('usage_rooms.tgl_pinjam_usage_room', now()->format('Y-m-d'))
+            ->where('usage_rooms.status_usage_room', 'terjadwal')
+            ->get();
+
         $user = Auth::user()->nama;
         $halaman = 'contentAgendaBerlangsung';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user' , 'Agendaberlangsung'));
     }
 
     public function adminPengelolaanUser()
