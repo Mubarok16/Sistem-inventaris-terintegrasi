@@ -22,10 +22,6 @@ class agendaBerlangsung extends Controller
             return redirect()->route('admin.detailPeminjaman', ['id' => $id]);
             // dd('gagal');
         }
-        // dd($agendafakultas);
-        // return view('Page_admin.detail-agenda-berlangsung', [
-        //     'halaman' => 'contentDetailAgendaBerlangsung',
-        //     'id' => $id,
-        // ]);
+        
     }
 }

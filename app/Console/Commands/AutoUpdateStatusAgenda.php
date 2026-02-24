@@ -34,13 +34,58 @@ class AutoUpdateStatusAgenda extends Command
         $now = Carbon::now();
         $today = $now->toDateString();
         $currentTime = $now->toTimeString();
+
+        // =================== update status auto untuk peminjaman yang sudah lewat tgl nya tpi blm d acc jadi selesai =================================
+         DB::table('peminjaman')
+            ->whereIn('status_peminjaman', ['diajukan'])
+            ->where('tgl_pinjam', '<', $today)
+            ->update(['status_peminjaman' => 'ditolak']);
+
+        // =================== update status auto untuk peminjaman yang sudah sudah selesai semua di usagenya jadi selesai =====================================
+
+        DB::table('peminjaman as p')
+            ->whereNotIn('p.status_peminjaman', ['selesai', 'ditolak', 'diajukan'])
+            ->whereNotExists(function ($query) use ($today, $currentTime) {
+                $query->select(DB::raw(1))
+                    ->from('usage_rooms as ur')
+                    ->whereRaw('ur.kode_peminjaman = p.kode_peminjaman')
+                    ->where(function ($q) use ($today, $currentTime) {
+                        // Cari apakah masih ada yang tgl nya hari esok atau nanti
+                        $q->where('ur.tgl_pinjam_usage_room', '>', $today)
+                            // Atau tgl hari ini tapi jam selesainya belum lewat
+                            ->orWhere(function ($sq) use ($today, $currentTime) {
+                                $sq->where('ur.tgl_pinjam_usage_room', $today)
+                                    ->where(function ($finalQ) use ($currentTime) {
+                                        $finalQ->where('ur.jam_selesai_usage_room', '>', $currentTime)
+                                            ->orWhereNull('ur.jam_selesai_usage_room'); // Anggap full day belum selesai sampai hari berganti
+                                    });
+                            });
+                    });
+            })
+            ->whereNotExists(function ($query) use ($today, $currentTime) {
+                $query->select(DB::raw(1))
+                    ->from('usage_items as ui')
+                    ->whereRaw('ui.kode_peminjaman = p.kode_peminjaman')
+                    ->where(function ($q) use ($today, $currentTime) {
+                        $q->where('ui.tgl_pinjam_usage_item', '>', $today)
+                            ->orWhere(function ($sq) use ($today, $currentTime) {
+                                $sq->where('ui.tgl_pinjam_usage_item', $today)
+                                    ->where(function ($finalQ) use ($currentTime) {
+                                        $finalQ->where('ui.jam_selesai_usage_item', '>', $currentTime)
+                                            ->orWhereNull('ui.jam_selesai_usage_item');
+                                    });
+                            });
+                    });
+            })
+            ->update(['p.status_peminjaman' => 'selesai']);
+
         // ================================= membuat semua usage room dan item yg sudah lewat auto update =============================================
-         DB::table('usage_rooms')
+        DB::table('usage_rooms')
             ->whereNotIn('status_usage_room', ['selesai', 'ditolak'])
             ->where('tgl_pinjam_usage_room', '<', $today)
             ->update(['status_usage_room' => 'selesai']);
 
-         DB::table('usage_items')
+        DB::table('usage_items')
             ->whereNotIn('status_usage_item', ['selesai', 'ditolak'])
             ->where('tgl_pinjam_usage_item', '<', $today)
             ->update(['status_usage_item' => 'selesai']);

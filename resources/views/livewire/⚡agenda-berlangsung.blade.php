@@ -37,8 +37,12 @@ new class extends Component {
                         {{ $agenda->nama_agenda ?? $agenda->ket_peminjaman }}</p>
                     <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-[14px] text-blue-500"></i>
-                        {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
-                        {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
+                        @if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room)
+                            {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
+                            {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
+                        @else
+                            Full day
+                        @endif
                     </p>
                     <p class="text-xs text-slate-500 flex items-center gap-1">
                         <i class="fa-solid fa-building text-[14px] text-blue-500"></i>

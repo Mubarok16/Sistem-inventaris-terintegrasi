@@ -119,41 +119,8 @@
                         {{-- <option>30 Hari Terakhir</option> --}}
                     </select>
                 </div>
-                {{-- chart coba --}}
                 <div id="chart"></div>
-                {{-- <div class="h-[250px] relative">
-                    <!-- Visual Chart Mockup -->
-                    <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 250">
-                        <defs>
-                            <lineargradient id="chartGradient" x1="0" x2="0" y1="0"
-                                y2="1">
-                                <stop offset="0%" stop-color="#136dec" stop-opacity="0.2"></stop>
-                                <stop offset="100%" stop-color="#136dec" stop-opacity="0"></stop>
-                            </lineargradient>
-                        </defs>
-                        <path d="M0,200 Q100,180 200,120 T400,150 T600,80 T800,100 L800,250 L0,250 Z"
-                            fill="url(#chartGradient)"></path>
-                        <path d="M0,200 Q100,180 200,120 T400,150 T600,80 T800,100" fill="none" stroke="#136dec"
-                            stroke-linecap="round" stroke-width="4"></path>
-                        <!-- Data points -->
-                        <circle cx="200" cy="120" fill="#136dec" r="6" stroke="white" stroke-width="2">
-                        </circle>
-                        <circle cx="400" cy="150" fill="#136dec" r="6" stroke="white" stroke-width="2">
-                        </circle>
-                        <circle cx="600" cy="80" fill="#136dec" r="6" stroke="white" stroke-width="2">
-                        </circle>
-                    </svg>
-                    <!-- X-axis Labels -->
-                    <div class="flex justify-between mt-4 px-2">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Sen</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Sel</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Rab</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Kam</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Jum</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Sab</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Min</span>
-                    </div>
-                </div> --}}
+
             </div>
 
             <!-- table peminjaman -->
@@ -254,8 +221,12 @@
                                     {{ $agenda->nama_agenda ?? $agenda->ket_peminjaman }}</p>
                                 <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                                     <i class="fa-regular fa-clock text-[14px] text-blue-500"></i>
-                                    {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
-                                    {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
+                                    @if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room)
+                                        {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
+                                        {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
+                                    @else
+                                        Full day
+                                    @endif
                                 </p>
                                 <p class="text-xs text-slate-500 flex items-center gap-1">
                                     <i class="fa-solid fa-building text-[14px] text-blue-500"></i>
