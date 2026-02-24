@@ -34,7 +34,18 @@ class AutoUpdateStatusAgenda extends Command
         $now = Carbon::now();
         $today = $now->toDateString();
         $currentTime = $now->toTimeString();
+        // ================================= membuat semua usage room dan item yg sudah lewat auto update =============================================
+         DB::table('usage_rooms')
+            ->whereNotIn('status_usage_room', ['selesai', 'ditolak'])
+            ->where('tgl_pinjam_usage_room', '<', $today)
+            ->update(['status_usage_room' => 'selesai']);
 
+         DB::table('usage_items')
+            ->whereNotIn('status_usage_item', ['selesai', 'ditolak'])
+            ->where('tgl_pinjam_usage_item', '<', $today)
+            ->update(['status_usage_item' => 'selesai']);
+
+        // =================================================== usage room auto update ===================================================
         // 1. Update ke 'berlangsung'
         DB::table('usage_rooms')->where('status_usage_room', '=', 'terjadwal')
             ->where('tgl_pinjam_usage_room', $today)
@@ -67,6 +78,42 @@ class AutoUpdateStatusAgenda extends Command
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
             ->update(['status_usage_room' => 'selesai']);
+
+
+        // ====================================================== usage item auto update =========================================================
+
+        // 1. Update ke 'berlangsung'
+        DB::table('usage_items')->where('status_usage_item', '=', 'terjadwal')
+            ->where('tgl_pinjam_usage_item', $today)
+            ->where(function ($query) use ($currentTime) {
+                $query->where(function ($q) use ($currentTime) {
+                    // Kondisi Agenda Biasa (ada jamnya)
+                    $q->whereNotNull('jam_mulai_usage_item')
+                        ->where('jam_mulai_usage_item', '<=', $currentTime)
+                        ->where('jam_selesai_usage_item', '>', $currentTime);
+                })
+                    ->orWhere(function ($q) {
+                        // Kondisi Agenda Full Day (jam mulai null)
+                        // Jika hari ini adalah tanggal pinjam dan jamnya null, anggap berlangsung seharian
+                        $q->whereNull('jam_mulai_usage_item');
+                    });
+            })
+            ->update(['status_usage_item' => 'digunakan']);
+
+        // 2. Update ke 'selesai'
+        DB::table('usage_items')->where('status_usage_item', 'digunakan')
+            ->where(function ($query) use ($today, $currentTime) {
+                // Selesai jika tanggal sudah lewat
+                $query->where('tgl_pinjam_usage_item', '<', $today)
+                    // Atau tanggalnya hari ini tapi jam selesainya sudah lewat (untuk yang bukan full day)
+                    ->orWhere(function ($q) use ($today, $currentTime) {
+                        $q->where('tgl_pinjam_usage_item', $today)
+                            ->whereNotNull('jam_selesai_usage_item')
+                            ->where('jam_selesai_usage_item', '<=', $currentTime);
+                    });
+                // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
+            })
+            ->update(['status_usage_item' => 'selesai']);
 
         $this->info('Status agenda berhasil diperbarui dengan penanganan Full Day.');
     }
