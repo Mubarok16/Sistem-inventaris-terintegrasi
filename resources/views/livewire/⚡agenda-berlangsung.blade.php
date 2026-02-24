@@ -21,7 +21,7 @@ new class extends Component {
 ?>
 
 <div wire:poll.10s>
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap gap-3 mb-4">
         @forelse ($Agendaberlangsung as $agenda)
             <div class="flex gap-4 group p-2 rounded-lg border border-slate-100 hover:bg-blue-50 transition-colors cursor-pointer"
                 onclick="window.location='{{ route('admin.details-content:agenda-berlangsung', ['id' => urlencode($agenda->kode_agenda ?? $agenda->kode_peminjaman)]) }}'">

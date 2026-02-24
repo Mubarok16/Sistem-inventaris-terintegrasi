@@ -185,7 +185,8 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @forelse ($pengajuanPeminjaman as $pp)
-                                <tr class="hover:bg-blue-50 transition-colors cursor-pointer" onclick="window.location='{{ route('admin.detailPeminjaman', $pp->kode_peminjaman) }}'">
+                                <tr class="hover:bg-blue-50 transition-colors cursor-pointer"
+                                    onclick="window.location='{{ route('admin.detailPeminjaman', $pp->kode_peminjaman) }}'">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div

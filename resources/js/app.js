@@ -4,11 +4,11 @@ import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap; // supaya ruang-admin.js bisa akses global
 
 // import './bootstrap'; // Biarkan jika ada
-import Alpine from 'alpinejs'; // <-- IMPORT ALPINE
+// import Alpine from 'alpinejs'; // <-- IMPORT ALPINE
 
-window.Alpine = Alpine; // <-- Membuat Alpine tersedia secara global
+// window.Alpine = Alpine; // <-- Membuat Alpine tersedia secara global
 
-Alpine.start();
+// Alpine.start();
 
 // full calender
 import { Calendar } from '@fullcalendar/core'

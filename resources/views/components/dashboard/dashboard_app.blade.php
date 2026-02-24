@@ -10,6 +10,7 @@
         'resources/css/app.css',
         'resources/js/app.js',
     ])
+    @livewireStyles
     {{-- panggil css template --}}
     <link rel="stylesheet" href="{{ asset('css/ruang-admin.css') }}"> 
 </head>
@@ -20,5 +21,6 @@
 
     {{-- JS template --}}
     <script src="{{ asset('js/ruang-admin.js') }}"></script> 
+    @livewireScripts
 </body>
 </html>
