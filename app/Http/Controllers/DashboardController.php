@@ -43,7 +43,7 @@ class DashboardController extends Controller
                 DB::raw('DATE(tgl_pinjam_usage_item) as tanggal'),
                 DB::raw('count(*) as total')
             )
-            ->whereIn('status_usage_item', ['selesai'])
+            ->where('status_usage_item', 'selesai')
             ->where('kode_agenda', null)
             ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
@@ -58,7 +58,7 @@ class DashboardController extends Controller
                 DB::raw('count(*) as total')
             )
             ->where('kode_agenda', null)
-            ->whereIn('status_usage_room', ['selesai'])
+            ->where('status_usage_room', 'selesai')
             ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
             ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
@@ -126,6 +126,8 @@ class DashboardController extends Controller
                 'total' => $totalPeminjamanRuangan->get($formattedDate, 0)
             ];
         }
+
+        // dd($finalData, $finalDataRuangan);
 
         // memisahkan untuk keperluan Chart
         $labels = collect($finalData)->pluck('tanggal');

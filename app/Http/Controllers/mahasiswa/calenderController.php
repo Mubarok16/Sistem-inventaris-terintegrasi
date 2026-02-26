@@ -15,21 +15,21 @@ class calenderController extends Controller
         $prefix = request()->is('admin/*') ? 'admin' : 'peminjam';
         $routeName = $prefix;
 
-        if ($prefix === 'admin') {
-            $agendas = DB::table('agenda_fakultas')
-                ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
-                ->select(
-                    'agenda_fakultas.kode_agenda as id_ref',
-                    'agenda_fakultas.nama_agenda as title_ref',
-                    'usage_rooms.tgl_pinjam_usage_room',
-                    'usage_rooms.tgl_kembali_usage_room',
-                    'usage_rooms.jam_mulai_usage_room',
-                    'usage_rooms.jam_selesai_usage_room',
-                    'usage_rooms.status_usage_room'
-                )
-                ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
-                ->get();
-        }else{
+        // if ($prefix === 'admin') {
+        //     $agendas = DB::table('agenda_fakultas')
+        //         ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
+        //         ->select(
+        //             'agenda_fakultas.kode_agenda as id_ref',
+        //             'agenda_fakultas.nama_agenda as title_ref',
+        //             'usage_rooms.tgl_pinjam_usage_room',
+        //             'usage_rooms.tgl_kembali_usage_room',
+        //             'usage_rooms.jam_mulai_usage_room',
+        //             'usage_rooms.jam_selesai_usage_room',
+        //             'usage_rooms.status_usage_room'
+        //         )
+        //         ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
+        //         ->get();
+        // }else{
             // Ambil data dari Agenda Fakultas
             $agenda_fakultas = DB::table('agenda_fakultas')
                 ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
@@ -59,7 +59,7 @@ class calenderController extends Controller
                 ->union($agenda_fakultas)
                 ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
                 ->get(); 
-        }
+        // }
 
         foreach ($agendas as $agenda) {
 
@@ -119,12 +119,11 @@ class calenderController extends Controller
             ->first();
         // Jika ada, berarti data berasal dari peminjaman
         if ($peminjaman) {
-
             return match ($status) {
                 'terjadwal' => '#facc15', // kuning
                 'digunakan' => '#22c55e', // hijau
+                'selesai' => '#99A7BB', // abu abu
                 default => '#64748b' // abu-abu
-
             };
 
             // Jika tidak ada, berarti data berasal dari agenda fakultas
@@ -132,6 +131,7 @@ class calenderController extends Controller
             return match ($status) {
                 'terjadwal' => '#3b82f6', // biru
                 'digunakan' => '#22c55e', // hijau
+                'selesai' => '#99A7BB', // hijau
                 default => '#64748b' // abu-abu
             };
         }

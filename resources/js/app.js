@@ -24,6 +24,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!calendarEl) return
 
     const calendar = new Calendar(calendarEl, {
+        // plugins: [
+        //     dayGridPlugin,
+        //     timeGridPlugin,
+        //     listPlugin,
+        //     interactionPlugin
+        // ],
+        // initialView: 'dayGridMonth',
+        // height: 'auto',
+        // headerToolbar: {
+        //     left: 'prev,next',
+        //     center: 'title',
+        //     right: 'dayGridMonth,timeGridWeek,listDay'
+        // },
+
+        // navLinks: true, // klik tanggal juga aktif
+        // dateClick(info) {
+        //     calendar.changeView('listDay', info.dateStr)
+        // },
+
+        // events: calendarEl.getAttribute('data-url'),
         plugins: [
             dayGridPlugin,
             timeGridPlugin,
@@ -38,11 +58,15 @@ document.addEventListener('DOMContentLoaded', function () {
             right: 'dayGridMonth,timeGridWeek,listDay'
         },
 
-        navLinks: true, // klik tanggal juga aktif
+        // --- TAMBAHKAN BARIS INI ---
+        eventDisplay: 'block',
+        // ---------------------------
+
+        navLinks: true,
         dateClick(info) {
             calendar.changeView('listDay', info.dateStr)
         },
-        
+
         events: calendarEl.getAttribute('data-url'),
     })
 
