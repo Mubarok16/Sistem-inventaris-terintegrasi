@@ -58,10 +58,10 @@
                     </div>
                     {{-- menu sortir --}}
                     <form action="{{ route('pilih-data-pengelolaan-peminjaman-by-status') }}" method="post">
+                        @csrf
                         <div
-                            class="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-                            @csrf
-                            <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
+                            class="flex flex-col sm:flex-row justify-start gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
+                            {{-- <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
                                 <button value="semua" name="status"
                                     class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'semua' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
                                     Semua
@@ -90,6 +90,41 @@
                                     class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'selesai' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
                                     Selesai
                                 </button>
+                            </div> --}}
+                            <div class="relative flex-grow max-w-md">
+                                <i
+                                    class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                                <input
+                                    class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
+                                    placeholder="Cari nama peminjaman atau kode peminjaman" type="text" />
+                            </div>
+                            {{-- filter --}}
+                            <div class="relative inline-block">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
+                                </div>
+
+                                <select onchange="this.form.submit()" name="status"
+                                    class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
+                                    <option {{ $status_penggunaan == 'semua' ? 'selected' : '' }} value="semua">Semua
+                                    </option>
+                                    <option {{ $status_penggunaan == 'diajukan' ? 'selected' : '' }} value="diajukan">
+                                        Menunggu</option>
+                                    <option {{ $status_penggunaan == 'terjadwal' ? 'selected' : '' }} value="terjadwal">
+                                        Terjadwal</option>
+                                    <option {{ $status_penggunaan == 'dipinjam' ? 'selected' : '' }} value="dipinjam">
+                                        Dipinjam</option>
+                                    <option {{ $status_penggunaan == 'terlambat' ? 'selected' : '' }}
+                                        value="terlambat">Terlambat</option>
+                                    <option {{ $status_penggunaan == 'selesai' ? 'selected' : '' }} value="selesai">
+                                        Selesai</option>
+                                    <option {{ $status_penggunaan == 'ditolak' ? 'selected' : '' }} value="ditolak">
+                                        Ditolak</option>
+                                </select>
+
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                </div>
                             </div>
 
                         </div>
@@ -196,7 +231,8 @@
                                                         @else
                                                             <div class="flex items-center gap-2 mb-1 ">
                                                                 <i class="fa-solid fa-clock text-gray-700 text-xs"></i>
-                                                                <span class="text-xs text-slate-500">Durasi Penuh</span>
+                                                                <span class="text-xs text-slate-500">Durasi
+                                                                    Penuh</span>
                                                             </div>
                                                         @endif
                                                     </div>
@@ -282,5 +318,3 @@
         </div>
     </div>
 </main>
-
-

@@ -231,7 +231,7 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_room' => 'selesai']);
+            ->update(['status_usage_room' => 'dibatalkan']);
 
 
         // usage item
@@ -249,7 +249,7 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_item' => 'selesai']);
+            ->update(['status_usage_item' => 'dibatalkan']);
 
         
         // Output informasi bahwa proses telah selesai

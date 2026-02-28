@@ -206,43 +206,8 @@
                         Agenda Berlangsung
                     </h5>
                 </div>
-                <div class="space-y-6">
-                    @forelse ($Agendaberlangsung as $agenda)
-                        <div class="flex gap-4 group">
-                            <div
-                                class="flex-shrink-0 w-12 h-14 bg-slate-50 border border-slate-100 rounded-lg flex flex-col items-center justify-center">
-                                <span
-                                    class="text-[10px] font-bold text-slate-400 uppercase">{{ date('M', strtotime($agenda->tgl_pinjam_usage_room)) }}</span>
-                                <span
-                                    class="text-lg font-black text-primary leading-none">{{ date('d', strtotime($agenda->tgl_pinjam_usage_room)) }}</span>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
-                                    {{ $agenda->nama_agenda ?? $agenda->ket_peminjaman }}</p>
-                                <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                    <i class="fa-regular fa-clock text-[14px] text-blue-500"></i>
-                                    @if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room)
-                                        {{ date('H:i', strtotime($agenda->jam_mulai_usage_room)) }} -
-                                        {{ date('H:i', strtotime($agenda->jam_selesai_usage_room)) }}
-                                    @else
-                                        Full day
-                                    @endif
-                                </p>
-                                <p class="text-xs text-slate-500 flex items-center gap-1">
-                                    <i class="fa-solid fa-building text-[14px] text-blue-500"></i>
-                                    Ruang {{ $agenda->nama_room }}
-                                </p>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-center py-4">
-                            <div>
-                                <i class="fa-solid fa-calendar-xmark text-3xl text-red-300"></i>
-                            </div>
-                            <div class="text-slate-400 text-sm">Tidak ada agenda berlangsung</div>
-                        </div>
-                    @endforelse
-                </div>
+                <livewire:agenda-berlangsung :limit="2" />
+                
                 <a href="{{ route('dashboard-agenda-berlangsung') }}"
                     class="w-full mt-8 py-2.5 bg-slate-50 text-slate-600! text-xs font-bold rounded-lg! border border-slate-200 hover:bg-blue-100 transition-colors no-underline! w-full flex items-center justify-center gap-2">
                     Buka Kalender Lengkap
