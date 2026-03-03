@@ -35,7 +35,7 @@ class AutoUpdateStatusAgenda extends Command
         $today = $now->toDateString();
         $currentTime = $now->toTimeString();
 
-        // =================== update status auto untuk peminjaman yang sudah lewat tgl nya tpi blm d acc jadi selesai =================================
+        // =================== update status auto untuk peminjaman yang sudah lewat tgl nya tpi blm d acc jadi ditolak =================================
         DB::table('peminjaman')
             ->whereIn('status_peminjaman', ['diajukan'])
             ->where('tgl_pinjam', '<', $today)
@@ -120,7 +120,7 @@ class AutoUpdateStatusAgenda extends Command
                             ->where('jam_selesai_usage_room', '<=', $currentTime);
                     });
             })
-            ->update(['status_usage_room' => 'selesai']);
+            ->update(['status_usage_room' => 'dibatalkan']);
 
         DB::table('usage_items')
             ->where('kode_agenda', NULL)
@@ -133,7 +133,7 @@ class AutoUpdateStatusAgenda extends Command
                             ->where('jam_selesai_usage_item', '<=', $currentTime);
                     });
             })
-            ->update(['status_usage_item' => 'selesai']);
+            ->update(['status_usage_item' => 'dibatalkan']);
 
         // =================================================== khusus angenda fakultas usage room dan item auto update ===================================================
         // ketika jam usage agenda sudah mulai akan update otomatis ke status digunakan,
@@ -218,7 +218,7 @@ class AutoUpdateStatusAgenda extends Command
 
         // usage room
         // Update ke 'selesai'
-        DB::table('usage_rooms')->where('status_usage_room', 'digunakan')
+        DB::table('usage_rooms')->where('status_usage_room', 'diajukan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {
                 // Selesai jika tanggal sudah lewat
@@ -231,12 +231,12 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_room' => 'dibatalkan']);
+            ->update(['status_usage_room' => 'ditolak']);
 
 
         // usage item
         // Update ke 'selesai'
-        DB::table('usage_items')->where('status_usage_item', 'digunakan')
+        DB::table('usage_items')->where('status_usage_item', 'diajukan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {
                 // Selesai jika tanggal sudah lewat
@@ -249,7 +249,7 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_item' => 'dibatalkan']);
+            ->update(['status_usage_item' => 'ditolak']);
 
         
         // Output informasi bahwa proses telah selesai

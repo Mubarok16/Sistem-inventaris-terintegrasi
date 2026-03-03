@@ -106,6 +106,26 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- chart dan peminjaman Area -->
         <div class="lg:col-span-2 space-y-8">
+            {{-- pengembalian & pengambilan barnag --}}
+            <div class="space-y-4">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3"
+                        for="asset_id">konfirmasi pengambilan & pengembalian barang</label>
+                    <div class="flex gap-2">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-keyboard text-slate-400"></i>
+                            </div>
+                            <form action="{{ route('konfirmasi-ambil-kembali') }}" method="post">
+                                @csrf
+                                <input onchange="this.form.submit()"
+                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border-slate-200 rounded-xl focus:ring-primary focus:border-primary text-sm placeholder:text-slate-400 placeholder:font-normal transition-all"
+                                    name="kode_peminjaman" placeholder="Contoh: AST-FAC-2024-001" type="text" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- chart -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <div class="flex justify-between items-center mb-6">
@@ -207,7 +227,7 @@
                     </h5>
                 </div>
                 <livewire:agenda-berlangsung :limit="2" />
-                
+
                 <a href="{{ route('dashboard-agenda-berlangsung') }}"
                     class="w-full mt-8 py-2.5 bg-slate-50 text-slate-600! text-xs font-bold rounded-lg! border border-slate-200 hover:bg-blue-100 transition-colors no-underline! w-full flex items-center justify-center gap-2">
                     Buka Kalender Lengkap

@@ -71,7 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/agenda-berlangsung', [DashboardController::class, 'agendaBerlangsung'])->name('dashboard-agenda-berlangsung');
     // page detail agenda berlangsung (mengarahkan ke page detail peminjaman dan detail agenda)
     Route::get('/admin/detail-agenda-berlangsung/{id}', [agendaBerlangsung::class, 'DetailAgendaBerlangsung'])->name('admin.details-content:agenda-berlangsung');
-
+    // input konformasi pengambilan barang atau kunci ruangan
+    Route::post('/admin/konfirmasi-ambil-kembali', [PengelolaanPeminjamanAdmin::class, 'konfirmasiAmbilKembali'])->name('konfirmasi-ambil-kembali');
 
     // page pengeloaan user =========================================================================================================================
 

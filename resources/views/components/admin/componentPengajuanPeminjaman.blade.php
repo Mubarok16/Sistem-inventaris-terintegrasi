@@ -61,36 +61,7 @@
                         @csrf
                         <div
                             class="flex flex-col sm:flex-row justify-start gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-                            {{-- <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
-                                <button value="semua" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'semua' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Semua
-                                </button>
-                                <button value="diajukan" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'diajukan' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Menunggu
-                                </button>
-                                <button value="ditolak" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'ditolak' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Ditolak
-                                </button>
-                                <button value="terjadwal" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'terjadwal' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Terjadwal
-                                </button>
-                                <button value="dipinjam" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'dipinjam' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Dipinjam
-                                </button>
-                                <button value="terlambat" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'terlambat' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Terlambat
-                                </button>
-                                <button value="selesai" name="status"
-                                    class="px-4 py-2 text-sm font-medium text-slate-500 {{ $status_penggunaan == 'selesai' ? 'bg-white rounded shadow-sm' : 'hover:text-slate-700' }} transition-all whitespace-nowrap">
-                                    Selesai
-                                </button>
-                            </div> --}}
+                            {{-- search --}}
                             <div class="relative flex-grow max-w-md">
                                 <i
                                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -98,6 +69,7 @@
                                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
                                     placeholder="Cari nama peminjaman atau kode peminjaman" type="text" />
                             </div>
+
                             {{-- filter --}}
                             <div class="relative inline-block">
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -120,11 +92,22 @@
                                         Selesai</option>
                                     <option {{ $status_penggunaan == 'ditolak' ? 'selected' : '' }} value="ditolak">
                                         Ditolak</option>
+                                    <option {{ $status_penggunaan == 'dibatalkan' ? 'selected' : '' }}
+                                        value="dibatalkan">
+                                        Dibatalkan</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                                 </div>
+                            </div>
+                            {{-- konfirmasi pengambilan barang atau kunci ruangan --}}
+                            <div class="relative flex-grow max-w-md">
+                                <i
+                                    class="fa-solid fa-keyboard absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                                <input
+                                    class="w-full pl-10 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
+                                    placeholder="Konfirmasi pengambilan & pengembalian" type="text" />
                             </div>
 
                         </div>
