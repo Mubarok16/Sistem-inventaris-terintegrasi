@@ -182,7 +182,7 @@ class DashboardController extends Controller
 
         $user = Auth::user()->nama;
         $halaman = 'contentAgendaBerlangsung';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user' , 'Agendaberlangsung'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'Agendaberlangsung'));
     }
 
     public function adminPengelolaanUser()
@@ -418,14 +418,36 @@ class DashboardController extends Controller
 
     // --- PIMPINAN ---------------------------------------------------------------------------------------
 
-    // method untuk agar pimpinan fakultas hanya bisa mengakses halaman sesuai dengan hak aksesnya
+    // page dashboard pimpinan
     public function pimpinan()
     {
+        // cek jika user yg login bukan pimpinan akan di arahkan ke halaman unauthorize
         if (Auth::user()->hak_akses !== "pimpinan") {
             abort(403, 'Unauthorized');
         }
+
+        if (session()->get('bulan-input') === null) {
+            session()->put('bulan-input', now()->format('Y-m'));
+        }
+
+        $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
+
+        $query = DB::table('peminjaman')
+            ->select(
+                'ket_peminjaman',
+                'kode_peminjaman',
+                'tgl_pinjam',
+                'tgl_kembali'
+            )
+            ->where('status_peminjaman', 'selesai')
+            ->whereMonth('tgl_pinjam', Carbon::parse($bulanInput)->format('m'))
+            ->whereYear('tgl_pinjam', Carbon::parse($bulanInput)->format('Y'));
+
+        // dd($query->count());
+
+        $halaman = 'contentDashbordPimpinan';
         $user = Auth::user()->nama;
-        return view('Page_pimpinan.dahsboardPimpinan', compact('user'));
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput'));
     }
 
 

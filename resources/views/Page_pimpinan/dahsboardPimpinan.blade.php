@@ -4,19 +4,64 @@
 
 @section('content')
     {{-- Sidebar --}}
-        @include('Page_pimpinan.sidebar-pimpinan')
+    @include('Page_pimpinan.sidebar-pimpinan')
 
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                {{-- Navbar --}}
-                @include('components.dashboard.navbar')
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {{-- Navbar --}}
+            @include('components.dashboard.navbar')
 
-                <div class="container-fluid" id="container-wrapper">
-                    {{-- isi content --}}
-                    <h1>Welcome to dashboard pimpinan</h1>
-                    <p>This is the main content of the dashboard pimpinan</p>
-                </div>
+            <div class="container-fluid px-2 sm:px-4!" id="container-wrapper">
+                @if ($halaman === 'contentDashbordPimpinan')
+                    <div class="flex flex-col md:flex-row md:justify-between gap-3 items-start mb-8">
+                        <div class="item-start">
+                            <h4>Dashboard</h4>
+                            <div>
+                                <a href="/dashboard/pimpinan" class="text-gray-400! no-underline!">Dahsboard</a>
+                                <span class="text-gray-500">/</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <form action="{{ route('input-bulan-dashboard-pimpinan') }}" method="post">
+                                @csrf
+                                <input type="month" name="tanggal" value="{{ $bulanInput }}" onchange="this.form.submit()"
+                                 class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
+                            </form>
+                            {{-- <button
+                                class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-day text-primary"></i>
+                                <span>Juni 2024</span>
+                            </button> --}}
+                            <button
+                                class="bg-blue-500 text-white px-5 py-2.5 rounded-lg! text-sm font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-file-export"></i>
+                                <span>Ekspor Laporan</span>
+                            </button>
+                        </div>
+                    </div>
+                    @include('components.pimpinan.contentDashboardPimpinan')
+                @elseif ($halaman === 'contentPengelolaanUser')
+                    <h4>Pengelolaan User</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-Pengguna</a>
+                    </div>
+                    {{-- @include('components.admin.componentPengelolaanUser') --}}
+                @elseif ($halaman === 'contentEditUser')
+                    <h4>Edit User</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('pengelolaan-user') }}"
+                            class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">edit-akun-Pengguna</a>
+                    </div>
+                    {{-- @include('components.admin.componentEditAkunUserAdmin') --}}
+                @endif
             </div>
         </div>
-    
+    </div>
+
 @endsection

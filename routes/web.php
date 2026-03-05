@@ -4,6 +4,7 @@ use App\Http\Controllers\agendaBerlangsung;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardControllerPimpinan;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
 use App\Http\Controllers\mahasiswa\calenderController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use App\Http\Controllers\PengelolaanUserController;
+use App\Http\Controllers\pimpinan\DashboardControllerPimpinan as PimpinanDashboardControllerPimpinan;
 use App\Models\agendaFakultas;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -168,6 +170,7 @@ Route::middleware(['auth'])->group(function () {
 
     // dashboard pimpinan fakultas
     Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan']);
+    Route::post('input-bulan-dashboard-pimpinan', [PimpinanDashboardControllerPimpinan::class, 'tglDashboardPimpinan'])->name('input-bulan-dashboard-pimpinan');
 
     // -----------------------------------------------------------------------------------------------------
 
