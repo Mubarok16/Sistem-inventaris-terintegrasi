@@ -432,19 +432,6 @@ class DashboardController extends Controller
 
         $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
 
-        $query = DB::table('peminjaman')
-            ->select(
-                'ket_peminjaman',
-                'kode_peminjaman',
-                'tgl_pinjam',
-                'tgl_kembali'
-            )
-            ->where('status_peminjaman', 'selesai')
-            ->whereMonth('tgl_pinjam', Carbon::parse($bulanInput)->format('m'))
-            ->whereYear('tgl_pinjam', Carbon::parse($bulanInput)->format('Y'));
-
-        // dd($query->count());
-
         $halaman = 'contentDashbordPimpinan';
         $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput'));

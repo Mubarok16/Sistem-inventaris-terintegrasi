@@ -2,7 +2,7 @@
     <div class="flex-1 flex flex-col ">
         <main class="flex-1 p-6 lg:px-4 lg:py-2 max-w-7xl">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
+                {{-- <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
                     <div class="flex justify-between items-start mb-4">
                         <div class="size-10 bg-blue-50 text-primary rounded-lg flex items-center justify-center">
                             <i class="fa-solid fa-door-open"></i>
@@ -12,10 +12,14 @@
                     <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Okupansi Ruangan</p>
                     <div class="flex items-baseline gap-2 mt-1">
                         <h3 class="text-3xl font-black text-text-main">85.4%</h3>
+                        <livewire:pimpinan.okupansi-ruangan-perbulan />
                     </div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
                         <div class="bg-primary h-full" style="width: 85.4%"></div>
                     </div>
+                </div> --}}
+                <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
+                    <livewire:pimpinan.okupansi-ruangan-perbulan />
                 </div>
                 <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
                     <div class="flex justify-between items-start mb-4">
