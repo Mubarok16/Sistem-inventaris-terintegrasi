@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // table users
+        // Database/migrations/xxxx_xx_xx_create_users_table.php
         Schema::create('users', function (Blueprint $table) {
             $table->string('id_user', 12)->primary();
             $table->text('nama');
@@ -19,37 +19,50 @@ return new class extends Migration
             $table->string('password', 255);
             $table->string('hak_akses', 10);
             $table->integer('no_hp')->nullable();
-            $table->timestamps();
+            $table->string('status', 10)->nullable();
+            $table->timestamps(0);
         });
 
-        // table tipe_rooms
+        // Database/migrations/xxxx_xx_xx_create_peminjam_table.php
+        Schema::create('peminjam', function (Blueprint $table) {
+            $table->string('no_identitas', 12)->primary();
+            $table->text('nama_peminjam');
+            $table->string('username', 12);
+            $table->string('password', 255);
+            $table->text('fakultas');
+            $table->text('prodi');
+            $table->text('img_identitas');
+            $table->string('status', 10)->nullable();
+            $table->integer('tahun_masuk')->nullable();
+            $table->timestamps(0);
+        });
+
+        // Database/migrations/xxxx_xx_xx_create_tipe_rooms_table.php
         Schema::create('tipe_rooms', function (Blueprint $table) {
             $table->string('id_tipe_room', 12)->primary();
             $table->text('nama_tipe_room');
         });
 
-        // table rooms
+        // Database/migrations/xxxx_xx_xx_create_tipe_item_table.php
+        Schema::create('tipe_item', function (Blueprint $table) {
+            $table->string('id_tipe_item', 12)->primary();
+            $table->text('nama_tipe_item');
+        });
+
+        // Database/migrations/xxxx_xx_xx_create_rooms_table.php
         Schema::create('rooms', function (Blueprint $table) {
             $table->string('id_room', 12)->primary();
             $table->string('id_tipe_room', 12);
             $table->text('nama_room');
             $table->string('kondisi_room', 12);
             $table->text('gambar_room');
-            $table->timestamps();
+            $table->text('visibility_room')->nullable();
+            $table->timestamps(0);
 
-            // Relasi ke tabel tipe_rooms
-            $table->foreign('id_tipe_room')
-                ->references('id_tipe_room')
-                ->on('tipe_rooms');
+            $table->foreign('id_tipe_room')->references('id_tipe_room')->on('tipe_rooms');
         });
 
-        // table tipe_item dan items
-        Schema::create('tipe_item', function (Blueprint $table) {
-            $table->string('id_tipe_item', 12)->primary();
-            $table->text('nama_tipe_item');
-        });
-
-        // table items
+        // Database/migrations/xxxx_xx_xx_create_items_table.php
         Schema::create('items', function (Blueprint $table) {
             $table->string('id_item', 12)->primary();
             $table->string('id_room', 12);
@@ -59,115 +72,78 @@ return new class extends Migration
             $table->integer('qty_item');
             $table->string('kondisi_item', 12);
             $table->text('img_item');
-            $table->timestamps();
+            $table->text('visibility_item')->nullable();
+            $table->timestamps(0);
 
-            // Foreign key constraints
-            $table->foreign('id_room')
-                ->references('id_room')
-                ->on('rooms');
-
-            $table->foreign('id_tipe_item')
-                ->references('id_tipe_item')
-                ->on('tipe_item');
+            $table->foreign('id_room')->references('id_room')->on('rooms');
+            $table->foreign('id_tipe_item')->references('id_tipe_item')->on('tipe_item');
         });
 
-        // table peminjam
-         Schema::create('peminjam', function (Blueprint $table) {
-            $table->string('no_identitas', 12)->primary();
-            $table->text('nama_peminjam');
-            $table->string('username', 12);
-            $table->string('password', 255);
-            $table->text('fakultas');
-            $table->text('prodi');
-            $table->text('img_identitas');
-            $table->timestamps();
+        // Database/migrations/xxxx_xx_xx_create_agenda_fakultas_table.php
+        Schema::create('agenda_fakultas', function (Blueprint $table) {
+            $table->string('kode_agenda', 12)->primary();
+            $table->string('id_user', 12);
+            $table->text('nama_agenda');
+            $table->date('tgl_mulai_agenda')->nullable();
+            $table->text('tipe_agenda')->nullable();
+            $table->date('tgl_selesai_agenda')->nullable();
+            $table->text('loop_hari')->nullable();
+            $table->timestamps(0);
+
+            $table->foreign('id_user')->references('id_user')->on('users');
         });
 
-        // table peminjaman
-         Schema::create('peminjaman', function (Blueprint $table) {
+        // Database/migrations/xxxx_xx_xx_create_peminjaman_table.php
+        Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('kode_peminjaman', 12)->primary();
             $table->string('no_identitas', 12);
             $table->string('id_user', 12)->nullable();
             $table->text('ket_peminjaman');
             $table->text('lampiran_file');
-            $table->dateTime('tgl_tansaksi');
-            $table->timestamps();
-            $table->text('status_peminjaman');
-            $table->text('catatan_pengelola');
+            $table->timestamp('tgl_tansaksi', 0);
+            $table->text('status_peminjaman')->nullable();
+            $table->text('catatan_pengelola')->nullable();
+            $table->timestamp('tgl_pinjam')->nullable();
+            $table->timestamp('tgl_kembali')->nullable();
+            $table->timestamps(0);
 
-            // Foreign keys
-            $table->foreign('id_user')
-                  ->references('id_user')
-                  ->on('users');
-
-            $table->foreign('no_identitas')
-                  ->references('no_identitas')
-                  ->on('peminjam');
+            $table->foreign('id_user')->references('id_user')->on('users');
+            $table->foreign('no_identitas')->references('no_identitas')->on('peminjam');
         });
 
-        // table Agenda Fakultas
-         Schema::create('agenda_fakultas', function (Blueprint $table) {
-            $table->string('kode_agenda', 12)->primary();
-            $table->string('id_user', 12);
-            $table->text('nama_agenda');
-            $table->text('tipe_agenda');
-            $table->dateTime('tgl_mulai_agenda');
-            $table->dateTime('tgl_selesai_agenda');
-            $table->timestamps();
-
-            // Foreign keys
-            $table->foreign('id_user')
-                  ->references('id_user')
-                  ->on('users');
-        });
-
-        // table usage rooms
-         Schema::create('usage_rooms', function (Blueprint $table) {
+        // Database/migrations/xxxx_xx_xx_create_usage_rooms_table.php
+        Schema::create('usage_rooms', function (Blueprint $table) {
             $table->string('kode_peminjaman', 12)->nullable();
             $table->string('kode_agenda', 12)->nullable();
             $table->string('id_room', 12);
-            $table->dateTime('tgl_pinjam_usage_room');
-            $table->dateTime('tgl_kembali_usage_room');
+            $table->timestamp('tgl_pinjam_usage_room', 0);
+            $table->timestamp('tgl_kembali_usage_room', 0);
             $table->text('status_usage_room');
-            $table->timestamps();
+            $table->time('jam_mulai_usage_room')->nullable();
+            $table->time('jam_selesai_usage_room')->nullable();
+            $table->timestamps(0);
 
-            // Foreign keys
-            $table->foreign('id_room')
-                  ->references('id_room')
-                  ->on('rooms');
-
-            $table->foreign('kode_peminjaman')
-                  ->references('kode_peminjaman')
-                  ->on('peminjaman');
-
-            $table->foreign('kode_agenda')
-                  ->references('kode_agenda')
-                  ->on('agenda_fakultas');
+            $table->foreign('id_room')->references('id_room')->on('rooms');
+            $table->foreign('kode_agenda')->references('kode_agenda')->on('agenda_fakultas');
+            $table->foreign('kode_peminjaman')->references('kode_peminjaman')->on('peminjaman');
         });
 
-        // table usage items
+        // Database/migrations/xxxx_xx_xx_create_usage_items_table.php
         Schema::create('usage_items', function (Blueprint $table) {
-           $table->string('kode_peminjaman', 12)->nullable();
+            $table->string('kode_peminjaman', 12)->nullable();
             $table->string('kode_agenda', 12)->nullable();
             $table->string('id_item', 12);
             $table->integer('qty_usage_item');
-            $table->dateTime('tgl_pinjam_usage_item');
-            $table->dateTime('tgl_kembali_usage_item');
+            $table->timestamp('tgl_pinjam_usage_item', 0);
+            $table->timestamp('tgl_kembali_usage_item', 0);
             $table->text('status_usage_item');
-            $table->timestamps();
+            $table->time('jam_mulai_usage_item', 0)->nullable();
+            $table->time('jam_selesai_usage_item', 0)->nullable();
+            $table->timestamps(0);
 
-            // Foreign keys
-            $table->foreign('id_item')
-                  ->references('id_item')
-                  ->on('items');
-
-            $table->foreign('kode_peminjaman')
-                  ->references('kode_peminjaman')
-                  ->on('peminjaman');
-
-            $table->foreign('kode_agenda')
-                  ->references('kode_agenda')
-                  ->on('agenda_fakultas');
+            $table->foreign('id_item')->references('id_item')->on('items');
+            $table->foreign('kode_agenda')->references('kode_agenda')->on('agenda_fakultas');
+            $table->foreign('kode_peminjaman')->references('kode_peminjaman')->on('peminjaman');
         });
     }
 

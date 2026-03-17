@@ -148,121 +148,204 @@ class PengelolaanPeminjamanAdmin extends Controller
     // konfirmasi pengambilan barang atau kunci ruangan
     function konfirmasiAmbilKembali(Request $request)
     {
-        // dd($request->kode_peminjaman);
 
         $roomTerdajwal = DB::table('usage_rooms')
             ->select(
                 'kode_peminjaman',
                 'tgl_pinjam_usage_room',
-                'status_usage_room'
+                'status_usage_room',
+                'jam_mulai_usage_room'
             )
             ->where('kode_peminjaman', $request->kode_peminjaman)
             ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-            ->where('status_usage_room', 'terjadwal')
-            ->get();
+            ->where('status_usage_room', 'terjadwal');
+        // ->get();
+
+        // dd($roomTerdajwal->first()->jam_mulai_usage_room);
 
         $itemTerjdawal = DB::table('usage_items')
             ->select(
                 'kode_peminjaman',
                 'tgl_pinjam_usage_item',
-                'status_usage_item'
+                'status_usage_item',
+                'jam_mulai_usage_item'
             )
             ->where('kode_peminjaman', $request->kode_peminjaman)
             ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-            ->where('status_usage_item', 'terjadwal')
-            ->get();
+            ->where('status_usage_item', 'terjadwal');
+        // ->get();
+
+        // dd(isset($itemTerjdawal->first()->jam_mulai_usage_item));
+
 
         $roomDigunakan = DB::table('usage_rooms')
             ->select(
                 'kode_peminjaman',
                 'tgl_pinjam_usage_room',
-                'status_usage_room'
+                'status_usage_room',
+                'jam_mulai_usage_room'
             )
             ->where('kode_peminjaman', $request->kode_peminjaman)
             ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-            ->where('status_usage_room', 'digunakan')
-            ->get();
+            ->where('status_usage_room', 'digunakan');
+        // ->get();
 
         $itemDigunakan = DB::table('usage_items')
             ->select(
                 'kode_peminjaman',
                 'tgl_pinjam_usage_item',
-                'status_usage_item'
+                'status_usage_item',
+                'jam_mulai_usage_item'
             )
             ->where('kode_peminjaman', $request->kode_peminjaman)
             ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-            ->where('status_usage_item', 'digunakan')
-            ->get();
+            ->where('status_usage_item', 'digunakan');
+        // ->get();
 
+        #logika unutk persetujuan pengambilan dan pengembalian barang ruangan sesuai dengan id yg di scan atau di inputkan
         if ($roomTerdajwal->count() > 0 or $itemTerjdawal->count() > 0) {
-            # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi digunakan
-            // dd('ubah jadi digunakan');
-            DB::table('usage_rooms')
-                ->select(
-                    'kode_peminjaman',
-                    'tgl_pinjam_usage_room',
-                    'status_usage_room'
-                )
-                ->where('kode_peminjaman', $request->kode_peminjaman)
-                ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-                ->where('status_usage_room', 'terjadwal')
-                ->update([
-                    'status_usage_room' => 'digunakan',
-                    'updated_at' => now(),
-                ]);
 
-            DB::table('usage_items')
-                ->select(
-                    'kode_peminjaman',
-                    'tgl_pinjam_usage_item',
-                    'status_usage_item'
-                )
-                ->where('kode_peminjaman', $request->kode_peminjaman)
-                ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-                ->where('status_usage_item', 'terjadwal')
-                ->update([
-                    'status_usage_item' => 'digunakan',
-                    'updated_at' => now(),
-                ]);
+            #logika if jika peminjamannya full day maka akan update semua item dan room yg ada di table usage item dan room menjadi digunakan berdasarkan idnya
+
+            // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
+            $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
+            $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
+
+            if ($isRoomFullDay || $isItemFullDay) {
+                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi digunakan
+                # hanya untuk mengupdate semua usage room yg ada karna full day 
+                DB::table('usage_rooms')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_room',
+                        'status_usage_room'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    // ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->where('status_usage_room', 'terjadwal')
+                    ->update([
+                        'status_usage_room' => 'digunakan',
+                        'updated_at' => now(),
+                    ]);
+
+                DB::table('usage_items')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_item',
+                        'status_usage_item'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    // ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->where('status_usage_item', 'terjadwal')
+                    ->update([
+                        'status_usage_item' => 'digunakan',
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi digunakan
+                # hanya untuk mengupdate hanya satu hari saja karna spesifik
+                DB::table('usage_rooms')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_room',
+                        'status_usage_room'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->where('status_usage_room', 'terjadwal')
+                    ->update([
+                        'status_usage_room' => 'digunakan',
+                        'updated_at' => now(),
+                    ]);
+
+                DB::table('usage_items')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_item',
+                        'status_usage_item'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->where('status_usage_item', 'terjadwal')
+                    ->update([
+                        'status_usage_item' => 'digunakan',
+                        'updated_at' => now(),
+                    ]);
+            }
         } elseif ($roomDigunakan->count() > 0 or $itemDigunakan->count() > 0) {
-            # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi digunakan
-            // dd('ubah jadi selesai');
-            DB::table('usage_rooms')
-                ->select(
-                    'kode_peminjaman',
-                    'tgl_pinjam_usage_room',
-                    'status_usage_room'
-                )
-                ->where('kode_peminjaman', $request->kode_peminjaman)
-                ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-                ->where('status_usage_room', 'digunakan')
-                ->update([
-                    'status_usage_room' => 'selesai',
-                    'updated_at' => now(),
-                ]);
 
-            DB::table('usage_items')
-                ->select(
-                    'kode_peminjaman',
-                    'tgl_pinjam_usage_item',
-                    'status_usage_item'
-                )
-                ->where('kode_peminjaman', $request->kode_peminjaman)
-                ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-                ->where('status_usage_item', 'digunakan')
-                ->update([
-                    'status_usage_item' => 'selesai',
-                    'updated_at' => now(),
-                ]);
+            // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
+            $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
+            $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
+
+            if ($isRoomFullDay || $isItemFullDay) {
+                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi selesai
+                # hanya untuk mengupdate semua usage room yg ada karna full day 
+                DB::table('usage_rooms')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_room',
+                        'status_usage_room'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    // ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->where('status_usage_room', 'digunakan')
+                    ->update([
+                        'status_usage_room' => 'selesai',
+                        'updated_at' => now(),
+                    ]);
+    
+                DB::table('usage_items')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_item',
+                        'status_usage_item'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    // ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->where('status_usage_item', 'digunakan')
+                    ->update([
+                        'status_usage_item' => 'selesai',
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi selesai
+                # hanya untuk mengupdate semua usage room yg ada karna spesifik
+                DB::table('usage_rooms')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_room',
+                        'status_usage_room'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->where('status_usage_room', 'digunakan')
+                    ->update([
+                        'status_usage_room' => 'selesai',
+                        'updated_at' => now(),
+                    ]);
+    
+                DB::table('usage_items')
+                    ->select(
+                        'kode_peminjaman',
+                        'tgl_pinjam_usage_item',
+                        'status_usage_item'
+                    )
+                    ->where('kode_peminjaman', $request->kode_peminjaman)
+                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->where('status_usage_item', 'digunakan')
+                    ->update([
+                        'status_usage_item' => 'selesai',
+                        'updated_at' => now(),
+                    ]);
+            }
+
         } else {
-            return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'peminjaman tidak dijadwalkan hari ini.');
+            // jika tidak ada peminjaman hari ini berdasarkan kode peminjamannnya
+            return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'peminjaman mungkin tidak dijadwalkan hari ini.');
         }
-        // dd($rooms);
+
         return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'Status pengambilan berhasil diperbarui.');
-        // $request->validate([
-        //     'kode_peminjaman' => 'string',
-        //     'status_konfirmasi' => 'string',
-        // ]);     
     }
     // function penolakan(Request $request)
     // {

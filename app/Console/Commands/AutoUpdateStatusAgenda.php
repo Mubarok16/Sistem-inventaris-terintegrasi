@@ -59,7 +59,9 @@ class AutoUpdateStatusAgenda extends Command
                                         $finalQ->where('ur.jam_selesai_usage_room', '>', $currentTime)
                                             ->orWhereNull('ur.jam_selesai_usage_room'); // Anggap full day belum selesai sampai hari berganti
                                     });
-                            });
+                            })
+                            // Kondisi statusnya tercatat 'terlambat'
+                            ->orWhere('ui.status_usage_rooms', 'terlambat');
                     });
             })
             ->whereNotExists(function ($query) use ($today, $currentTime) {
@@ -74,13 +76,54 @@ class AutoUpdateStatusAgenda extends Command
                                         $finalQ->where('ui.jam_selesai_usage_item', '>', $currentTime)
                                             ->orWhereNull('ui.jam_selesai_usage_item');
                                     });
-                            });
+                            })
+                            // Kondisi statusnya tercatat 'terlambat'
+                            ->orWhere('ui.status_usage_items', 'terlambat');
                     });
             })
             ->update(['p.status_peminjaman' => 'selesai']);
 
+        // ============= update status auto untuk peminjaman jika ada salah satu usagenya terlambat maka akan di update terlambat ==============
+        // khusus unutk peminjaman
+        DB::table('peminjaman as p')
+            ->whereIn('p.status_peminjaman', ['terjadwal']) // Hanya cek yang masih terjadwal
+            ->where(function ($query) use ($today, $currentTime) {
+                $query->whereExists(function ($q) use ($today, $currentTime) {
+                    $q->select(DB::raw(1))
+                        ->from('usage_rooms as ur')
+                        ->whereColumn('ur.kode_peminjaman', 'p.kode_peminjaman')
+                        ->where('ur.status_usage_room', '!=', 'selesai') // Pastikan belum selesai
+                        ->where(function ($timeQ) use ($today, $currentTime) {
+                            // Terlambat jika: tgl sudah lewat
+                            $timeQ->where('ur.tgl_pinjam_usage_room', '<', $today)
+                                // Atau tgl hari ini tapi jam selesai sudah lewat
+                                ->orWhere(function ($sq) use ($today, $currentTime) {
+                                    $sq->where('ur.tgl_pinjam_usage_room', $today)
+                                        ->where('ur.jam_selesai_usage_room', '<', $currentTime)
+                                        ->whereNotNull('ur.jam_selesai_usage_room');
+                                });
+                        });
+                })
+                    // MENGGUNAKAN OR: Salah satu saja terpenuhi (ruangan ATAU barang), maka p.status jadi terlambat
+                    ->orWhereExists(function ($q) use ($today, $currentTime) {
+                        $q->select(DB::raw(1))
+                            ->from('usage_items as ui')
+                            ->whereColumn('ui.kode_peminjaman', 'p.kode_peminjaman')
+                            ->where('ui.status_usage_item', '!=', 'selesai')
+                            ->where(function ($timeQ) use ($today, $currentTime) {
+                                $timeQ->where('ui.tgl_pinjam_usage_item', '<', $today)
+                                    ->orWhere(function ($sq) use ($today, $currentTime) {
+                                        $sq->where('ui.tgl_pinjam_usage_item', $today)
+                                            ->where('ui.jam_selesai_usage_item', '<', $currentTime)
+                                            ->whereNotNull('ui.jam_selesai_usage_item');
+                                    });
+                            });
+                    });
+            })
+            ->update(['p.status_peminjaman' => 'terlambat']);
+
         // ================ membuat semua usage room dan item yg sudah lewat tetapi tidak diguakan auto update slesai ==============================
-        // unutk usage room dan item agenda fakultas saja
+        // unutk usage room dan item di agenda fakultas saja
         DB::table('usage_rooms')
             ->where('kode_peminjaman', NULL)
             ->where('status_usage_room', 'terjadwal')
@@ -107,8 +150,8 @@ class AutoUpdateStatusAgenda extends Command
             })
             ->update(['status_usage_item' => 'selesai']);
 
-        // ======= membuat semua usage room dan item yg sudah lewat tetapi tidak diguakan autou update dibatalkan karna tidak digunakan ===================
-        // unutk usage room dan item peminjaman saja
+        // ======= membuat semua usage room dan item yg sudah lewat tetapi tidak diguakan auto update dibatalkan karna tidak digunakan ===================
+        // unutk usage room dan item di peminjaman saja
         DB::table('usage_rooms')
             ->where('kode_agenda', NULL)
             ->where('status_usage_room', 'terjadwal')
@@ -213,12 +256,12 @@ class AutoUpdateStatusAgenda extends Command
 
 
         // ============================================== khusus peminajamn usage room dan item auto update ===============================================
-        // keitika jam penggunaan peminjaman sudah selesai tapi belum di acc selesai oleh admin, 
+        // keitika jam penggunaan peminjaman sudah selesai tapi barang atu ruangan belum kembali (belum konfirmasi selesai di admin), 
         // maka otomatis akan di update belum kembali oleh sistem
 
         // usage room
         // Update ke 'selesai'
-        DB::table('usage_rooms')->where('status_usage_room', 'diajukan')
+        DB::table('usage_rooms')->where('status_usage_room', 'digunakan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {
                 // Selesai jika tanggal sudah lewat
@@ -231,12 +274,12 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_room' => 'ditolak']);
+            ->update(['status_usage_room' => 'terlambat']);
 
 
         // usage item
         // Update ke 'selesai'
-        DB::table('usage_items')->where('status_usage_item', 'diajukan')
+        DB::table('usage_items')->where('status_usage_item', 'digunakan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {
                 // Selesai jika tanggal sudah lewat
@@ -249,9 +292,9 @@ class AutoUpdateStatusAgenda extends Command
                     });
                 // Catatan: Untuk Full Day, biasanya status 'selesai' dipicu saat ganti hari (masuk kondisi poin 1)
             })
-            ->update(['status_usage_item' => 'ditolak']);
+            ->update(['status_usage_item' => 'terlambat']);
 
-        
+
         // Output informasi bahwa proses telah selesai
         $this->info('Status agenda berhasil diperbarui dengan penanganan Full Day.');
     }
