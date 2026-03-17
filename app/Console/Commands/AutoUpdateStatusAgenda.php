@@ -43,25 +43,24 @@ class AutoUpdateStatusAgenda extends Command
 
         // =================== update status auto untuk peminjaman yang sudah sudah selesai semua di usagenya jadi selesai =====================================
         // khusus unutk peminjaman
+        // =================== update status auto untuk peminjaman yang sudah selesai =====================================
         DB::table('peminjaman as p')
-            ->whereNotIn('p.status_peminjaman', ['selesai', 'ditolak', 'diajukan'])
+            ->where('status_peminjaman', 'terjadwal') // Tambahkan status yang tidak boleh di-auto-selesai
             ->whereNotExists(function ($query) use ($today, $currentTime) {
                 $query->select(DB::raw(1))
                     ->from('usage_rooms as ur')
                     ->whereRaw('ur.kode_peminjaman = p.kode_peminjaman')
                     ->where(function ($q) use ($today, $currentTime) {
-                        // Cari apakah masih ada yang tgl nya hari esok atau nanti
                         $q->where('ur.tgl_pinjam_usage_room', '>', $today)
-                            // Atau tgl hari ini tapi jam selesainya belum lewat
                             ->orWhere(function ($sq) use ($today, $currentTime) {
                                 $sq->where('ur.tgl_pinjam_usage_room', $today)
                                     ->where(function ($finalQ) use ($currentTime) {
                                         $finalQ->where('ur.jam_selesai_usage_room', '>', $currentTime)
-                                            ->orWhereNull('ur.jam_selesai_usage_room'); // Anggap full day belum selesai sampai hari berganti
+                                            ->orWhereNull('ur.jam_selesai_usage_room');
                                     });
                             })
-                            // Kondisi statusnya tercatat 'terlambat'
-                            ->orWhere('ui.status_usage_rooms', 'terlambat');
+                            // PERBAIKAN DI SINI: ur, bukan ui. status_usage_room, bukan status_usage_rooms
+                            ->orWhere('ur.status_usage_room', 'terlambat');
                     });
             })
             ->whereNotExists(function ($query) use ($today, $currentTime) {
@@ -77,50 +76,124 @@ class AutoUpdateStatusAgenda extends Command
                                             ->orWhereNull('ui.jam_selesai_usage_item');
                                     });
                             })
-                            // Kondisi statusnya tercatat 'terlambat'
-                            ->orWhere('ui.status_usage_items', 'terlambat');
+                            // PERBAIKAN DI SINI: status_usage_item, bukan status_usage_items
+                            ->orWhere('ui.status_usage_item', 'terlambat');
                     });
             })
-            ->update(['p.status_peminjaman' => 'selesai']);
+            // PERBAIKAN DI SINI: Hapus p. dari key update
+            ->update(['status_peminjaman' => 'selesai']);
+
+
+        // DB::table('peminjaman as p')
+        //     ->whereNotIn('p.status_peminjaman', ['terjadwal'])
+        //     ->whereNotExists(function ($query) use ($today, $currentTime) {
+        //         $query->select(DB::raw(1))
+        //             ->from('usage_rooms as ur')
+        //             ->whereRaw('ur.kode_peminjaman = p.kode_peminjaman')
+        //             ->where(function ($q) use ($today, $currentTime) {
+        //                 // Cari apakah masih ada yang tgl nya hari esok atau nanti
+        //                 $q->where('ur.tgl_pinjam_usage_room', '>', $today)
+        //                     // Atau tgl hari ini tapi jam selesainya belum lewat
+        //                     ->orWhere(function ($sq) use ($today, $currentTime) {
+        //                         $sq->where('ur.tgl_pinjam_usage_room', $today)
+        //                             ->where(function ($finalQ) use ($currentTime) {
+        //                                 $finalQ->where('ur.jam_selesai_usage_room', '>', $currentTime)
+        //                                     ->orWhereNull('ur.jam_selesai_usage_room'); // Anggap full day belum selesai sampai hari berganti
+        //                             });
+        //                     })
+        //                     // Kondisi statusnya tercatat 'terlambat'
+        //                     ->orWhere('ui.status_usage_rooms', 'terlambat');
+        //             });
+        //     })
+        //     ->whereNotExists(function ($query) use ($today, $currentTime) {
+        //         $query->select(DB::raw(1))
+        //             ->from('usage_items as ui')
+        //             ->whereRaw('ui.kode_peminjaman = p.kode_peminjaman')
+        //             ->where(function ($q) use ($today, $currentTime) {
+        //                 $q->where('ui.tgl_pinjam_usage_item', '>', $today)
+        //                     ->orWhere(function ($sq) use ($today, $currentTime) {
+        //                         $sq->where('ui.tgl_pinjam_usage_item', $today)
+        //                             ->where(function ($finalQ) use ($currentTime) {
+        //                                 $finalQ->where('ui.jam_selesai_usage_item', '>', $currentTime)
+        //                                     ->orWhereNull('ui.jam_selesai_usage_item');
+        //                             });
+        //                     })
+        //                     // Kondisi statusnya tercatat 'terlambat'
+        //                     ->orWhere('ui.status_usage_items', 'terlambat');
+        //             });
+        //     })
+        //     ->update(['p.status_peminjaman' => 'selesai']);
 
         // ============= update status auto untuk peminjaman jika ada salah satu usagenya terlambat maka akan di update terlambat ==============
         // khusus unutk peminjaman
-        DB::table('peminjaman as p')
-            ->whereIn('p.status_peminjaman', ['terjadwal']) // Hanya cek yang masih terjadwal
-            ->where(function ($query) use ($today, $currentTime) {
-                $query->whereExists(function ($q) use ($today, $currentTime) {
+        DB::table('peminjaman')
+            ->where('status_peminjaman', 'terjadwal')
+            ->where(function ($mainQuery) use ($today, $currentTime) {
+                $mainQuery->whereExists(function ($q) use ($today, $currentTime) {
                     $q->select(DB::raw(1))
-                        ->from('usage_rooms as ur')
-                        ->whereColumn('ur.kode_peminjaman', 'p.kode_peminjaman')
-                        ->where('ur.status_usage_room', '!=', 'selesai') // Pastikan belum selesai
+                        ->from('usage_rooms')
+                        ->whereColumn('usage_rooms.kode_peminjaman', 'peminjaman.kode_peminjaman')
+                        ->where('status_usage_room', '!=', 'selesai')
                         ->where(function ($timeQ) use ($today, $currentTime) {
-                            // Terlambat jika: tgl sudah lewat
-                            $timeQ->where('ur.tgl_pinjam_usage_room', '<', $today)
-                                // Atau tgl hari ini tapi jam selesai sudah lewat
+                            $timeQ->where('tgl_pinjam_usage_room', '<', $today)
                                 ->orWhere(function ($sq) use ($today, $currentTime) {
-                                    $sq->where('ur.tgl_pinjam_usage_room', $today)
-                                        ->where('ur.jam_selesai_usage_room', '<', $currentTime)
-                                        ->whereNotNull('ur.jam_selesai_usage_room');
+                                    $sq->where('tgl_pinjam_usage_room', $today)
+                                        ->where('jam_selesai_usage_room', '<', $currentTime);
                                 });
                         });
                 })
-                    // MENGGUNAKAN OR: Salah satu saja terpenuhi (ruangan ATAU barang), maka p.status jadi terlambat
                     ->orWhereExists(function ($q) use ($today, $currentTime) {
                         $q->select(DB::raw(1))
-                            ->from('usage_items as ui')
-                            ->whereColumn('ui.kode_peminjaman', 'p.kode_peminjaman')
-                            ->where('ui.status_usage_item', '!=', 'selesai')
+                            ->from('usage_items')
+                            ->whereColumn('usage_items.kode_peminjaman', 'peminjaman.kode_peminjaman')
+                            ->where('status_usage_item', '!=', 'selesai')
                             ->where(function ($timeQ) use ($today, $currentTime) {
-                                $timeQ->where('ui.tgl_pinjam_usage_item', '<', $today)
+                                $timeQ->where('tgl_pinjam_usage_item', '<', $today)
                                     ->orWhere(function ($sq) use ($today, $currentTime) {
-                                        $sq->where('ui.tgl_pinjam_usage_item', $today)
-                                            ->where('ui.jam_selesai_usage_item', '<', $currentTime)
-                                            ->whereNotNull('ui.jam_selesai_usage_item');
+                                        $sq->where('tgl_pinjam_usage_item', $today)
+                                            ->where('jam_selesai_usage_item', '<', $currentTime);
                                     });
                             });
                     });
             })
-            ->update(['p.status_peminjaman' => 'terlambat']);
+            ->update(['status_peminjaman' => 'terlambat']);
+
+        // DB::table('peminjaman as p')
+        //     ->whereIn('p.status_peminjaman', ['terjadwal']) // Hanya cek yang masih terjadwal
+        //     ->where(function ($query) use ($today, $currentTime) {
+        //         $query->whereExists(function ($q) use ($today, $currentTime) {
+        //             $q->select(DB::raw(1))
+        //                 ->from('usage_rooms as ur')
+        //                 ->whereColumn('ur.kode_peminjaman', 'p.kode_peminjaman')
+        //                 ->where('ur.status_usage_room', '!=', 'selesai') // Pastikan belum selesai
+        //                 ->where(function ($timeQ) use ($today, $currentTime) {
+        //                     // Terlambat jika: tgl sudah lewat
+        //                     $timeQ->where('ur.tgl_pinjam_usage_room', '<', $today)
+        //                         // Atau tgl hari ini tapi jam selesai sudah lewat
+        //                         ->orWhere(function ($sq) use ($today, $currentTime) {
+        //                             $sq->where('ur.tgl_pinjam_usage_room', $today)
+        //                                 ->where('ur.jam_selesai_usage_room', '<', $currentTime)
+        //                                 ->whereNotNull('ur.jam_selesai_usage_room');
+        //                         });
+        //                 });
+        //         })
+        //             // MENGGUNAKAN OR: Salah satu saja terpenuhi (ruangan ATAU barang), maka p.status jadi terlambat
+        //             ->orWhereExists(function ($q) use ($today, $currentTime) {
+        //                 $q->select(DB::raw(1))
+        //                     ->from('usage_items as ui')
+        //                     ->whereColumn('ui.kode_peminjaman', 'p.kode_peminjaman')
+        //                     ->where('ui.status_usage_item', '!=', 'selesai')
+        //                     ->where(function ($timeQ) use ($today, $currentTime) {
+        //                         $timeQ->where('ui.tgl_pinjam_usage_item', '<', $today)
+        //                             ->orWhere(function ($sq) use ($today, $currentTime) {
+        //                                 $sq->where('ui.tgl_pinjam_usage_item', $today)
+        //                                     ->where('ui.jam_selesai_usage_item', '<', $currentTime)
+        //                                     ->whereNotNull('ui.jam_selesai_usage_item');
+        //                             });
+        //                     });
+        //             });
+        //     })
+        //     ->update(['p.status_peminjaman' => 'terlambat']);
 
         // ================ membuat semua usage room dan item yg sudah lewat tetapi tidak diguakan auto update slesai ==============================
         // unutk usage room dan item di agenda fakultas saja
