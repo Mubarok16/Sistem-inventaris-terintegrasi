@@ -74,85 +74,21 @@
                             <i class="fa-solid fa-chart-line text-primary"></i>
                             Tren Penggunaan Barang dan Ruangan
                         </h4>
-                        {{-- <select
-                            class="text-xs border-slate-200 rounded-lg font-medium focus:ring-primary focus:border-primary">
-                            <option>7 Hari Terakhir</option>
-                            <option>30 Hari Terakhir</option>
-                        </select> --}}
                     </div>
                     <div id="chart"></div>
 
                 </div>
-                {{-- <div class="bg-white border border-border-light p-8 rounded-xl">
-                    <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <h4 class="text-lg font-bold text-text-main">Tren Penggunaan</h4>
-                            <p class="text-xs text-text-muted">Akumulasi jam penggunaan per bulan</p>
-                        </div>
-                        <button class="text-slate-400 hover:text-primary"><i class="fa-solid fa-ellipsis"></i></button>
-                    </div>
-                    <div class="h-56 w-full flex flex-col">
-                        <div class="flex-1 relative">
-                            <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 120">
-                                <path d="M0,100 Q50,20 100,80 T200,40 T300,90 T400,30" fill="none" stroke="#136dec"
-                                    stroke-width="3"></path>
-                                <path d="M0,100 Q50,20 100,80 T200,40 T300,90 T400,30 V120 H0 Z"
-                                    fill="rgba(19, 109, 236, 0.05)"></path>
-                            </svg>
-                        </div>
-                        <div class="flex justify-between mt-4 px-2">
-                            <span class="text-[10px] font-bold text-slate-400">JAN</span>
-                            <span class="text-[10px] font-bold text-slate-400">FEB</span>
-                            <span class="text-[10px] font-bold text-slate-400">MAR</span>
-                            <span class="text-[10px] font-bold text-slate-400">APR</span>
-                            <span class="text-[10px] font-bold text-slate-400">MEI</span>
-                            <span class="text-[10px] font-bold text-slate-400">JUN</span>
-                        </div>
-                    </div>
-                </div> --}}
-                {{-- <div class="bg-white border border-border-light p-8 rounded-xl">
-                    <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <h4 class="text-lg font-bold text-text-main">Distribusi Kegiatan</h4>
-                            <p class="text-xs text-text-muted">Kategori pemanfaatan fasilitas</p>
-                        </div>
-                        <button class="text-slate-400 hover:text-primary"><i class="fa-solid fa-filter"></i></button>
-                    </div>
-                    <div class="flex items-end justify-between h-56 px-4 gap-4">
-                        <div class="flex-1 flex flex-col items-center gap-3">
-                            <div class="w-full bg-blue-50 border-t-2 border-primary rounded-t" style="height: 60%">
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Kuliah</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-3">
-                            <div class="w-full bg-blue-50 border-t-2 border-primary rounded-t" style="height: 85%">
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Rapat</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-3">
-                            <div class="w-full bg-blue-50 border-t-2 border-primary rounded-t" style="height: 40%">
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Seminar</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-3">
-                            <div class="w-full bg-blue-50 border-t-2 border-primary rounded-t" style="height: 25%">
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Ujian</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-3">
-                            <div class="w-full bg-blue-50 border-t-2 border-primary rounded-t" style="height: 55%">
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Lainnya</span>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
 
-            <div class="bg-white border border-border-light rounded-xl overflow-hidden mb-12">
+            {{-- usage room terdekat --}}
+            <div class="bg-white border border-border-light rounded-xl overflow-hidden mb-8">
                 <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h4 class="text-lg font-bold text-text-main">Agenda Besar Terdekat</h4>
-                    <a class="text-primary text-xs font-bold hover:underline" href="#">Lihat Kalender <i
-                            class="fa-solid fa-arrow-right ml-1"></i></a>
+                    <h4 class="text-lg font-bold text-text-main">
+                        <i class="fa-solid fa-calendar-check text-primary"></i>
+                        Penggunaan Ruangan Terdekat
+                    </h4>
+                    <a class="text-primary text-xs font-bold hover:underline" href="#">Lihat selengkapnya di
+                        Kalender <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
@@ -161,78 +97,20 @@
                                 <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
                                     Nama Kegiatan</th>
                                 <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                                    Lokasi</th>
+                                    Ruangan</th>
                                 <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                                    Tanggal</th>
+                                    Tanggal & jam</th>
                                 <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
                                     Status</th>
-                                <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                                    Kesiapan</th>
+                                {{-- <th class="px-6 py-4 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                                    Kesiapan</th> --}}
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="size-9 rounded bg-blue-50 text-primary flex items-center justify-center">
-                                            <i class="fa-solid fa-graduation-cap"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-text-main">Yudisium Periode IV 2024
-                                            </p>
-                                            <p class="text-[10px] text-text-muted">Akademik • Protokoler</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-5 text-text-muted text-sm">Aula Utama Gd. A</td>
-                                <td class="px-6 py-5 text-text-muted text-sm font-medium">24 Juni 2024</td>
-                                <td class="px-6 py-5">
-                                    <span
-                                        class="inline-flex px-2 py-1 rounded bg-amber-50 text-amber-700 text-[10px] font-bold uppercase border border-amber-100">Persiapan</span>
-                                </td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex-1 bg-slate-100 h-1 rounded-full overflow-hidden min-w-[60px]">
-                                            <div class="bg-amber-500 h-full w-[65%]"></div>
-                                        </div>
-                                        <span class="text-slate-400 text-[10px] font-bold">65%</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="size-9 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                                            <i class="fa-solid fa-globe"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-text-main">Seminar Internasional ICT
-                                            </p>
-                                            <p class="text-[10px] text-text-muted">Penelitian • Umum</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-5 text-text-muted text-sm">Auditorium Multimedia</td>
-                                <td class="px-6 py-5 text-text-muted text-sm font-medium">28 Juni 2024</td>
-                                <td class="px-6 py-5">
-                                    <span
-                                        class="inline-flex px-2 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold uppercase border border-blue-100">Terjadwal</span>
-                                </td>
-                                <td class="px-6 py-5">
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex-1 bg-slate-100 h-1 rounded-full overflow-hidden min-w-[60px]">
-                                            <div class="bg-blue-500 h-full w-[30%]"></div>
-                                        </div>
-                                        <span class="text-slate-400 text-[10px] font-bold">30%</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <livewire:pimpinan.agenda-terdekat />
                     </table>
                 </div>
             </div>
+
         </main>
     </div>
 </body>
@@ -243,7 +121,8 @@
     console.log("Data Ruangan:", @json($countsRuangan));
     var options = {
         chart: {
-            type: 'line'
+            type: 'line',
+            height: 400,
         },
         series: [{
                 name: 'Peminjaman Barang',
