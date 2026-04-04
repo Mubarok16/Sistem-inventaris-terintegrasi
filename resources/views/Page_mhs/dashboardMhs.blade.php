@@ -69,11 +69,11 @@
                     </div>
                     @include('components.mahasiswa.contentDetailPeminjamanRuangan')
                 @elseif ($halaman === 'contentListPeminjaman')
-                    <h4>Cart Peminjaman</h4>
+                    <h4>List Peminjaman</h4>
                     <div class="pb-4">
                         <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard-mahasiswa</a>
                         <span class="text-gray-500">/</span>
-                        <a href="" class="text-gray-400! no-underline! font-medium">Cart-peminjaman</a>
+                        <a href="" class="text-gray-400! no-underline! font-medium">List-peminjaman</a>
                     </div>
                     @include('components.mahasiswa.contentListPeminjaman')
                 @elseif ($halaman === 'contentDetailTransaksiPeminjamanMhs')

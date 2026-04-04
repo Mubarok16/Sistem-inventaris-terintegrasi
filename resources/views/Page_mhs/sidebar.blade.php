@@ -49,7 +49,7 @@
 
             <a href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}" class="block px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'bg-gray-200' : '' }}">
                 <i class="fas fa-shopping-cart"></i>
-                <span>Cart Peminjaman</span>
+                <span>List Peminjaman</span>
             </a>
             <a href="#" class="block px-2 py-2 text-sm text-gray-600 hover:bg-gray-100 no-underline! {{ $halaman === 'contentCetakQR' ? 'bg-gray-200' : '' }}">
                 <i class="fas fa-qrcode"></i>

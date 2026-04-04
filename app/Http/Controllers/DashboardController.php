@@ -432,9 +432,83 @@ class DashboardController extends Controller
 
         $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
 
+        // dd($bulanInput);
+
+        ///////////////////////////////////////////////// chart //////////////////////////////////////////////////////////////////
+        // data untuk cart
+        $startDate = Carbon::parse($bulanInput)->startOfMonth()->toDateString();
+        $endDate = Carbon::parse($bulanInput)->endOfMonth()->toDateString();
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanBarang = DB::table('usage_items')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_item) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            ->where('status_usage_item', 'selesai')
+            // ->where('kode_agenda', null)
+            ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_item)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanRuangan = DB::table('usage_rooms')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_room) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            // ->where('kode_agenda', null)
+            ->where('status_usage_room', 'selesai')
+            ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // Buat range 7 hari ke belakang menggunakan Carbon Period
+        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+
+        $finalData = [];
+        $finalDataRuangan = [];
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d');
+
+            $finalData[] = [
+                'tanggal' => $date->format('d'),
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanBarang->get($formattedDate, 0)
+            ];
+
+            $finalDataRuangan[] = [
+                'tanggal' => $formattedDate,
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanRuangan->get($formattedDate, 0)
+            ];
+        }
+
+        // $coba = DB::table('usage_items')
+        //     ->select('kode_peminjaman', 'tgl_pinjam', 'tgl_kembali')
+        //     ->where('status_usage_item', 'selesai')
+        //     ->whereMonth('tgl_pinjam_usage_item', Carbon::parse($bulanInput)->format('m'))
+        //     ->whereYear('tgl_pinjam_usage_item', Carbon::parse($bulanInput)->format('Y'));
+
+        // return [
+        //     'jumlahTransaksi' => $coba->count(),
+        // ];
+
+        // dd($coba);
+
+        // memisahkan untuk keperluan Chart
+        $labels = collect($finalData)->pluck('tanggal');
+        $countsBarang = collect($finalData)->pluck('total');
+        $countsRuangan = collect($finalDataRuangan)->pluck('total');
+
+
         $halaman = 'contentDashbordPimpinan';
         $user = Auth::user()->nama;
-        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput'));
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
     }
 
 

@@ -272,7 +272,7 @@
                 </div> --}}
                     <button type="submit"
                         class="flex w-full cursor-pointer items-center justify-center rounded-lg! bg-blue-500 my-3 py-2 text-white text-base font-normal leading-normal hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20">
-                        Checkout Peminjaman
+                        Lanjutkan Peminjaman
                     </button>
                 </form>
             </div>

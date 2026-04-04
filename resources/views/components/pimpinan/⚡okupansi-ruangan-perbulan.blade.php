@@ -111,7 +111,7 @@ new class extends Component {
         <div class="size-10 bg-blue-50 text-primary rounded-lg flex items-center justify-center">
             <i class="fa-solid fa-door-open"></i>
         </div>
-        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+5.2%</span>
+        {{-- <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+5.2%</span> --}}
     </div>
     <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Okupansi Ruangan</p>
     <div class="flex items-baseline gap-2 mt-1">
