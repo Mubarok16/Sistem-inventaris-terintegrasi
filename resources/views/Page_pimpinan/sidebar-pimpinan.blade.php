@@ -20,7 +20,7 @@
         <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-target="#collapseBootstrap"
             aria-expanded="true" aria-controls="collapseBootstrap">
             <i class="far fa-fw fa-window-maximize"></i>
-            <span>Bootstrap UI</span>
+            <span>Pengadaan Inventaris</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -38,7 +38,7 @@
         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">
             <i class="fab fa-fw fa-wpforms"></i>
-            <span>Forms</span>
+            <span>Perawatan Inventaris</span>
         </a>
         <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -48,7 +48,7 @@
             </div>
         </div>
     </li>
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseTable"
             aria-expanded="true" aria-controls="collapseTable">
             <i class="fas fa-fw fa-table"></i>
@@ -95,6 +95,6 @@
         </a>
     </li>
     <hr class="sidebar-divider">
-    <div class="version" id="version-ruangadmin"></div>
+    <div class="version" id="version-ruangadmin"></div> --}}
 </ul>
 <!-- Sidebar -->

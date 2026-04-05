@@ -8,6 +8,10 @@ new class extends Component {
     /// Fungsi untuk mengambil data total peminjaman barang
     public function with(): array
     {
+        // Mendapatkan tanggal hari ini (start) dan akhir bulan (end)
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->endOfMonth();
+
         //ambil sesison bulan yg di inputkan user
         $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
 
@@ -27,8 +31,9 @@ new class extends Component {
                 'usage_rooms.status_usage_room',
                 'rooms.nama_room',
             )
+            ->whereBetween('usage_rooms.tgl_pinjam_usage_room', [$start, $end])
             ->where('usage_rooms.status_usage_room', 'terjadwal')
-            ->orderBy('usage_rooms.tgl_pinjam_usage_room', 'desc')
+            ->orderBy('usage_rooms.tgl_pinjam_usage_room', 'asc')
             ->limit(3);
         // ->whereMonth('tgl_pinjam_usage_item', Carbon::parse($bulanInput)->format('m'))
         // ->whereYear('tgl_pinjam_usage_item', Carbon::parse($bulanInput)->format('Y'));

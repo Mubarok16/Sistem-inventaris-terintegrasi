@@ -53,7 +53,7 @@
                         {{-- <span
                             class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+12.8%</span> --}}
                     </div>
-                    <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Total Transaksi Peminjaman</p>
+                    <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Transaksi Peminjaman Selesai</p>
                     {{-- <div class="flex items-baseline gap-2 mt-1">
                         <h3 class="text-3xl font-black text-text-main">1,240</h3>
                     </div> --}}
@@ -87,7 +87,7 @@
                         <i class="fa-solid fa-calendar-check text-primary"></i>
                         Penggunaan Ruangan Terdekat
                     </h4>
-                    <a class="text-primary text-xs font-bold hover:underline" href="#">Lihat selengkapnya di
+                    <a class="text-primary text-xs font-bold hover:underline" href="{{ route('calender-pimpinan') }}">Lihat selengkapnya di
                         Kalender <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
                 <div class="overflow-x-auto">

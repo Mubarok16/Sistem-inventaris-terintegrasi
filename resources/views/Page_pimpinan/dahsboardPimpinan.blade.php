@@ -27,11 +27,7 @@
                                 <input type="month" name="tanggal" value="{{ $bulanInput }}" onchange="this.form.submit()"
                                  class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
                             </form>
-                            {{-- <button
-                                class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-day text-primary"></i>
-                                <span>Juni 2024</span>
-                            </button> --}}
+                           
                             <button
                                 class="bg-blue-500 text-white px-5 py-2.5 rounded-lg! text-sm font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
                                 <i class="fa-solid fa-file-export"></i>
@@ -40,14 +36,14 @@
                         </div>
                     </div>
                     @include('components.pimpinan.contentDashboardPimpinan')
-                @elseif ($halaman === 'contentPengelolaanUser')
-                    <h4>Pengelolaan User</h4>
-                    <div>
-                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                @elseif ($halaman === 'contentCalenderPimpinan')
+                    <h4>Penggunaan Ruangan Terdekat</h4>
+                    <div class="mb-8">
+                        <a href="{{ route('dashboard-pimpinan') }}" class="text-gray-400! no-underline!">Dahsboard</a>
                         <span class="text-gray-500">/</span>
-                        <a href="" class="text-gray-400! no-underline! font-medium">Pengelolaan-Pengguna</a>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Penggunaan-Ruangan</a>
                     </div>
-                    {{-- @include('components.admin.componentPengelolaanUser') --}}
+                    @include('components.pimpinan.contentCalender')
                 @elseif ($halaman === 'contentEditUser')
                     <h4>Edit User</h4>
                     <div>

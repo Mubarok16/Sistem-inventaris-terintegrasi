@@ -169,8 +169,9 @@ Route::middleware(['auth'])->group(function () {
 
 
     // dashboard pimpinan fakultas
-    Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan']);
+    Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan'])->name('dashboard-pimpinan');
     Route::post('input-bulan-dashboard-pimpinan', [PimpinanDashboardControllerPimpinan::class, 'tglDashboardPimpinan'])->name('input-bulan-dashboard-pimpinan');
+    Route::get('dashboard-pimpinan/calender', [DashboardController::class, 'calenderPimpinan'])->name('calender-pimpinan');
 
     // -----------------------------------------------------------------------------------------------------
 

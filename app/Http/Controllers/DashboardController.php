@@ -490,57 +490,57 @@ class DashboardController extends Controller
 
         ///////////////// coba =====================
 
-        // Query Agenda
-        $cobaAgenda = DB::table('agenda_fakultas')
-            ->leftJoin('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
-            ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
-            ->select(
-                'agenda_fakultas.kode_agenda as kode', // Alias jadi 'kode'
-                'agenda_fakultas.nama_agenda as nama', // Alias jadi 'nama'
-                'agenda_fakultas.tgl_mulai_agenda as tgl_mulai',
-                'agenda_fakultas.tgl_selesai_agenda as tgl_selesai',
-                'usage_rooms.status_usage_room',
-                'rooms.nama_room',
-                DB::raw("'Agenda' as tipe") // Penanda bahwa ini data Agenda
-            )
-            ->where('usage_rooms.status_usage_room', 'selesai');
+        // // Query Agenda
+        // $cobaAgenda = DB::table('agenda_fakultas')
+        //     ->leftJoin('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
+        //     ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+        //     ->select(
+        //         'agenda_fakultas.kode_agenda as kode', // Alias jadi 'kode'
+        //         'agenda_fakultas.nama_agenda as nama', // Alias jadi 'nama'
+        //         'agenda_fakultas.tgl_mulai_agenda as tgl_mulai',
+        //         'agenda_fakultas.tgl_selesai_agenda as tgl_selesai',
+        //         'usage_rooms.status_usage_room',
+        //         'rooms.nama_room',
+        //         DB::raw("'Agenda' as tipe") // Penanda bahwa ini data Agenda
+        //     )
+        //     ->where('usage_rooms.status_usage_room', 'selesai');
 
-        // Query Peminjaman (Gabungkan ke Agenda)
-        $gabungan = DB::table('peminjaman')
-            ->leftJoin('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
-            ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
-            ->select(
-                'peminjaman.kode_peminjaman as kode', // Alias harus sama
-                'peminjaman.ket_peminjaman as nama',   // Alias harus sama
-                'peminjaman.tgl_pinjam as tgl_mulai',
-                'peminjaman.tgl_kembali as tgl_selesai',
-                'usage_rooms.status_usage_room',
-                'rooms.nama_room',
-                DB::raw("'Peminjaman' as tipe") // Penanda bahwa ini data Peminjaman
-            )
-            ->where('usage_rooms.status_usage_room', 'selesai')
-            ->union($cobaAgenda) // GABUNGKAN DISINI
-            ->orderBy('tgl_mulai', 'desc') // Urutkan setelah digabung
-            // ->limit(3) // Ambil total misal 6 data terakhir
-            ->get();
+        // // Query Peminjaman (Gabungkan ke Agenda)
+        // $gabungan = DB::table('peminjaman')
+        //     ->leftJoin('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
+        //     ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+        //     ->select(
+        //         'peminjaman.kode_peminjaman as kode', // Alias harus sama
+        //         'peminjaman.ket_peminjaman as nama',   // Alias harus sama
+        //         'peminjaman.tgl_pinjam as tgl_mulai',
+        //         'peminjaman.tgl_kembali as tgl_selesai',
+        //         'usage_rooms.status_usage_room',
+        //         'rooms.nama_room',
+        //         DB::raw("'Peminjaman' as tipe") // Penanda bahwa ini data Peminjaman
+        //     )
+        //     ->where('usage_rooms.status_usage_room', 'selesai')
+        //     ->union($cobaAgenda) // GABUNGKAN DISINI
+        //     ->orderBy('tgl_mulai', 'desc') // Urutkan setelah digabung
+        //     // ->limit(3) // Ambil total misal 6 data terakhir
+        //     ->get();
 
-        $coba = DB::table('usage_rooms')
-            ->leftJoin('agenda_fakultas', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
-            ->leftJoin('peminjaman', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
-            ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
-            ->select(
-                'agenda_fakultas.nama_agenda', // agenda
-                'peminjaman.ket_peminjaman', // agenda
-                'usage_rooms.tgl_pinjam_usage_room',
-                'usage_rooms.tgl_kembali_usage_room',
-                'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
-                'usage_rooms.status_usage_room',
-                'rooms.nama_room',
-            )
-            ->where('usage_rooms.status_usage_room', 'selesai')
-            ->orderBy('usage_rooms.tgl_pinjam_usage_room', 'desc')
-            ->limit(3);
+        // $coba = DB::table('usage_rooms')
+        //     ->leftJoin('agenda_fakultas', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
+        //     ->leftJoin('peminjaman', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
+        //     ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+        //     ->select(
+        //         'agenda_fakultas.nama_agenda', // agenda
+        //         'peminjaman.ket_peminjaman', // agenda
+        //         'usage_rooms.tgl_pinjam_usage_room',
+        //         'usage_rooms.tgl_kembali_usage_room',
+        //         'usage_rooms.jam_mulai_usage_room',
+        //         'usage_rooms.jam_selesai_usage_room',
+        //         'usage_rooms.status_usage_room',
+        //         'rooms.nama_room',
+        //     )
+        //     ->where('usage_rooms.status_usage_room', 'selesai')
+        //     ->orderBy('usage_rooms.tgl_pinjam_usage_room', 'desc')
+        //     ->limit(3);
 
         // return [
 
@@ -548,7 +548,7 @@ class DashboardController extends Controller
         //     // 'semuaData' => $gabungan,
         // ];
 
-        // dd($coba);
+        // dd($coba); ////////////////////////////////////////////////////////////
 
         // memisahkan untuk keperluan Chart
         $labels = collect($finalData)->pluck('tanggal');
@@ -559,6 +559,13 @@ class DashboardController extends Controller
         $halaman = 'contentDashbordPimpinan';
         $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
+    }
+
+    public function calenderPimpinan(Request $request)
+    {
+        $halaman = 'contentCalenderPimpinan';
+        $user = Auth::user()->nama;
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user'));
     }
 
 
