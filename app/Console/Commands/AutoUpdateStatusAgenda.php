@@ -133,7 +133,7 @@ class AutoUpdateStatusAgenda extends Command
                     $q->select(DB::raw(1))
                         ->from('usage_rooms')
                         ->whereColumn('usage_rooms.kode_peminjaman', 'peminjaman.kode_peminjaman')
-                        ->where('status_usage_room', '!=', 'selesai')
+                        ->where('status_usage_room', '=', 'terlambat')
                         ->where(function ($timeQ) use ($today, $currentTime) {
                             $timeQ->where('tgl_pinjam_usage_room', '<', $today)
                                 ->orWhere(function ($sq) use ($today, $currentTime) {
@@ -146,7 +146,7 @@ class AutoUpdateStatusAgenda extends Command
                         $q->select(DB::raw(1))
                             ->from('usage_items')
                             ->whereColumn('usage_items.kode_peminjaman', 'peminjaman.kode_peminjaman')
-                            ->where('status_usage_item', '!=', 'selesai')
+                            ->where('status_usage_item', '=', 'terlambat')
                             ->where(function ($timeQ) use ($today, $currentTime) {
                                 $timeQ->where('tgl_pinjam_usage_item', '<', $today)
                                     ->orWhere(function ($sq) use ($today, $currentTime) {
@@ -333,7 +333,7 @@ class AutoUpdateStatusAgenda extends Command
         // maka otomatis akan di update belum kembali oleh sistem
 
         // usage room
-        // Update ke 'selesai'
+        // Update ke 'terlambat'
         DB::table('usage_rooms')->where('status_usage_room', 'digunakan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {
@@ -351,7 +351,7 @@ class AutoUpdateStatusAgenda extends Command
 
 
         // usage item
-        // Update ke 'selesai'
+        // Update ke 'terlambat'
         DB::table('usage_items')->where('status_usage_item', 'digunakan')
             ->where('kode_agenda', NULL)
             ->where(function ($query) use ($today, $currentTime) {

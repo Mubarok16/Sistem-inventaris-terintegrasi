@@ -12,6 +12,7 @@ use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\mahasiswa\peminjamanRuanganController;
 use App\Http\Controllers\mahasiswa\PengajuanPeminjamanController;
 use App\Http\Controllers\mahasiswa\RiwayarController;
+use App\Http\Controllers\PengadaanBarangController;
 use App\Http\Controllers\pengelolaanAgenda;
 use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
@@ -151,7 +152,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/hapus-ruangan-agenda', [pengelolaanAgenda::class, 'hapusInputRuanganAgendaTemporary'])->name('hapus-ruangan-agenda');
     // simpan data temp agenda ke db
     Route::post('/simpan-agenda', [pengelolaanAgenda::class, 'simpanAgendaTemporary'])->name('simpan-agenda');
-    
+
     // ----------------------------------------- route untuk logika tambah agenda ---------------------------------------------------------------------
     // simpan sementara data agenda unutk bagian tambah agenda
     Route::post('/kunci-agenda-temp', [pengelolaanAgenda::class, 'kunciInputTambahAgenda'])->name('kunci-agenda-tambah-agenda');
@@ -163,7 +164,11 @@ Route::middleware(['auth'])->group(function () {
 
     // hapus data agenda db
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
-    
+
+    // Pengajuan barang admin ========================================================================================================================
+    Route::post('/pengadaan-barang', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('pengadaan-barang');
+    // Route untuk memproses form dan generate PDF
+    Route::post('/cetak-pengadaan', [PengadaanBarangController::class, 'cetakPdf'])->name('pengadaan.cetak');
 
     // -----------------------------------------------------------------------------------------------------
 

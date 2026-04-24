@@ -404,6 +404,7 @@ class DashboardController extends Controller
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
     }
 
+    // page pengadaan barang
     public function adminPengadaanBarang()
     {
         if (Auth::user()->hak_akses  !== "admin") {
@@ -560,7 +561,7 @@ class DashboardController extends Controller
         $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
     }
-
+    // page kalender di pimpinan
     public function calenderPimpinan(Request $request)
     {
         $halaman = 'contentCalenderPimpinan';

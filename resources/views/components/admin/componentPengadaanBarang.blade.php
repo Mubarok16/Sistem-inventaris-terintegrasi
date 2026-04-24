@@ -1,12 +1,12 @@
 <!-- Pengadaan Barang Section -->
-<section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg mb-8">
+<section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg mb-8" x-data="{ openformpengadaanbarang: false }">
     <!-- SectionHeader -->
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-text-light dark:text-text-dark text-xl font-bold leading-tight">Pengadaan
             barang</h2>
-        <button
-            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-DEFAULT h-10 px-4 bg-primary text-white text-sm font-bold leading-normal hover:bg-primary/90">
-            <span class="material-symbols-outlined text-base">add</span>
+        <button @click="openformpengadaanbarang = !openformpengadaanbarang"
+            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-primary text-white text-sm font-semibold leading-normal hover:bg-primary/90">
+            {{-- <span class="material-symbols-outlined text-base">add</span> --}}
             <span class="truncate">Ajukan Pengadaan</span>
         </button>
     </div>
@@ -54,6 +54,154 @@
             </tbody>
         </table>
     </div>
+
+    <div x-show="openformpengadaanbarang"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
+        x-cloak>
+        <div @click.outside="openformpengadaanbarang = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+
+            <button @click="openformpengadaanbarang = false"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+
+            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Formulir Permhonan sarana dan prasarana</h2>
+            
+            <!-- content form -->
+            <div class=" ">
+                <div class="max-w-3xl mx-auto">
+                    {{-- <header class="mb-10 text-center">
+                        <h2 class="font-display-h1 text-display-h1 text-on-background mb-2">Formulir Pengajuan Pengadaan Barang
+                        </h2>
+                        <p class="font-body-md text-body-md text-on-surface-variant">Silakan isi detail barang yang ingin
+                            diajukan.
+                        </p>
+                    </header> --}}
+                    <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-card-padding p-4">
+
+                        <form class="space-y-3" method="post" action="{{ route('pengadaan.cetak') }}">
+                            @csrf
+                            <!-- Item Name -->
+                            <div>
+                                <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
+                                    Nomor surat
+                                </label>
+                                <div class="relative">
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
+                                    <input name="nomor_surat"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : /Pr/Sr/FT.UW/IV/2026" type="text" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
+                                    Nama Barang / jenis Barang
+                                </label>
+                                <div class="relative">
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
+                                    <input name="nama_item"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth: Laptop Core i7" type="text" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <!-- Category -->
+                                <div>
+                                    <label
+                                        class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Merk
+                                        / Model</label>
+                                    <input name="merk"
+                                        class="w-full px-3 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : dell latitude" type="text" />
+                                </div>
+                                <!-- Amount -->
+                                <div>
+                                    <label
+                                        class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Jumlah</label>
+                                    <input name="qty"
+                                        class="w-full px-3 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        min="1" placeholder="0" type="number" />
+                                </div>
+                            </div>
+                            {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Unit Price -->
+                                <div>
+                                    <label
+                                        class="block font-label-xs text-label-xs text-on-surface-variant uppercase mb-2">Estimasi
+                                        Harga Satuan</label>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">Rp</span>
+                                        <input
+                                            class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                            placeholder="0" type="number" />
+                                    </div>
+                                </div>
+                                <!-- Priority -->
+                                <div>
+                                    <label
+                                        class="block font-label-xs text-label-xs text-on-surface-variant uppercase mb-2">Prioritas</label>
+                                    <div class="relative">
+                                        <select
+                                            class="w-full px-4 py-3 border border-slate-200 rounded-xl font-body-md text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
+                                            <option>Rendah</option>
+                                            <option>Sedang</option>
+                                            <option>Tinggi</option>
+                                        </select>
+                                        <span
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none"
+                                            data-icon="priority_high">priority_high</span>
+                                    </div>
+                                </div>
+                            </div> --}}
+                            <!-- Reason -->
+                            {{-- <div>
+                                <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Alasan
+                                    Pengadaan</label>
+                                <textarea
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                    placeholder="Jelaskan urgensi dan kegunaan barang ini..." rows="4"></textarea>
+                            </div> --}}
+                            <!-- Footer Actions -->
+                            <div class="pt-6 flex items-center justify-center gap-4 border-t border-slate-100">
+                               
+                                <button
+                                    class="w-full px-8 py-2.5 rounded-xl! justify-center font-body-md text-body-md text-white bg-primary hover:bg-primary/90 shadow-md shadow-primary/10 transition-all duration-200 flex items-center gap-2"
+                                    type="submit">
+                                    <span>Kirim Pengajuan</span>
+                                    {{-- <span class="material-symbols-outlined text-sm" data-icon="send">send</span> --}}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Contextual Info Card -->
+                    {{-- <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-4">
+                        <span class="material-symbols-outlined text-blue-600 mt-1" data-icon="info">info</span>
+                        <div>
+                            <h4 class="font-heading-card text-heading-card text-blue-900 mb-1">Informasi Anggaran</h4>
+                            <p class="text-xs text-blue-700 leading-relaxed">Sisa pagu anggaran Fakultas Teknik tahun 2024
+                                saat ini adalah Rp 45.000.000.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="p-6 bg-tertiary-fixed-dim/20 border border-tertiary-fixed-dim/30 rounded-xl flex items-start gap-4">
+                        <span class="material-symbols-outlined text-tertiary mt-1" data-icon="history">history</span>
+                        <div>
+                            <h4 class="font-heading-card text-heading-card text-tertiary mb-1">Status Pengajuan</h4>
+                            <p class="text-xs text-tertiary leading-relaxed">Pengajuan ini akan diverifikasi oleh Bagian
+                                Keuangan dalam 2-3 hari kerja.</p>
+                        </div>
+                    </div>
+                </div> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>
 <!-- Perawatan Barang Section -->
 <section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
