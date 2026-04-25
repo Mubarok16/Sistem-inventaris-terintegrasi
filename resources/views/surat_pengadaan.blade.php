@@ -64,7 +64,7 @@
             <tr>
                 <!-- Tambahkan border: none juga pada <td> untuk memastikan -->
                 <td style="width: 15%; border: none; padding: 2px 0;">Nomor</td>
-                <td style="width: 45%; border: none; padding: 2px 0;">: pr/pt/33/2026</td>
+                <td style="width: 45%; border: none; padding: 2px 0;">: {{ $nomor_surat }}</td>
                 <td style="width: 40%; border: none; text-align: right; padding: 2px 0;">April 2026</td>
             </tr>
             <tr>
@@ -90,10 +90,8 @@
 
     <p style="padding-left:2px; padding-right:2px; text-indent: 40px; text-align: justify;">
         Disampaikan dengan hormat, sehubungan kebutuhan sarana penunjang perkuliahan Tahun Akademik
-        {{ $tahun_akademik }} di
-        Program Studi {{ $prodi }} Fakultas Teknik, dengan ini kami mengajukan permohonan pengadaan sarana berupa
-        <label style="font-weight: bold">{{ $qty }} unit {{ $nama_barang }}</label> untuk di ruang E
-        Fakultas Teknik.
+        {{ $tahun_akademik }} di {{ $keperluan_prodi }}, dengan ini kami mengajukan permohonan pengadaan sarana berupa
+        <label style="font-weight: bold">{{ $qty }} unit {{ $nama_barang }}</label>.
     </p>
     <p style="padding-left:2px; padding-right:2px; text-indent: 40px; text-align: justify;">
         Demikian permohonan ini kami sampaikan, atas perhatian dan realisasinya kami ucapkan terima kasih.

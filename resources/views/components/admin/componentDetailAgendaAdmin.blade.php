@@ -54,10 +54,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-1">
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                Nama Agenda</span>
+                                kode Agenda</span>
                             <div
                                 class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
-                                {{ $dataPeminjaman->kode_agenda }}
+                                {{ $dataPeminjaman->kode_referensi }}
                             </div>
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                                 Nama Agenda</span>

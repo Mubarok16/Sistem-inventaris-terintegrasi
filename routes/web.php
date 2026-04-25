@@ -166,9 +166,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
 
     // Pengajuan barang admin ========================================================================================================================
-    Route::post('/pengadaan-barang', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('pengadaan-barang');
-    // Route untuk memproses form dan generate PDF
-    Route::post('/cetak-pengadaan', [PengadaanBarangController::class, 'cetakPdf'])->name('pengadaan.cetak');
+    Route::post('/cetak-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('pengadaan.cetak');
 
     // -----------------------------------------------------------------------------------------------------
 

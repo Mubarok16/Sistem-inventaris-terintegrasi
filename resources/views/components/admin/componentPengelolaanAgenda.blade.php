@@ -85,7 +85,7 @@
                                     {{ $riwayat->nama_agenda }}
                                 </span>
                                 <span class="text-xs text-slate-400 font-medium md:ml-0! tracking-tight">
-                                    {{ $riwayat->kode_agenda }}
+                                    {{ $riwayat->kode_referensi }}
                                 </span>
 
                                 @if ($riwayat->tipe_agenda === 'kegiatan belajar mengajar')

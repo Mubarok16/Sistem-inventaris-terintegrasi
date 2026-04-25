@@ -1,17 +1,17 @@
 <!-- Pengadaan Barang Section -->
 <section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg mb-8" x-data="{ openformpengadaanbarang: false }">
     <!-- SectionHeader -->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-text-light dark:text-text-dark text-xl font-bold leading-tight">Pengadaan
-            barang</h2>
+    <div class="flex justify-end items-center mb-4">
+        {{-- <h2 class="text-text-light dark:text-text-dark text-xl font-bold leading-tight">Pengadaan
+            barang</h2> --}}
         <button @click="openformpengadaanbarang = !openformpengadaanbarang"
-            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-primary text-white text-sm font-semibold leading-normal hover:bg-primary/90">
+            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400">
             {{-- <span class="material-symbols-outlined text-base">add</span> --}}
             <span class="truncate">Ajukan Pengadaan</span>
         </button>
     </div>
     <!-- ToolBar -->
-    <div class="flex justify-start gap-2 py-3">
+    {{-- <div class="flex justify-start gap-2 py-3">
         <div class="relative w-full max-w-xs">
             <span
                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
@@ -19,31 +19,32 @@
                 class="w-full pl-10 pr-4 py-2 bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-DEFAULT focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 placeholder="Cari nama barang..." type="text" />
         </div>
-    </div>
+    </div> --}}
     <!-- Data Table -->
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto bg-white border-0 rounded-lg!">
         <table class="w-full text-sm text-left">
             <thead
                 class="text-xs text-muted-light dark:text-muted-dark uppercase bg-background-light dark:bg-background-dark">
                 <tr>
-                    <th class="px-6 py-3" scope="col">ID</th>
-                    <th class="px-6 py-3" scope="col">Image</th>
+                    <th class="px-6 py-3" scope="col">Nomor Surat</th>
                     <th class="px-6 py-3" scope="col">Nama Barang</th>
+                    <th class="px-6 py-3" scope="col">Merk</th>
                     <th class="px-6 py-3" scope="col">Qty</th>
+                    <th class="px-6 py-3" scope="col">file Pengajuan</th>
                     <th class="px-6 py-3" scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="bg-surface-light dark:bg-surface-dark border-b dark:border-gray-700">
-                    <td class="px-6 py-4 font-medium">#5231</td>
-                    <td class="px-6 py-4">
-                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-DEFAULT size-10"
-                            data-alt="Projector"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAAjkzdxjublMIqLHqZbvbzQBQszTsSX5K5oSLTVB0o3V9jnnsfHLkMIfiKx1oOidLR9iKFYKB8bPDsxKKMzJL66iVLK8rghEEEX6ux0kicNi-N4SvcsxGM2F16-6fWA8hhLKk8VGMkaNtZC7fQJ4K68sWa4Mu9djFdPlRc2arSL6aWC555AtoNmiH5nHh_iejFaMD0NNHygShrMJvorisfeAf38kUww6seudeGYh1ktWqlzPVYq7fPbbZaGUKGGQswUmSe8anG3h4_");'>
-                        </div>
+                    <td class="px-6 py-4 font-medium">
+                        PR/rr/2026
                     </td>
-                    <td class="px-6 py-4 font-semibold">Proyektor Epson EB-E500</td>
+                    <td class="px-6 py-4 font-semibold">Laptop i7</td>
+                    <td class="px-6 py-4 font-medium">dell latitude</td>
                     <td class="px-6 py-4">2</td>
+                    <td class="px-6 py-4">
+
+                    </td>
                     <td class="px-6 py-4">
                         <span
                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -55,16 +56,165 @@
         </table>
     </div>
 
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                    <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 font-semibold">
+                        <th class="px-6 py-4">Nomor Surat</th>
+                        <th class="px-6 py-4">Nama Barang</th>
+                        <th class="px-6 py-4">Merk</th>
+                        <th class="px-6 py-4">Qty</th>
+                        <th class="px-6 py-4">status</th>
+                        <th class="px-6 py-4 text-right">file Pengajuan</th>
+                        <th class="px-6 py-4 text-right">aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-sm">
+                    {{-- @if ($dataPengajuanPeminjaman->isEmpty()) --}}
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+                        <td colspan="7" class="text-center py-10 text-slate-500 italic">
+                            Data tidak ditemukan atau masih kosong.
+                        </td>
+                    </tr>
+                    {{-- @else
+                        @foreach ($dataPengajuanPeminjaman as $dataPeminjaman) --}}
+                    {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
+                    <tr>
+                        <td class="px-6 py-4 align-top">
+                            <div class="flex items-center gap-3">
+                                {{-- <div class="size-10 rounded-full bg-cover bg-center border border-slate-200 flex-shrink-0"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAVNvYzzlNBudZcgQuPuSqlcr_RaNxDS0801snxn5Yhr-3zz1rpSZz3lbG328dBpsl58jDIRy-mHFkHFaYhECqM7vws4kU8mB0W3UedGhE_bVUpZxSCbDp8F36_qhrfSGnccRnVjbEX9eVjszRjxrWRTnsu0YIyM_RG3pZaZH5USkDDgr5aY9jSXbuYwpyyFjxDNiAdKKpHzekOu8xzPKkGgHHO9T5KfBh5RhWY4vQbdcYoEh2fnQ1t15z0f9pXf_NFwpqUIkjCQE");'>
+                                        </div> --}}
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-slate-900">
+                                        {{-- {{ $dataPeminjaman->nama_peminjam }} --}}
+                                        cek
+                                    </span>
+                                    <span class="text-xs text-slate-500 font-mono mt-0.5">
+                                        {{-- {{ $dataPeminjaman->kode_peminjaman }} --}}
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 align-top">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="font-bold text-slate-900 flex items-center gap-2">
+                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
+                                    cek
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 align-top">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="font-bold text-slate-900 flex items-center gap-2">
+                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
+                                    cek
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 align-top">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="font-bold text-slate-900 flex items-center gap-2">
+                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
+                                    cek
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 align-top">
+                            {{-- @if ($dataPeminjaman->status_peminjaman === 'diajukan') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                                Menunggu
+                            </span>
+                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'terjadwal') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                Terjadwal
+                            </span>
+                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'digunakan') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                Digunakan
+                            </span>
+                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'dibatalkan') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                Dibatalkan
+                            </span>
+                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'ditolak') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                Ditolak
+                            </span>
+                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'selesai') --}}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
+                                <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                selesai
+                            </span>
+                            {{-- @endif --}}
+                        </td>
+                        <td class="px-6 py-4 align-top">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="font-bold text-slate-900 flex items-center gap-2">
+                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
+                                    cek
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right align-middle">
+                            <form method="GET" action="">
+                                @csrf
+                                <button type="submit"
+                                    class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
+                                    {{-- <i class="fa-solid fa-chevron-right"></i> --}}
+                                    download
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{-- @endforeach
+                    @endif --}}
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Menampilkan 1-4 dari 128
+                data</span>
+            <div class="flex items-center gap-2">
+                <button class="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 disabled:opacity-50"
+                    disabled="">
+                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                </button>
+                <button class="p-1 rounded text-slate-600 hover:bg-slate-200">
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div x-show="openformpengadaanbarang"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
         x-cloak>
-        <div @click.outside="openformpengadaanbarang = false" class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+        <div @click.outside="openformpengadaanbarang = false"
+            class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 
             <button @click="openformpengadaanbarang = false"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
 
-            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Formulir Permhonan sarana dan prasarana</h2>
-            
+            <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Formulir Permhonan sarana dan prasarana
+            </h2>
+
             <!-- content form -->
             <div class=" ">
                 <div class="max-w-3xl mx-auto">
@@ -126,6 +276,20 @@
                                         min="1" placeholder="0" type="number" />
                                 </div>
                             </div>
+                            <div>
+                                <label
+                                    class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Keperluan Untuk Prodi/Fakultas</label>
+                                <div class="relative">
+                                    <select name="keperluan_prodi"
+                                        class="w-full px-3 py-2  border border-slate-200 rounded-xl font-body-md text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
+                                        <option>pilih untuk keperluan prodi atau fakultas</option>
+                                        <option value="Fakultas Teknik">Fakultas Teknik</option>
+                                        <option value="Program Studi Teknik Sipil">Teknik Sipil</option>
+                                        <option value="Program Studi Teknik Komputer">Teknik Komputer</option>
+                                        <option value="Program Studi Teknik Lingkungan">Teknik Lingkungan</option>
+                                    </select>
+                                </div>
+                            </div>
                             {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Unit Price -->
                                 <div>
@@ -167,7 +331,7 @@
                             </div> --}}
                             <!-- Footer Actions -->
                             <div class="pt-6 flex items-center justify-center gap-4 border-t border-slate-100">
-                               
+
                                 <button
                                     class="w-full px-8 py-2.5 rounded-xl! justify-center font-body-md text-body-md text-white bg-primary hover:bg-primary/90 shadow-md shadow-primary/10 transition-all duration-200 flex items-center gap-2"
                                     type="submit">
@@ -204,7 +368,7 @@
 
 </section>
 <!-- Perawatan Barang Section -->
-<section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
+{{-- <section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
     <!-- SectionHeader -->
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-text-light dark:text-text-dark text-xl font-bold leading-tight">Perawatan
@@ -314,4 +478,4 @@
             </tbody>
         </table>
     </div>
-</section>
+</section> --}}

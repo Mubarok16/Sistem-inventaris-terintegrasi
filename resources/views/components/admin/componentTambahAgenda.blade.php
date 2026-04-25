@@ -41,7 +41,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-4">
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                Kode Agenda
+                                Kode Agenda (kode Matakuliah/Kode Rapat/kode seminar)
                             </span>
                             <br>
                             <input type="text" name="kode_agenda" id="kode_agenda"
@@ -183,7 +183,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div class="space-y-4">
                                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                    Kode Agenda
+                                    Kode Agenda (kode Matakuliah/Kode Rapat/kode seminar)
                                 </span>
                                 <br>
                                 <input type="text" name="kode_agenda" id="kode_agenda"

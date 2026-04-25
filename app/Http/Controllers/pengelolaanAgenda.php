@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel; // Wajib di-import
 
 use function Symfony\Component\Clock\now;
@@ -42,10 +43,16 @@ class pengelolaanAgenda extends Controller
         $tgl_mulai   = $request->input('tgl_mulai');
         $tgl_selesai = $request->input('tgl_selesai');
 
+
+
         try {
             $request->validate([
                 'fileAgenda' => 'required|mimes:csv,xlsx,xls'
             ]);
+
+
+            // $kode_referensi = null; // primary key unik kode
+            // $kode_agenda = [];
 
 
             $import = new AgendaImport($tgl_mulai, $tgl_selesai);
@@ -61,6 +68,18 @@ class pengelolaanAgenda extends Controller
 
             // menggabungkan array dari file import ke array baru yg mengubah nama ruangan menjadi id_room
             $agendaFakultas = collect($hasil)->map(function ($item) use ($mapRuangan) {
+
+                $unikKode = Str::random(2);
+                $kode_referensi = $item['kode_agenda'];
+
+                if ($item['hari'] === null) {
+                    $kode_agenda = 'PS' . $item['kode_agenda'] . $unikKode;
+                    // array_push($kode_agenda, 'PS' . $item['kode_agenda'] . $unikKode);
+                } else {
+                    $kode_agenda = 'KB' . $item['kode_agenda'] . $unikKode;
+                }
+
+                // dd($item['hari']);
 
                 // memecah jam jadi jam mulai dan jam selesai
                 $jam_raw = $item['jam']; // "9:00 - 12:00"
@@ -79,10 +98,11 @@ class pengelolaanAgenda extends Controller
 
                 // return kembali ke sesuai struktur db agenda fakultas
                 return [
-                    'kode_agenda' => $item['kode_agenda'],
+                    'kode_agenda' => $kode_agenda,
+                    'kode_referensi' => $item['kode_agenda'],
                     'id_user' => Auth::user()->id_user,
                     'nama_agenda' => $item['nama_agenda'],
-                    'tipe_agenda'        => $item['hari'] === null ? 'pts/pas' : 'kegiatan belajar mengejar',
+                    'tipe_agenda'        => $item['hari'] === null ? 'pts/pas' : 'kegiatan belajar mengajar',
                     'tgl_mulai_agenda'   => $tgl_mulai_agenda,
                     'tgl_selesai_agenda' => $tgl_selesai_agenda,
                     'created_at'  => now(),
@@ -93,6 +113,15 @@ class pengelolaanAgenda extends Controller
 
             // menggabungkan array dari file import ke array baru yg mengubah nama ruangan menjadi id_room
             $usage_room = collect($hasil)->flatMap(function ($item) use ($mapRuangan) {
+
+                $unikKode = Str::random(2);
+                $kode_referensi = $item['kode_agenda'];
+
+                if ($item['hari'] === null) {
+                    $kode_agenda = 'PS' . $item['kode_agenda'] . $unikKode;
+                } else {
+                    $kode_agenda = 'KB' . $item['kode_agenda'] . $unikKode;
+                }
 
                 // memecah jam jadi jam mulai dan jam selesai
                 $jam_raw = $item['jam']; // "9:00 - 12:00"
@@ -110,41 +139,6 @@ class pengelolaanAgenda extends Controller
                 }
 
                 $dataRoom = [];
-                // // perode untuk usage room ketika inport untuk import harian
-                // if ($item['hari'] === null) {
-                //     $period = CarbonPeriod::create($tgl_mulai_agenda, $tgl_selesai_agenda);
-                //     foreach ($period as $date) {       // Loop untuk Tanggal per Hari
-                //         $dataRoom[] = [
-                //             'kode_peminjaman' => NULL,
-                //             'kode_agenda' => $item['kode_agenda'],
-                //             'id_room' => $mapRuangan[$item['ruangan']] ?? null,
-                //             'tgl_pinjam_usage_room' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
-                //             'tgl_kembali_usage_room' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
-                //             'status_usage_room' => 'terjadwal',
-                //             'created_at' => now(),
-                //             'updated_at' => now(),
-                //             'jam_mulai_usage_room' => $jam_mulai,
-                //             'jam_selesai_usage_room' => $jam_selesai,
-                //         ];
-                //     }
-                // }else{
-                //     // perode untuk usage room ketika inport untuk import mingguan
-                //     $period = CarbonPeriod::create($tgl_mulai_agenda, '1 week', $tgl_selesai_agenda);
-                //     foreach ($period as $date) {       // Loop untuk Tanggal per Minggu
-                //         $dataRoom[] = [
-                //             'kode_peminjaman' => NULL,
-                //             'kode_agenda' => $item['kode_agenda'],
-                //             'id_room' => $mapRuangan[$item['ruangan']] ?? null,
-                //             'tgl_pinjam_usage_room' => $date->setTime(0, 0, 0)->format('Y-m-d H:i:s'),
-                //             'tgl_kembali_usage_room' => $date->setTime(23, 0, 0)->format('Y-m-d H:i:s'),
-                //             'status_usage_room' => 'terjadwal',
-                //             'created_at' => now(),
-                //             'updated_at' => now(),
-                //             'jam_mulai_usage_room' => $jam_mulai,
-                //             'jam_selesai_usage_room' => $jam_selesai,
-                //         ];
-                //     }
-                // }
 
                 // Ambil tanggal mulai asli
                 $startDate = Carbon::parse($tgl_mulai_agenda);
@@ -200,6 +194,23 @@ class pengelolaanAgenda extends Controller
                 return $dataRoom;
             })->toArray();
 
+            // $data = collect($agendaFakultas); // pastikan data dibungkus collect()
+
+            $kodeReferensi = collect($agendaFakultas)->pluck('kode_referensi', 'kode_agenda')->toArray();
+
+            $hasil_usage_room = collect($usage_room)->map(function ($item) use ($kodeReferensi) {
+                // Cari key (KBTKM...) berdasarkan value (TKM...)
+                $newKode = array_search($item['kode_agenda'], $kodeReferensi);
+
+                // Ganti kode_agenda jika ditemukan di referensi
+                if ($newKode) {
+                    $item['kode_agenda'] = $newKode;
+                }
+
+                return $item;
+            });
+
+            // dd($agendaFakultas, $hasil_usage_room, $kodeReferensi);
             // dd($agendaFakultas, $usage_room);
 
             if ($agendaFakultas != null) {
@@ -207,7 +218,7 @@ class pengelolaanAgenda extends Controller
             }
 
             if ($usage_room != null) {
-                DB::table('usage_rooms')->insert($usage_room);
+                DB::table('usage_rooms')->insert($hasil_usage_room->toArray());
             }
 
             return redirect()->route('dashboard-admin-agenda')->with('success', 'Data Agenda Berhasil Diimport!');
@@ -952,8 +963,23 @@ class pengelolaanAgenda extends Controller
     public function kunciInputTambahAgenda(Request $request)
     {
 
+        $kode_referensi = null; // primary key unik kode 
+        $unikKode = Str::random(2);
+        // $formatLengkap = now()->format('y');
+
+        if ($request->tipe_agenda === 'kegiatan belajar mengajar') {
+            $kode_referensi = 'KB' . $request->kode_agenda . $unikKode;
+        } elseif ($request->tipe_agenda === 'rapat') {
+            $kode_referensi = 'RP' . $request->kode_agenda . $unikKode;
+        } else {
+            $kode_referensi = 'PS' . $request->kode_agenda . $unikKode;
+        }
+
+        // dd($kode_referensi);
+
         $dataBaru = [
-            'kode_agenda' => $request->kode_agenda,
+            'kode_agenda' => $request->kode_agenda, // primary key
+            'kode_referensi' => $kode_referensi, // kode mk kode rapat dll
             'nama_agenda' => $request->nama_agenda,
             'tgl_mulai_agenda' => $request->tgl_mulai_agenda,
             'tgl_selesai_agenda' => $request->tgl_selesai_agenda,
@@ -1085,7 +1111,8 @@ class pengelolaanAgenda extends Controller
         $dataAgenda = session('data_add_agenda_temp');
 
         // get data agenda disimpan ke variable
-        $kode_agenda = $dataAgenda[0]->kode_agenda;
+        $kode_agenda = $dataAgenda[0]->kode_referensi;
+        $kode_referensi = $dataAgenda[0]->kode_agenda;
         $nama_agenda = $dataAgenda[0]->nama_agenda;
         $tgl_mulai = $dataAgenda[0]->tgl_mulai_agenda;
         $tgl_selesai = $dataAgenda[0]->tgl_selesai_agenda;
@@ -1093,6 +1120,8 @@ class pengelolaanAgenda extends Controller
         $jam_mulai = $dataAgenda[0]->jam_mulai;
         $jam_selesai = $dataAgenda[0]->jam_selesai;
         $tipe_jam = $dataAgenda[0]->tipe_jam;
+        $tipe_agenda = $dataAgenda[0]->tipe_agenda;
+
 
         // perulangan usage room atau barang jika setiap hari atau perminggu
         if ($dataAgenda[0]->loop_hari === 'setiap hari') {
@@ -1102,16 +1131,17 @@ class pengelolaanAgenda extends Controller
             DB::beginTransaction();
 
             try {
-                // Update table agenda fakultas
+                // insert table agenda fakultas
                 DB::table('agenda_fakultas')
                     ->where('kode_agenda',)
                     ->insert([
                         'kode_agenda' => $kode_agenda,
+                        'kode_referensi' => $kode_referensi,
                         'id_user' => $iduser,
                         'nama_agenda' => $nama_agenda,
                         'tgl_mulai_agenda' => $tgl_mulai,
                         'tgl_selesai_agenda' => $tgl_selesai,
-                        'tipe_agenda' => $nama_agenda,
+                        'tipe_agenda' => $tipe_agenda,
                         'loop_hari' => $loop_hari,
                         'updated_at' => now(),
                         'created_at' => now()
@@ -1204,6 +1234,10 @@ class pengelolaanAgenda extends Controller
                 if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
 
                 DB::commit();
+
+                session()->forget('data_add_agenda_barang_ruang');
+                session()->forget('data_add_agenda_temp');
+
                 return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
             } catch (\Exception $e) {
                 DB::rollback();
@@ -1215,16 +1249,17 @@ class pengelolaanAgenda extends Controller
             DB::beginTransaction();
 
             try {
-                // Update table agenda fakultas
+                // Insert table agenda fakultas
                 DB::table('agenda_fakultas')
                     ->where('kode_agenda',)
                     ->insert([
                         'kode_agenda' => $kode_agenda,
+                        'kode_referensi' => $kode_referensi,
                         'id_user' => $iduser,
                         'nama_agenda' => $nama_agenda,
                         'tgl_mulai_agenda' => $tgl_mulai,
                         'tgl_selesai_agenda' => $tgl_selesai,
-                        'tipe_agenda' => $nama_agenda,
+                        'tipe_agenda' => $tipe_agenda,
                         'loop_hari' => $loop_hari,
                         'updated_at' => now(),
                         'created_at' => now()
@@ -1317,6 +1352,10 @@ class pengelolaanAgenda extends Controller
                 if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
 
                 DB::commit();
+
+                session()->forget('data_add_agenda_barang_ruang');
+                session()->forget('data_add_agenda_temp');
+
                 return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
             } catch (\Exception $e) {
                 DB::rollback();
