@@ -44,15 +44,51 @@
             text-align: center;
             width: 200px;
         }
+
+        /* Watermark CSS */
+        #watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            opacity: 0.4;
+            font-size: 60px;
+            color: red;
+            width: 100%;
+            text-align: center;
+            z-index: -1000;
+        }
+
+        /* Kotak Blur untuk TTD */
+        .blur-ttd {
+            filter: blur(4px);
+            background: #f0f0f0;
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Ukuran QR Code agar pas di footer */
+        .qr-code img {
+            width: 80px;
+            height: 80px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 
 <body>
-    {{-- <div class="kop-surat">
-        <h2 style="margin:0; color: #548DD4;">UNIVERSITAS WIRALODRA</h2>
-        <h1 style="margin:0; color: #7030A0;">FAKULTAS TEKNIK</h1>
-        <p style="margin:0;">Jl. Ir. H. Juanda Km.3 Telp/Fax. (0234) 275907 Indramayu 45213 www. ft.unwir.ac.id</p>
-    </div> --}}
+
+    <!-- Watermark Muncul di Seluruh Halaman jika belum ACC -->
+    @if (!$is_approved)
+        <div id="watermark">DRAF / BELUM DISETUJUI</div>
+    @endif
 
     <header>
         <!-- Lebar 100% agar memenuhi lebar kertas -->
@@ -98,29 +134,22 @@
     </p>
 
 
-
-    {{-- <table>
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                <th>Nama Barang</th>
-                <th>Jumlah (Qty)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ $nama_barang }}</td>
-                <td style="text-align: center;">{{ $qty }}</td>
-            </tr>
-        </tbody>
-    </table> --}}
-
-    {{-- <p><strong>Alasan Pengadaan:</strong><br>
-        {{ $alasan }}</p> --}}
-
-    <!-- Bagian Tanda Tangan -->
+    <!-- Bagian Tanda Tangan yang Diupdate -->
     <div class="footer">
         <p>Dekan,</p>
-        <br><br><br>
+
+        {{-- @if ($is_approved)
+            <!-- Jika SUDAH ACC: Tampilkan QR Code -->
+            <div class="qr-code">
+                <img src="data:image/png;base64,{{ DNS2D::getBarcodePNG($verif_url, 'QRCODE') }}" alt="QR Code">
+            </div>
+        @else --}}
+            <!-- Jika BELUM ACC: Tampilkan Blur -->
+            <div class="blur-ttd">
+                <span>BELUM ACC</span>
+            </div>
+        {{-- @endif --}}
+
         <p style="margin-bottom: 0;">
             <span style="border-bottom: 1px solid black; font-weight: bold; white-space: nowrap;">
                 {{ $dekan }}

@@ -1,3 +1,19 @@
+@if (session('success'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
+        <ul style="margin-bottom: 0;">
+            {{ session('success') }}
+        </ul>
+    </div>
+@endif
+
+@if (session('gagal'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            {{ session('gagal') }}
+        </ul>
+    </div>
+@endif
+
 <!-- Pengadaan Barang Section -->
 <section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg mb-8" x-data="{ openformpengadaanbarang: false }">
     <!-- SectionHeader -->
@@ -21,7 +37,7 @@
         </div>
     </div> --}}
     <!-- Data Table -->
-    <div class="overflow-x-auto bg-white border-0 rounded-lg!">
+    {{-- <div class="overflow-x-auto bg-white border-0 rounded-lg!">
         <table class="w-full text-sm text-left">
             <thead
                 class="text-xs text-muted-light dark:text-muted-dark uppercase bg-background-light dark:bg-background-dark">
@@ -54,13 +70,13 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div> --}}
 
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
-                    <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 font-semibold">
+                    <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-800 font-semibold">
                         <th class="px-6 py-4">Nomor Surat</th>
                         <th class="px-6 py-4">Nama Barang</th>
                         <th class="px-6 py-4">Merk</th>
@@ -71,120 +87,88 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
-                    {{-- @if ($dataPengajuanPeminjaman->isEmpty()) --}}
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
-                        <td colspan="7" class="text-center py-10 text-slate-500 italic">
-                            Data tidak ditemukan atau masih kosong.
-                        </td>
-                    </tr>
-                    {{-- @else
-                        @foreach ($dataPengajuanPeminjaman as $dataPeminjaman) --}}
-                    {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
-                    <tr>
-                        <td class="px-6 py-4 align-top">
-                            <div class="flex items-center gap-3">
-                                {{-- <div class="size-10 rounded-full bg-cover bg-center border border-slate-200 flex-shrink-0"
-                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAVNvYzzlNBudZcgQuPuSqlcr_RaNxDS0801snxn5Yhr-3zz1rpSZz3lbG328dBpsl58jDIRy-mHFkHFaYhECqM7vws4kU8mB0W3UedGhE_bVUpZxSCbDp8F36_qhrfSGnccRnVjbEX9eVjszRjxrWRTnsu0YIyM_RG3pZaZH5USkDDgr5aY9jSXbuYwpyyFjxDNiAdKKpHzekOu8xzPKkGgHHO9T5KfBh5RhWY4vQbdcYoEh2fnQ1t15z0f9pXf_NFwpqUIkjCQE");'>
-                                        </div> --}}
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-slate-900">
-                                        {{-- {{ $dataPeminjaman->nama_peminjam }} --}}
-                                        cek
-                                    </span>
-                                    <span class="text-xs text-slate-500 font-mono mt-0.5">
-                                        {{-- {{ $dataPeminjaman->kode_peminjaman }} --}}
-                                    </span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            <div class="flex flex-col gap-1.5">
-                                <div class="font-bold text-slate-900 flex items-center gap-2">
-                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
-                                    cek
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            <div class="flex flex-col gap-1.5">
-                                <div class="font-bold text-slate-900 flex items-center gap-2">
-                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
-                                    cek
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            <div class="flex flex-col gap-1.5">
-                                <div class="font-bold text-slate-900 flex items-center gap-2">
-                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
-                                    cek
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            {{-- @if ($dataPeminjaman->status_peminjaman === 'diajukan') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                                Menunggu
-                            </span>
-                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'terjadwal') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                                Terjadwal
-                            </span>
-                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'digunakan') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-                                Digunakan
-                            </span>
-                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'dibatalkan') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                Dibatalkan
-                            </span>
-                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'ditolak') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                Ditolak
-                            </span>
-                            {{-- @elseif ($dataPeminjaman->status_peminjaman === 'selesai') --}}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
-                                <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                selesai
-                            </span>
-                            {{-- @endif --}}
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            <div class="flex flex-col gap-1.5">
-                                <div class="font-bold text-slate-900 flex items-center gap-2">
-                                    {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                    {{-- {{ $dataPeminjaman->ket_peminjaman }} --}}
-                                    cek
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right align-middle">
-                            <form method="GET" action="">
-                                @csrf
-                                <button type="submit"
-                                    class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
-                                    {{-- <i class="fa-solid fa-chevron-right"></i> --}}
-                                    download
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {{-- @endforeach
-                    @endif --}}
+                    @if ($pengadaan->isEmpty())
+                        <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+                            <td colspan="7" class="text-center py-10 text-slate-500 italic">
+                                Data tidak ditemukan atau masih kosong.
+                            </td>
+                        </tr>
+                    @else
+                        @foreach ($pengadaan as $pengadaan)
+                            {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
+                            <tr>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-slate-500">
+                                                {{ $pengadaan->id_pengadaan }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="font-bold text-slate-500 flex items-center gap-2">
+                                            {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                            {{ $pengadaan->nama_item }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="font-bold text-slate-500 flex items-center gap-2">
+                                            {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                            {{ $pengadaan->merek_model }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="font-bold text-slate-500 flex items-center gap-2">
+                                            {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                            {{ $pengadaan->qty_item }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-middle">
+                                    @if ($pengadaan->status_pengadaan === 'pendding')
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
+                                            <span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                                            Pending
+                                        </span>
+                                    @elseif ($pengadaan->status_pengadaan === 'disetujui')
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
+                                            <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                            Disetujui
+                                        </span>
+                                    @else
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
+                                            <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                                            Ditolak
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-centar align-middle">
+                                    <a href="{{ route('preview_surat_pengadaan', base64_encode($pengadaan->id_pengadaan)) }}" target="_blank" class="text-blue-600">
+                                        Lihat surat
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 text-right align-middle">
+                                    <form method="GET" action="">
+                                        @csrf
+                                        <button type="submit"
+                                            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
+                                            {{-- <i class="fa-solid fa-chevron-right"></i> --}}
+                                            download
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -227,7 +211,7 @@
                     </header> --}}
                     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-card-padding p-4">
 
-                        <form class="space-y-3" method="post" action="{{ route('pengadaan.cetak') }}">
+                        <form class="space-y-3" method="POST" action="{{ route('simpan-pengadaan') }}">
                             @csrf
                             <!-- Item Name -->
                             <div>
@@ -256,7 +240,6 @@
                                         placeholder="cth: Laptop Core i7" type="text" />
                                 </div>
                             </div>
-
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <!-- Category -->
                                 <div>
@@ -278,7 +261,8 @@
                             </div>
                             <div>
                                 <label
-                                    class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Keperluan Untuk Prodi/Fakultas</label>
+                                    class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Keperluan
+                                    Untuk Prodi/Fakultas</label>
                                 <div class="relative">
                                     <select name="keperluan_prodi"
                                         class="w-full px-3 py-2  border border-slate-200 rounded-xl font-body-md text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
@@ -288,6 +272,19 @@
                                         <option value="Program Studi Teknik Komputer">Teknik Komputer</option>
                                         <option value="Program Studi Teknik Lingkungan">Teknik Lingkungan</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
+                                    Tahun akademik
+                                </label>
+                                <div class="relative">
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
+                                    <input name="tahun_akademik"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : 2025/2026" type="text" />
                                 </div>
                             </div>
                             {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

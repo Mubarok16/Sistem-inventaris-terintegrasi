@@ -410,9 +410,14 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
+
+        $pengadaan = DB::table('pengadaan_barang')->get();
+
+        // dd($pengadaan);
+
         $user = Auth::user()->nama;
         $halaman = 'contentPengadaanBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'pengadaan'));
     }
 
 

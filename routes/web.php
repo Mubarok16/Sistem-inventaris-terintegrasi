@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/admin/data-barang', [DashboardController::class, 'AdminDataBarang'])->name('peng-barang');
     Route::get('/dashboard/admin/data-ruangan', [DashboardController::class, 'AdminDataRuangan'])->name('peng-ruang');
     Route::get('/dashboard/admin/agenda', [DashboardController::class, 'AdminAgenda'])->name('dashboard-admin-agenda');
-    Route::get('/dashboard/admin/pengadaan-barang', [DashboardController::class, 'AdminPengadaanBarang']);
+    Route::get('/dashboard/admin/pengadaan-barang', [DashboardController::class, 'AdminPengadaanBarang'])->name('page_pengadaan_barang');
 
     // page dashboard admin =========================================================================================================================
     // page agenda berlangsung
@@ -166,7 +166,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
 
     // Pengajuan barang admin ========================================================================================================================
-    Route::post('/cetak-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('pengadaan.cetak');
+    Route::post('/simpan-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('simpan-pengadaan');
+    // lihat surat
+    Route::get('/lihat-surat/{id}', [PengadaanBarangController::class, 'bukaPdf'])->name('preview_surat_pengadaan');
+
 
     // -----------------------------------------------------------------------------------------------------
 
