@@ -138,17 +138,18 @@
     <div class="footer">
         <p>Dekan,</p>
 
-        {{-- @if ($is_approved)
-            <!-- Jika SUDAH ACC: Tampilkan QR Code -->
+        @if ($is_approved)
             <div class="qr-code">
-                <img src="data:image/png;base64,{{ DNS2D::getBarcodePNG($verif_url, 'QRCODE') }}" alt="QR Code">
+                {{-- Mengonversi SVG menjadi base64 agar bisa dibaca DomPDF --}}
+                <img
+                    src="data:image/svg+xml;base64,{{ base64_encode(QrCode::format('svg')->size(80)->margin(1)->generate($verif_url)) }}">
+                {{-- <label>{{ $verif_url }}</label> --}}
             </div>
-        @else --}}
-            <!-- Jika BELUM ACC: Tampilkan Blur -->
+        @else
             <div class="blur-ttd">
                 <span>BELUM ACC</span>
             </div>
-        {{-- @endif --}}
+        @endif
 
         <p style="margin-bottom: 0;">
             <span style="border-bottom: 1px solid black; font-weight: bold; white-space: nowrap;">

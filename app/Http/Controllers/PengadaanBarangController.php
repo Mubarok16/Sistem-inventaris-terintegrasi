@@ -143,4 +143,18 @@ class PengadaanBarangController extends Controller
         // 9. Tampilkan PDF ke browser
         return $pdf->stream('Surat_Pengadaan_' . $namaFileAman . '.pdf');
     }
+
+    // verivikasi e-sign
+    public function verifikasi($id)
+    {
+        $nomorSurat = base64_decode($id);
+        $data = DB::table('pengadaan_barang')->where('id_pengadaan', $nomorSurat)->first();
+
+        if (!$data) {
+            return view('verifikasi_gagal'); // Jika dokumen tidak terdaftar
+        }
+
+        // Tampilkan halaman identitas penandatangan
+        return view('components.admin.componentHalamanVerifEsign', compact('data'));
+    }
 }

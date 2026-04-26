@@ -169,6 +169,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/simpan-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('simpan-pengadaan');
     // lihat surat
     Route::get('/lihat-surat/{id}', [PengadaanBarangController::class, 'bukaPdf'])->name('preview_surat_pengadaan');
+    // verivikasi e sign
+    Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifikasi'])->name('verifikasi.surat');
+
 
 
     // -----------------------------------------------------------------------------------------------------
