@@ -15,63 +15,45 @@
 @endif
 
 <!-- Pengadaan Barang Section -->
-<section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg mb-8" x-data="{ openformpengadaanbarang: false }">
-    <!-- SectionHeader -->
-    <div class="flex justify-end items-center mb-4">
-        {{-- <h2 class="text-text-light dark:text-text-dark text-xl font-bold leading-tight">Pengadaan
-            barang</h2> --}}
-        <button @click="openformpengadaanbarang = !openformpengadaanbarang"
-            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400">
-            {{-- <span class="material-symbols-outlined text-base">add</span> --}}
-            <span class="truncate">Ajukan Pengadaan</span>
-        </button>
-    </div>
-    <!-- ToolBar -->
-    {{-- <div class="flex justify-start gap-2 py-3">
-        <div class="relative w-full max-w-xs">
-            <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
-            <input
-                class="w-full pl-10 pr-4 py-2 bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-DEFAULT focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                placeholder="Cari nama barang..." type="text" />
+<section class="bg-surface-light dark:bg-surface-dark px-0 py-6 rounded-lg mb-8" x-data="{ openformpengadaanbarang: false }">
+    <!-- filter -->
+    <div
+        class="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-3">
+        <div class="relative inline-block">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
+            </div>
+
+            <select onchange="this.form.submit()" name="status"
+                class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
+                <option value="semua">Semua Status Pengadaan Barang
+                </option>
+                <option value="pending">
+                    pending</option>
+                <option value="diterima">
+                    Diajukan ke rektorat</option>
+                <option value="ditolak">
+                    Ditolak</option>
+                <option value="dibatalkan">
+                    Dibatalkan</option>
+                <option value="selesai">
+                    Selesai</option>
+            </select>
+
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+            </div>
         </div>
-    </div> --}}
-    <!-- Data Table -->
-    {{-- <div class="overflow-x-auto bg-white border-0 rounded-lg!">
-        <table class="w-full text-sm text-left">
-            <thead
-                class="text-xs text-muted-light dark:text-muted-dark uppercase bg-background-light dark:bg-background-dark">
-                <tr>
-                    <th class="px-6 py-3" scope="col">Nomor Surat</th>
-                    <th class="px-6 py-3" scope="col">Nama Barang</th>
-                    <th class="px-6 py-3" scope="col">Merk</th>
-                    <th class="px-6 py-3" scope="col">Qty</th>
-                    <th class="px-6 py-3" scope="col">file Pengajuan</th>
-                    <th class="px-6 py-3" scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="bg-surface-light dark:bg-surface-dark border-b dark:border-gray-700">
-                    <td class="px-6 py-4 font-medium">
-                        PR/rr/2026
-                    </td>
-                    <td class="px-6 py-4 font-semibold">Laptop i7</td>
-                    <td class="px-6 py-4 font-medium">dell latitude</td>
-                    <td class="px-6 py-4">2</td>
-                    <td class="px-6 py-4">
+        <div class="justify-end">
+            <button @click="openformpengadaanbarang = !openformpengadaanbarang"
+                class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-end rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400">
+                {{-- <span class="material-symbols-outlined text-base">add</span> --}}
+                <span class="truncate">Ajukan Pengadaan</span>
+            </button>
+        </div>
+    </div>
 
-                    </td>
-                    <td class="px-6 py-4">
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Belum disetujui
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> --}}
-
+    {{-- tabel riwayat pengadaan barang --}}
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[800px]">
@@ -141,30 +123,49 @@
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                            Diajukan
+                                        </span>
+                                    @elseif ($pengadaan->status_pengadaan === 'selesai')
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
+                                            <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
                                             Disetujui
                                         </span>
                                     @else
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                            Ditolak
+                                            {{ $pengadaan->status_pengadaan }}
                                         </span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-centar align-middle">
-                                    <a href="{{ route('preview_surat_pengadaan', base64_encode($pengadaan->id_pengadaan)) }}" target="_blank" class="text-blue-600">
+                                    <a href="{{ route('preview_surat_pengadaan', base64_encode($pengadaan->id_pengadaan)) }}"
+                                        target="_blank" class="text-blue-600">
                                         Lihat surat
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 text-right align-middle">
-                                    <form method="GET" action="">
-                                        @csrf
-                                        <button type="submit"
-                                            class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
-                                            {{-- <i class="fa-solid fa-chevron-right"></i> --}}
-                                            download
-                                        </button>
-                                    </form>
+                                    <div class="flex gap-2">
+                                        <form method="POST"
+                                            action="{{ route('pageCheckInBarang', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            
+                                            @csrf
+                                            <button type="submit"
+                                                @disabled(strtolower($pengadaan->status_pengadaan) != 'disetujui')
+                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'disetujui' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
+                                                Barang diterima
+                                            </button>
+                                        </form>
+                                        <form method="POST"
+                                            action="{{ route('download-surat-pengadaan', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
+                                                <i class="fa-solid fa-download"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -176,17 +177,17 @@
             <span class="text-xs text-slate-500">Menampilkan 1-4 dari 128
                 data</span>
             <div class="flex items-center gap-2">
-                <button class="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 disabled:opacity-50"
-                    disabled="">
-                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                <button class="p-1 rounded text-slate-600 hover:bg-slate-200" disabled="">
+                    <i class="fa-solid fa-chevron-left text-[20px]"></i>
                 </button>
                 <button class="p-1 rounded text-slate-600 hover:bg-slate-200">
-                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    <i class="fa-solid fa-chevron-right text-[20px]"></i>
                 </button>
             </div>
         </div>
     </div>
 
+    {{-- form input pengadaan barang --}}
     <div x-show="openformpengadaanbarang"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
         x-cloak>
@@ -364,6 +365,7 @@
     </div>
 
 </section>
+
 <!-- Perawatan Barang Section -->
 {{-- <section class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg">
     <!-- SectionHeader -->

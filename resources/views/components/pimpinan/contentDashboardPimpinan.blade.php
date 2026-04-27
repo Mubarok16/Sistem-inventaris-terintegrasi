@@ -1,26 +1,10 @@
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> --}}
 
 
 <body>
     <div class="flex-1 flex flex-col ">
         <main class="flex-1 p-6 lg:px-4 lg:py-2 max-w-7xl">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {{-- <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="size-10 bg-blue-50 text-primary rounded-lg flex items-center justify-center">
-                            <i class="fa-solid fa-door-open"></i>
-                        </div>
-                        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+5.2%</span>
-                    </div>
-                    <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Okupansi Ruangan</p>
-                    <div class="flex items-baseline gap-2 mt-1">
-                        <h3 class="text-3xl font-black text-text-main">85.4%</h3>
-                        <livewire:pimpinan.okupansi-ruangan-perbulan />
-                    </div>
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
-                        <div class="bg-primary h-full" style="width: 85.4%"></div>
-                    </div>
-                </div> --}}
 
                 {{-- total okupansi ruangan --}}
                 <div class="stat-card bg-white p-6 border border-border-light rounded-xl">
@@ -115,7 +99,7 @@
     </div>
 </body>
 
-<script>
+{{-- <script>
     console.log("Labels:", @json($labels));
     console.log("Data Barang:", @json($countsBarang));
     console.log("Data Ruangan:", @json($countsRuangan));
@@ -151,4 +135,42 @@
     var chart = new ApexCharts(document.querySelector("#chart"), options);
 
     chart.render();
+</script> --}}
+
+<script>
+    // Gunakan 'load' untuk memastikan semua aset Vite (app.js) sudah selesai diproses
+    window.addEventListener('load', function () {
+        console.log("ApexCharts status:", typeof window.ApexCharts); // Harus muncul 'function'
+        
+        const chartElement = document.querySelector("#chart");
+        
+        if (chartElement && typeof window.ApexCharts !== 'undefined') {
+            var options = {
+                chart: {
+                    type: 'line',
+                    height: 400,
+                },
+                series: [{
+                        name: 'Peminjaman Barang',
+                        data: @json($countsBarang)
+                    },
+                    {
+                        name: 'Peminjaman Ruangan',
+                        data: @json($countsRuangan)
+                    }
+                ],
+                xaxis: {
+                    categories: @json($labels),
+                },
+                stroke: {
+                    curve: 'smooth',
+                }
+            };
+
+            var chart = new window.ApexCharts(chartElement, options);
+            chart.render();
+        } else {
+            console.error("Gagal memuat chart: Elemen #chart tidak ditemukan atau ApexCharts undefined.");
+        }
+    });
 </script>

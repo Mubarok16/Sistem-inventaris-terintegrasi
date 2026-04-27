@@ -37,7 +37,8 @@
                             <div>
                                 <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
                                 <span class="text-gray-500">/</span>
-                                <a href="" class="text-gray-400! no-underline! font-medium">Agenda-yang-berlangsung</a>
+                                <a href=""
+                                    class="text-gray-400! no-underline! font-medium">Agenda-yang-berlangsung</a>
                             </div>
                         </div>
                         <div
@@ -50,7 +51,7 @@
                                 <i class="fa-solid fa-calendar-days text-primary"></i>
                                 {{ now()->format('D, d M Y') }}
                             </div>
-                            
+
                         </div>
                     </div>
                     @include('components.admin.componentAgendaBerlangsung')
@@ -202,7 +203,22 @@
                     @include('components.admin.componentEditAgendaAdm')
                 @elseif ($halaman === 'contentPengadaanBarang')
                     <h4>Pengadaan Barang</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengadaan-Barang</a>
+                    </div>
                     @include('components.admin.componentPengadaanBarang')
+                @elseif ($halaman === 'contentDashbordChekInBarang')
+                    <h4>Alokasi Barang</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('page_pengadaan_barang') }}" class="text-gray-400! no-underline!">Pengadaan-Barang</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Alokasi-Barang</a>
+                    </div>
+                    @include('components.admin.componentCheckinBarangPengadaan')
                 @endif
             </div>
         </div>

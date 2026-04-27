@@ -17,40 +17,7 @@ class PengadaanBarangController extends Controller
     public function pengajuanPengadaanBarang(Request $request)
     {
 
-        // mengambil data penyetuju (pimpinan wakil dekan)
-        $penyetuju = DB::table('users')
-            ->where('hak_akses', 'pimpinan')
-            ->select(
-                'id_user',
-                'nama',
-            )
-            ->first();
-
-        // Ambil data dari input form
-        // $data = [
-        //     'nomor_surat' => $request->nomor_surat,
-        //     'nama_barang' => $request->nama_item,
-        //     'qty'         => $request->qty,
-        //     // 'alasan'      => $request->alasan,
-        //     'tanggal'     => date('d F Y'),
-        //     'dekan'     => $penyetuju->nama,
-        //     'nidn'     => $penyetuju->id_user,
-        //     'tahun_akademik' => $request->tahun_akademik,
-        //     'keperluan_prodi' => $request->keperluan_prodi,
-        // ];
-
-        // Generate PDF
-        // $pdf = Pdf::loadView('surat_pengadaan', $data);
-
-        // // buat nama file surat
-        // $namaFile = 'surat_' . Str::random(10) . '.pdf';
-        // $path = '/surat_pengadaan_barang/' . $namaFile; // Folder storage/app/private/surat
-
         try {
-
-            // dd($path);
-            // Simpan ke disk 'local' (defaultnya private)
-            // Storage::disk('local')->put($path, $pdf->output());
 
             DB::table('pengadaan_barang')->insert([
                 'id_pengadaan' => $request->nomor_surat,
@@ -100,6 +67,12 @@ class PengadaanBarangController extends Controller
 
         // 2. Ambil data pengadaan dari database
         $dataDb = DB::table('pengadaan_barang')
+            ->leftJoin('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->select(
+                'pengadaan_barang.*',
+                'users.nama', // Beri alias di sini
+                'users.id_user' // Beri alias di sini
+            )
             ->where('id_pengadaan', $nomorSuratAsli)
             ->first();
 
@@ -112,11 +85,11 @@ class PengadaanBarangController extends Controller
             abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
         }
 
-        // 4. Ambil data penanda tangan (Dekan/Wakil Dekan)
-        $penyetuju = DB::table('users')
-            ->where('hak_akses', 'pimpinan')
-            ->select('nama', 'id_user')
-            ->first();
+        // // 4. Ambil data penanda tangan (Dekan/Wakil Dekan)
+        // $penyetuju = DB::table('users')
+        //     ->where('hak_akses', 'pimpinan')
+        //     ->select('nama', 'id_user')
+        //     ->first();
 
         // 5. Tentukan status Approved (Watermark akan hilang jika status 'setuju')
         $is_approved = ($dataDb->status_pengadaan === 'disetujui');
@@ -128,8 +101,8 @@ class PengadaanBarangController extends Controller
             'qty'             => $dataDb->qty_item,
             'tahun_akademik'  => $dataDb->tahun_akademik,
             'keperluan_prodi' => $dataDb->keperluan_prodi,
-            'dekan'           => $penyetuju->nama ?? 'Nama Belum Diatur',
-            'nidn'            => $penyetuju->id_user ?? '-',
+            'dekan'           => $dataDb->nama ?? 'Nama Belum Diatur',
+            'nidn'            => $dataDb->id_user ?? '-',
             'is_approved'     => $is_approved, // Variabel penting untuk Watermark & TTD
             'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
         ];
@@ -148,7 +121,17 @@ class PengadaanBarangController extends Controller
     public function verifikasi($id)
     {
         $nomorSurat = base64_decode($id);
-        $data = DB::table('pengadaan_barang')->where('id_pengadaan', $nomorSurat)->first();
+        $data = DB::table('pengadaan_barang')
+            ->join('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->select(
+                'pengadaan_barang.*',
+                'users.nama'
+
+            )
+            ->where('id_pengadaan', $nomorSurat)
+            ->first();
+
+        // dd($data);
 
         if (!$data) {
             return view('verifikasi_gagal'); // Jika dokumen tidak terdaftar
@@ -156,5 +139,69 @@ class PengadaanBarangController extends Controller
 
         // Tampilkan halaman identitas penandatangan
         return view('components.admin.componentHalamanVerifEsign', compact('data'));
+    }
+
+    // download surat pengadaan
+    public function downloadSuratPengadaan(Request $request, $id)
+    {
+        $id_pengadaan = base64_decode($id);
+
+        $data = DB::table('pengadaan_barang')
+            ->leftJoin('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->select(
+                'pengadaan_barang.*',
+                'users.nama as nama_penyetuju', // Beri alias di sini
+                'users.id_user' // Beri alias di sini
+            )
+            ->where('id_pengadaan', $id_pengadaan)
+            ->first();
+
+        // dd($data);
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        $is_approved = ($data->status_pengadaan === 'disetujui');
+
+        // 1. Siapkan data untuk dikirim ke view blade
+        $pdfData = [
+            'nomor_surat'     => $data->id_pengadaan,
+            'nama_barang'     => $data->nama_item,
+            'qty'             => $data->qty_item,
+            'tahun_akademik'  => $data->tahun_akademik,
+            'keperluan_prodi' => $data->keperluan_prodi,
+            'dekan'           => $data->nama_penyetuju ?? 'Nama Belum Diatur',
+            'nidn'            => $data->id_user ?? '-',
+            'is_approved'     => $is_approved, // Variabel penting untuk Watermark & TTD
+            'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
+        ];
+
+        // 2. Load view yang berisi desain surat Anda
+        $pdf = Pdf::loadView('surat_pengadaan', $pdfData);
+
+        // (Opsional) Atur ukuran kertas
+        $pdf->setPaper('a4', 'portrait');
+
+        // 3. Auto download dengan nama file spesifik
+        return $pdf->download('Surat_Pengadaan_' . base64_encode($data->id_pengadaan) . '.pdf');
+
+        // dd($id_pengadaan);
+    }
+
+    // page checkin barang yg telah d ajukan
+    public function pageCheckInBarang($id)
+    {
+
+        if (Auth::user()->hak_akses !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $id_pengadaan = base64_decode($id);
+        // dd($id_pengadaan);
+
+        $halaman = 'contentDashbordChekInBarang';
+        $user = Auth::user()->nama;
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 }

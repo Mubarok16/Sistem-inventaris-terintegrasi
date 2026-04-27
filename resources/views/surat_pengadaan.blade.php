@@ -138,18 +138,51 @@
     <div class="footer">
         <p>Dekan,</p>
 
-        @if ($is_approved)
+        {{-- @if ($is_approved)
             <div class="qr-code">
-                {{-- Mengonversi SVG menjadi base64 agar bisa dibaca DomPDF --}}
                 <img
                     src="data:image/svg+xml;base64,{{ base64_encode(QrCode::format('svg')->size(80)->margin(1)->generate($verif_url)) }}">
-                {{-- <label>{{ $verif_url }}</label> --}}
+                
+                <label>{{ $verif_url }}</label>
             </div>
         @else
             <div class="blur-ttd">
                 <span>BELUM ACC</span>
             </div>
+        @endif --}}
+
+        @if ($is_approved)
+            <div style="width: 80px; height: 80px; margin: 0 auto; text-align: center;">
+
+                <!-- 1. QR Code SVG -->
+                <img src="data:image/svg+xml;base64,{{ base64_encode(QrCode::format('svg')->errorCorrection('H')->size(80)->margin(0)->generate($verif_url)) }}"
+                    style="width: 80px; height: 80px; display: block;">
+
+                <!-- 2. Logo (Dinaikkan dengan margin-top negatif) -->
+                <div
+                    style="
+                        background-color: white; 
+                        width: 24px; 
+                        height: 24px; 
+                        margin: -53px auto 0 auto; /* -52px untuk menarik logo ke tengah QR */
+                        padding: 2px;
+                        position: relative; 
+                        z-index: 100;
+                    ">
+                    <img src="{{ public_path('images/logo_ft.png') }}"
+                        style="width: 100%; height: auto; display: block;">
+                </div>
+
+            </div>
+            <!-- Spacer agar elemen di bawah QR tidak tertabrak -->
+            {{-- <div style="height: 30px;"></div> --}}
+        @else
+            <div class="blur-ttd">
+                <span>BELUM ACC</span>
+            </div>
         @endif
+
+
 
         <p style="margin-bottom: 0;">
             <span style="border-bottom: 1px solid black; font-weight: bold; white-space: nowrap;">

@@ -10,6 +10,10 @@ window.bootstrap = bootstrap; // supaya ruang-admin.js bisa akses global
 
 // Alpine.start();
 
+// apex chart
+import ApexCharts from 'apexcharts';
+window.ApexCharts = ApexCharts;
+
 // full calender
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'

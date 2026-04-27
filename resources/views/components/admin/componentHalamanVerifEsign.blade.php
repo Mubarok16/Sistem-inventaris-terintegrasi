@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi E-Sign - Universitas Wiralodra</title>
-    <script src="https://tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cloudflare.com">
+    {{-- <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cloudflare.com"> --}}
 
     @vite([
         // css js app
@@ -21,10 +21,11 @@
         <!-- Header -->
         <div class="bg-emerald-600 p-6 text-center text-white">
             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <i class="fa-solid fa-shield-check text-3xl"></i>
+                {{-- <i class="fa-solid fa-shield-check text-2xl"></i> --}}
+                <i class="fa-solid fa-circle-check text-7xl"></i>
             </div>
             <h1 class="text-xl font-bold">Dokumen Terverifikasi</h1>
-            <p class="text-emerald-100 text-sm">Tanda Tangan Elektronik Sah</p>
+            <p class="text-emerald-100 text-sm">Tanda Tangan Elektronik SAH</p>
         </div>
 
         <!-- Body -->
@@ -55,14 +56,14 @@
                     <i class="fa-solid fa-user-check text-slate-400 mt-1"></i>
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold">Penandatangan (E-Sign)</p>
-                        <p class="text-sm text-slate-800 font-bold text-emerald-700">Dekan Fakultas Teknik</p>
+                        <p class="text-sm text-slate-800 font-bold text-emerald-700">{{ $data->nama }}</p>
                     </div>
                 </div>
 
                 <div class="flex items-start gap-3">
                     <i class="fa-solid fa-calendar-check text-slate-400 mt-1"></i>
                     <div>
-                        <p class="text-xs text-slate-500 uppercase font-bold">Waktu Verifikasi</p>
+                        <p class="text-xs text-slate-500 uppercase font-bold">Waktu Ditandatangani (E-SIGN)</p>
                         <p class="text-sm text-slate-800">
                             {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d F Y H:i') }} WIB</p>
                     </div>

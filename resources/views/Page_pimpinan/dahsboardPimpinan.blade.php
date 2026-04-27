@@ -44,17 +44,14 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Penggunaan-Ruangan</a>
                     </div>
                     @include('components.pimpinan.contentCalender')
-                @elseif ($halaman === 'contentEditUser')
-                    <h4>Edit User</h4>
+                @elseif ($halaman === 'contentPengadaanBarang')
+                    <h4>Pengadaan Barang</h4>
                     <div>
-                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <a href="/dashboard/pimpinan" class="text-gray-400! no-underline!">Dahsboard</a>
                         <span class="text-gray-500">/</span>
-                        <a href="{{ route('pengelolaan-user') }}"
-                            class="text-gray-400! no-underline!">Pengelolaan-Pengguna</a>
-                        <span class="text-gray-500">/</span>
-                        <a href="" class="text-gray-400! no-underline! font-medium">edit-akun-Pengguna</a>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengadaan-Barang</a>
                     </div>
-                    {{-- @include('components.admin.componentEditAkunUserAdmin') --}}
+                    @include('components.pimpinan.contentPengadaanBarang')
                 @endif
             </div>
         </div>

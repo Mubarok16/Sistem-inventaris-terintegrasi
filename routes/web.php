@@ -19,6 +19,7 @@ use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use App\Http\Controllers\PengelolaanUserController;
 use App\Http\Controllers\pimpinan\DashboardControllerPimpinan as PimpinanDashboardControllerPimpinan;
+use App\Http\Controllers\pimpinan\PengadaanBarangControllerPimpinan;
 use App\Models\agendaFakultas;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -55,6 +56,9 @@ Route::prefix('admin')->as('admin.')->group(function () {
 Route::prefix('peminjam')->as('peminjam.')->group(function () {
     Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-calender');
 });
+
+// verivikasi e sign penerima surat
+Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifikasi'])->name('verifikasi.surat');
 
 
 // routes for dashboard admin
@@ -159,9 +163,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/kunci-barang-ruang-temp', [pengelolaanAgenda::class, 'kunciTempBarangRuangTambahAgenda'])->name('kunci-barang-ruang-tambah-agenda');
     Route::post('/hapus-barang-ruang-temp', [pengelolaanAgenda::class, 'hapusBarangRuangTemTambahAgenda'])->name('hapus-barang-ruang-tambah-agenda');
     Route::post('/simpan-tambah-agenda', [pengelolaanAgenda::class, 'simpanTambahAgendaBaru'])->name('simpan-tambah-agenda');
-    // 
-
-
     // hapus data agenda db
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
 
@@ -169,22 +170,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/simpan-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('simpan-pengadaan');
     // lihat surat
     Route::get('/lihat-surat/{id}', [PengadaanBarangController::class, 'bukaPdf'])->name('preview_surat_pengadaan');
-    // verivikasi e sign
-    Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifikasi'])->name('verifikasi.surat');
+    //download surat
+    Route::post('/download-surat-pengadaan/{id}', [PengadaanBarangController::class, 'downloadSuratPengadaan'])->name('download-surat-pengadaan');
+    Route::post('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
 
 
 
-    // -----------------------------------------------------------------------------------------------------
 
-
-    // dashboard pimpinan fakultas
+    // ----------------------------------------pimpinan fakultas ------------------------------------------
+    // dashboard pimpinan fakultas 
     Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan'])->name('dashboard-pimpinan');
     Route::post('input-bulan-dashboard-pimpinan', [PimpinanDashboardControllerPimpinan::class, 'tglDashboardPimpinan'])->name('input-bulan-dashboard-pimpinan');
     Route::get('dashboard-pimpinan/calender', [DashboardController::class, 'calenderPimpinan'])->name('calender-pimpinan');
+    // pengadaan barang
+    Route::get('/dashboard/Pengadaan-barang', [PengadaanBarangControllerPimpinan::class, 'PagePengadaanBarang'])->name('pengadaan-barang');
+    Route::post('/dashboard/approve-surat/{id}', [PengadaanBarangControllerPimpinan::class, 'signSurat'])->name('sign-surat');
 
-    // -----------------------------------------------------------------------------------------------------
 
-
+    // ---------------------------------------------------kaprodi---------------------------------------------
     // dashboard kaprodi
     Route::get('/dashboard/kaprodi', [DashboardController::class, 'kaprodi']);
 });

@@ -18,9 +18,9 @@
     <div x-data="{ activeTab: 'Mata Kuliah' }" class="border-slate-200 shrink-0">
 
         <!-- Filters -->
-        <form action="{{ route('simpan-riwayat-session') }}" method="post">
-            <div
-                class="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-3">
+        <div
+            class="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-3">
+            <form action="{{ route('simpan-riwayat-session') }}" method="post">
                 @csrf
                 <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
                     <button value="semua" name="status"
@@ -44,12 +44,7 @@
                         Seminar
                     </button>
                 </div>
-
-            </div>
-        </form>
-
-        <div class="flex items-center justify-end gap-3 mb-3">
-
+            </form>
             <div class="flex items-center justify-end gap-3">
                 <form action="{{ route('dashboard-admin-page-import-agenda') }}" method="get">
                     @csrf

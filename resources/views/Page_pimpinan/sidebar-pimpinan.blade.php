@@ -8,7 +8,7 @@
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ route('dashboard-pimpinan') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -17,28 +17,17 @@
         Features
     </div>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-target="#collapseBootstrap"
-            aria-expanded="true" aria-controls="collapseBootstrap">
+        <a class="nav-link" href="{{ route('pengadaan-barang') }}" 
+            >
             <i class="far fa-fw fa-window-maximize"></i>
-            <span>Pengadaan Inventaris</span>
+            <span>Pengadaan Barang</span>
         </a>
-        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Bootstrap UI</h6>
-                <a class="collapse-item" href="#">Alerts</a>
-                <a class="collapse-item" href="#">Buttons</a>
-                <a class="collapse-item" href="#">Dropdowns</a>
-                <a class="collapse-item" href="#">Modals</a>
-                <a class="collapse-item" href="#">Popovers</a>
-                <a class="collapse-item" href="#">Progress Bars</a>
-            </div>
-        </div>
     </li>
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
             aria-expanded="true" aria-controls="collapseForm">
             <i class="fab fa-fw fa-wpforms"></i>
-            <span>Perawatan Inventaris</span>
+            <span>Perawatan Barang</span>
         </a>
         <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
