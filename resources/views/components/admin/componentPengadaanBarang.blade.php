@@ -129,7 +129,7 @@
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                            Disetujui
+                                            selesai
                                         </span>
                                     @else
                                         <span
@@ -147,7 +147,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right align-middle">
                                     <div class="flex gap-2">
-                                        <form method="POST"
+                                        <form method="get"
                                             action="{{ route('pageCheckInBarang', base64_encode($pengadaan->id_pengadaan)) }}">
                                             
                                             @csrf

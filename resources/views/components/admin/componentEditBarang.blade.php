@@ -51,8 +51,12 @@
                                     <input type="text" name="id_item" value="{{ $ruang->id_item }}" hidden>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-700">Tipe Barang</label>
-                                    <select name="tipe_item"
+                                    <label class="text-sm font-semibold text-slate-700">Merek/Model Barang</label>
+                                    <input name="merk_model"
+                                        class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-slate-900"
+                                        placeholder="Contoh: Lab Komputer 1" type="text"
+                                        value="{{ $ruang->merek_model }}" />
+                                    {{-- <select name="tipe_item"
                                         class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-slate-900">
                                         @foreach ($tipeBarang as $tipe)
                                             <option value="{{ $tipe->id_tipe_item }}"
@@ -60,7 +64,7 @@
                                                 {{ $tipe->nama_tipe_item }}
                                             </option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ asset('storage/' . $ruang->img_item) }}')">
@@ -189,7 +193,6 @@
 </main>
 
 <script>
-
     function imageUploader(existingUrl = null) {
         return {
             isDragging: false,

@@ -172,7 +172,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lihat-surat/{id}', [PengadaanBarangController::class, 'bukaPdf'])->name('preview_surat_pengadaan');
     //download surat
     Route::post('/download-surat-pengadaan/{id}', [PengadaanBarangController::class, 'downloadSuratPengadaan'])->name('download-surat-pengadaan');
-    Route::post('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
+    // page checkin barang
+    Route::get('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
+    // simpan checkin
+    Route::post('dashboard/simpan/chekinBarang/{id}', [PengadaanBarangController::class, 'simpandistribusi'])->name('simpan-distribusi');
 
 
 

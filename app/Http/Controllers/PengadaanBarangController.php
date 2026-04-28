@@ -200,8 +200,90 @@ class PengadaanBarangController extends Controller
         $id_pengadaan = base64_decode($id);
         // dd($id_pengadaan);
 
+        $AllRoom = DB::table('rooms')
+            ->select(
+                'id_room',
+                'nama_room'
+            )
+            ->get();
+
+        $pengadaan =  DB::table('pengadaan_barang')
+            ->where('id_pengadaan', '=', $id_pengadaan)
+            ->first();
+
+        // dd($pengadaan);
+
         $halaman = 'contentDashbordChekInBarang';
         $user = Auth::user()->nama;
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AllRoom', 'pengadaan', 'id_pengadaan'));
+    }
+
+    public function simpandistribusi(Request $request, $id)
+    {
+        if (Auth::user()->hak_akses !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $id_pengadaan = base64_decode($id);
+
+        // Ambil data pengadaan untuk referensi (misal nama barang, kategori, dll)
+        $pengadaan = DB::table('pengadaan_barang')->where('id_pengadaan', $id_pengadaan)->first();
+
+        // generate iditem
+        $DataBarang = new \App\Models\DataBarang(); // instance untuk mengakses method model
+
+        // Bungkus dengan Transaction untuk keamanan data
+        DB::beginTransaction();
+
+        try {
+            // Ambil salah satu array sebagai acuan looping (misal 'ruangan')
+            // PERBAIKAN: Gunakan $request->ruangan, bukan $POST
+            foreach ($request->ruangan as $index => $roomId) {
+
+                $urutan = DB::table('items')
+                    ->where('nama_item', '=', $request->nama_item)
+                    ->select('nama_item')
+                    ->latest()
+                    ->count();
+
+
+                // Ambil data lainnya juga dari $request
+                $namaItem = $request->nama_item;
+                $id_item = $DataBarang->generateIdItem($namaItem, Str::random(2), $urutan);
+                $merkModel = $request->merk_model;
+                $qty = $request->qty[$index];
+                $kondisi = $request->kondisi[$index];
+
+                // dd($DataBarang->generateIdItem($namaItem, Str::random(2), $urutan));
+
+
+                // Logika simpan Anda...
+                DB::table('items')->insert([
+                    'id_item'      => $id_item,
+                    'id_room'      => $roomId,
+                    'nama_item'    => $namaItem,
+                    'merek_model'  => $merkModel,
+                    'qty_item'     => $qty,
+                    'kondisi_item' => $kondisi,
+                    'img_item'     => 'default.png',
+                    'updated_at'   => now(),
+                    'created_at'   => now(),
+                ]);
+            }
+            // Update status pengadaan asal agar tidak didistribusikan dua kali
+            DB::table('pengadaan_barang')
+                ->where('id_pengadaan', $id_pengadaan)
+                ->update([
+                    'status_pengadaan' => 'selesai',
+                ]);
+
+            DB::commit();
+            return redirect()->route('page_pengadaan_barang')->with('success', 'Distribusi berhasil!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('page_pengadaan_barang')->with('gagal', 'Gagal menyimpan: ' . $e->getMessage());
+        }
+
+        dd($request->all());
     }
 }

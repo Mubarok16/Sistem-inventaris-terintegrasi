@@ -216,7 +216,7 @@
                         <span class="text-gray-500">/</span>
                         <a href="{{ route('page_pengadaan_barang') }}" class="text-gray-400! no-underline!">Pengadaan-Barang</a>
                         <span class="text-gray-500">/</span>
-                        <a href="" class="text-gray-400! no-underline! font-medium">Alokasi-Barang</a>
+                        <a href="{{ route('pageCheckInBarang', base64_encode($pengadaan->id_pengadaan)) }}" class="text-gray-400! no-underline! font-medium">Alokasi-Barang</a>
                     </div>
                     @include('components.admin.componentCheckinBarangPengadaan')
                 @endif

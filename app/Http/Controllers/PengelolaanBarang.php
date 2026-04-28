@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class PengelolaanBarang extends Controller
 {
@@ -32,14 +34,14 @@ class PengelolaanBarang extends Controller
     {
         // dd($request->all());
 
-        $DataRuang_lama = DataBarang::where('nama_item', $request->nama_item)
-            ->where('id_tipe_item', $request->tipe_item)
-            ->whereNot('id_item', $request->id_item)
-            ->count();
+        // $DataRuang_lama = DataBarang::where('nama_item', $request->nama_item)
+        //     // ->where('id_tipe_item', $request->tipe_item)
+        //     ->whereNot('id_item', $request->id_item)
+        //     ->count();
 
-        if ($DataRuang_lama > 0) {
-            return redirect()->back()->with('gagal', 'Nama barang dan tipe barang sudah ada!');
-        }
+        // if ($DataRuang_lama > 0) {
+        //     return redirect()->back()->with('gagal', 'Nama barang sudah ada!');
+        // }
 
         // jika tidak ada gambar baru yang di upload, maka simpan perubahan data ruangan tanpa mengubah gambar
         if (!isset($request->gambar_item)) {
@@ -48,7 +50,7 @@ class PengelolaanBarang extends Controller
                 ->where('id_item', $request->id_item)
                 ->update([
                     'nama_item' => $request->nama_item,
-                    'id_tipe_item' => $request->tipe_item,
+                    'merek_model' => $request->merk_model,
                     'updated_at' => now(),
                 ]);
 
@@ -76,7 +78,7 @@ class PengelolaanBarang extends Controller
                 ->where('id_item', $request->id_item)
                 ->update([
                     'nama_item' => $request->nama_item,
-                    'id_tipe_item' => $request->tipe_item,
+                    'merek_model' => $request->merk_model,
                     // 'kondisi_item' => $request->kondisi_item,
                     'img_item' => $path,
                     'updated_at' => now(),
@@ -218,7 +220,7 @@ class PengelolaanBarang extends Controller
         try {
             $request->validate([
                 'nama_item' => 'required',
-                'tipe' => 'required',
+                'merek_model' => 'required',
                 'kondisi' => 'required',
                 'qty' => 'required|integer|min:1',
                 'gambar_item' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -226,14 +228,20 @@ class PengelolaanBarang extends Controller
 
             // mengambil data urutan
             $urutan = DB::table('items')
-                ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-                ->select('items.*', 'tipe_item.nama_tipe_item') // Pilih kolom yang diperlukan
-                ->where('items.id_tipe_item', '=', $request->tipe)
+                ->where('nama_item', '=', $request->nama_item)
+                ->select('nama_item')
                 ->latest()
                 ->count();
+            ///////////// salah /////////////////
+            // $urutan = DB::table('items')
+            //     ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            //     ->select('items.*', 'tipe_item.nama_tipe_item') // Pilih kolom yang diperlukan
+            //     ->where('items.id_tipe_item', '=', $request->tipe)
+            //     ->latest()
+            //     ->count();
 
             $DataBarang = new \App\Models\DataBarang(); // instance untuk mengakses method model
-            $idBarang = $DataBarang->generateIdItem($request->nama_item, $request->tipe, $urutan); // memanggil method generateIdItem dari model DataBarang
+            $idBarang = $DataBarang->generateIdItem($request->nama_item, Str::random(2), $urutan); // memanggil method generateIdItem dari model DataBarang
 
             // dd($idBarang);
             // upload gambar barang
@@ -246,9 +254,9 @@ class PengelolaanBarang extends Controller
             \App\Models\DataBarang::create([
                 'id_item' => $idBarang,
                 'id_room' => $request->tempat_menyimpan,
-                'id_tipe_item' => $request->tipe,
+                // 'id_tipe_item' => $request->tipe,
                 'nama_item' => $request->nama_item,
-                'merek_model' => "cek",
+                'merek_model' => $request->merek_model,
                 'qty_item' => $request->qty,
                 'kondisi_item' => $request->kondisi,
                 'img_item' => $imgPath,

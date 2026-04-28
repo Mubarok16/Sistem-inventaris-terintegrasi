@@ -18,7 +18,7 @@
     {{-- barang --}}
     <div x-show="activeTab === 'barang'" x-transition x-data="{ AddDataBarang: false, EditDataBarang: false, selectedDataBarang: {}, DeleteDataBarang: false }">
         {{-- pencarian --}}
-        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 flex flex-wrap gap-4 items-center shadow-sm">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 flex flex-wrap gap-4 items-center shadow-sm md:justify-between">
             <div class="relative flex-grow max-w-md">
                 <i
                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -26,26 +26,24 @@
                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
                     placeholder="Cari nama ruangan atau lokasi..." type="text" />
             </div>
-            <div class="flex items-center gap-2 ml-auto">
+            {{-- <div class="flex items-center gap-2 ml-auto">
                 <button @click="activeTab = 'barang'"
                     class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg! text-sm font-medium hover:bg-blue-700 transition-colors text-white bg-blue-500">
-                    {{-- <i class="fa-solid fa-filter text-xs"></i> --}}
-                    Data Baranga
+                    Data Barang
                 </button>
                 <button @click="activeTab = 'tipe'"
                     class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg! text-sm font-medium hover:bg-slate-50 transition-colors text-slate-600">
-                    {{-- <i class="fa-solid fa-sort-amount-down text-xs"></i> --}}
                     Tipe Barang
                 </button>
+            </div> --}}
+            {{-- tambah barang --}}
+            <div class="flex flex-col md:flex-row md:items-center justify-end">
+                <button @click="AddDataBarang = true"
+                    class="bg-primary hover:bg-blue-700 text-white px-6 py-3 rounded-xl! flex items-center justify-center gap-3 font-semibold transition-all shadow-lg shadow-primary/20">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    Tambah Barang Baru
+                </button>
             </div>
-        </div>
-        {{-- tambah barang --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-end gap-6 mb-10">
-            <button @click="AddDataBarang = true"
-                class="bg-primary hover:bg-blue-700 text-white px-6 py-3 rounded-xl! flex items-center justify-center gap-3 font-semibold transition-all shadow-lg shadow-primary/20">
-                <i class="fa-solid fa-plus-circle"></i>
-                Tambah Barang Baru
-            </button>
         </div>
 
         {{-- card data barang --}}
@@ -64,7 +62,8 @@
                     <div class="p-6 flex-grow">
                         <div class="mb-3">
                             <span class="py-1 text-blue-700 text-[10px] font-bold rounded uppercase">
-                                {{ $dataBarang->nama_tipe_item }}
+                                {{-- {{ $dataBarang->nama_tipe_item }} --}}
+                                {{ $dataBarang->merek_model }}
                             </span>
                             <h5 class="text-xl font-bold text-slate-900">
                                 {{ $dataBarang->nama_item }}</h5>
@@ -169,7 +168,7 @@
 
         {{-- ====================================== show ============================================================= --}}
 
-        {{-- shwo add tipe ruangan --}}
+        {{-- shwo add barang --}}
         <div x-show="AddDataBarang"
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
             x-transition x-cloak>
@@ -191,6 +190,12 @@
                             </div>
                         </div>
                         <div class="col-12 m-0">
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control" name="merek_model" placeholder=" " required>
+                                <label class="form-label">Merk/model Barang</label>
+                            </div>
+                        </div>
+                        {{-- <div class="col-12 m-0">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">
                                     <i class="fa-solid fa-home"></i>
@@ -204,7 +209,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-12 m-0">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">

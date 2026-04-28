@@ -284,9 +284,12 @@ class DashboardController extends Controller
         $DataRuangan = DataRuangan::get();
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $DataBarang = DB::table('items')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-            ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->select(
+                'items.*', 
+                // 'tipe_item.nama_tipe_item', 
+                'rooms.nama_room') // Pilih kolom yang diperlukan
             ->latest()
             ->get();
         // mengambil data tipe barang
