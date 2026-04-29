@@ -18,7 +18,8 @@
     {{-- barang --}}
     <div x-show="activeTab === 'barang'" x-transition x-data="{ AddDataBarang: false, EditDataBarang: false, selectedDataBarang: {}, DeleteDataBarang: false }">
         {{-- pencarian --}}
-        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 flex flex-wrap gap-4 items-center shadow-sm md:justify-between">
+        <div
+            class="bg-white p-4 rounded-xl border border-slate-200 mb-8 flex flex-wrap gap-4 items-center shadow-sm md:justify-between">
             <div class="relative flex-grow max-w-md">
                 <i
                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -55,8 +56,16 @@
                         <img alt="Laptop" class="w-full h-full object-cover"
                             src="/storage/{{ $dataBarang->img_item }}" />
                         <div class="absolute top-3 right-3">
-                            <span
-                                class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">Tersedia</span>
+                            @if ($dataBarang->visibility_item === '1')
+                                <span
+                                    class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                    Visible
+                                </span>
+                            @else
+                                <span class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                    Invisible
+                                </span>
+                            @endif
                         </div>
                     </div>
                     <div class="p-6 flex-grow">
@@ -90,10 +99,17 @@
                                 Kondisi
                             </p>
                             <div class="flex flex-wrap gap-2">
-                                <span
-                                    class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded border border-blue-100 uppercase">
-                                    {{ $dataBarang->kondisi_item }}
-                                </span>
+                                @if ($dataBarang->kondisi_item === 'Baik')
+                                    <span
+                                        class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded border border-blue-100 uppercase">
+                                        {{ $dataBarang->kondisi_item }}
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-2 py-1 bg-red-50 text-red-700 text-[10px] font-bold rounded border border-red-100 uppercase">
+                                        {{ $dataBarang->kondisi_item }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -487,4 +503,3 @@
 
     </div>
 </main>
-

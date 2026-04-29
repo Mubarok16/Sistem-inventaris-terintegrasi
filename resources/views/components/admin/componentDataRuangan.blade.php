@@ -74,9 +74,16 @@
                                 </span>
                                 <h5 class="text-xl font-bold text-slate-900">{{ $ruang->nama_room }}</h5>
                             </div>
-                            <span class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
-                                Tersedia
-                            </span>
+                            @if ($ruang->visibility_room === '1')
+                                <span
+                                    class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                    Visible
+                                </span>
+                            @else
+                                <span class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                    Invisible
+                                </span>
+                            @endif
                         </div>
                         {{-- <div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
                             <i class="fa-solid fa-location-dot text-slate-400"></i>

@@ -37,7 +37,8 @@
                         {{-- <span
                             class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+12.8%</span> --}}
                     </div>
-                    <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Transaksi Peminjaman Selesai</p>
+                    <p class="text-text-muted text-xs font-bold uppercase tracking-wider">Transaksi Peminjaman Selesai
+                    </p>
                     {{-- <div class="flex items-baseline gap-2 mt-1">
                         <h3 class="text-3xl font-black text-text-main">1,240</h3>
                     </div> --}}
@@ -59,7 +60,7 @@
                             Tren Penggunaan Barang dan Ruangan
                         </h4>
                     </div>
-                    <div id="chart"></div>
+                    <div id="pieChart"></div>
 
                 </div>
             </div>
@@ -71,7 +72,8 @@
                         <i class="fa-solid fa-calendar-check text-primary"></i>
                         Penggunaan Ruangan Terdekat
                     </h4>
-                    <a class="text-primary text-xs font-bold hover:underline" href="{{ route('calender-pimpinan') }}">Lihat selengkapnya di
+                    <a class="text-primary text-xs font-bold hover:underline"
+                        href="{{ route('calender-pimpinan') }}">Lihat selengkapnya di
                         Kalender <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
                 <div class="overflow-x-auto">
@@ -100,44 +102,6 @@
 </body>
 
 {{-- <script>
-    console.log("Labels:", @json($labels));
-    console.log("Data Barang:", @json($countsBarang));
-    console.log("Data Ruangan:", @json($countsRuangan));
-    var options = {
-        chart: {
-            type: 'line',
-            height: 400,
-        },
-        series: [{
-                name: 'Peminjaman Barang',
-                data: @json($countsBarang)
-            },
-            {
-                name: 'Peminjaman Ruangan',
-                data: @json($countsRuangan)
-            }
-        ],
-        xaxis: {
-            type: 'category', // Paksa menjadi kategori agar menyamping
-            categories: @json($labels),
-            labels: {
-                rotate: -45, // Biar tanggalnya miring kalau terlalu rapat
-                style: {
-                    fontSize: '12px'
-                }
-            }
-        },
-        stroke: {
-            curve: 'smooth',
-        }
-    }
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-
-    chart.render();
-</script> --}}
-
-<script>
     // Gunakan 'load' untuk memastikan semua aset Vite (app.js) sudah selesai diproses
     window.addEventListener('load', function () {
         console.log("ApexCharts status:", typeof window.ApexCharts); // Harus muncul 'function'
@@ -171,6 +135,42 @@
             chart.render();
         } else {
             console.error("Gagal memuat chart: Elemen #chart tidak ditemukan atau ApexCharts undefined.");
+        }
+    });
+</script> --}}
+
+<script>
+    window.addEventListener('load', function() {
+        const pieChartElement = document.querySelector("#pieChart");
+
+        if (pieChartElement && typeof window.ApexCharts !== 'undefined') {
+            var options = {
+                chart: {
+                    type: 'pie', // Ubah tipe ke pie
+                    height: 400,
+                },
+                // Pie Chart hanya butuh array angka langsung
+                series: [{{ $countsBarang }}, {{ $countsRuangan }}],
+
+                // Label untuk masing-masing potongan pie
+                labels: ['Barang', 'Ruangan'],
+
+                colors: ['#008FFB', '#00E396'], // Warna opsional
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new window.ApexCharts(pieChartElement, options);
+            chart.render();
         }
     });
 </script>
