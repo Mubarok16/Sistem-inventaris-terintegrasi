@@ -33,10 +33,13 @@ class peminjamanbarangController extends Controller
         }
 
         // mengambil detail barang berdasarkan id_item
-        $detailBarang = DataBarang::where('id_item', $id)
-            ->join('tipe_item' , 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-            ->select('items.*', 'tipe_item.nama_tipe_item')
+        $detailBarang = DB::table('items')
+            ->where('id_item', $id)
             ->get();
+        // $detailBarang = DataBarang::where('id_item', $id)
+        //     ->join('tipe_item' , 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+        //     ->select('items.*', 'tipe_item.nama_tipe_item')
+        //     ->get();
 
         // mengambil data penggunaan barang berdasarkan id_item dan tgl input sekarang
         $dataUsageItems = UsageItems::where('id_item', $id)

@@ -59,7 +59,7 @@
                         <div class="px-3 py-3 flex flex-col gap-2">
                             <div class="flex items-center justify-between">
                                 <span
-                                    class="text-xs font-medium text-slate-400 uppercase tracking-wide">{{ $dataBarang->nama_tipe_item }}</span>
+                                    class="text-xs font-medium text-slate-400 uppercase tracking-wide">{{ $dataBarang->merek_model }}</span>
                                 <div class="flex items-center gap-1 text-green-500">
                                     <span
                                         class="material-symbols-outlined text-[16px] leading-none">{{ $dataBarang->kondisi_item }}</span>

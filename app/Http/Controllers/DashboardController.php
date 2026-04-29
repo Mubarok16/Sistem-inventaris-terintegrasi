@@ -646,9 +646,15 @@ class DashboardController extends Controller
     public function mahasiswaPeminjamanBarang()
     {
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
-        $dataTablePengajuanPeminjaman = DataBarang::join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-            ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
+        // $dataTablePengajuanPeminjaman = DataBarang::join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+        //     ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+        //     ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
+        //     ->latest()
+        //     ->get();
+
+        $dataTablePengajuanPeminjaman = DataBarang::join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->select('items.*', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->where('visibility_item', '1')
             ->latest()
             ->get();
 
@@ -665,6 +671,7 @@ class DashboardController extends Controller
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $dataTablePengajuanPeminjaman = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('rooms.*', 'tipe_rooms.nama_tipe_room', 'rooms.nama_room') // Pilih kolom yang diperlukan
+            ->where('visibility_room', '1')
             ->latest()
             ->get();
 

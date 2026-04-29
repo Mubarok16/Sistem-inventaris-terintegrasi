@@ -37,7 +37,7 @@
             <div class="flex flex-col gap-3">
                 <div>
                     <h5 class="text-[#111418] tracking-tight text-[32px] md:text-4xl font-bold leading-tight">
-                        {{ $item->nama_tipe_item }}
+                        {{ $item->merek_model }}
                     </h5>
                     <h1 class="text-[#111418] tracking-tight text-[32px] md:text-4xl font-bold leading-tight">
                         {{ $item->nama_item }}
