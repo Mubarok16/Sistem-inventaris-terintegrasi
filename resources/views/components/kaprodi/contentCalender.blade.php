@@ -6,6 +6,7 @@
         <div class="space-y-8">
             <!-- detail agenda today -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                
                 {{-- calender --}}
                 <div id="calendar" data-url="{{ url('/admin/events-calender') }}"
                     class="mb-4 pt-4 border-gray-300 fc-tailwind">

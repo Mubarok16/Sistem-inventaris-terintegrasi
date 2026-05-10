@@ -34,8 +34,16 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $startDate = Carbon::now()->subDays(7)->toDateString();
-        $endDate = Carbon::now()->toDateString();
+        // ambil inputan bulan
+        if (session()->get('bulan-input') === null) {
+            session()->put('bulan-input', now()->format('Y-m'));
+        }
+        $bulanInput = session()->get('bulan-input');
+        // membuat variable unutk batasan perbulan  
+        $bulan = Carbon::parse($bulanInput);
+
+        $startDate = Carbon::parse($bulanInput)->startOfMonth()->toDateString();
+        $endDate = Carbon::parse($bulanInput)->endOfMonth()->toDateString();
 
         // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
         $totalPeminjamanBarang = DB::table('usage_items')
@@ -45,7 +53,9 @@ class DashboardController extends Controller
             )
             ->where('status_usage_item', 'selesai')
             ->where('kode_agenda', null)
-            ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
+            // ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
+            ->whereMonth('tgl_pinjam_usage_item', $bulan->month) // Mengambil angka bulan (misal: 5)
+            ->whereYear('tgl_pinjam_usage_item', $bulan->year)
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
             ->orderBy(DB::raw('DATE(tgl_pinjam_usage_item)'), 'asc')
             ->get()
@@ -59,7 +69,9 @@ class DashboardController extends Controller
             )
             ->where('kode_agenda', null)
             ->where('status_usage_room', 'selesai')
-            ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
+            // ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
+            ->whereMonth('tgl_pinjam_usage_room', $bulan->month) // Mengambil angka bulan (misal: 5)
+            ->whereYear('tgl_pinjam_usage_room', $bulan->year)
             ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
             ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
             ->get()
@@ -84,8 +96,13 @@ class DashboardController extends Controller
 
         // peminjaman aktif
         $totalPeminjamanAktif = DB::table('peminjaman')
-            ->get()
+            ->where('status_peminjaman', 'selesai')
+            ->whereMonth('tgl_pinjam', $bulan->month) // Mengambil angka bulan (misal: 5)
+            ->whereYear('tgl_pinjam', $bulan->year)
+            // ->get()
             ->count();
+
+        // dd($totalPeminjamanAktif);
 
         // agenda yang sedang berlangsung
         $Agendaberlangsung = DB::table('usage_rooms')
@@ -131,8 +148,10 @@ class DashboardController extends Controller
 
         // memisahkan untuk keperluan Chart
         $labels = collect($finalData)->pluck('tanggal');
-        $countsBarang = collect($finalData)->pluck('total');
-        $countsRuangan = collect($finalDataRuangan)->pluck('total');
+        $countsBarang = collect($finalData)->pluck('total')->sum();
+        $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
+
+        // dd($countsBarang, $countsRuangan);
 
         // Pengajuan Peminjaman
         $pengajuanPeminjaman = DB::table('peminjaman')
@@ -149,11 +168,11 @@ class DashboardController extends Controller
             ->orderBy('peminjaman.created_at', 'asc')
             ->get();
 
-        // dd($pengajuanPeminjaman);
+        // dd($totalPeminjamanAktif);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDashbord';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan', 'totalPeminjamanAktif', 'totalBarang', 'totalRuangan', 'AgendaToday', 'Agendaberlangsung', 'pengajuanPeminjaman'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan', 'totalPeminjamanAktif', 'totalBarang', 'totalRuangan', 'AgendaToday', 'Agendaberlangsung', 'pengajuanPeminjaman', 'bulanInput'));
     }
 
     // page agenda yang berlangsung di dashboard admin
@@ -287,9 +306,10 @@ class DashboardController extends Controller
             // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select(
-                'items.*', 
+                'items.*',
                 // 'tipe_item.nama_tipe_item', 
-                'rooms.nama_room') // Pilih kolom yang diperlukan
+                'rooms.nama_room'
+            ) // Pilih kolom yang diperlukan
             ->latest()
             ->get();
         // mengambil data tipe barang
@@ -414,13 +434,54 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $pengadaan = DB::table('pengadaan_barang')->get();
+        $pengadaan = DB::table('pengadaan_barang')
+            ->join('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
+            ->select('pengadaan_barang.*', 'users.nama as nama_pemohon')
+            ->get();
 
         // dd($pengadaan);
 
         $user = Auth::user()->nama;
         $halaman = 'contentPengadaanBarang';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'pengadaan'));
+    }
+
+    public function AdminPerawatanBarang()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $perawatan = DB::table('perawatan_barang')
+            ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
+            ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
+            ->select(
+                'perawatan_barang.*',
+                'items.nama_item',
+                'items.merek_model',
+                'rooms.nama_room',
+                'users.nama as nama_pemohon'
+            )
+            ->get();
+        
+        // dd($perawatan);
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentPerawatanBarang';
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'perawatan'));
+    }
+
+    // calender admin
+    public function calenderAdmin()
+    {
+        if (Auth::user()->hak_akses  !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $halaman = 'contentAgendaBerlangsung';
+        $user = Auth::user()->nama;
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
 
@@ -440,8 +501,6 @@ class DashboardController extends Controller
         }
 
         $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
-
-        // dd($bulanInput);
 
         ///////////////////////////////////////////////// chart //////////////////////////////////////////////////////////////////
         // data untuk cart
@@ -476,7 +535,7 @@ class DashboardController extends Controller
             ->get()
             ->pluck('total', 'tanggal');
 
-        // Buat range 7 hari ke belakang menggunakan Carbon Period
+        // Buat range 1 bulanterakhir Carbon Period
         $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
 
         $finalData = [];
@@ -501,7 +560,7 @@ class DashboardController extends Controller
         $labels = collect($finalData)->pluck('tanggal');
         $countsBarang = collect($finalData)->pluck('total')->sum();
         $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
-        
+
         // dd($countsBarang->sum(), $countsRuangan->sum());
 
         $halaman = 'contentDashbordPimpinan';
@@ -511,6 +570,10 @@ class DashboardController extends Controller
     // page kalender di pimpinan
     public function calenderPimpinan(Request $request)
     {
+        if (Auth::user()->hak_akses  !== "pimpinan") {
+            abort(403, 'Unauthorized');
+        }
+
         $halaman = 'contentCalenderPimpinan';
         $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user'));
@@ -521,13 +584,111 @@ class DashboardController extends Controller
     // --- KAPRODI ---------------------------------------------------------------------------------------
 
     // method untuk agar kaprodi hanya bisa mengakses halaman sesuai dengan hak aksesnya
-    public function kaprodi()
+    public function Dashboardkaprodi()
     {
         if (Auth::user()->hak_akses !== "kaprodi") {
             abort(403, 'Unauthorized');
         }
+
+        if (session()->get('bulan-input') === null) {
+            session()->put('bulan-input', now()->format('Y-m'));
+        }
+
+        $bulanInput = session()->get('bulan-input'); // Ambil bulan dari session atau gunakan bulan saat ini
+
+        ///////////////////////////////////////////////// chart //////////////////////////////////////////////////////////////////
+        // data untuk cart
+        $startDate = Carbon::parse($bulanInput)->startOfMonth()->toDateString();
+        $endDate = Carbon::parse($bulanInput)->endOfMonth()->toDateString();
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanBarang = DB::table('usage_items')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_item) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            ->where('status_usage_item', 'selesai')
+            // ->where('kode_agenda', null)
+            ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_item)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_item)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // data untuk menampilkan jumlah peminjaman barang dan ruangan di dashboard admin
+        $totalPeminjamanRuangan = DB::table('usage_rooms')
+            ->select(
+                DB::raw('DATE(tgl_pinjam_usage_room) as tanggal'),
+                DB::raw('count(*) as total')
+            )
+            // ->where('kode_agenda', null)
+            ->where('status_usage_room', 'selesai')
+            ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(tgl_pinjam_usage_room)')) // Harus sama dengan di select
+            ->orderBy(DB::raw('DATE(tgl_pinjam_usage_room)'), 'asc')
+            ->get()
+            ->pluck('total', 'tanggal');
+
+        // Buat range 1 bulanterakhir Carbon Period
+        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+
+        $finalData = [];
+        $finalDataRuangan = [];
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d');
+
+            $finalData[] = [
+                'tanggal' => $date->format('d'),
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanBarang->get($formattedDate, 0)
+            ];
+
+            $finalDataRuangan[] = [
+                'tanggal' => $formattedDate,
+                // Jika di hasil query ada tanggalnya, pakai totalnya. Jika tidak ada, isi 0.
+                'total' => $totalPeminjamanRuangan->get($formattedDate, 0)
+            ];
+        }
+
+        // memisahkan untuk keperluan Chart
+        $labels = collect($finalData)->pluck('tanggal');
+        $countsBarang = collect($finalData)->pluck('total')->sum();
+        $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
+
+
+        $halaman = 'contentDashborKaprodi';
         $user = Auth::user()->nama;
-        return view('Page_kaprodi.dashboardKaprodi', compact('user'));
+        return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
+    }
+
+    // page pengadaan barang
+    public function KprodiPengadaanBarang()
+    {
+        if (Auth::user()->hak_akses  !== "kaprodi") {
+            abort(403, 'Unauthorized');
+        }
+
+        $pengadaan = DB::table('pengadaan_barang')
+            ->where('id_pemohon', '=', Auth::user()->id_user)
+            ->get();
+
+        // dd($pengadaan);
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentPengadaanBarang';
+        return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'pengadaan'));
+    }
+
+    // page kalender di kaprodi
+    public function calenderKaprodi(Request $request)
+    {
+        if (Auth::user()->hak_akses  !== "kaprodi") {
+            abort(403, 'Unauthorized');
+        }
+
+        $halaman = 'contentCalenderKaprodi';
+        $user = Auth::user()->nama;
+        return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user'));
     }
 
 

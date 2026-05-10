@@ -49,6 +49,11 @@
                                 class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700 border border-red-200">
                                 Ditolak
                             </span>
+                        @elseif($dataPeminjaman->status_peminjaman === 'dibatalkan')
+                            <span
+                                class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                                dibatalkan
+                            </span>
                         @elseif($dataPeminjaman->status_peminjaman === 'selesai')
                             <span
                                 class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700 border border-green-200">
@@ -232,6 +237,11 @@
                                         <span
                                             class="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700 border border-red-200">
                                             Terlambat
+                                        </span>
+                                    @elseif($detail['status'] === 'dibatalkan')
+                                        <span
+                                            class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                                            Dibatalkan
                                         </span>
                                     @elseif($detail['status'] === 'ditolak')
                                         <span

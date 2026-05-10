@@ -63,7 +63,7 @@
                 </div>
                 {{-- <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">+12%</span> --}}
             </div>
-            <p class="text-slate-500 text-sm font-medium">Semua Peminjaman</p>
+            <p class="text-slate-500 text-sm font-medium">Peminjaman Selesai</p>
             <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $totalPeminjamanAktif }}
                 <span class="text-sm font-normal text-slate-400">Total</span>
             </h3>
@@ -131,15 +131,15 @@
                 <div class="flex justify-between items-center mb-6">
                     <h4 class="font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-chart-line text-primary"></i>
-                        Tren Peminjaman
+                        Peminjaman Barang dan Ruangan
                     </h4>
-                    <select
+                    {{-- <select
                         class="text-xs border-slate-200 rounded-lg font-medium focus:ring-primary focus:border-primary">
                         <option>7 Hari Terakhir</option>
-                        {{-- <option>30 Hari Terakhir</option> --}}
-                    </select>
+                        <option>30 Hari Terakhir</option>
+                    </select> --}}
                 </div>
-                <div id="chart"></div>
+                <div id="pieChart"></div>
 
             </div>
 
@@ -260,7 +260,7 @@
 </main>
 
 
-<script>
+{{-- <script>
     console.log("Labels:", @json($labels));
     console.log("Data Barang:", @json($countsBarang));
     console.log("Data Ruangan:", @json($countsRuangan));
@@ -295,7 +295,83 @@
     var chart = new ApexCharts(document.querySelector("#chart"), options);
 
     chart.render();
+</script> --}}
+
+<script>
+    window.addEventListener('load', function() {
+        const pieChartElement = document.querySelector("#pieChart");
+        if (!pieChartElement) return;
+
+        let dataBarang = {{ (int)$countsBarang }};
+        let dataRuangan = {{ (int)$countsRuangan }};
+        
+        let seriesData = [dataBarang, dataRuangan];
+        let labelData = ['Barang', 'Ruangan'];
+        let colorData = ['#008FFB', '#00E396'];
+
+        // Jika data 0 semua, ganti visual ke lingkaran abu-abu tunggal
+        if (dataBarang === 0 && dataRuangan === 0) {
+            seriesData = [1]; 
+            labelData = ['Tidak Ada Data'];
+            colorData = ['#e0e0e0']; // Warna abu-abu terang
+        }
+
+        var options = {
+            chart: { type: 'pie', height: 400 },
+            series: seriesData,
+            labels: labelData,
+            colors: colorData,
+            tooltip: {
+                // Matikan tooltip jika datanya cuma visual abu-abu
+                enabled: dataBarang + dataRuangan > 0 
+            },
+            dataLabels: {
+                enabled: dataBarang + dataRuangan > 0
+            }
+        };
+
+        var chart = new ApexCharts(pieChartElement, options);
+        chart.render();
+    });
 </script>
+
+
+{{-- benar --}}
+{{-- <script>
+    window.addEventListener('load', function() {
+        const pieChartElement = document.querySelector("#pieChart");
+
+        if (pieChartElement && typeof window.ApexCharts !== 'undefined') {
+            var options = {
+                chart: {
+                    type: 'pie', // Ubah tipe ke pie
+                    height: 400,
+                },
+                // Pie Chart hanya butuh array angka langsung
+                series: [{{ $countsBarang }}, {{ $countsRuangan }}],
+
+                // Label untuk masing-masing potongan pie
+                labels: ['Barang', 'Ruangan'],
+
+                colors: ['#008FFB', '#00E396'], // Warna opsional
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new window.ApexCharts(pieChartElement, options);
+            chart.render();
+        }
+    });
+</script> --}}
 
 {{-- 
 <section class="flex flex-col gap-6">

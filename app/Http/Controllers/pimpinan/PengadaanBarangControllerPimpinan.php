@@ -17,7 +17,10 @@ class PengadaanBarangControllerPimpinan extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $pengadaan = DB::table('pengadaan_barang')->get();
+        $pengadaan = DB::table('pengadaan_barang')
+            ->join('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
+            ->select('pengadaan_barang.*', 'users.nama as nama_pemohon')
+            ->get();
 
         // dd($pengadaan);
 
@@ -45,7 +48,7 @@ class PengadaanBarangControllerPimpinan extends Controller
 
             return redirect()->back()->with('succes', 'Tidak ada perubahan data.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Terjadi kesalahan sistem, silakan coba lagi.'.$e);
+            return redirect()->back()->with('gagal', 'Terjadi kesalahan sistem, silakan coba lagi.' . $e);
         }
 
 

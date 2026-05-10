@@ -18,6 +18,7 @@ use App\Http\Controllers\PengelolaanRuangan;
 use App\Http\Controllers\PengelolaanBarang;
 use App\Http\Controllers\PengelolaanPeminjamanAdmin;
 use App\Http\Controllers\PengelolaanUserController;
+use App\Http\Controllers\PerawatanBarang;
 use App\Http\Controllers\pimpinan\DashboardControllerPimpinan as PimpinanDashboardControllerPimpinan;
 use App\Http\Controllers\pimpinan\PengadaanBarangControllerPimpinan;
 use App\Models\agendaFakultas;
@@ -34,20 +35,23 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // pr
 Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPeminjam'])->middleware('guest'); // menampilkan halaman buat akun peminjam
 Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar')->middleware('guest');
 
-// mengambil data agenda dan peminjaman kemudian memasukkan ke calender di dashboard
-// Route::get('/events-calender', [calenderController::class, 'calender']);
-
-// agenda detail agenda di calender
-// Route::get('/dashboard/mahasiswa/agenda/{id}/{date}', [DashboardController::class, 'mahasiswaAgenda'])->name('agenda-mhs');
-
 // URL: /peminjam/dashboard
 Route::middleware(['auth:peminjam'])->prefix('peminjam')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
 });
-// URL: /admin/dashboard
+
+// URL: /users/dashboard
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
-});
+})->name('calender-users');
+
+// Route::middleware(['auth'])->prefix('pimpinan')->group(function () {
+//     Route::get('/events-calender', [calenderController::class, 'calender']);
+// })->name('calender-pimpinan');
+
+// Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
+//     Route::get('/events-calender', [calenderController::class, 'calender']);
+// })->name('calender-kaprodi');
 
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
@@ -72,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/admin/data-ruangan', [DashboardController::class, 'AdminDataRuangan'])->name('peng-ruang');
     Route::get('/dashboard/admin/agenda', [DashboardController::class, 'AdminAgenda'])->name('dashboard-admin-agenda');
     Route::get('/dashboard/admin/pengadaan-barang', [DashboardController::class, 'AdminPengadaanBarang'])->name('page_pengadaan_barang');
+    Route::get('/dashboard/admin/perawatan-barang', [DashboardController::class, 'AdminPerawatanBarang'])->name('page_perawatan_barang');
 
     // page dashboard admin =========================================================================================================================
     // page agenda berlangsung
@@ -176,8 +181,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
     // simpan checkin
     Route::post('dashboard/simpan/chekinBarang/{id}', [PengadaanBarangController::class, 'simpandistribusi'])->name('simpan-distribusi');
+    
+    // Perawatan barang admin ========================================================================================================================
+    // page pengajuan perawatan barang
+    Route::get('/dashboard/admin/pengajuan-perawatan-barang', [PerawatanBarang::class, 'PagePengajuanPerawatanBarang'])->name('page-pengajuan-perawatan-barang');
+    Route::post('/kunci-header-info-perawatan', [PerawatanBarang::class, 'kunciInputPerawatan'])->name('kunci-header-info-perawatan');
+    Route::get('/lihat-surat-perawatan/{id}', [PerawatanBarang::class, 'bukaPdf'])->name('preview_surat_perawatan');
+    Route::post('/download-surat-perawatan/{id}', [PerawatanBarang::class, 'downloadSuratPerawatan'])->name('download-surat-perawatan');
 
-
+    // belum dipakai
+    Route::post('/kunci-barang-perawatan-temp', [PerawatanBarang::class, 'kunciTempBarangPerawatanTemp'])->name('kunci-barang-perawatan-temp');
+    Route::post('/hapus-barang-perawatan-temp', [PerawatanBarang::class, 'hapusBarangPerawatanTemp'])->name('hapus-barang-perawatan-temp');
+    Route::post('/ajukan-perawatan', [PerawatanBarang::class, 'ajukanPerawatan'])->name('ajukan-perawatan');
 
 
     // ----------------------------------------pimpinan fakultas ------------------------------------------
@@ -192,7 +207,12 @@ Route::middleware(['auth'])->group(function () {
 
     // ---------------------------------------------------kaprodi---------------------------------------------
     // dashboard kaprodi
-    Route::get('/dashboard/kaprodi', [DashboardController::class, 'kaprodi']);
+    Route::get('/dashboard/kaprodi', [DashboardController::class, 'Dashboardkaprodi'])->name('dashboard-kaprodi');
+    // pengadaan barang
+    Route::get('/dashboard/kaprodi/pengadaan-barang', [DashboardController::class, 'KprodiPengadaanBarang'])->name('pengadaan-barang-kaprodi');
+    // kalender
+    Route::get('dashboard-kaprodi/calender', [DashboardController::class, 'calenderKaprodi'])->name('calender-kaprodi');
+
 });
 
 

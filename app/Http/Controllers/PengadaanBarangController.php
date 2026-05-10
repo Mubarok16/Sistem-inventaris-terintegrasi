@@ -21,7 +21,7 @@ class PengadaanBarangController extends Controller
 
             DB::table('pengadaan_barang')->insert([
                 'id_pengadaan' => $request->nomor_surat,
-                'id_pemohon' => Auth::id(),
+                'id_pemohon' => Auth::user()->id_user,
                 'id_penyetuju' => null,
                 'nama_item' => $request->nama_item,
                 'merek_model' => $request->merk,
@@ -45,23 +45,6 @@ class PengadaanBarangController extends Controller
     // preview pdf surat pengajuan pengadaan
     public function bukaPdf($id)
     {
-        // // 1. Cari data di DB
-        // $data = DB::table('pengadaan_barang')->where('id_pengadaan', base64_decode($id))->first();
-
-        // // dd($data);
-
-        // if (!$data || !Storage::disk('local')->exists($data->surat_pengadaan)) {
-        //     abort(404, 'File tidak ditemukan.');
-        // }
-
-        // // 2. Opsi Keamanan: Hanya pemohon yang bisa lihat
-        // if (Auth::id() !== $data->id_pemohon) {
-        //     abort(403, 'Anda tidak memiliki akses ke file ini.');
-        // }
-
-        // // 3. Tampilkan PDF di browser
-        // return Storage::disk('local')->response($data->surat_pengadaan);
-
         // 1. Decode ID dari URL (Menghindari masalah karakter '/' di URL)
         $nomorSuratAsli = base64_decode($id);
 
@@ -84,12 +67,6 @@ class PengadaanBarangController extends Controller
         if (Auth::id() !== $dataDb->id_pemohon && Auth::user()->hak_akses !== 'pimpinan') {
             abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
         }
-
-        // // 4. Ambil data penanda tangan (Dekan/Wakil Dekan)
-        // $penyetuju = DB::table('users')
-        //     ->where('hak_akses', 'pimpinan')
-        //     ->select('nama', 'id_user')
-        //     ->first();
 
         // 5. Tentukan status Approved (Watermark akan hilang jika status 'setuju')
         $is_approved = ($dataDb->status_pengadaan === 'disetujui');

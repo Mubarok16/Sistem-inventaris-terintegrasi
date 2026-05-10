@@ -1,5 +1,3 @@
-{{-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> --}}
-
 
 <body>
     <div class="flex-1 flex flex-col ">
@@ -73,7 +71,7 @@
                         Penggunaan Ruangan Terdekat
                     </h4>
                     <a class="text-primary text-xs font-bold hover:underline"
-                        href="{{ route('calender-pimpinan') }}">Lihat selengkapnya di
+                        href="{{ route('calender-kaprodi') }}">Lihat selengkapnya di
                         Kalender <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
                 <div class="overflow-x-auto">
@@ -100,44 +98,6 @@
         </main>
     </div>
 </body>
-
-{{-- <script>
-    // Gunakan 'load' untuk memastikan semua aset Vite (app.js) sudah selesai diproses
-    window.addEventListener('load', function () {
-        console.log("ApexCharts status:", typeof window.ApexCharts); // Harus muncul 'function'
-        
-        const chartElement = document.querySelector("#chart");
-        
-        if (chartElement && typeof window.ApexCharts !== 'undefined') {
-            var options = {
-                chart: {
-                    type: 'line',
-                    height: 400,
-                },
-                series: [{
-                        name: 'Peminjaman Barang',
-                        data: @json($countsBarang)
-                    },
-                    {
-                        name: 'Peminjaman Ruangan',
-                        data: @json($countsRuangan)
-                    }
-                ],
-                xaxis: {
-                    categories: @json($labels),
-                },
-                stroke: {
-                    curve: 'smooth',
-                }
-            };
-
-            var chart = new window.ApexCharts(chartElement, options);
-            chart.render();
-        } else {
-            console.error("Gagal memuat chart: Elemen #chart tidak ditemukan atau ApexCharts undefined.");
-        }
-    });
-</script> --}}
 
 <script>
     window.addEventListener('load', function() {

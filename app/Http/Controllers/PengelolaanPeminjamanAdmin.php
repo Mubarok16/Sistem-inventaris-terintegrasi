@@ -221,7 +221,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_room'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    // ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
                     ->where('status_usage_room', 'terjadwal')
                     ->update([
                         'status_usage_room' => 'digunakan',
@@ -235,7 +235,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_item'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    // ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
                     ->where('status_usage_item', 'terjadwal')
                     ->update([
                         'status_usage_item' => 'digunakan',
@@ -288,7 +288,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_room'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    // ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
                     ->where('status_usage_room', 'digunakan')
                     ->update([
                         'status_usage_room' => 'selesai',
@@ -302,7 +302,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_item'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    // ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
                     ->where('status_usage_item', 'digunakan')
                     ->update([
                         'status_usage_item' => 'selesai',

@@ -25,9 +25,22 @@
                 </form>
             </div>
         </li> --}}
+        <div
+            class="flex flex-row w-auto h-auto md:w-auto items-center gap-2 p-2 text-sm font-medium text-white">
+            <div>
+                <i class="fa-solid fa-clock text-white"></i>
+                <span id="realtime-clock"></span>
+                {{ now()->format('h : m') }}
+            </div>
+            <div>
+                <i class="fa-solid fa-calendar-days text-white"></i>
+                {{ now()->format('D, d M Y') }}
+            </div>
+
+        </div>
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <span class="badge badge-danger badge-counter">3+</span>
             </a>
@@ -168,8 +181,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-white small">{{ $user }}</span>
-                <img class="img-profile rounded-circle" src="{{ asset('images/boy.png') }}"
-                    style="max-width: 60px">
+                <img class="img-profile rounded-circle" src="{{ asset('images/boy.png') }}" style="max-width: 60px">
             </a>
             <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">

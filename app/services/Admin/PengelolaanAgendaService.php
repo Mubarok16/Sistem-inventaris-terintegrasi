@@ -96,14 +96,15 @@ class PengelolaanAgendaService
     public function getBarangDanRaung()
     {
         $items = DB::table('items')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->leftJoin('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select(
                 'items.id_item as id',
                 'items.nama_item',
+                'items.merek_model',
                 'items.kondisi_item',
                 'items.img_item',
                 'items.qty_item',
-                'tipe_item.nama_tipe_item',
+                'rooms.nama_room',
                 'items.id_room'
             )
             ->get()

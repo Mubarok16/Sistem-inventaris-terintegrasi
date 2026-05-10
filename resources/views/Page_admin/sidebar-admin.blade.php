@@ -77,6 +77,12 @@
             <span>Pengadaan Barang</span>
         </a>
     </li>
+    <li class="nav-item {{ $halaman === 'contentPerawatanBarang' ? 'bg-gray-200' : '' }}">
+        <a class="nav-link" href="{{ route('page_perawatan_barang') }}">
+            <i class="fas fa-fw fa-palette"></i>
+            <span>Perawatan Barang</span>
+        </a>
+    </li>
     <hr class="sidebar-divider">
     <div class="version" id="version-ruangadmin"></div>
 </ul>

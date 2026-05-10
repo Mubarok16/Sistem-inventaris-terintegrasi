@@ -39,6 +39,7 @@
                     <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-800 font-semibold">
                         <th class="px-6 py-4">Nomor Surat</th>
                         <th class="px-6 py-4">Nama Barang</th>
+                        <th class="px-6 py-4">Nama Pemohon</th>
                         <th class="px-6 py-4">Merk</th>
                         <th class="px-6 py-4">Qty</th>
                         <th class="px-6 py-4">status</th>
@@ -78,6 +79,14 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
+                                            {{ $pengadaan->nama_pemohon }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="font-bold text-slate-500 flex items-center gap-2">
+                                            {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
                                             {{ $pengadaan->merek_model }}
                                         </div>
                                     </div>
@@ -103,6 +112,12 @@
                                             <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                             Disetujui
                                         </span>
+                                    @elseif ($pengadaan->status_pengadaan === 'selesai')
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
+                                            <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                            {{ $pengadaan->status_pengadaan }}
+                                        </span>
                                     @else
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
@@ -122,8 +137,7 @@
                                         <form method="POST"
                                             action="{{ route('sign-surat', base64_encode($pengadaan->id_pengadaan)) }}">
                                             @csrf
-                                            <button type="submit"
-                                                @disabled(strtolower($pengadaan->status_pengadaan) != 'pendding')
+                                            <button type="submit" @disabled(strtolower($pengadaan->status_pengadaan) != 'pendding')
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'pendding' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
                                                 approve
                                             </button>

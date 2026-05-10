@@ -76,7 +76,7 @@ class RiwayarController extends Controller
         $riwayat = $riwayatPeminjamanService->dataDetailPeminjaman($id);
 
         $DetailRiwayatPerHari = $riwayat;
-        // dd($riwayat);
+        // dd($DetailRiwayatPerHari);
 
         // dd($dataDetailPengajuanPeminjamanBarang, $dataDetailPengajuanPeminjamanRuangan);
 
