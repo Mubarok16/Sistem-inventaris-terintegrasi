@@ -26,7 +26,7 @@
 
             <select onchange="this.form.submit()" name="status"
                 class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
-                <option value="semua">Semua Status Pengadaan Barang
+                <option value="semua">Semua Status Perawatan Barang
                 </option>
                 <option value="pending">
                     pending</option>
@@ -45,23 +45,29 @@
             </div>
         </div>
         <div class="justify-end">
-            <button @click="openformpengadaanbarang = !openformpengadaanbarang"
+            {{-- page-pengajuan-perawatan-barang --}}
+            <a href="{{ route('form-pengajuan-perawatan-barang-kaprodi') }}"
+                class="inline-flex items-center gap-2 min-w-[84px] cursor-pointer justify-center rounded-lg h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 no-underline!">
+                <span class="truncate">Ajukan Perawatan</span>
+            </a>
+
+            {{-- <button @click="openformpengadaanbarang = !openformpengadaanbarang"
                 class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-end rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400">
-                {{-- <span class="material-symbols-outlined text-base">add</span> --}}
-                <span class="truncate">Ajukan Pengadaan</span>
-            </button>
+                <span class="truncate">Ajukan Perawatan</span>
+            </button> --}}
         </div>
     </div>
 
-    {{-- tabel riwayat pengadaan barang --}}
+    {{-- tabel riwayat Perawatan barang --}}
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-800 font-semibold">
                         <th class="px-6 py-4">Nomor Surat</th>
-                        <th class="px-6 py-4">Nama Barang</th>
-                        <th class="px-6 py-4">Merk</th>
+                        <th class="px-6 py-4">Nama Barang / Ruangan</th>
+                        <th class="px-6 py-4">Nama Pemohon</th>
+                        {{-- <th class="px-6 py-4">Merk</th> --}}
                         <th class="px-6 py-4">Qty</th>
                         <th class="px-6 py-4">status</th>
                         <th class="px-6 py-4 text-right">file Pengajuan</th>
@@ -69,21 +75,21 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
-                    @if ($pengadaan->isEmpty())
+                    @if ($perawatan->isEmpty())
                         <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
                             <td colspan="7" class="text-center py-10 text-slate-500 italic">
                                 Data tidak ditemukan atau masih kosong.
                             </td>
                         </tr>
                     @else
-                        @foreach ($pengadaan as $pengadaan)
+                        @foreach ($perawatan as $perawatan)
                             {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
                             <tr>
                                 <td class="px-6 py-4 align-middle">
                                     <div class="flex items-center gap-3">
                                         <div class="flex flex-col">
                                             <span class="font-bold text-slate-500">
-                                                {{ $pengadaan->id_pengadaan }}
+                                                {{ $perawatan->id_perawatan }}
                                             </span>
                                         </div>
                                     </div>
@@ -92,7 +98,7 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->nama_item }}
+                                            {{ $perawatan->nama_item == null ? 'Ruang '.$perawatan->nama_room : $perawatan->nama_item }}
                                         </div>
                                     </div>
                                 </td>
@@ -100,7 +106,7 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->merek_model }}
+                                            {{ $perawatan->nama_pemohon }}
                                         </div>
                                     </div>
                                 </td>
@@ -108,24 +114,24 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->qty_item }}
+                                            {{ $perawatan->qty_perawatan == null ? '-' : $perawatan->qty_perawatan }}
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 align-middle">
-                                    @if ($pengadaan->status_pengadaan === 'pendding')
+                                    @if ($perawatan->status_perawatan === 'pendding')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
                                             Pending
                                         </span>
-                                    @elseif ($pengadaan->status_pengadaan === 'disetujui')
+                                    @elseif ($perawatan->status_perawatan === 'disetujui')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                             Diajukan
                                         </span>
-                                    @elseif ($pengadaan->status_pengadaan === 'selesai')
+                                    @elseif ($perawatan->status_perawatan === 'selesai')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
@@ -135,29 +141,29 @@
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                            {{ $pengadaan->status_pengadaan }}
+                                            {{ $perawatan->status_perawatan }}
                                         </span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-centar align-middle">
-                                    <a href="{{ route('preview_surat_pengadaan', base64_encode($pengadaan->id_pengadaan)) }}"
+                                    <a href="{{ route('preview_surat_perawatan', base64_encode($perawatan->id_perawatan)) }}"
                                         target="_blank" class="text-blue-600">
                                         Lihat surat
                                     </a>
                                 </td>
                                 <td class="px-6 py-4 text-right align-middle">
                                     <div class="flex gap-2">
-                                        {{-- <form method="get"
-                                            action="{{ route('pageCheckInBarang', base64_encode($pengadaan->id_pengadaan)) }}">
+                                        <form method="get"
+                                            action="{{ route('pageCheckInPerawatan', base64_encode($perawatan->id_perawatan)) }}">
 
                                             @csrf
-                                            <button type="submit" @disabled(strtolower($pengadaan->status_pengadaan) != 'disetujui')
-                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'disetujui' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
-                                                Barang diterima
+                                            <button type="submit" @disabled(strtolower($perawatan->status_perawatan) != 'disetujui')
+                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $perawatan->status_perawatan == 'disetujui' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
+                                                selesai
                                             </button>
-                                        </form> --}}
+                                        </form>
                                         <form method="POST"
-                                            action="{{ route('download-surat-pengadaan', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            action="{{ route('download-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
                                             <button type="submit"
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">
@@ -202,7 +208,13 @@
             <!-- content form -->
             <div class=" ">
                 <div class="max-w-3xl mx-auto">
-
+                    {{-- <header class="mb-10 text-center">
+                        <h2 class="font-display-h1 text-display-h1 text-on-background mb-2">Formulir Pengajuan Pengadaan Barang
+                        </h2>
+                        <p class="font-body-md text-body-md text-on-surface-variant">Silakan isi detail barang yang ingin
+                            diajukan.
+                        </p>
+                    </header> --}}
                     <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-card-padding p-4">
 
                         <form class="space-y-3" method="POST" action="{{ route('simpan-pengadaan') }}">
@@ -213,7 +225,9 @@
                                     Nomor surat
                                 </label>
                                 <div class="relative">
-
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
                                     <input name="nomor_surat"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : /Pr/Sr/FT.UW/IV/2026" type="text" />
@@ -224,7 +238,9 @@
                                     Nama Barang / jenis Barang
                                 </label>
                                 <div class="relative">
-
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
                                     <input name="nama_item"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth: Laptop Core i7" type="text" />
@@ -249,25 +265,34 @@
                                         min="1" placeholder="0" type="number" />
                                 </div>
                             </div>
-                            @if (Auth::user()->jabatan === 'kaprodi teknik sipil')
-                                <input name="keperluan_prodi" type="text" value="Teknik Sipil" hidden />
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik komputer')
-                                <input name="keperluan_prodi" type="text" value="Teknik Komputer" hidden />
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik lingkungan')
-                                <input name="keperluan_prodi" type="text" value="Teknik Lingkungan" hidden />
-                            @endif
+                            <div>
+                                <label
+                                    class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">Keperluan
+                                    Untuk Prodi/Fakultas</label>
+                                <div class="relative">
+                                    <select name="keperluan_prodi"
+                                        class="w-full px-3 py-2  border border-slate-200 rounded-xl font-body-md text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
+                                        <option>pilih untuk keperluan prodi atau fakultas</option>
+                                        <option value="Fakultas Teknik">Fakultas Teknik</option>
+                                        <option value="Program Studi Teknik Sipil">Teknik Sipil</option>
+                                        <option value="Program Studi Teknik Komputer">Teknik Komputer</option>
+                                        <option value="Program Studi Teknik Lingkungan">Teknik Lingkungan</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div>
                                 <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
                                     Tahun akademik
                                 </label>
                                 <div class="relative">
-
+                                    {{-- <span
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
+                                        data-icon="inventory">inventory</span> --}}
                                     <input name="tahun_akademik"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2025/2026" type="text" />
                                 </div>
                             </div>
-
                             <!-- Footer Actions -->
                             <div class="pt-6 flex items-center justify-center gap-4 border-t border-slate-100">
 
@@ -280,7 +305,6 @@
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -24,8 +24,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
-            aria-expanded="true" aria-controls="collapseForm">
+        <a class="nav-link collapsed" href="{{ route('perawatan-barang-pimpinan') }}">
             <i class="fab fa-fw fa-wpforms"></i>
             <span>Perawatan Barang</span>
         </a>

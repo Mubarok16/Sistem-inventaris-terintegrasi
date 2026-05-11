@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Models\Peminjaman;
 use App\Models\PengelolaanPeminjamanAdmin;
 use App\Models\UsageItems;
+use App\Services\Admin\PengelolaanAgendaService;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -464,7 +465,7 @@ class DashboardController extends Controller
                 'users.nama as nama_pemohon'
             )
             ->get();
-        
+
         // dd($perawatan);
 
         $user = Auth::user()->nama;
@@ -677,6 +678,81 @@ class DashboardController extends Controller
         $user = Auth::user()->nama;
         $halaman = 'contentPengadaanBarang';
         return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'pengadaan'));
+    }
+
+    // page perawatan barang
+    public function PagePengajuanPerawatanBarangKaprodi(Request $request)
+    {
+        if (Auth::user()->hak_akses  !== "kaprodi") {
+            abort(403, 'Unauthorized');
+        }
+
+        $perawatan = DB::table('perawatan_barang')
+            ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
+            ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
+            ->select(
+                'perawatan_barang.*',
+                'items.nama_item',
+                'items.merek_model',
+                'rooms.nama_room',
+                'users.nama as nama_pemohon'
+            )
+            ->where('perawatan_barang.id_pemohon', '=', Auth::user()->id_user)
+            ->get();
+
+        // dd($perawatan);
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentPerawatanBarang';
+        return view('Page_kaprodi.dashboardKaprodi', compact(
+            'halaman',
+            'user',
+            'perawatan',
+        ));
+    }
+
+    // page form pengajuan perawatan
+    public function PageFormPengajuanPerawatanBarangKaprodi(Request $request)
+    {
+        if (Auth::user()->hak_akses  !== "kaprodi") {
+            abort(403, 'Unauthorized');
+        }
+
+        $dataBarang = DataBarang::join('rooms', 'items.id_room', 'rooms.id_room')
+            ->select('items.*', 'rooms.nama_room')
+            ->latest() // Pilih kolom yang diperlukan
+            ->get();
+        // dd($dataBarang);
+
+        $dataRoom = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room')
+            ->latest() // Pilih kolom yang diperlukan
+            ->get();
+
+        // mengambil data barang dan rungan yg di input user di session
+        $semuaData = collect(session('data_perawatan_barang_ruang'));
+        // mengambil data tambh agenda yg di input admin
+        $dataAgenda = collect(session('data_header_perawatan_temp'));
+
+        // dd($semuaData);
+
+        // mengambil semua data barang dan ruangan
+        $PengelolaanAgendaService = new PengelolaanAgendaService;
+        $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
+
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentFormPerawatanBarang';
+        return view('Page_kaprodi.dashboardKaprodi', compact(
+            'halaman',
+            'user',
+            'dataBarang',
+            'dataRoom',
+            'semuaData',
+            'allBarangRuang',
+            'dataAgenda'
+        ));
     }
 
     // page kalender di kaprodi

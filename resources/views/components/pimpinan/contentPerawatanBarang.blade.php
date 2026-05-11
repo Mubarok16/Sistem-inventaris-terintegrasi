@@ -38,9 +38,9 @@
                 <thead>
                     <tr class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-800 font-semibold">
                         <th class="px-6 py-4">Nomor Surat</th>
-                        <th class="px-6 py-4">Nama Barang</th>
+                        <th class="px-6 py-4">Nama Barang / Ruangan</th>
                         <th class="px-6 py-4">Nama Pemohon</th>
-                        <th class="px-6 py-4">Merk</th>
+                        {{-- <th class="px-6 py-4">Merk</th> --}}
                         <th class="px-6 py-4">Qty</th>
                         <th class="px-6 py-4">status</th>
                         <th class="px-6 py-4 text-right">file Pengajuan</th>
@@ -48,21 +48,21 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
-                    @if ($pengadaan->isEmpty())
+                    @if ($perawatan->isEmpty())
                         <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
                             <td colspan="7" class="text-center py-10 text-slate-500 italic">
                                 Data tidak ditemukan atau masih kosong.
                             </td>
                         </tr>
                     @else
-                        @foreach ($pengadaan as $pengadaan)
+                        @foreach ($perawatan as $perawatan)
                             {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
                             <tr>
                                 <td class="px-6 py-4 align-middle">
                                     <div class="flex items-center gap-3">
                                         <div class="flex flex-col">
                                             <span class="font-bold text-slate-500">
-                                                {{ $pengadaan->id_pengadaan }}
+                                                {{ $perawatan->id_perawatan }}
                                             </span>
                                         </div>
                                     </div>
@@ -71,7 +71,7 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->nama_item }}
+                                            {{ $perawatan->nama_item == null ? 'Ruang ' . $perawatan->nama_room : $perawatan->nama_item . ' ' . $perawatan->merek_model }}
                                         </div>
                                     </div>
                                 </td>
@@ -79,55 +79,55 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->nama_pemohon }}
+                                            {{ $perawatan->nama_pemohon }}
                                         </div>
                                     </div>
                                 </td>
+                                {{-- <td class="px-6 py-4 align-middle">
+                                    <div class="flex flex-col gap-1.5">
+                                        <div class="font-bold text-slate-500 flex items-center gap-2">
+                                            <i class="fa-solid fa-clipboard-list text-primary"></i>
+                                            {{ $perawatan->merek_model == null ? '-' : $perawatan->merek_model }}
+                                        </div>
+                                    </div>
+                                </td> --}}
                                 <td class="px-6 py-4 align-middle">
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->merek_model }}
+                                            {{ $perawatan->qty_perawatan == null ? '-' : $perawatan->qty_perawatan }}
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 align-middle">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div class="font-bold text-slate-500 flex items-center gap-2">
-                                            {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $pengadaan->qty_item }}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 align-middle">
-                                    @if ($pengadaan->status_pengadaan === 'pendding')
+                                    @if ($perawatan->status_perawatan === 'pendding')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-orange-500 animate-pulse"></span>
                                             Pending
                                         </span>
-                                    @elseif ($pengadaan->status_pengadaan === 'disetujui')
+                                    @elseif ($perawatan->status_perawatan === 'disetujui')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                             Disetujui
                                         </span>
-                                    @elseif ($pengadaan->status_pengadaan === 'selesai')
+                                    @elseif ($perawatan->status_perawatan === 'selesai')
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                            {{ $pengadaan->status_pengadaan }}
+                                            {{ $perawatan->status_perawatan }}
                                         </span>
                                     @else
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-orange-200">
                                             <span class="size-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                                            {{ $pengadaan->status_pengadaan }}
+                                            {{ $perawatan->status_perawatan }}
                                         </span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-centar align-middle">
-                                    <a href="{{ route('preview_surat_pengadaan', base64_encode($pengadaan->id_pengadaan)) }}"
+                                    <a href="{{ route('preview_surat_perawatan', base64_encode($perawatan->id_perawatan)) }}"
                                         target="_blank" class="text-blue-600">
                                         Lihat surat
                                     </a>
@@ -135,23 +135,23 @@
                                 <td class="px-6 py-4 text-right align-middle">
                                     <div class="flex gap-2">
                                         <form method="POST"
-                                            action="{{ route('sign-surat', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            action="{{ route('sign-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
-                                            <button type="submit" @disabled(strtolower($pengadaan->status_pengadaan) != 'pendding')
-                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'pendding' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
+                                            <button type="submit" @disabled(strtolower($perawatan->status_perawatan) != 'pendding')
+                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $perawatan->status_perawatan == 'pendding' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
                                                 Acc
                                             </button>
                                         </form>
                                         <form method="POST"
-                                            action="{{ route('tolak-surat-pengadaan', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            action="{{ route('tolak-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
-                                            <button type="submit" @disabled(strtolower($pengadaan->status_pengadaan) != 'pendding')
-                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'pendding' ? 'bg-red-500 hover:bg-red-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
+                                            <button type="submit" @disabled(strtolower($perawatan->status_perawatan) != 'pendding')
+                                                class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $perawatan->status_perawatan == 'pendding' ? 'bg-red-500 hover:bg-red-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
                                                 Reject
                                             </button>
                                         </form>
                                         <form method="POST"
-                                            action="{{ route('download-surat-pengadaan', base64_encode($pengadaan->id_pengadaan)) }}">
+                                            action="{{ route('download-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
                                             <button type="submit"
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4 bg-blue-500 text-white text-sm font-semibold leading-normal hover:bg-blue-400 hover:">

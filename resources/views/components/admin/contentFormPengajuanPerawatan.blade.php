@@ -28,15 +28,7 @@
                     <i class="fa-solid fa-calendar-check text-primary"></i>
                     Form Pengajuan Perawatan Barang Atau Ruangan
                 </h5>
-                <form action="{{ route('simpan-tambah-agenda') }}" method="post">
-                    @csrf
-                    {{-- <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}"> --}}
-                    <button type="submit"
-                        class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                        <i class="fas fa-check-circle text-white"></i>
-                        <span class="text-white">Ajukan Perawatan</span>
-                    </button>
-                </form>
+
             </div>
 
             <form action="{{ route('kunci-header-info-perawatan') }}" method="POST">
@@ -91,36 +83,46 @@
                         </div>
 
                         <!-- KEBUTUHAN -->
-                        <div>
+                        @if (Auth::user()->hak_akses === 'kaprodi')
+                            @if (Auth::user()->jabatan === 'kaprodi teknik sipil')
+                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Sipil">
+                            @elseif (Auth::user()->jabatan === 'kaprodi teknik komputer')
+                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Komputer">
+                            @elseif (Auth::user()->jabatan === 'kaprodi teknik lingkungan')
+                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Lingkungan">
+                            @endif
+                        @else
+                            <div>
 
-                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                Fakultas / Prodi
-                            </label>
+                                <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                    Fakultas / Prodi
+                                </label>
 
-                            <select name="kebutuhan_prodi" required
-                                class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
+                                <select name="kebutuhan_prodi" required
+                                    class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
 
-                                <option value="">Pilih</option>
+                                    <option value="">Pilih</option>
 
-                                <option value="Fakultas Teknik">
-                                    Fakultas Teknik
-                                </option>
+                                    <option value="Fakultas Teknik">
+                                        Fakultas Teknik
+                                    </option>
 
-                                <option value="Teknik Sipil">
-                                    Teknik Sipil
-                                </option>
+                                    <option value="Teknik Sipil">
+                                        Teknik Sipil
+                                    </option>
 
-                                <option value="Teknik Komputer">
-                                    Teknik Komputer
-                                </option>
+                                    <option value="Teknik Komputer">
+                                        Teknik Komputer
+                                    </option>
 
-                                <option value="Teknik Lingkungan">
-                                    Teknik Lingkungan
-                                </option>
+                                    <option value="Teknik Lingkungan">
+                                        Teknik Lingkungan
+                                    </option>
 
-                            </select>
+                                </select>
 
-                        </div>
+                            </div>
+                        @endif
 
                     </div>
 
@@ -260,13 +262,26 @@
                                                     </h3>
 
                                                     <!-- INPUT QTY -->
-                                                    <div x-show="currentTab === 'barang'" class="flex-shrink-0">
+                                                    {{-- <div x-show="currentTab === 'barang'" class="flex-shrink-0">
 
                                                         <input type="number" min="1" :max="item.qty_item"
                                                             x-model="item.qty_input"
                                                             class="w-20 border border-slate-300 rounded-md px-2 py-1 text-sm"
                                                             placeholder="Qty">
 
+                                                    </div> --}}
+                                                    <div x-show="currentTab === 'barang'" class="flex-shrink-0">
+                                                        <input type="number" min="1" :max="item.qty_item"
+                                                            x-model="item.qty_input"
+                                                            :class="item.qty_input > item.qty_item ? 'border-red-500' :
+                                                                'border-slate-300'"
+                                                            class="w-20 border rounded-md px-2 py-1 text-sm"
+                                                            placeholder="Qty">
+
+                                                        <!-- Pesan Warning -->
+                                                        <template x-if="item.qty_input > item.qty_item">
+                                                            <p class="text-red-500 text-xs mt-1">Stok tidak cukup!</p>
+                                                        </template>
                                                     </div>
 
                                                 </div>
@@ -489,75 +504,6 @@
 
     }
 </script>
-{{-- 
-<script>
-    const productsData = @json($allBarangRuang);
-
-    function perawatanHandler() {
-
-        return {
-
-            showPicker: false,
-
-            currentTab: 'barang',
-
-            products: [],
-
-            // hanya 1 item
-            selectedItems: [],
-
-            init() {
-
-                this.products = productsData.map(item => ({
-                    ...item,
-                    qty_input: 1
-                }));
-
-            },
-
-            tambahItem(item) {
-
-                const newItem = {
-
-                    id: item.id,
-
-                    category: item.category,
-
-                    nama_item: item.nama_item ?? null,
-
-                    nama_room: item.nama_room ?? null,
-
-                    nama_tipe_room: item.nama_tipe_room ?? null,
-
-                    merek_model: item.merek_model ?? null,
-
-                    img_item: item.img_item ?? item.gambar_room,
-
-                    gambar_room: item.gambar_room ?? null,
-
-                    qty_usage_item: item.category === 'barang' ?
-                        item.qty_input : '-'
-
-                };
-
-                // replace item lama
-                this.selectedItems = [newItem];
-
-                // close modal
-                this.showPicker = false;
-
-            },
-
-            hapusItem(index) {
-
-                this.selectedItems.splice(index, 1);
-
-            }
-
-        }
-
-    }
-</script> --}}
 
 <style>
     [x-cloak] {

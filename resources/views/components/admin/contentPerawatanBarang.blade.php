@@ -154,12 +154,12 @@
                                 <td class="px-6 py-4 text-right align-middle">
                                     <div class="flex gap-2">
                                         <form method="get"
-                                            action="{{ route('pageCheckInBarang', base64_encode($perawatan->id_perawatan)) }}">
+                                            action="{{ route('pageCheckInPerawatan', base64_encode($perawatan->id_perawatan)) }}">
 
                                             @csrf
                                             <button type="submit" @disabled(strtolower($perawatan->status_perawatan) != 'disetujui')
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $perawatan->status_perawatan == 'disetujui' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
-                                                Barang diterima
+                                                selesai
                                             </button>
                                         </form>
                                         <form method="POST"

@@ -23,9 +23,6 @@ class PerawatanBarang extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
-        // $dataAgendaTemp = $request->session()->get('data_input_agenda', []);
-        // $dataAgendaBarangTemp = $request->session()->get('data_input_barang', []);
-        // $dataAgendaRuanganTemp = $request->session()->get('data_input_ruangan', []);
 
         $dataBarang = DataBarang::join('rooms', 'items.id_room', 'rooms.id_room')
             ->select('items.*', 'rooms.nama_room')
@@ -56,9 +53,6 @@ class PerawatanBarang extends Controller
         return view('Page_admin.dashboard-admin', compact(
             'halaman',
             'user',
-            // 'dataAgendaTemp',
-            // 'dataAgendaRuanganTemp',
-            // 'dataAgendaBarangTemp',
             'dataBarang',
             'dataRoom',
             'semuaData',
@@ -116,6 +110,7 @@ class PerawatanBarang extends Controller
                         ->where('id_item', $request->id_item_room) // Pastikan ada filter ID
                         ->update([
                             'qty_item' => $jmlh_item - $request->qty_usage,
+                            'kondisi_item' => 'Rusak',
                             'visibility_item' => '0',
                             'updated_at' => now(), // Sangat disarankan untuk update timestamp manual di Query Builder
                         ]);
@@ -127,6 +122,7 @@ class PerawatanBarang extends Controller
                     ->where('id_room', $request->id_item_room) // Pastikan ada filter ID
                     ->update([
                         'visibility_room' => '0',
+                        'kondisi_room' => 'Rusak',
                         'updated_at' => now(), // Sangat disarankan untuk update timestamp manual di Query Builder
                     ]);
                 return back()->with('success', 'Surat pengajuan perawatan berhasil disimpan!');
@@ -140,6 +136,10 @@ class PerawatanBarang extends Controller
     public function bukaPdf($id)
     {
         // dd($id);
+        // Hanya admin kaprodi dan pimpinan yang bisa lihat
+        if (Auth::user()->hak_akses !== 'admin' && Auth::user()->hak_akses !== 'pimpinan' && Auth::user()->hak_akses !== 'kaprodi') {
+            abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
+        }
 
         // 1. Decode ID dari URL (Menghindari masalah karakter '/' di URL)
         $nomorSuratAsli = base64_decode($id);
@@ -160,30 +160,29 @@ class PerawatanBarang extends Controller
             ->where('id_perawatan', $nomorSuratAsli)
             ->first();
 
+        // dd($dataDb);
+
         if (!$dataDb) {
             abort(404, 'Data pengadaan tidak ditemukan di database.');
         }
 
-        // 3. Opsi Keamanan: Hanya pemohon atau pimpinan yang bisa lihat
-        if (Auth::id() !== $dataDb->id_pemohon && Auth::user()->hak_akses !== 'pimpinan') {
-            abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
-        }
-
         // 5. Tentukan status Approved (Watermark akan hilang jika status 'setuju')
-        $is_approved = ($dataDb->status_perawatan === 'disetujui');
+        // $is_approved = ($dataDb->status_perawatan === 'disetujui');
 
         // 6. Siapkan data untuk dikirim ke View Blade
         $data = [
             'nomor_surat'     => $dataDb->id_perawatan,
             'nama_barang'     => $dataDb->nama_item == null ?  $dataDb->nama_room :  $dataDb->nama_item,
+            'merek_model'     => $dataDb->merek_model,
             'qty'             => $dataDb->qty_perawatan == null ? 'Ruangan' : $dataDb->qty_perawatan,
             'tahun_akademik'  => $dataDb->tahun_akademik,
             'keperluan_prodi' => $dataDb->keperluan_prodi,
             'dekan'           => $dataDb->nama ?? 'Nama Belum Diatur',
             'nidn'            => $dataDb->id_user ?? '-',
-            'is_approved'     => $is_approved, // Variabel penting untuk Watermark & TTD
+            'is_approved'     => $dataDb->status_perawatan, // Variabel penting untuk Watermark & TTD
             'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
             'kategori'        => $dataDb->nama_item == null ? 'prasarana' : 'sarana',
+            'created_at'        => $dataDb->created_at,
         ];
 
         // 7. Render ulang PDF agar tampilan selalu update sesuai status terbaru di DB
@@ -196,13 +195,130 @@ class PerawatanBarang extends Controller
         return $pdf->stream('Surat_Perawatan_' . $namaFileAman . '.pdf');
     }
 
-    public function downloadSuratPerawatan()
+    public function downloadSuratPerawatan($id)
     {
-        dd('surat download');
+        // dd($id);
+        // Hanya admin kaprodi dan pimpinan yang bisa lihat
+        if (Auth::user()->hak_akses !== 'admin' && Auth::user()->hak_akses !== 'pimpinan' && Auth::user()->hak_akses !== 'kaprodi') {
+            abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
+        }
+
+        $id_perawatan = base64_decode($id);
+
+        $data = DB::table('perawatan_barang')
+            ->leftJoin('users', 'perawatan_barang.id_penyetuju', '=', 'users.id_user')
+            ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
+            ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
+            ->select(
+                'perawatan_barang.*',
+                'users.nama as nama_penyetuju', // Beri alias di sini
+                'users.id_user', // Beri alias di sini
+                'items.nama_item',
+                'items.merek_model',
+                'rooms.nama_room',
+            )
+            ->where('id_perawatan', $id_perawatan)
+            ->first();
+
+        // Hanya pemohon kaprodi dan pimpinan yang bisa lihat
+        // if (Auth::id() !== $data->id_pemohon && Auth::user()->hak_akses !== 'pimpinan' && Auth::user()->hak_akses !== 'kaprodi') {
+        //     abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
+        // }
+
+        // dd($data);
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        $is_approved = ($data->status_perawatan === 'disetujui');
+
+        // 1. Siapkan data untuk dikirim ke view blade
+        $pdfData = [
+            'nomor_surat'     => $data->id_perawatan,
+            'nama_barang'     => $data->nama_item == null ?  $data->nama_room :  $data->nama_item,
+            'merek_model'     => $data->merek_model,
+            'qty'             => $data->qty_perawatan == null ? 'Ruangan' : $data->qty_perawatan,
+            'tahun_akademik'  => $data->tahun_akademik,
+            'keperluan_prodi' => $data->keperluan_prodi,
+            'dekan'           => $data->nama ?? 'Nama Belum Diatur',
+            'nidn'            => $data->id_user ?? '-',
+            'is_approved'     => $data->status_perawatan, // Variabel penting untuk Watermark & TTD
+            'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
+            'kategori'        => $data->nama_item == null ? 'prasarana' : 'sarana',
+            'created_at'        => $data->created_at,
+        ];
+
+        // 2. Load view yang berisi desain surat Anda
+        $pdf = Pdf::loadView('surat_perawatan', $pdfData);
+
+        // (Opsional) Atur ukuran kertas
+        $pdf->setPaper('a4', 'portrait');
+
+        // 3. Auto download dengan nama file spesifik
+        return $pdf->download('Surat_Perawatan_' . base64_encode($data->id_perawatan) . '.pdf');
     }
 
-    public function ajukanPerawatan()
+    // page checkin perawatan yg telah selesai d perbaiki
+    public function pageCheckInPerawatan($id)
     {
-        dd('simpan pengajuan perawatan');
+
+        if (Auth::user()->hak_akses !== "admin") {
+            abort(403, 'Unauthorized');
+        }
+
+        $id_perawatan = base64_decode($id);
+        // dd($id_perawatan);
+
+        $dataDb = DB::table('perawatan_barang')
+            ->select(
+                'perawatan_barang.*',
+            )
+            ->where('id_perawatan', $id_perawatan)
+            ->first();
+
+        $item = DB::table('items')
+            ->select(
+                'items.*',
+            )
+            ->where('id_item', $dataDb->id_item)
+            ->first();
+
+        if ($dataDb->id_item != null) {
+            // jika perawatan item
+            DB::table('items')
+                ->where('id_item', $dataDb->id_item)
+                ->update([
+                    'qty_item' => $dataDb->qty_perawatan + $item->qty_item,
+                    'kondisi_item' => 'Baik',
+                    'updated_at' => now(), // Opsional, jika ingin manual
+                ]);
+
+            DB::table('perawatan_barang')
+                ->where('id_perawatan', $id_perawatan)
+                ->update([
+                    'status_perawatan' => 'selesai',
+                    // 'kondisi_item' => 'Baik',
+                    'updated_at' => now(), // Opsional, jika ingin manual
+                ]);
+        } else {
+            DB::table('rooms')
+                ->where('id_room', $dataDb->id_room)
+                ->update([
+                    // 'qty_item' => $dataDb->qty_perawatan,
+                    'kondisi_room' => 'Baik',
+                    'updated_at' => now(), // Opsional, jika ingin manual
+                ]);
+
+            DB::table('perawatan_barang')
+                ->where('id_perawatan', $id_perawatan)
+                ->update([
+                    'status_perawatan' => 'selesai',
+                    // 'kondisi_item' => 'Baik',
+                    'updated_at' => now(), // Opsional, jika ingin manual
+                ]);
+        }
+        // dd($dataDb);
+        return back()->with('succes', 'perawatan selesai item berhasil di berbaharui!');
     }
 }

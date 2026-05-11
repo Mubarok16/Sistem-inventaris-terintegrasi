@@ -188,11 +188,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/kunci-header-info-perawatan', [PerawatanBarang::class, 'kunciInputPerawatan'])->name('kunci-header-info-perawatan');
     Route::get('/lihat-surat-perawatan/{id}', [PerawatanBarang::class, 'bukaPdf'])->name('preview_surat_perawatan');
     Route::post('/download-surat-perawatan/{id}', [PerawatanBarang::class, 'downloadSuratPerawatan'])->name('download-surat-perawatan');
-
-    // belum dipakai
-    Route::post('/kunci-barang-perawatan-temp', [PerawatanBarang::class, 'kunciTempBarangPerawatanTemp'])->name('kunci-barang-perawatan-temp');
-    Route::post('/hapus-barang-perawatan-temp', [PerawatanBarang::class, 'hapusBarangPerawatanTemp'])->name('hapus-barang-perawatan-temp');
-    Route::post('/ajukan-perawatan', [PerawatanBarang::class, 'ajukanPerawatan'])->name('ajukan-perawatan');
+    Route::get('dashboard/perawatan-barang/chekinBarang/{id}', [PerawatanBarang::class, 'pageCheckInPerawatan'])->name('pageCheckInPerawatan');
 
 
     // ----------------------------------------pimpinan fakultas ------------------------------------------
@@ -203,6 +199,12 @@ Route::middleware(['auth'])->group(function () {
     // pengadaan barang
     Route::get('/dashboard/Pengadaan-barang', [PengadaanBarangControllerPimpinan::class, 'PagePengadaanBarang'])->name('pengadaan-barang');
     Route::post('/dashboard/approve-surat/{id}', [PengadaanBarangControllerPimpinan::class, 'signSurat'])->name('sign-surat');
+    Route::post('/dashboard/tolak-surat/{id}', [PengadaanBarangControllerPimpinan::class, 'tolakSuratPengadaan'])->name('tolak-surat-pengadaan');
+    // perawatan barang
+    Route::get('/dashboard/pimpinan/perawatan-barang', [PengadaanBarangControllerPimpinan::class, 'PagePerawatanBarang'])->name('perawatan-barang-pimpinan');
+    Route::post('/dashboard/approve-surat-perawatan/{id}', [PengadaanBarangControllerPimpinan::class, 'signSuratPerawatan'])->name('sign-surat-perawatan');
+    Route::post('/dashboard/tolak-surat-perawatan/{id}', [PengadaanBarangControllerPimpinan::class, 'tolakSuratPerawatan'])->name('tolak-surat-perawatan');
+
 
 
     // ---------------------------------------------------kaprodi---------------------------------------------
@@ -210,6 +212,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/kaprodi', [DashboardController::class, 'Dashboardkaprodi'])->name('dashboard-kaprodi');
     // pengadaan barang
     Route::get('/dashboard/kaprodi/pengadaan-barang', [DashboardController::class, 'KprodiPengadaanBarang'])->name('pengadaan-barang-kaprodi');
+    // perawatan barang
+    Route::get('/dashboard/kaprodi/pengajuan-perawatan-barang', [DashboardController::class, 'PagePengajuanPerawatanBarangKaprodi'])->name('page-pengajuan-perawatan-barang-kaprodi');
+    // form perawatan barang ruang
+    Route::get('/dashboard/kaprodi/form-pengajuan-perawatan-barang', [DashboardController::class, 'PageFormPengajuanPerawatanBarangKaprodi'])->name('form-pengajuan-perawatan-barang-kaprodi');
     // kalender
     Route::get('dashboard-kaprodi/calender', [DashboardController::class, 'calenderKaprodi'])->name('calender-kaprodi');
 

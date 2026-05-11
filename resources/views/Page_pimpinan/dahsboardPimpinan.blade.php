@@ -52,6 +52,14 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Pengadaan-Barang</a>
                     </div>
                     @include('components.pimpinan.contentPengadaanBarang')
+                @elseif ($halaman === 'contentPerawatanBarang')
+                    <h4>Perawatan Barang</h4>
+                    <div>
+                        <a href="/dashboard/pimpinan" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Perawatan-Barang</a>
+                    </div>
+                    @include('components.pimpinan.contentPerawatanBarang')
                 @endif
             </div>
         </div>

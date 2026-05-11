@@ -86,8 +86,10 @@
 <body>
 
     <!-- Watermark Muncul di Seluruh Halaman jika belum ACC -->
-    @if (!$is_approved)
+    @if ($is_approved == 'pendding')
         <div id="watermark">DRAF / BELUM DISETUJUI</div>
+    @elseif ($is_approved == 'ditolak')
+        <div id="watermark">DRAF TIDAK DISETUJUI</div>
     @endif
 
     <header>
@@ -101,7 +103,7 @@
                 <!-- Tambahkan border: none juga pada <td> untuk memastikan -->
                 <td style="width: 15%; border: none; padding: 2px 0;">Nomor</td>
                 <td style="width: 45%; border: none; padding: 2px 0;">: {{ $nomor_surat }}</td>
-                <td style="width: 40%; border: none; text-align: right; padding: 2px 0;">April 2026</td>
+                <td style="width: 40%; border: none; text-align: right; padding: 2px 0;">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('F Y') }}</td>
             </tr>
             <tr>
                 <td style="border: none; padding: 2px 0;">Lampiran</td>
@@ -137,21 +139,8 @@
     <!-- Bagian Tanda Tangan yang Diupdate -->
     <div class="footer">
         <p>Dekan,</p>
-
-        {{-- @if ($is_approved)
-            <div class="qr-code">
-                <img
-                    src="data:image/svg+xml;base64,{{ base64_encode(QrCode::format('svg')->size(80)->margin(1)->generate($verif_url)) }}">
-                
-                <label>{{ $verif_url }}</label>
-            </div>
-        @else
-            <div class="blur-ttd">
-                <span>BELUM ACC</span>
-            </div>
-        @endif --}}
-
-        @if ($is_approved)
+        
+        @if ($is_approved != 'pendding' AND $is_approved != 'ditolak')
             <div style="width: 80px; height: 80px; margin: 0 auto; text-align: center;">
 
                 <!-- 1. QR Code SVG -->

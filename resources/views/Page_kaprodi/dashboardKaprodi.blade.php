@@ -53,6 +53,24 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Pengadaan-Barang</a>
                     </div>
                     @include('components.kaprodi.contentPengadaanBarang')
+                @elseif ($halaman === 'contentPerawatanBarang')
+                    <h4>Perawatan Barang dan Ruang</h4>
+                    <div>
+                        <a href="{{ route('dashboard-kaprodi') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Perawatan-Barang</a>
+                    </div>
+                    @include('components.kaprodi.contentPerawatanKaprodi')
+                @elseif ($halaman === 'contentFormPerawatanBarang')
+                    <h4>Pengajuan Perawatan Barang dan Ruang</h4>
+                    <div>
+                        <a href="{{ route('dashboard-kaprodi') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="{{ route('pengadaan-barang-kaprodi') }}" class="text-gray-400! no-underline!">Perawatan-Barang</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Pengajuan-Perawatan-Barang</a>
+                    </div>
+                    @include('components.admin.contentFormPengajuanPerawatan')
                 @endif
             </div>
         </div>

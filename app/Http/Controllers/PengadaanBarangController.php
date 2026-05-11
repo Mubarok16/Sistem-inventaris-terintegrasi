@@ -69,7 +69,7 @@ class PengadaanBarangController extends Controller
         }
 
         // 5. Tentukan status Approved (Watermark akan hilang jika status 'setuju')
-        $is_approved = ($dataDb->status_pengadaan === 'disetujui');
+        // $is_approved = ($dataDb->status_pengadaan === 'disetujui');
 
         // 6. Siapkan data untuk dikirim ke View Blade
         $data = [
@@ -80,8 +80,9 @@ class PengadaanBarangController extends Controller
             'keperluan_prodi' => $dataDb->keperluan_prodi,
             'dekan'           => $dataDb->nama ?? 'Nama Belum Diatur',
             'nidn'            => $dataDb->id_user ?? '-',
-            'is_approved'     => $is_approved, // Variabel penting untuk Watermark & TTD
+            'is_approved'     => $dataDb->status_pengadaan, // Variabel penting untuk Watermark & TTD
             'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
+            'created_at'        => $dataDb->created_at,
         ];
 
         // 7. Render ulang PDF agar tampilan selalu update sesuai status terbaru di DB
@@ -139,7 +140,7 @@ class PengadaanBarangController extends Controller
             return redirect()->back()->with('error', 'Data tidak ditemukan');
         }
 
-        $is_approved = ($data->status_pengadaan === 'disetujui');
+        // $is_approved = ($data->status_pengadaan === 'disetujui');
 
         // 1. Siapkan data untuk dikirim ke view blade
         $pdfData = [
@@ -150,8 +151,9 @@ class PengadaanBarangController extends Controller
             'keperluan_prodi' => $data->keperluan_prodi,
             'dekan'           => $data->nama_penyetuju ?? 'Nama Belum Diatur',
             'nidn'            => $data->id_user ?? '-',
-            'is_approved'     => $is_approved, // Variabel penting untuk Watermark & TTD
+            'is_approved'     => $data->status_pengadaan, // Variabel penting untuk Watermark & TTD
             'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
+            'created_at'        => $data->created_at,
         ];
 
         // 2. Load view yang berisi desain surat Anda

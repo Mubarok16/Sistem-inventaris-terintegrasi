@@ -24,10 +24,9 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-target="#collapseForm"
-            aria-expanded="true" aria-controls="collapseForm">
+        <a class="nav-link collapsed" href="{{ route('page-pengajuan-perawatan-barang-kaprodi') }}">
             <i class="fab fa-fw fa-wpforms"></i>
-            <span>Perawatan Barang</span>
+            <span>Perawatan Barang dan Ruang</span>
         </a>
         <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">

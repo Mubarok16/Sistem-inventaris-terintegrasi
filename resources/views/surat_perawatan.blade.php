@@ -86,8 +86,10 @@
 <body>
 
     <!-- Watermark Muncul di Seluruh Halaman jika belum ACC -->
-    @if (!$is_approved)
+    @if ($is_approved == 'pendding')
         <div id="watermark">DRAF / BELUM DISETUJUI</div>
+    @elseif ($is_approved == 'ditolak')
+        <div id="watermark">DRAF TIDAK DISETUJUI</div>
     @endif
 
     <header>
@@ -101,7 +103,7 @@
                 <!-- Tambahkan border: none juga pada <td> untuk memastikan -->
                 <td style="width: 15%; border: none; padding: 2px 0;">Nomor</td>
                 <td style="width: 45%; border: none; padding: 2px 0;">: {{ $nomor_surat }}</td>
-                <td style="width: 40%; border: none; text-align: right; padding: 2px 0;">April 2026</td>
+                <td style="width: 40%; border: none; text-align: right; padding: 2px 0;">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('F Y') }}</td>
             </tr>
             <tr>
                 <td style="border: none; padding: 2px 0;">Lampiran</td>
@@ -126,8 +128,8 @@
 
     <p style="padding-left:2px; padding-right:2px; text-indent: 40px; text-align: justify;">
         Disampaikan dengan hormat, sehubungan kebutuhan {{ $kategori }} penunjang perkuliahan Tahun Akademik
-        {{ $tahun_akademik }} di {{ $keperluan_prodi }}, dengan ini kami mengajukan permohonan perawatan {{ $kategori }} berupa
-        <label style="font-weight: bold">{{ $qty }} {{ $kategori == 'sarana' ? 'unit' : '' }} {{ $nama_barang }}</label>.
+        {{ $tahun_akademik }} di {{ $keperluan_prodi }}, dengan ini kami mengajukan permohonan perawatan {{ $kategori }} {{ $kategori == 'sarana' ? 'berupa' : '' }}
+        <label style="font-weight: bold">{{ $qty }} {{ $kategori == 'sarana' ? 'unit' : '' }} {{ $kategori == 'sarana' ? $nama_barang.' '.$merek_model : $nama_barang }}</label>.
     </p>
     <p style="padding-left:2px; padding-right:2px; text-indent: 40px; text-align: justify;">
         Demikian permohonan ini kami sampaikan, atas perhatian dan realisasinya kami ucapkan terima kasih.
@@ -151,7 +153,7 @@
             </div>
         @endif --}}
 
-        @if ($is_approved)
+        @if ($is_approved != 'pendding' AND $is_approved != 'ditolak')
             <div style="width: 80px; height: 80px; margin: 0 auto; text-align: center;">
 
                 <!-- 1. QR Code SVG -->
