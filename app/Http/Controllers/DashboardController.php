@@ -408,7 +408,7 @@ class DashboardController extends Controller
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataAgendas'));
     }
 
-    // detail agenda di admin
+    // detail agenda calender di admin
     public function adminDetailAgenda($id, $date)
     {
         if (Auth::user()->hak_akses  !== "admin") {

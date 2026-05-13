@@ -5,6 +5,7 @@ namespace App\Http\Controllers\mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\UsageItems;
 use App\Models\UsageRooms;
+use App\Services\Admin\PengelolaanPeminjamanService;
 use App\Services\mahasiswa\RiwayatPeminjamanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,18 +33,20 @@ class RiwayarController extends Controller
             ->where('peminjaman.kode_peminjaman', $id)
             ->get();
 
-        $dataDetailPengajuanPeminjamanBarang = DB::table('usage_items')
+        $detailBarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
             ->select('usage_items.*', 'items.nama_item', 'items.id_item', 'items.kondisi_item', 'items.img_item') // Pilih kolom yang diperlukan
             ->where('usage_items.kode_peminjaman', $id)
-            ->get();
+            ->first();
 
-        $dataDetailPengajuanPeminjamanRuangan = DB::table('usage_rooms')
+        $detailRuangan = DB::table('usage_rooms')
             ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
             ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('usage_rooms.*', 'rooms.nama_room', 'rooms.id_room', 'rooms.kondisi_room', 'rooms.gambar_room', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->where('usage_rooms.kode_peminjaman', $id)
-            ->get();
+            ->first();
+
+        // dd($detailBarang);
 
         // mengambil tgl pinjam dan tgl kembali dari usage_items dan usage_rooms
         $tglPinjamItem = DB::table('usage_items')
@@ -55,6 +58,36 @@ class RiwayarController extends Controller
             ->select('tgl_pinjam_usage_room', 'tgl_kembali_usage_room')
             ->where('kode_peminjaman', $id)
             ->get();
+
+        
+        $tglPinjam = null;
+        $tglKembali = null;
+
+        if (!$tglPinjamItem->isEmpty()) {
+            foreach ($tglPinjamItem as $value) {
+                $tglPinjam = $value->tgl_pinjam_usage_item;
+                $tglKembali = $value->tgl_kembali_usage_item;
+            }
+        } else {
+            foreach ($tglPinjamRoom as $value) {
+                $tglPinjam = $value->tgl_pinjam_usage_room;
+                $tglKembali = $value->tgl_kembali_usage_room;
+            }
+        }
+
+        // cek jadwal agenda
+        $PengelolaanPeminjamanService = new PengelolaanPeminjamanService;
+        $dataBentrokJadwal = $PengelolaanPeminjamanService->cekPeminjamanAgenda($id, $tglPinjam, $tglKembali);
+
+        // mengambil data barang yg bentrok return dari service cek jadwal
+        $itemBentrok = $dataBentrokJadwal['barang']->filter(function ($item) {
+            return $item['status'] === 'BENTROK';
+        });
+
+        // mengambil data ruangan yg bentrok return dari service cek jadwal
+        $roomBentrok = $dataBentrokJadwal['ruangan']->filter(function ($room) {
+            return $room['status'] === 'BENTROK';
+        });
 
         $tglPinjam = null;
         $tglKembali = null;
@@ -80,9 +113,12 @@ class RiwayarController extends Controller
 
         // dd($dataDetailPengajuanPeminjamanBarang, $dataDetailPengajuanPeminjamanRuangan);
 
+        // simpan id di session
+        session()->put('id_peminjaman_agenda', $id);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayatDetail';
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok'));
     }
 
     public function QrDanBatalPeminjaman(Request $request)

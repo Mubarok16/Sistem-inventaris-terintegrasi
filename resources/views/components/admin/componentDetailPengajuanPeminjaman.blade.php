@@ -71,29 +71,27 @@
                         </h5>
                     </div>
                     <div class="flex items-start gap-2">
-                        <div class="size-14 rounded-full bg-slate-100 overflow-hidden flex-shrink-0"
+                        {{-- <div class="size-14 rounded-full bg-slate-100 overflow-hidden flex-shrink-0"
                             data-alt="Foto profil peminjam"
                             style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2wVH5Oe0MPu9I_JUUYthNseKoKM0-WHbb1pkPPSmOAXJa-VUwQvYCfwDdXdkIkqJD4uW6ex0iIP8jZQWWldz1mvra-DSvK7aO9VbCCPjVQn3d9cqDxxSk2JedMdyBsi0LAMkDxAbxHK5JJuVdNqCAMACxFxLy1NvAkXLi4bNNub71XFs3WhNAsveHOO27QjkSAcDLiRdkR41hp9_QPhWgPn3ZzpfSQZKHuCpq9zknby5YwdKDByuOQtwIm6z2yGbPCTjKrnAqzu0')">
-                        </div>
+                        </div> --}}
                         <div>
-                            <p class="font-bold text-slate-900 text-lg">
-                                {{ $dataPeminjaman->nama_peminjam }}
+                            <p class="text-sm text-slate-500 uppercase">
+                                Nama : {{ $dataPeminjaman->nama_peminjam }}
                             </p>
-                            <p class="text-sm text-slate-500">
-                                NPM:
+                            <p class="text-sm text-slate-500 uppercase">
+                                NPM :
                                 {{ $dataPeminjaman->no_identitas }}
                             </p>
-                            <div class="mt-2 flex flex-col gap-1">
-                                <div class="flex items-center gap-2 text-sm text-slate-600">
-                                    <i class="fa-solid fa-university text-base"></i>
-                                    <span>Fakultas {{ $dataPeminjaman->fakultas }},
-                                        {{ $dataPeminjaman->prodi }}</span>
-                                </div>
-                                {{-- <div class="flex items-center gap-2 text-sm text-slate-600">
-                                <i class="fa-solid fa-building-columns text-base"></i>
-                                <span>teknik komputer</span>
-                            </div> --}}
-                            </div>
+                            <p class="text-sm text-slate-500 uppercase">
+                                Fakultas :
+                                {{ $dataPeminjaman->fakultas }}
+                            </p>
+                            <p class="text-sm text-slate-500 uppercase">
+                                Prodi :
+                                {{ $dataPeminjaman->prodi }}
+                            </p>
+
                         </div>
                     </div>
                 </div>
@@ -239,8 +237,24 @@
         @else
         @endif
 
+        {{-- calender --}}
+        <div class="flex flex-wrap gap-2 pt-3 border-t-1 border-gray-300 ">
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #dc2626;">TERLAMBAT / BELUM DIKEMBALIKAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #64748b;">DIBATALKAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-gray-800 shadow-sm"
+                style="background-color: #facc15;">TERJADWAL</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #3b82f6;">DIGUNAKAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #22c55e;">SELESAI</span>
+        </div>
+        <div id="calendar" data-url="{{ url('pengelolaan-agenda-calender') }}" class="mb-4 fc-tailwind">
+        </div>
+
         <!-- Items & room List -->
-        <div x-data="{ open: false }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div @click="open = !open"
                 class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 cursor-pointer">
                 <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
@@ -267,7 +281,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <!-- Barang -->
-                        @foreach ($dataDetailPengajuanPeminjamanBarang as $detailBarang)
+                        @if ($detailBarang != null)
                             <tr class="group hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
@@ -317,9 +331,9 @@
                                     </span>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
                         <!-- rauang -->
-                        @foreach ($dataDetailPengajuanPeminjamanRuangan as $detailRuangan)
+                        @if ($detailRuangan != null)
                             <tr class="group hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
@@ -332,7 +346,7 @@
                                                 {{ $detailRuangan->nama_tipe_room }}
                                                 {{ $detailRuangan->nama_room }}
                                             </p>
-                                            <p class="text-xs text-slate-500">Lantai 2</p>
+                                            {{-- <p class="text-xs text-slate-500">Lantai 2</p> --}}
                                         </div>
                                     </div>
                                 </td>
@@ -366,11 +380,13 @@
                                     </span>
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
         </div>
+
+
 
         <!-- Action Area -->
         <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">

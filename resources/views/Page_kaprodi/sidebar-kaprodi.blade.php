@@ -17,15 +17,14 @@
         Features
     </div>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('pengadaan-barang-kaprodi') }}" 
-            >
-            <i class="far fa-fw fa-window-maximize"></i>
+        <a class="nav-link" href="{{ route('pengadaan-barang-kaprodi') }}">
+            <i class="fas fa-fw fa-truck-loading"></i>
             <span>Pengadaan Barang</span>
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link collapsed" href="{{ route('page-pengajuan-perawatan-barang-kaprodi') }}">
-            <i class="fab fa-fw fa-wpforms"></i>
+            <i class="fas fa-fw fa-wrench"></i>
             <span>Perawatan Barang dan Ruang</span>
         </a>
         <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">

@@ -354,13 +354,27 @@ class pengelolaanAgenda extends Controller
             return $room['status'] === 'BENTROK';
         });
 
-        $detailAgenda = new PengelolaanAgendaService();
+        // $detailAgenda = new PengelolaanAgendaService();
 
-        $riwayat = $detailAgenda->dataDetailAgenda($id);
+        // $riwayat = $detailAgenda->dataDetailAgenda($id);
 
-        $dataAgendaPerhari = $riwayat;
+        // $dataAgendaPerhari = $riwayat;
+
+        $detailBarang = DB::table('usage_items')
+            ->join('items', 'usage_items.id_item', '=', 'items.id_item')
+            ->select('usage_items.*', 'items.nama_item', 'items.id_item', 'items.kondisi_item', 'items.img_item') // Pilih kolom yang diperlukan
+            ->where('usage_items.kode_agenda', $id)
+            ->first();
+
+        $detailRuangan = DB::table('usage_rooms')
+            ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+            ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select('usage_rooms.*', 'rooms.nama_room', 'rooms.id_room', 'rooms.kondisi_room', 'rooms.gambar_room', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
+            ->where('usage_rooms.kode_agenda', $id)
+            ->first();
 
         // dd($dataDetailPengajuanPeminjaman);
+        session()->put('id_peminjaman_agenda', $id);
 
         // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
@@ -374,7 +388,9 @@ class pengelolaanAgenda extends Controller
             'tglKembali',
             'itemBentrok',
             'roomBentrok',
-            'dataAgendaPerhari'
+            // 'dataAgendaPerhari',
+            'detailBarang',
+            'detailRuangan',
         ));
     }
 

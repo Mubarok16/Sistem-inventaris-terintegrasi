@@ -18,7 +18,7 @@
     </div>
     <li class="nav-item {{ $halaman === 'contentPengelolaanUser' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengelolaan-user') }}">
-            <i class="far fa-fw fa-window-maximize"></i>
+            <i class="fas fa-fw fa-user"></i>
             <span>Pengelolaan User</span>
         </a>
         {{-- <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
@@ -33,10 +33,11 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'bg-gray-200' : '' }}">
+    <li
+        class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengajuan-peminjaman') }}">
-            <i class="fab fa-fw fa-wpforms"></i>
-            <span>Pengajuan Peminjaman</span>
+            <i class="fas fa-fw fa-exchange-alt"></i>
+            <span>Pengelolaan Peminjaman</span>
         </a>
         {{-- <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -48,7 +49,7 @@
     </li>
     <li class="nav-item {{ $halaman === 'contentDataBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/data-barang') }}">
-            <i class="fas fa-fw fa-table"></i>
+            <i class="fas fa-fw fa-database"></i>
             <span>Data Barang</span>
         </a>
         {{-- <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
@@ -59,28 +60,30 @@
             </div>
         </div> --}}
     </li>
-    <li class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'bg-gray-200' : '' }}">
+    <li
+        class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/data-ruangan') }}">
-            <i class="fas fa-fw fa-palette"></i>
+            <i class="fas fa-fw fa-database"></i>
             <span>Data Ruangan</span>
         </a>
     </li>
-    <li class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
+    <li
+        class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
-            <i class="fas fa-fw fa-palette"></i>
+            <i class="fas fa-fw fa-calendar-alt"></i>
             <span>Pengelolaan Agenda</span>
         </a>
     </li>
     <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ url('/dashboard/admin/pengadaan-barang') }}">
-            <i class="fas fa-fw fa-palette"></i>
+            <i class="fas fa-fw fa-truck-loading"></i>
             <span>Pengadaan Barang</span>
         </a>
     </li>
     <li class="nav-item {{ $halaman === 'contentPerawatanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ route('page_perawatan_barang') }}">
-            <i class="fas fa-fw fa-palette"></i>
-            <span>Perawatan Barang</span>
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Perawatan Barang dan Ruang</span>
         </a>
     </li>
     <hr class="sidebar-divider">

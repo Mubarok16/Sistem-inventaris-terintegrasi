@@ -25,18 +25,18 @@ class PengelolaanPeminjamanAdmin extends Controller
             ->where('peminjaman.kode_peminjaman', $id)
             ->get();
 
-        $dataDetailPengajuanPeminjamanBarang = DB::table('usage_items')
+        $detailBarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
             ->select('usage_items.*', 'items.nama_item', 'items.id_item', 'items.kondisi_item', 'items.img_item') // Pilih kolom yang diperlukan
             ->where('usage_items.kode_peminjaman', $id)
-            ->get();
+            ->first();
 
-        $dataDetailPengajuanPeminjamanRuangan = DB::table('usage_rooms')
+        $detailRuangan = DB::table('usage_rooms')
             ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
             ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('usage_rooms.*', 'rooms.nama_room', 'rooms.id_room', 'rooms.kondisi_room', 'rooms.gambar_room', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->where('usage_rooms.kode_peminjaman', $id)
-            ->get();
+            ->first();
 
         // mengambil tgl pinjam dan tgl kembali dari usage_items dan usage_rooms
         $tglPinjamItem = DB::table('usage_items')
@@ -78,11 +78,13 @@ class PengelolaanPeminjamanAdmin extends Controller
             return $room['status'] === 'BENTROK';
         });
 
-        // dd($itemBentrok);
+        // dd($roomBentrok);
+        // simpan id di session
+        session()->put('id_peminjaman_agenda', $id);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailPenminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'dataDetailPengajuanPeminjamanBarang', 'dataDetailPengajuanPeminjamanRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok'));
     }
 
     // persetujuan
@@ -347,6 +349,8 @@ class PengelolaanPeminjamanAdmin extends Controller
 
         return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'Status pengambilan berhasil diperbarui.');
     }
+
+    // penolakan pengajuan peminjaman
     // function penolakan(Request $request)
     // {
     //     $request->validate([

@@ -190,6 +190,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/download-surat-perawatan/{id}', [PerawatanBarang::class, 'downloadSuratPerawatan'])->name('download-surat-perawatan');
     Route::get('dashboard/perawatan-barang/chekinBarang/{id}', [PerawatanBarang::class, 'pageCheckInPerawatan'])->name('pageCheckInPerawatan');
 
+    // kalender unutk pengelolaan peminjaman dan agenda 
+    Route::get('/pengelolaan-agenda-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman'])->name('calender-agenda-peminjan-spesifik');
+
+
 
     // ----------------------------------------pimpinan fakultas ------------------------------------------
     // dashboard pimpinan fakultas 
@@ -269,4 +273,9 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
     // btn batal dan cetak qr user
     Route::post('cetak-QRriwayat-dan-batal-peminjaman', [RiwayarController::class, 'QrDanBatalPeminjaman'])->name('QR-dan-batal-peminjaman');
+
+
+    // kalender unutk riwayat peminjaman
+    Route::get('/riwayat-peminjaman-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman']);
+
 });
