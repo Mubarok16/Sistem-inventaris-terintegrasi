@@ -22,32 +22,13 @@ import listPlugin from '@fullcalendar/list'
 // optional
 import interactionPlugin from '@fullcalendar/interaction'
 
+// unutk calender all
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar')
 
     if (!calendarEl) return
 
     const calendar = new Calendar(calendarEl, {
-        // plugins: [
-        //     dayGridPlugin,
-        //     timeGridPlugin,
-        //     listPlugin,
-        //     interactionPlugin
-        // ],
-        // initialView: 'dayGridMonth',
-        // height: 'auto',
-        // headerToolbar: {
-        //     left: 'prev,next',
-        //     center: 'title',
-        //     right: 'dayGridMonth,timeGridWeek,listDay'
-        // },
-
-        // navLinks: true, // klik tanggal juga aktif
-        // dateClick(info) {
-        //     calendar.changeView('listDay', info.dateStr)
-        // },
-
-        // events: calendarEl.getAttribute('data-url'),
         plugins: [
             dayGridPlugin,
             timeGridPlugin,
@@ -77,6 +58,45 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render()
 })
 
+// unutk kalender kusus pengelolaan agenda detail, pengelolaan peminjaman detail dan riwayat detail
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendarDetail')
+
+    if (!calendarEl) return
+
+    // Jika data-start-date kosong, kita beri fallback ke tanggal hari ini
+    const startDate = calendarEl.getAttribute('data-start-date') || new Date();
+
+    const calendar = new Calendar(calendarEl, {
+        plugins: [
+            dayGridPlugin,
+            timeGridPlugin,
+            listPlugin,
+            interactionPlugin
+        ],
+        initialDate: startDate,
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listDay'
+        },
+
+        // --- TAMBAHKAN BARIS INI ---
+        eventDisplay: 'block',
+        // ---------------------------
+
+        navLinks: true,
+        dateClick(info) {
+            calendar.changeView('listDay', info.dateStr)
+        },
+
+        events: calendarEl.getAttribute('data-url'),
+    })
+
+    calendar.render()
+})
 
 
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';

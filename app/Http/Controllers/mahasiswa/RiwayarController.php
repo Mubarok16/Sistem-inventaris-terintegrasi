@@ -59,7 +59,7 @@ class RiwayarController extends Controller
             ->where('kode_peminjaman', $id)
             ->get();
 
-        
+
         $tglPinjam = null;
         $tglKembali = null;
 
@@ -116,9 +116,13 @@ class RiwayarController extends Controller
         // simpan id di session
         session()->put('id_peminjaman_agenda', $id);
 
+        $tglStartKalender = $dataDetailPengajuanPeminjaman[0]->tgl_pinjam;
+
+        // dd($tglStartKalender);
+
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $halaman = 'contentRiwayatDetail';
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok', 'tglStartKalender'));
     }
 
     public function QrDanBatalPeminjaman(Request $request)

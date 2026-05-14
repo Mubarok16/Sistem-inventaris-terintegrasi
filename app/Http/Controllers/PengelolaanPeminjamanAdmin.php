@@ -64,6 +64,9 @@ class PengelolaanPeminjamanAdmin extends Controller
             }
         }
 
+        // dd($detailBarang);
+        $tglStartKalender = $dataDetailPengajuanPeminjaman[0]->tgl_pinjam;
+
         // cek jadwal agenda
         $PengelolaanPeminjamanService = new PengelolaanPeminjamanService;
         $dataBentrokJadwal = $PengelolaanPeminjamanService->cekPeminjamanAgenda($id, $tglPinjam, $tglKembali);
@@ -84,7 +87,7 @@ class PengelolaanPeminjamanAdmin extends Controller
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailPenminjaman';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok', 'tglStartKalender'));
     }
 
     // persetujuan

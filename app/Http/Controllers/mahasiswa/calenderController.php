@@ -164,6 +164,9 @@ class calenderController extends Controller
             ->get();
         // }
 
+            // dd($agendas);
+
+
 
         if ($agendas->isNotEmpty()) {
             // jika yg di click user itu peminjaman
@@ -219,9 +222,9 @@ class calenderController extends Controller
             return response()->json($events);
         } else {
             // jika agenda
-            // dd($agenda_fakultas);
+            // dd('agenda');
 
-             foreach ($agenda_fakultas as $agenda) {
+            foreach ($agenda_fakultas as $agenda) {
 
                 // loop per hari
                 $period = CarbonPeriod::create(
@@ -268,7 +271,6 @@ class calenderController extends Controller
                 }
             }
             return response()->json($events);
-
         }
 
         // dd($agendas);
@@ -323,7 +325,7 @@ class calenderController extends Controller
         // return response()->json($events);
     }
 
-     private function statusColorPeminjamanAgenda($status, $id)
+    private function statusColorPeminjamanAgenda($status, $id)
     {
         // Cek apakah id ada di tabel peminjaman
         $peminjaman = DB::table('peminjaman')

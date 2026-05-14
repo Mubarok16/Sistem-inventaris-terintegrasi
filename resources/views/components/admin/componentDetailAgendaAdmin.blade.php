@@ -206,7 +206,7 @@
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #99A7BB;">SELESAI</span>
         </div>
-        <div id="calendar" data-url="{{ url('pengelolaan-agenda-calender') }}" class="mb-4 fc-tailwind">
+        <div id="calendar" data-url="{{ url('pengelolaan-agenda-calender') }}" class="mb-4 fc-tailwind" data-start-date="{{ $tglStartKalender }}">
         </div>
 
         <!-- Items & room List -->

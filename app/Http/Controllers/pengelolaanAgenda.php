@@ -376,6 +376,9 @@ class pengelolaanAgenda extends Controller
         // dd($dataDetailPengajuanPeminjaman);
         session()->put('id_peminjaman_agenda', $id);
 
+        $tglStartKalender = $dataDetailPengajuanPeminjaman[0]->tgl_mulai_agenda;
+
+
         // mengambil nama dari user yang sdng login
         $user = Auth::user()->nama;
         // menyimpan halaman variable
@@ -391,6 +394,7 @@ class pengelolaanAgenda extends Controller
             // 'dataAgendaPerhari',
             'detailBarang',
             'detailRuangan',
+            'tglStartKalender',
         ));
     }
 

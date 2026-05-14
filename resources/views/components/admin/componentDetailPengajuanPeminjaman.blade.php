@@ -13,6 +13,8 @@
         </ul>
     </div>
 @endif
+
+
 <hr class="border-1 border-gray-100 my-4">
 <main class="flex-1 overflow-y-auto bg-background-light my-4 py-4 px-2">
     <div class="max-w-6xl mx-auto space-y-6">
@@ -250,7 +252,8 @@
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #22c55e;">SELESAI</span>
         </div>
-        <div id="calendar" data-url="{{ url('pengelolaan-agenda-calender') }}" class="mb-4 fc-tailwind">
+        <div id="calendarDetail" data-url="{{ url('pengelolaan-agenda-calender') }}" data-start-date="{{ $tglStartKalender }}"
+            class="mb-4 fc-tailwind">
         </div>
 
         <!-- Items & room List -->
@@ -423,3 +426,4 @@
         </div>
     </div>
 </main>
+

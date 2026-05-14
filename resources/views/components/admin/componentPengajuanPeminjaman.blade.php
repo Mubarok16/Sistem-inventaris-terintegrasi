@@ -101,6 +101,7 @@
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                                 </div>
                             </div>
+                            
                             {{-- konfirmasi pengambilan barang atau kunci ruangan --}}
                             <div class="relative flex-grow max-w-md">
                                 <i
