@@ -60,6 +60,15 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Perawatan-Barang</a>
                     </div>
                     @include('components.pimpinan.contentPerawatanBarang')
+                @elseif ($halaman === 'contentProfile')
+                     <h4>Profile User</h4>
+                    <div>
+                        <a href="/dashboard/pimpinan" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href=""
+                            class="text-gray-400! no-underline! font-medium">Profile</a>
+                    </div>
+                    @include('components.dashboard.page_profile_users')
                 @endif
             </div>
         </div>

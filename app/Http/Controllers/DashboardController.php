@@ -909,4 +909,100 @@ class DashboardController extends Controller
         $halaman = 'contentRiwayat'; // variable untuk menampilkan content riwayat
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjamanByPeminjam', 'status_penggunaan'));
     }
+
+
+
+    /// alll users
+    public function profile()
+    {
+        // $peminjam = Auth::guard('peminjam')->user()->nama_peminjam;
+        // $users = Auth::user()->nama;
+
+        # jika users (admin/pimpinan/kaprodi)
+        if (Auth::user()->hak_akses == 'admin') {
+            // dd('admin');
+
+            $id = Auth::user()->id_user;
+
+            // mengamil data peminjam by id
+            $dataPeminjam = DB::table('peminjam')
+                ->where('no_identitas', '=', $id)
+                ->first();
+
+            // mengambil data user
+            $dataUser = DB::table('users')
+                ->where('id_user', '=', $id)
+                ->first();
+
+            $JmlhAdmin = User::where('hak_akses', 'admin')->count();
+
+
+            $halaman = 'contentProfile';
+            $user = Auth::user()->nama;
+            return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
+        } elseif (Auth::user()->hak_akses == 'pimpinan') {
+            $id = Auth::user()->id_user;
+
+            // mengamil data peminjam by id
+            $dataPeminjam = DB::table('peminjam')
+                ->where('no_identitas', '=', $id)
+                ->first();
+
+            // mengambil data user
+            $dataUser = DB::table('users')
+                ->where('id_user', '=', $id)
+                ->first();
+
+            $JmlhAdmin = User::where('hak_akses', 'admin')->count();
+
+
+            $halaman = 'contentProfile';
+            $user = Auth::user()->nama;
+            return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
+        } elseif (Auth::user()->hak_akses == 'kaprodi') {
+            $id = Auth::user()->id_user;
+
+            // mengamil data peminjam by id
+            $dataPeminjam = DB::table('peminjam')
+                ->where('no_identitas', '=', $id)
+                ->first();
+
+            // mengambil data user
+            $dataUser = DB::table('users')
+                ->where('id_user', '=', $id)
+                ->first();
+
+            $JmlhAdmin = User::where('hak_akses', 'admin')->count();
+
+
+            $halaman = 'contentProfile';
+            $user = Auth::user()->nama;
+            return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
+        } else {
+            abort(403, 'Unauthorized');
+        }
+    }
+
+    // peminjam
+    public function profilePeminjam()
+    {
+        $id =  Auth::guard('peminjam')->user()->no_identitas;
+
+        // mengamil data peminjam by id
+        $dataPeminjam = DB::table('peminjam')
+            ->where('no_identitas', '=', $id)
+            ->first();
+
+        // mengambil data user
+        $dataUser = DB::table('users')
+            ->where('id_user', '=', $id)
+            ->first();
+
+        $JmlhAdmin = User::where('hak_akses', 'admin')->count();
+
+
+        $halaman = 'contentProfile';
+        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
+    }
 }

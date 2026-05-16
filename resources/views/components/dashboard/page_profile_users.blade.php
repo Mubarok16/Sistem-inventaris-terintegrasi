@@ -16,9 +16,9 @@
 
 <main class="flex-1 min-w-0 overflow-auto bg-slate-50/50 mb-5">
 
-    <div class="mt-3 mx-auto">
+    <div class="mt-3  mx-auto">
         @if ($dataUser != null)
-        {{-- edit admin dan pimpinan --}}
+            {{-- edit admin dan pimpinan --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-slate-100 flex items-center gap-4">
                     <div
@@ -65,8 +65,7 @@
                             </label>
                             <input name="role" readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                value="{{ $dataUser->hak_akses }}"
-                                type="text" />
+                                value="{{ $dataUser->hak_akses }}" type="text" />
                         </div>
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -127,7 +126,7 @@
                 </form>
             </div>
         @else
-        {{-- edit peminjam atau mahasiswa --}}
+            {{-- edit peminjam atau mahasiswa --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-slate-100 flex items-center gap-4">
                     <div
@@ -142,7 +141,7 @@
                     </div>
                 </div>
                 <form class="p-8 space-y-6" method="POST"
-                    action="{{ route('edit-akun-mhs', ['id' => $dataPeminjam->no_identitas]) }}"
+                    action="{{ route('edit-akun-mhs-peminjam', ['id' => $dataPeminjam->no_identitas]) }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -181,7 +180,11 @@
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Program
                                 Studi</label>
-                            <select name="prodi" id="prodi" required
+                            <input name="prodi" readonly
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
+                                value="{{ $dataPeminjam->prodi }}" type="text" />
+
+                            {{-- <select name="prodi" id="prodi" required readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-semibold transition-all text-slate-700">
 
                                 <option value="">pilih prodi</option>
@@ -252,7 +255,7 @@
                                         Kesehatan
                                         Masyarakat</option>
                                 </optgroup>
-                            </select>
+                            </select> --}}
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -269,16 +272,21 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 tahun masuk
                             </label>
-                            <input name="tahun_masuk"
+                            <input name="tahun_masuk" readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" value="{{ $dataPeminjam->tahun_masuk }}" />
                         </div>
                         <div class="space-y-3 md:col-span-2 pt-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Status
                                 Akun</label>
-                            <div class="flex flex-col md:flex-row gap-2">
+
+                            <input name="status" readonly
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
+                                type="text" value="{{ $dataPeminjam->status }}" />
+
+                            {{-- <div class="flex flex-col md:flex-row gap-2">
                                 <label class="flex-1 cursor-pointer">
-                                    <input {{ $dataPeminjam->status === 'active' ? 'checked="active"' : '' }}
+                                    <input {{ $dataPeminjam->status === 'active' ? 'checked="active"' : '' }} readonly
                                         class="peer hidden" name="status" type="radio" value="active" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all">
@@ -292,7 +300,8 @@
                                 </label>
                                 <label class="flex-1 cursor-pointer">
                                     <input {{ $dataPeminjam->status === 'unactive' ? 'checked="uncative"' : '' }}
-                                        class="peer hidden" name="status" type="radio" value="unactive" />
+                                        readonly class="peer hidden" name="status" type="radio"
+                                        value="unactive" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-red-500 peer-checked:bg-red-50 transition-all">
                                         <i
@@ -304,7 +313,7 @@
                                         </div>
                                     </div>
                                 </label>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="pt-8 w-full! gap-3 border-t border-slate-100">
@@ -320,17 +329,5 @@
                 </form>
             </div>
         @endif
-
-        {{-- <div class="mt-8 bg-blue-50/50 border border-blue-100 p-5 rounded-2xl flex gap-4 items-start">
-            <div class="bg-blue-100 p-2 rounded-lg">
-                <span class="material-icons text-blue-600">info</span>
-            </div>
-            <div class="text-sm text-blue-900/80">
-                <p class="font-bold text-blue-900">Catatan Perubahan</p>
-                <p class="mt-1 leading-relaxed font-medium">Setiap perubahan pada akun akan dicatat dalam log
-                    aktivitas admin. Pengguna akan menerima notifikasi email otomatis jika terdapat perubahan
-                    pada email atau status akun mereka.</p>
-            </div>
-        </div> --}}
     </div>
 </main>

@@ -16,7 +16,8 @@
 
                 @if ($halaman === 'contentDashbord')
                     <h4 class="text-2xl md:text-3xl font-bold text-text-main">Selamat Datang, {{ $user }}! 👋</h4>
-                    <p class="text-text-secondary">Berikut adalah informasi terkini mengenai pinjaman anda dan agenda fakultas hari ini.</p>
+                    <p class="text-text-secondary">Berikut adalah informasi terkini mengenai pinjaman anda dan agenda
+                        fakultas hari ini.</p>
                     @include('components.mahasiswa.contentDashbordMhs')
                 @elseif ($halaman === 'contentDetailAgenda')
                     <h4>Detail Agenda</h4>
@@ -106,6 +107,14 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Riwayat-detail-transaksi</a>
                     </div>
                     @include('components.mahasiswa.contentDetailRiwayat')
+                @elseif ($halaman === 'contentProfile')
+                    <h4>Profile User</h4>
+                    <div>
+                        <a href="{{ route('dashboard-mhs') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Profile</a>
+                    </div>
+                    @include('components.dashboard.page_profile_users')
                 @endif
                 {{-- end isi content --}}
             </div>

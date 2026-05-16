@@ -97,6 +97,7 @@ class EditAkun extends Controller
                 'prodi' => 'required|string',
             ]);
 
+            // dd($request->all());
             // cek apakah username sudah ada di db
             if (Peminjam::where('username', $request->username)->count() > 1) {
                 return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
@@ -175,7 +176,7 @@ class EditAkun extends Controller
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama_peminjam . ' berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!');
+            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!'.$e);
         }
     }
 }

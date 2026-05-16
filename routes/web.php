@@ -181,7 +181,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
     // simpan checkin
     Route::post('dashboard/simpan/chekinBarang/{id}', [PengadaanBarangController::class, 'simpandistribusi'])->name('simpan-distribusi');
-    
+
     // Perawatan barang admin ========================================================================================================================
     // page pengajuan perawatan barang
     Route::get('/dashboard/admin/pengajuan-perawatan-barang', [PerawatanBarang::class, 'PagePengajuanPerawatanBarang'])->name('page-pengajuan-perawatan-barang');
@@ -223,6 +223,9 @@ Route::middleware(['auth'])->group(function () {
     // kalender
     Route::get('dashboard-kaprodi/calender', [DashboardController::class, 'calenderKaprodi'])->name('calender-kaprodi');
 
+
+    // profile users
+    Route::get('/dashboard/profile-users', [DashboardController::class, 'profile'])->name('profile-users');
 });
 
 
@@ -277,5 +280,11 @@ Route::middleware(['auth:peminjam'])->group(function () {
 
     // kalender unutk riwayat peminjaman
     Route::get('/riwayat-peminjaman-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman']);
+
+    // profile peminjam
+    Route::get('/dashboard/profile-peminjam', [DashboardController::class, 'profilePeminjam'])->name('profile-peminjam');
+
+    // edit profile
+    Route::post('/mahasiswa/edit-akun-peminjam/{id}', [EditAkun::class, 'EditAkunPeminjam'])->name('edit-akun-mhs-peminjam');
 
 });
