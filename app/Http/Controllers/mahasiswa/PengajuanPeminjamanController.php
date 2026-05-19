@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Models\UsageItems;
 use App\Models\UsageRooms;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\PengajuanPeminjaman;
+use Illuminate\Support\Facades\Auth;
 
 use function Symfony\Component\Clock\now;
 
@@ -182,6 +186,25 @@ class PengajuanPeminjamanController extends Controller
         //         }
         //     }
         // }
+
+        // data untuk dikirim ke Telegram
+        $dataTelegram = [
+            'nama_user' => Auth::guard('peminjam')->user()->nama_peminjam, // Mengambil nama user yang sedang login
+            'kode_peminjaman' => $kode_peminjaman,
+            'keterangan_peminjaman' => $nama_kegiatan,
+            'tanggal_pinjam' => \Carbon\Carbon::parse($tgl_pinjam)->translatedFormat('d F Y'),
+            'tanggal_kembali' => \Carbon\Carbon::parse($tgl_kembali)->translatedFormat('d F Y'),
+        ];
+
+        // KIRIM NOTIFIKASI KE TELEGRAM (Menggunakan Chat ID dari .env)
+        // Notification::route('telegram', env('TELEGRAM_CHAT_ID'))
+        //     ->notify(new PengajuanPeminjaman($dataTelegram));
+
+        $allAdmin = User::where('hak_akses', 'admin')->whereNotNull('no_hp')->get();
+        foreach ($allAdmin as $admin) {
+            Notification::route('telegram', $admin->no_hp)
+                ->notify(new PengajuanPeminjaman($dataTelegram));
+        }
 
         // menghapus session cart setelah pengajuan peminjaman berhasil
         session()->forget('cart');

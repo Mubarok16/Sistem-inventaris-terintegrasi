@@ -18,7 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => function (Request $request, \Closure $next) {
                 // cek apakah user login di salah satu guard
                 if (!Auth::guard('web')->check()) {
-                    abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
+                    // abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
+                    $request->session()->put('halaman-yang-dikunjungi', $request->fullUrl());
+                    // dd($request->session()->get('halaman-yang-dikunjungi'));
+                    return redirect()->route('login')->with('gagal', 'Anda harus login sebagai admin untuk mengakses halaman ini.');
                 }
 
                 return $next($request);

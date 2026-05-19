@@ -580,6 +580,30 @@ class pengelolaanAgenda extends Controller
         ));
     }
 
+    // download template import jadwal matkul
+    public function downloadTemplateImportMatkul()
+    {
+        $filePath = public_path('storage/uploads/template/template_import_jadwal_matkul.xlsx');
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath, 'template_import_jadwal_matkul.xlsx');
+        } else {
+            return redirect()->back()->with('gagal', 'File template tidak ditemukan.');
+        }
+    }
+
+    // download template import jadwal PTS/PAS
+    public function downloadTemplateImportPtsPas()
+    {
+        $filePath = public_path('storage/uploads/template/template_import_jadwal_pts_pas.xlsx');
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath, 'template_import_jadwal_pts_pas.xlsx');
+        } else {
+            return redirect()->back()->with('gagal', 'File template tidak ditemukan.');
+        }
+    }
+
     // ============================================= unutk edit agenda =========================================================================
 
     // menyimpan data input agenda sementara sebelum di simpan di db agenda 

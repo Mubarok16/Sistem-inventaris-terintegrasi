@@ -70,11 +70,15 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                                Nomor Hp
+                                ID Telegram (Notifikasi)</label>
                             </label>
-                            <input name="no_hp"
+                            <input name="no_hp" readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 value="{{ $dataUser->no_hp }}" type="text" />
+                            {{-- <label class="text-xs font-bold text-slate-500 tracking-wider block">
+                                Dapatkan ID Telegram Anda dengan menghubungi Bot Telegram kami di
+                                <a href="https://t.me/userinfobot" target="_blank">sipraunwir_bot</a>
+                            </label> --}}
                         </div>
                         @if ($dataUser->hak_akses === 'admin' && $JmlhAdmin > 1)
                             <div class="space-y-3 md:col-span-2 pt-2">

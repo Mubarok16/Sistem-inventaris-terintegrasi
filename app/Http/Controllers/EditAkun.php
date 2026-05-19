@@ -45,7 +45,7 @@ class EditAkun extends Controller
                 'username' => 'required|string|max:50',
                 'password' => 'max:12',
                 'role' => 'required|string',
-                'no_hp' => 'required'
+                // 'no_hp' => 'required'
             ]);
 
             if (User::where('username', $request->username)->count() > 1) {
@@ -81,7 +81,7 @@ class EditAkun extends Controller
 
             return redirect()->back()->with('success', 'Akun ' . $User->nama . ' berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!');
+            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!'. $e);
         }
     }
 

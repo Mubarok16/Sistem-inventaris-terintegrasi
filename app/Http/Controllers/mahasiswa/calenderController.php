@@ -132,39 +132,74 @@ class calenderController extends Controller
 
         // Ambil data dari Agenda Fakultas
         $agenda_fakultas = DB::table('agenda_fakultas')
-            ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
+            ->leftJoin('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
+            ->leftJoin('usage_items', 'agenda_fakultas.kode_agenda', '=', 'usage_items.kode_agenda')
             ->select(
                 'agenda_fakultas.kode_agenda as id_ref',
                 'agenda_fakultas.nama_agenda as title_ref',
-                'usage_rooms.tgl_pinjam_usage_room',
-                'usage_rooms.tgl_kembali_usage_room',
-                'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
-                'usage_rooms.status_usage_room'
+
+                // 'usage_rooms.tgl_pinjam_usage_room',
+                // 'usage_rooms.tgl_kembali_usage_room',
+                // 'usage_rooms.jam_mulai_usage_room',
+                // 'usage_rooms.jam_selesai_usage_room',
+                // 'usage_rooms.status_usage_room'
+
+                DB::raw('COALESCE(usage_rooms.tgl_pinjam_usage_room, usage_items.tgl_pinjam_usage_item) as tgl_pinjam_usage_room'),
+                DB::raw('COALESCE(usage_rooms.tgl_kembali_usage_room, usage_items.tgl_kembali_usage_item) as tgl_kembali_usage_room'),
+
+                // Gabungkan jam: jika room ada pakai room, jika tidak pakai item
+                DB::raw('COALESCE(usage_rooms.jam_mulai_usage_room, usage_items.jam_mulai_usage_item) as jam_mulai_usage_room'),
+                DB::raw('COALESCE(usage_rooms.jam_selesai_usage_room, usage_items.jam_selesai_usage_item) as jam_selesai_usage_room'),
+
+                // Gabungkan status
+                DB::raw('COALESCE(usage_rooms.status_usage_room, usage_items.status_usage_item) as status_usage_room')
             )
             ->where('agenda_fakultas.kode_agenda', '=', session('id_peminjaman_agenda'))
+            ->distinct()
             // ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
             ->get();
 
-        // Gabungan (Union) dengan data dari Peminjaman
+        // Peminjaman
         $agendas = DB::table('peminjaman')
-            ->join('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
+            ->leftJoin('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
+            ->leftJoin('usage_items', 'peminjaman.kode_peminjaman', '=', 'usage_items.kode_peminjaman')
             ->select(
+                // 'peminjaman.kode_peminjaman as id_ref',
+                // 'peminjaman.ket_peminjaman as title_ref',
+
+                // 'usage_rooms.tgl_pinjam_usage_room',
+                // 'usage_rooms.tgl_kembali_usage_room',
+                // 'usage_rooms.jam_mulai_usage_room',
+                // 'usage_rooms.jam_selesai_usage_room',
+                // 'usage_rooms.status_usage_room',
+
+                // 'usage_items.tgl_pinjam_usage_item',
+                // 'usage_items.tgl_kembali_usage_item',
+                // 'usage_items.jam_mulai_usage_item',
+                // 'usage_items.jam_selesai_usage_item',
+                // 'usage_items.status_usage_item'
+
                 'peminjaman.kode_peminjaman as id_ref',
                 'peminjaman.ket_peminjaman as title_ref',
-                'usage_rooms.tgl_pinjam_usage_room',
-                'usage_rooms.tgl_kembali_usage_room',
-                'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
-                'usage_rooms.status_usage_room'
+
+                // Gabungkan tanggal: jika room ada pakai room, jika tidak pakai item
+                DB::raw('COALESCE(usage_rooms.tgl_pinjam_usage_room, usage_items.tgl_pinjam_usage_item) as tgl_pinjam_usage_room'),
+                DB::raw('COALESCE(usage_rooms.tgl_kembali_usage_room, usage_items.tgl_kembali_usage_item) as tgl_kembali_usage_room'),
+
+                // Gabungkan jam: jika room ada pakai room, jika tidak pakai item
+                DB::raw('COALESCE(usage_rooms.jam_mulai_usage_room, usage_items.jam_mulai_usage_item) as jam_mulai_usage_room'),
+                DB::raw('COALESCE(usage_rooms.jam_selesai_usage_room, usage_items.jam_selesai_usage_item) as jam_selesai_usage_room'),
+
+                // Gabungkan status
+                DB::raw('COALESCE(usage_rooms.status_usage_room, usage_items.status_usage_item) as status_usage_room')
             )
-            // ->union($agenda_fakultas)
             ->where('peminjaman.kode_peminjaman', '=', session('id_peminjaman_agenda'))
+            ->distinct()
             // ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
             ->get();
         // }
 
-            // dd($agendas);
+        // dd($agendas, $agenda_fakultas);
 
 
 
@@ -334,6 +369,7 @@ class calenderController extends Controller
         // Jika ada, berarti data berasal dari peminjaman
         if ($peminjaman) {
             return match ($status) {
+                'diajukan' => '#964B00', // coklat
                 'terlambat' => '#FF0000', // red
                 'dibatalkan' => '#6B7280', // abu abu
                 'terjadwal' => '#facc15', // kuning

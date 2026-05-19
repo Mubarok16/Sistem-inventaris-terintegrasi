@@ -9,14 +9,18 @@ use App\Services\Admin\PengelolaanPeminjamanService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PengelolaanPeminjamanAdmin extends Controller
 {
     // menampilkan halaman detail peminjaman admin
-    function DetailPeminjamanAdmin($id)
+    function DetailPeminjamanAdmin(Request $request, $id)
     {
         if (Auth::user()->hak_akses  !== "admin") {
-            abort(403, 'Unauthorized');
+            $request->session()->put('halaman-yang-dikunjungi', '/admin/pengajuan-peminjaman/detail/' . $id);
+
+            // abort(403, 'Unauthorized');
+            return redirect()->route('login')->with('gagal', 'Anda harus login sebagai admin untuk mengakses halaman ini.');
         }
 
         $dataDetailPengajuanPeminjaman = DB::table('peminjaman')
@@ -299,7 +303,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_room' => 'selesai',
                         'updated_at' => now(),
                     ]);
-    
+
                 DB::table('usage_items')
                     ->select(
                         'kode_peminjaman',
@@ -329,7 +333,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_room' => 'selesai',
                         'updated_at' => now(),
                     ]);
-    
+
                 DB::table('usage_items')
                     ->select(
                         'kode_peminjaman',
@@ -344,7 +348,6 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'updated_at' => now(),
                     ]);
             }
-
         } else {
             // jika tidak ada peminjaman hari ini berdasarkan kode peminjamannnya
             return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'peminjaman mungkin tidak dijadwalkan hari ini.');
@@ -395,5 +398,27 @@ class PengelolaanPeminjamanAdmin extends Controller
         $request->session()->put('status-peminjaman', $status);
 
         return back();
+    }
+
+    // view file pengajuan peminjaman
+    function viewFilePengajuanPeminjaman(Request $request)
+    {
+        $kodePeminjaman = $request->input('kode_peminjaman');
+
+        $peminjaman = DB::table('peminjaman')
+            ->where('kode_peminjaman', $kodePeminjaman)
+            ->first();
+
+        // dd($peminjaman->lampiran_file);
+
+        $path = $peminjaman->lampiran_file;
+
+        // Cek apakah filenya beneran ada atau tidak
+        if (!Storage::exists($path)) {
+            return redirect()->back()->with('gagal', 'berkas tidak ditemukan!');
+        }
+
+        // Jalankan perintah download otomatis
+        return Storage::download($path);
     }
 }

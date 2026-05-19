@@ -103,13 +103,13 @@
                             </div>
                             
                             {{-- konfirmasi pengambilan barang atau kunci ruangan --}}
-                            <div class="relative flex-grow max-w-md">
+                            {{-- <div class="relative flex-grow max-w-md">
                                 <i
                                     class="fa-solid fa-keyboard absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                                 <input
                                     class="w-full pl-10 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
                                     placeholder="Konfirmasi pengambilan & pengembalian" type="text" />
-                            </div>
+                            </div> --}}
 
                         </div>
                     </form>

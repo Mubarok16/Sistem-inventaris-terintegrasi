@@ -70,6 +70,10 @@
                                 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors">
                                 {{ $dataBarang->nama_item }}
                             </h3>
+                            <span
+                                class="text-xs font-medium text-slate-400 uppercase tracking-wide">Tempat: Ruang {{ $dataBarang->nama_room != null ? $dataBarang->nama_room : 'tidak diketahui' }}
+                            </span>
+                            </span>
                             <div class="flex items-center justify-between mt-auto pt-2">
                                 <div class="flex gap-2 w-full">
                                     <form action="{{ route('mhs-detail-peminjaman-barang', $dataBarang->id_item) }}"

@@ -75,7 +75,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                                Nomor Hp
+                                ID Telegram </label>
                             </label>
                             <input name="no_hp"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"

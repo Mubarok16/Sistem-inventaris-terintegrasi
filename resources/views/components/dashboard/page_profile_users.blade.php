@@ -68,12 +68,16 @@
                                 value="{{ $dataUser->hak_akses }}" type="text" />
                         </div>
                         <div class="space-y-2">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                                Nomor Hp
+                               <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                                ID Telegram (opsional)</label>
                             </label>
                             <input name="no_hp"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 value="{{ $dataUser->no_hp }}" type="text" />
+                            <label class="text-xs font-bold text-slate-500 tracking-wider block">
+                                Dapatkan ID Telegram Anda dengan menghubungi Bot Telegram kami di
+                                <a href="https://t.me/sipraunwir_bot" target="_blank">sipraunwir_bot</a> unutk mendapatkan notifikasi peminjaman
+                            </label>
                         </div>
                         @if ($dataUser->hak_akses === 'admin' && $JmlhAdmin > 1)
                             <div class="space-y-3 md:col-span-2 pt-2">

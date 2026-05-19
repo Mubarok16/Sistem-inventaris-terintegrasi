@@ -42,7 +42,16 @@
                     </div>
                 </div>
 
-                <div x-data="{ isRecurring: 'none' }" class="flex flex-col gap-2">
+                <div x-data="{
+                    isRecurring: 'none',
+                    tgl_mulai: '',
+                    tgl_kembali: '',
+                    errortgl: false,
+                    errorMessage: '',
+                    getMinDate() {
+                        return new Date().toISOString().split('T')[0];
+                    }
+                }" class="flex flex-col gap-2">
 
                     {{-- opsi peminjaman full --}}
                     <div
@@ -73,7 +82,28 @@
                                 <label
                                     class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">Tanggal
                                     Pinjam</label>
+
                                 <input type="date" name="tgl_pinjam" :disabled="isRecurring !== 'full'"
+                                    :min="getMinDate()" x-model="tgl_mulai"
+                                    @change="
+                                       if (tgl_mulai) {
+                                           {{-- Validasi jika durasi peminjaman lebih dari 3 hari --}}
+                                            else if (tgl_mulai) {
+                                                let selisihWaktu = new Date(tgl_kembali).getTime() - new Date(tgl_mulai).getTime();
+                                                let selisihHari = selisihWaktu / (1000 * 3600 * 24);
+                                                
+                                                if (selisihHari > 3) {
+                                                    errortgl = true;
+                                                    errorMessage = 'Peminjaman inventaris maksimal hanya boleh 3 hari!';
+                                                    tgl_kembali = ''; // Reset input jika lebih dari 3 hari
+                                                } else {
+                                                    errortgl = false;
+                                                }
+                                            } else {
+                                                errortgl = false;
+                                            }
+                                        }
+                                    "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
                             </div>
 
@@ -82,7 +112,39 @@
                                     class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">Tanggal
                                     Kembali</label>
                                 <input type="date" name="tgl_kembali" :disabled="isRecurring !== 'full'"
+                                    :min="getMinDate()" x-model="tgl_kembali"
+                                    @change="
+                                       if (tgl_kembali) {
+                                            {{-- Validasi jika tgl_kembali mendahului tgl_mulai --}}
+                                            if (tgl_kembali < tgl_mulai) {
+                                                errortgl = true;
+                                                errorMessage = 'Tanggal kembali tidak boleh sebelum tanggal Pinjam!';
+                                                tgl_kembali = ''; 
+                                            } 
+                                           {{-- Validasi jika durasi peminjaman lebih dari 3 hari --}}
+                                            else if (tgl_mulai) {
+                                                let selisihWaktu = new Date(tgl_kembali).getTime() - new Date(tgl_mulai).getTime();
+                                                let selisihHari = selisihWaktu / (1000 * 3600 * 24);
+                                                
+                                                if (selisihHari > 2) {
+                                                    errortgl = true;
+                                                    errorMessage = 'Peminjaman inventaris maksimal hanya boleh 3 hari!';
+                                                    tgl_kembali = ''; // Reset input jika lebih dari 3 hari
+                                                } else {
+                                                    errortgl = false;
+                                                }
+                                            } else {
+                                                errortgl = false;
+                                            }
+                                        }
+                                    "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
+                            </div>
+
+                            <div x-show="errortgl" x-transition
+                                class="col-span-2 text-[10px] text-red-500 flex items-center gap-1 font-medium"
+                                x-text="errorMessage">
+                                <i class="fa-solid fa-circle-exclamation"></i>
                             </div>
 
                             <div class="col-span-2 p-2 bg-blue-50 text-blue-700 rounded-lg text-[12px]">
@@ -123,6 +185,26 @@
                                     class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">Tanggal
                                     Pinjam</label>
                                 <input type="date" name="tgl_pinjam" :disabled="isRecurring !== 'spesifik'"
+                                    :min="getMinDate()" x-model="tgl_mulai"
+                                    @change="
+                                       if (tgl_mulai) {
+                                           {{-- Validasi jika durasi peminjaman lebih dari 3 hari --}}
+                                            else if (tgl_mulai) {
+                                                let selisihWaktu = new Date(tgl_kembali).getTime() - new Date(tgl_mulai).getTime();
+                                                let selisihHari = selisihWaktu / (1000 * 3600 * 24);
+                                                
+                                                if (selisihHari > 3) {
+                                                    errortgl = true;
+                                                    errorMessage = 'Peminjaman inventaris maksimal hanya boleh 3 hari!';
+                                                    tgl_kembali = ''; // Reset input jika lebih dari 3 hari
+                                                } else {
+                                                    errortgl = false;
+                                                }
+                                            } else {
+                                                errortgl = false;
+                                            }
+                                        }
+                                    "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
                             </div>
 
@@ -131,9 +213,43 @@
                                     class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">Tanggal
                                     Kembali</label>
                                 <input type="date" name="tgl_kembali" :disabled="isRecurring !== 'spesifik'"
+                                    :min="getMinDate()" x-model="tgl_kembali"
+                                    @change="
+                                       if (tgl_kembali) {
+                                            {{-- Validasi jika tgl_kembali mendahului tgl_mulai --}}
+                                            if (tgl_kembali < tgl_mulai) {
+                                                errortgl = true;
+                                                errorMessage = 'Tanggal kembali tidak boleh sebelum tanggal Pinjam!';
+                                                tgl_kembali = ''; 
+                                            } 
+                                           {{-- Validasi jika durasi peminjaman lebih dari 3 hari --}}
+                                            else if (tgl_mulai) {
+                                                let selisihWaktu = new Date(tgl_kembali).getTime() - new Date(tgl_mulai).getTime();
+                                                let selisihHari = selisihWaktu / (1000 * 3600 * 24);
+                                                
+                                                if (selisihHari > 2) {
+                                                    errortgl = true;
+                                                    errorMessage = 'Peminjaman inventaris maksimal hanya boleh 3 hari!';
+                                                    tgl_kembali = ''; // Reset input jika lebih dari 3 hari
+                                                } else {
+                                                    errortgl = false;
+                                                }
+                                            } else {
+                                                errortgl = false;
+                                            }
+                                        }
+                                    "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
                             </div>
 
+                            <div x-show="errortgl" x-transition
+                                class="col-span-2 text-[10px] text-red-500 flex items-center gap-1 font-medium"
+                                x-text="errorMessage">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            </div>
+
+
+                            {{-- jam mulai --}}
                             <div class="w-full">
                                 <label class="text-[12px] font-semibold text-slate-500 mb-1 block tracking-wider">
                                     Jam Mulai Digunakan
@@ -141,13 +257,13 @@
                                 <input type="time" name="jam_mulai" min="08:00" max="15:00"
                                     x-model="jamMulai" :disabled="isRecurring !== 'spesifik'"
                                     @change="
-                                           if(jamMulai < '08:00' || jamMulai > '15:00') {
-                                                error = true;
-                                                jamMulai = ''; 
-                                            } else {
-                                                error = false;
-                                            }
-                                        "
+                                               if(jamMulai < '08:00' || jamMulai > '15:00') {
+                                                    error = true;
+                                                    jamMulai = ''; 
+                                                } else {
+                                                    error = false;
+                                                }
+                                            "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
                             </div>
 
@@ -159,13 +275,13 @@
                                 <input type="time" name="jam_selesai" min="08:00" max="15:00"
                                     x-model="jamSelesai" :disabled="isRecurring !== 'spesifik'"
                                     @change="
-                                           if(jamSelesai < '08:00' || jamSelesai > '15:00') {
-                                                error = true;
-                                                jamSelesai = ''; 
-                                            } else {
-                                                error = false;
-                                            }
-                                        "
+                                               if(jamSelesai < '08:00' || jamSelesai > '15:00') {
+                                                    error = true;
+                                                    jamSelesai = ''; 
+                                                } else {
+                                                    error = false;
+                                                }
+                                            "
                                     class="block w-full rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:bg-slate-100" />
 
                             </div>
@@ -173,8 +289,11 @@
                             <div x-show="error" x-transition
                                 class="text-[10px] text-red-500 flex items-center gap-1 font-medium">
                                 <i class="fa-solid fa-circle-exclamation"></i>
-                                Batas waktu penggunaan: 08:00 - 15:00, Lebih dari itu silahkan ajukan opsi peminjaman full.
+                                Batas waktu penggunaan: 08:00 - 15:00, Lebih dari itu silahkan ajukan opsi peminjaman
+                                full.
                             </div>
+
+
 
 
                             {{-- <div class="w-full">

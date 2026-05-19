@@ -30,11 +30,13 @@
                     <i class="fa-solid fa-file-lines text-slate-500 text-[20px]"></i>
                     Unduh Template CSV
                 </button> --}}
-                <button
-                    class="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg! font-medium hover:bg-slate-50 transition-colors">
-                    <i class="fa-solid fa-table-list text-slate-500 text-[20px]"></i>
-                    Unduh Template Excel
-                </button>
+                <form action="{{ route('download-template-import-matkul') }}" method="get">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg! font-medium hover:bg-slate-50 transition-colors">
+                        <i class="fa-solid fa-table-list text-slate-500 text-[20px]"></i>
+                        Unduh Template Excel
+                    </button>
+                </form>
             </div>
         </div>
     
@@ -105,7 +107,7 @@
                                                 <strong>
                                                     Ruang:
                                                 </strong>
-                                                Berisi nama Ruangan yang digunakan untuk agenda
+                                                Berisi nama Ruangan yang digunakan untuk agenda (pastikan nama ruangan sudah terdaftar di sistem!).
                                             </span>
                                         </li>
                                         <li class="flex items-start gap-2">
@@ -334,11 +336,13 @@
                     <i class="fa-solid fa-file-lines text-slate-500 text-[20px]"></i>
                     Unduh Template CSV
                 </button> --}}
-                <button
-                    class="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg! font-medium hover:bg-slate-50 transition-colors">
-                    <i class="fa-solid fa-table-list text-slate-500 text-[20px]"></i>
-                    Unduh Template Excel
-                </button>
+                <form action="{{ route('download-template-import-PTS-PAS') }}" method="get">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg! font-medium hover:bg-slate-50 transition-colors">
+                        <i class="fa-solid fa-table-list text-slate-500 text-[20px]"></i>
+                        Unduh Template Excel
+                    </button>
+                </form>
             </div>
         </div>
     
@@ -391,14 +395,14 @@
                                                 <strong>
                                                     Ruang:
                                                 </strong>
-                                                Berisi nama Ruangan yang digunakan untuk agenda
+                                                Berisi nama Ruangan yang digunakan untuk agenda (pastikan nama ruangan sudah terdaftar di sistem!).
                                             </span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <span class="size-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
                                             <span>
                                                 <strong>Tanggal:</strong>
-                                                Format Years-month-date (contoh: 2025-12-01).
+                                                Format month-date-Years (contoh: 05-20-2025).
                                             </span>
                                         </li>
                                         <li class="flex items-start gap-2">

@@ -105,11 +105,15 @@
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                            <i class="fa-solid fa-print text-lg text-white"></i>
-                            <span class="text-white">Lampiran file</span>
-                        </button>
+                        <form action="{{ route('view-file-pengajuan-peminjaman') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="kode_peminjaman" value="{{ $dataPeminjaman->kode_peminjaman }}">
+                            <button
+                                class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                <i class="fa-solid fa-print text-lg text-white"></i>
+                                <span class="text-white">Lampiran file</span>
+                            </button>
+                        </form>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
@@ -242,6 +246,8 @@
         {{-- calender --}}
         <div class="flex flex-wrap gap-2 pt-3 border-t-1 border-gray-300 ">
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #964B00;">MENUNGGU PERSETUJUAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #dc2626;">TERLAMBAT / BELUM DIKEMBALIKAN</span>
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #64748b;">DIBATALKAN</span>
@@ -252,8 +258,8 @@
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #22c55e;">SELESAI</span>
         </div>
-        <div id="calendarDetail" data-url="{{ url('pengelolaan-agenda-calender') }}" data-start-date="{{ $tglStartKalender }}"
-            class="mb-4 fc-tailwind">
+        <div id="calendarDetail" data-url="{{ url('pengelolaan-agenda-calender') }}"
+            data-start-date="{{ $tglStartKalender }}" class="mb-4 fc-tailwind">
         </div>
 
         <!-- Items & room List -->
@@ -397,33 +403,38 @@
             <div class="flex flex-col gap-6">
                 <form method="POST" action="{{ route('persetujuanPeminjaman') }}">
                     @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2" for="notes">Catatan Tambahan
-                            (Opsional)</label>
-                        <textarea name="catatan"
-                            class="w-full rounded-lg border-1 border-slate-300 bg-white text-slate-900! focus:outline-none focus:ring-primary sm:text-sm p-3"
-                            placeholder="Tambahkan catatan untuk peminjam..." rows="3"></textarea>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
+                    @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                            {{-- {{ dd($dataPeminjaman) }} --}}
 
-                        @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2" for="notes">Catatan
+                                Tambahan
+                                (Opsional)
+                            </label>
+                            <textarea name="catatan" {{ $dataPeminjaman->catatan_pengelola != null ? 'readonly' : '' }}
+                                class="w-full rounded-lg border-1 border-slate-300 bg-white text-slate-900! focus:outline-none focus:ring-primary sm:text-sm p-3"
+                                placeholder="Tambahkan catatan untuk peminjam..." rows="3">{{ $dataPeminjaman->catatan_pengelola != null ? $dataPeminjaman->catatan_pengelola : '' }}</textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
+
                             <div class="items-center gap-4 mb-2">
-                                <button type="submit" name="aksi" value="approve"
-                                    class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
-                                    Approve
-                                </button>
-                                <button type="submit" name="aksi" value="reject"
-                                    class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
-                                    Reject
-                                </button>
+                                @if ($dataPeminjaman->status_peminjaman == 'diajukan')
+                                    <button type="submit" name="aksi" value="approve"
+                                        class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
+                                        Approve
+                                    </button>
+                                    <button type="submit" name="aksi" value="reject"
+                                        class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
+                                        Reject
+                                    </button>
+                                @endif
                                 <input type="text" name="kode_peminjaman"
                                     value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endforeach
                 </form>
             </div>
         </div>
     </div>
 </main>
-

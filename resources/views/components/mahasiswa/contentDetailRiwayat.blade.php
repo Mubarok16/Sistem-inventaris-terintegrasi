@@ -108,11 +108,15 @@
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
-                        <button
-                            class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                            <i class="fa-solid fa-print text-md text-white"></i>
-                            <span class="text-white text-md">Lampiran file</span>
-                        </button>
+                        <form action="{{ route('view-file-pengajuan-peminjaman') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="kode_peminjaman" value="{{ $dataPeminjaman->kode_peminjaman }}">
+                            <button
+                                class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                <i class="fa-solid fa-print text-md text-white"></i>
+                                <span class="text-white text-md">Lampiran file</span>
+                            </button>
+                        </form>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
@@ -246,6 +250,8 @@
         {{-- calender --}}
         <div class="flex flex-wrap gap-2 pt-3 border-t-1 border-gray-300 ">
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #964B00;">MENUNGGU PERSETUJUAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #dc2626;">TERLAMBAT / BELUM DIKEMBALIKAN</span>
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #64748b;">DIBATALKAN</span>
@@ -256,7 +262,8 @@
             <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
                 style="background-color: #22c55e;">SELESAI</span>
         </div>
-        <div id="calendarDetail" data-url="{{ url('/riwayat-peminjaman-calender') }}" data-start-date="{{ $tglStartKalender }}" class="mb-4 fc-tailwind">
+        <div id="calendarDetail" data-url="{{ url('/riwayat-peminjaman-calender') }}"
+            data-start-date="{{ $tglStartKalender }}" class="mb-4 fc-tailwind">
         </div>
 
         <!-- Items & room List -->
@@ -546,48 +553,67 @@
             </div>
         </div>
 
-        <!-- Qr Code -->
+        <!-- catttan -->
         <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            {{-- <h5 class="font-semibold text-slate-900 mb-4">Catatan Pengelola</h5> --}}
+            @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                {{-- {{ dd($dataPeminjaman) }} --}}
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2" for="notes">Catatan Pengelola
+                    </label>
+                    <textarea name="catatan" readonly
+                        class="w-full rounded-lg border-1 border-slate-300 bg-white text-slate-900! focus:outline-none focus:ring-primary sm:text-sm p-3"
+                        rows="3">{{ $dataPeminjaman->catatan_pengelola != null ? $dataPeminjaman->catatan_pengelola : 'tidak ada catatan' }}</textarea>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Qr Code -->
+        {{-- <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 rounded-lg shadow-sm">
                 <div class="flex items-center"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
                     <span class="text-sm text-yellow-800 leading-none">
                         Pastikan menunjukkan QR CODE dibawah saat melakukan pengambilan barang dan pengembalian
                     </span>
                 </div>
-            </div>
-            <div class="flex flex-col gap-4">
-                <form method="POST" action="{{ route('QR-dan-batal-peminjaman') }}">
-                    @csrf
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
-                        @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
-                            <div class="items-center gap-4 mb-2">
+            </div> --}}
+        <div class="flex flex-col gap-4">
+            <form method="POST" action="{{ route('QR-dan-batal-peminjaman') }}">
+                @csrf
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
+                    @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
+                        <div class="items-center gap-4 mb-2">
+
+                            @if (
+                                $dataPeminjaman->status_peminjaman == 'diajukan' ||
+                                    $dataPeminjaman->status_peminjaman == 'ditolak' ||
+                                    $dataPeminjaman->status_peminjaman == 'dibatalkan' ||
+                                    $dataPeminjaman->status_peminjaman == 'selesai')
+                            @else
                                 <button type="submit" name="aksi" value="QR"
                                     class="px-3 py-1.5 text-sm font-medium border rounded-md! text-white bg-blue-500 hover:bg-blue-600">
                                     <i class="fas fa-qrcode"></i>
                                     QR Code
                                 </button>
-                                @if (
-                                    $dataPeminjaman->status_peminjaman === 'dipinjam' ||
-                                        $dataPeminjaman->status_peminjaman === 'selesai' ||
-                                        $dataPeminjaman->status_peminjaman === 'terlambat' ||
-                                        $dataPeminjaman->status_peminjaman === 'dibatalkan' ||
-                                        $dataPeminjaman->status_peminjaman === 'ditolak')
-                                @else
-                                    <button type="submit" name="aksi" value="batal"
-                                        class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
-                                        batal meminjam
-                                    </button>
-                                @endif
+                            @endif
 
-                                <input type="text" name="kode_peminjaman"
-                                    value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
-                                <input type="text" name="status_peminjaman"
-                                    value="{{ $dataPeminjaman->status_peminjaman }}" class="hidden">
-                            </div>
-                        @endforeach
-                    </div>
-                </form>
-            </div>
+                            @if ($dataPeminjaman->status_peminjaman == 'diajukan')
+                                <button type="submit" name="aksi" value="batal"
+                                    class="px-3 py-1.5 text-sm font-medium text-white bg-red-500 border rounded-md! hover:bg-red-600">
+                                    batal meminjam
+                                </button>
+                            @endif
+
+                            <input type="text" name="kode_peminjaman"
+                                value="{{ $dataPeminjaman->kode_peminjaman }}" class="hidden">
+                            <input type="text" name="status_peminjaman"
+                                value="{{ $dataPeminjaman->status_peminjaman }}" class="hidden">
+                        </div>
+                    @endforeach
+                </div>
+            </form>
         </div>
+        {{-- </div> --}}
     </div>
 </main>

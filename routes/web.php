@@ -137,6 +137,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin'])->name('admin.detailPeminjaman');
     Route::post('admin/pengajuan-peminjaman/persetujuan', [PengelolaanPeminjamanAdmin::class, 'persetujuan'])->name('persetujuanPeminjaman');
     Route::post('admin/pengajuan-peminjaman/pilih-data-pengelolaan-peminjaman-by-status', [PengelolaanPeminjamanAdmin::class, 'pilihDataPengajuanPeminjamanAdmin'])->name('pilih-data-pengelolaan-peminjaman-by-status');
+    Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
+
 
     //Pengelolaan Agenda ========================================================================================================================
     // page import agenda
@@ -149,6 +151,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/pengelolaan-agenda/edit-agenda/{id}', [pengelolaanAgenda::class, 'HalamanEditAgenda'])->name('edit-agenda-admin');
     // fungsi tambah agenda import
     Route::post('/tambah-agenda-impor', [pengelolaanAgenda::class, 'addAgendaImport'])->name('tambah-agenda-import');
+    // download template import agenda
+    Route::get('/download-template-import-jadwal-matkul', [pengelolaanAgenda::class, 'downloadTemplateImportMatkul'])->name('download-template-import-matkul');
+    Route::get('/download-template-import-jadwal-ptspas', [pengelolaanAgenda::class, 'downloadTemplateImportPtsPas'])->name('download-template-import-PTS-PAS');
 
     // --------------------------------------------- route untuk logika edit agenda -------------------------------------------------------------------- 
     // route fungsi temporary menambah menghapus barang dan ruang dan agenda sebelum di simpan permanen di db
@@ -276,6 +281,9 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
     // btn batal dan cetak qr user
     Route::post('cetak-QRriwayat-dan-batal-peminjaman', [RiwayarController::class, 'QrDanBatalPeminjaman'])->name('QR-dan-batal-peminjaman');
+    // download file lampiran pengajuan peminjaman
+    Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
+
 
 
     // kalender unutk riwayat peminjaman

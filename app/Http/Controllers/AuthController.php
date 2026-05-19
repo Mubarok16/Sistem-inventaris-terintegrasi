@@ -29,7 +29,12 @@ class AuthController extends Controller
                 if (Auth::guard('web')->attempt($credentials)) {
                     $request->session()->regenerate();
                     if (Auth::user()->hak_akses === "admin") { // cek jika hak_akses adalah 'admin/tendik'
-                        return redirect()->intended('/dashboard/admin'); // arahkan ke dashboard admin
+                        if ($request->session()->get('halaman-yang-dikunjungi') == null) {
+                            # code...
+                            return redirect()->intended('/dashboard/admin'); // arahkan ke dashboard admin
+                        }else {
+                            return redirect()->intended($request->session()->get('halaman-yang-dikunjungi')); // arahkan ke halaman yang sebelumnya dikunjungi
+                        }
                     } elseif (Auth::user()->hak_akses === "pimpinan") { // cek jika hak_akses adalah 'pimpinan'
                         return redirect()->intended('/dashboard/pimpinan'); // arahkan ke dashboard dosen
                     } elseif (Auth::user()->hak_akses === "kaprodi") { // cek jika hak_akses adalah 'kaprodi'

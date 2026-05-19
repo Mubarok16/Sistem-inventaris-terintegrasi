@@ -175,7 +175,7 @@ class CreateAkun extends Controller
             'password' => 'required|string|max:8',
             'role' => 'required|string',
             'status' => 'string',
-            'no_hp' => 'integer'
+            // 'no_hp' => 'integer'
         ]);
         // dd($request->all());
         if (User::where('username', $request->username)->exists()) {
