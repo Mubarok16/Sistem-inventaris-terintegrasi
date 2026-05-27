@@ -24,15 +24,21 @@
                         <div class="flex gap-2">
                             <form action="{{ route('input-bulan-dashboard-pimpinan') }}" method="post">
                                 @csrf
-                                <input type="month" name="tanggal" value="{{ $bulanInput }}" onchange="this.form.submit()"
-                                 class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
+                                <input type="month" name="tanggal" value="{{ $bulanInput }}"
+                                    onchange="this.form.submit()"
+                                    class="bg-slate-50 border border-border-light px-4 py-2.5 rounded-lg! text-sm font-bold text-text-main hover:bg-slate-100 transition-all flex items-center gap-2">
                             </form>
-                           
-                            <button
-                                class="bg-blue-500 text-white px-5 py-2.5 rounded-lg! text-sm font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
-                                <i class="fa-solid fa-file-export"></i>
-                                <span>Ekspor Laporan</span>
-                            </button>
+
+                            <form action="{{ route('preview_laporan_penggunaan', ['date' => $bulanInput]) }}"
+                                target="_blank" method="get">
+                                @csrf
+                                <!-- Isi input dan tombol submit form di sini -->
+                                <button
+                                    class="bg-blue-500 text-white px-5 py-2.5 rounded-lg! text-sm font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    <span>Cetak Laporan</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     @include('components.pimpinan.contentDashboardPimpinan')
@@ -61,12 +67,11 @@
                     </div>
                     @include('components.pimpinan.contentPerawatanBarang')
                 @elseif ($halaman === 'contentProfile')
-                     <h4>Profile User</h4>
+                    <h4>Profile User</h4>
                     <div>
                         <a href="/dashboard/pimpinan" class="text-gray-400! no-underline!">Dahsboard</a>
                         <span class="text-gray-500">/</span>
-                        <a href=""
-                            class="text-gray-400! no-underline! font-medium">Profile</a>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Profile</a>
                     </div>
                     @include('components.dashboard.page_profile_users')
                 @endif

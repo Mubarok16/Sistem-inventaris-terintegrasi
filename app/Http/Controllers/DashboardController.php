@@ -169,7 +169,7 @@ class DashboardController extends Controller
             ->orderBy('peminjaman.created_at', 'asc')
             ->get();
 
-        // dd($totalPeminjamanAktif);
+        // dd($bulanInput);
 
         $user = Auth::user()->nama;
         $halaman = 'contentDashbord';
@@ -411,9 +411,9 @@ class DashboardController extends Controller
     // detail agenda calender di admin
     public function adminDetailAgenda($id, $date)
     {
-        if (Auth::user()->hak_akses  !== "admin") {
-            abort(403, 'Unauthorized');
-        }
+        // if (Auth::user()->hak_akses  !== "admin" || Auth::user()->hak_akses  !== "pimpinan" || Auth::user()->hak_akses  !== "kaprodi") {
+        //     abort(403, 'Unauthorized');
+        // }
 
         $detailAgendaService = new DetailAgendaService;
         $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id, $date);
@@ -425,7 +425,177 @@ class DashboardController extends Controller
 
         $user = Auth::user()->nama;
         $halaman = 'contentDetailAgendaCalender';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'id', 'date'));
+    }
+
+    // detail agenda edit per tgl di admin
+    public function editAdminDetailAgendaPerhari($id, $date)
+    {
+        // if (Auth::user()->hak_akses  !== "admin" || Auth::user()->hak_akses  !== "pimpinan" || Auth::user()->hak_akses  !== "kaprodi") {
+        //     abort(403, 'Unauthorized');
+        // }
+
+        $id = urldecode($id);
+
+        // dd('ibnu');
+
+        $detailAgendaService = new DetailAgendaService;
+        $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id, $date);
+
+        $headerAgenda = $dataAgenda['header'];
+        $usage_room = $dataAgenda['usage_ruang'];
+        $usage_item = $dataAgenda['usage_barang'];
+        $tglPinjam = $dataAgenda['tgl_pinjam'];
+
+        // megambil data barang dan ruangan yang digunakan di agenda tersebut untuk di edit
+
+        $dataAgendas = DB::table('agenda_fakultas')
+            ->where('agenda_fakultas.kode_agenda', $id)
+            ->select(
+                'agenda_fakultas.kode_agenda',
+                'agenda_fakultas.nama_agenda',
+                'agenda_fakultas.tgl_mulai_agenda',
+                'agenda_fakultas.tgl_selesai_agenda',
+                'agenda_fakultas.loop_hari',
+                'agenda_fakultas.tipe_agenda'
+            )
+            ->get();
+
+        // mengambil semua data barang dan nama tipe barang dan nama ruangan
+        $databarang = DB::table('usage_items')
+            ->join('items', 'usage_items.id_item', '=', 'items.id_item')
+            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->select(
+                'usage_items.id_item',
+                'usage_items.qty_usage_item',
+                'items.nama_item',
+                'items.img_item',
+                'items.kondisi_item',
+                'tipe_item.nama_tipe_item',
+                'usage_items.jam_mulai_usage_item',
+                'usage_items.jam_selesai_usage_item',
+            )
+            ->where('usage_items.kode_agenda', $id)
+            ->where('usage_items.tgl_pinjam_usage_item', $date)
+            // ->whereNotIn('status_usage_item', ['selesai', 'digunakan', 'ditolak'])
+            ->get();
+            // ->unique('usage_items.id_item');
+
+            // dd($databarang);
+
+        $dataruangan = DB::table('usage_rooms')
+            ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+            ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select(
+                'usage_rooms.id_room',
+                'rooms.nama_room',
+                'rooms.gambar_room',
+                'rooms.kondisi_room',
+                'tipe_rooms.nama_tipe_room',
+                'usage_rooms.jam_mulai_usage_room',
+                'usage_rooms.jam_selesai_usage_room',
+            )
+            ->where('usage_rooms.kode_agenda', $id)
+            ->where('usage_rooms.tgl_pinjam_usage_room', $date)
+            // ->whereNotIn('status_usage_room', ['selesai', 'digunakan', 'ditolak'])
+            ->get();
+            // ->unique('usage_rooms.id_room');
+
+        // menggabungkan data barang dan ruangan menjadi array
+        $databarangruangan = $databarang->merge($dataruangan)->toArray();
+
+        // dd($databarangruangan);
+
+        // // ambil jam mulai dan jam selesainya saja 
+        // foreach ($databarangruangan as $item) {
+        //     // Ambil jam mulai (cek item dulu, jika null ambil room)
+        //     $jamMulai = $item->jam_mulai_usage_item ?? $item->jam_mulai_usage_room;
+
+        //     // Ambil jam selesai
+        //     $jamSelesai = $item->jam_selesai_usage_item ?? $item->jam_selesai_usage_room;
+        // }
+
+        // // menghilangkan jam_mulai dan jam_selesai dari array databarangruangan
+        // foreach ($databarangruangan as $item) {
+        //     unset($item->jam_mulai_usage_room);
+        //     unset($item->jam_selesai_usage_room);
+        // }
+
+        // Menambah jam mulai dan jam selesai ke data agenda 
+        $dataAgendas = $dataAgendas->toArray();
+
+        // dd($databarang, $dataruangan);
+
+
+        // $dataAgendas[0]->jam_mulai = $jamMulai;
+        // $dataAgendas[0]->jam_selesai = $jamSelesai;
+
+        // dd($dataAgendas);
+
+        // if ($jamMulai === null) {
+        //     $dataAgendas[0]->tipe_jam = 'full day';
+        // } else {
+        //     $dataAgendas[0]->tipe_jam = 'spesifik';
+        // }
+
+        // dd($dataAgendas);
+
+        // ambil id di session
+        $sessionKode = session('kode_agenda_edit_perhari');
+
+        // jika belum ada session atau id di session tidak sama dengan id yang di edit, maka simpan data barang dan ruang serta data agenda ke session
+        if (!session()->has('semua_data_edit_barang_ruang') || $sessionKode != $id) {
+
+            // hapus session lama jika ada
+            session()->forget(['semua_data_edit_barang_ruang', 'kode_agenda_edit_perhari']);
+
+            // simpan array barang dan ruang ke session
+            session(['semua_data_edit_barang_ruang_perhari' => $databarangruangan]);
+
+            // simpan array agenda ke session
+            // session(['data_agenda_edit' => $dataAgendas]);
+        }
+
+        // jika belum ada session atau id di session tidak sama dengan id yang di edit, maka simpan data agenda ke session
+        // if (!session()->has('data_agenda_edit') || $sessionKode != $id) {
+        //     // hapus session lama jika ada
+        //     session()->forget('data_agenda_edit');
+
+        //     // simpan array agenda ke session
+        //     session(['data_agenda_edit' => $dataAgendas]);
+        // }
+
+        // simpan kode agenda ke session
+        session(['kode_agenda_edit_perhari' => $id]);
+
+        // ambil data dari session data brang dan ruang serta data agenda
+        $semuaData = collect(session('semua_data_edit_barang_ruang_perhari'));
+        // $dataAgenda = collect(session('data_agenda_edit'));
+
+
+        // mengambil semua data barang dan ruangan
+        $PengelolaanAgendaService = new PengelolaanAgendaService;
+        $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
+
+        // dd($semuaData, $databarangruangan);
+
+        $user = Auth::user()->nama;
+        $halaman = 'contentDetailAgendaEditPerhari';
+        return view(
+            'Page_admin.dashboard-admin',
+            compact(
+                'halaman',
+                'user',
+                'headerAgenda',
+                'usage_room',
+                'usage_item',
+                'tglPinjam',
+                'id',
+                'date',
+                'semuaData',
+                'allBarangRuang',
+            )
+        );
     }
 
     // page pengadaan barang

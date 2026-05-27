@@ -415,6 +415,7 @@ class pengelolaanAgenda extends Controller
             )
             ->get();
 
+
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $databarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
@@ -430,7 +431,7 @@ class pengelolaanAgenda extends Controller
                 'usage_items.jam_selesai_usage_item',
             )
             ->where('usage_items.kode_agenda', $id)
-            ->whereNotIn('status_usage_item', ['selesai', 'digunakan', 'ditolak'])
+            // ->whereNotIn('status_usage_item', ['selesai', 'digunakan', 'ditolak'])
             ->get()
             ->unique('usage_items.id_item');
 
@@ -447,7 +448,7 @@ class pengelolaanAgenda extends Controller
                 'usage_rooms.jam_selesai_usage_room',
             )
             ->where('usage_rooms.kode_agenda', $id)
-            ->whereNotIn('status_usage_room', ['selesai', 'digunakan', 'ditolak'])
+            // ->whereNotIn('status_usage_room', ['selesai', 'digunakan', 'ditolak'])
             ->get()
             ->unique('usage_rooms.id_room');
 
@@ -472,8 +473,13 @@ class pengelolaanAgenda extends Controller
         // Menambah jam mulai dan jam selesai ke data agenda 
         $dataAgendas = $dataAgendas->toArray();
 
+        // dd($databarang, $dataruangan);
+
+
         $dataAgendas[0]->jam_mulai = $jamMulai;
         $dataAgendas[0]->jam_selesai = $jamSelesai;
+
+        // dd($dataAgendas);
 
         if ($jamMulai === null) {
             $dataAgendas[0]->tipe_jam = 'full day';
@@ -486,7 +492,7 @@ class pengelolaanAgenda extends Controller
         // ambil id di session
         $sessionKode = session('kode_agenda_edit');
 
-        // dd($sessionKode, $id);
+        // dd(session('semua_data_edit_barang_ruang'), $sessionKode, $id);
 
         if (!session()->has('semua_data_edit_barang_ruang') || $sessionKode != $id) {
 
@@ -496,8 +502,8 @@ class pengelolaanAgenda extends Controller
             // simpan array barang dan ruang ke session
             session(['semua_data_edit_barang_ruang' => $databarangruangan]);
 
-            // // simpan array agenda ke session
-            // session(['data_agenda_edit' => $dataAgenda->toArray()]);
+            // simpan array agenda ke session
+            session(['data_agenda_edit' => $dataAgendas]);
         }
 
         if (!session()->has('data_agenda_edit') || $sessionKode != $id) {
@@ -515,7 +521,6 @@ class pengelolaanAgenda extends Controller
         $semuaData = collect(session('semua_data_edit_barang_ruang'));
         $dataAgenda = collect(session('data_agenda_edit'));
 
-        // dd($dataAgenda);
 
         // mengambil semua data barang dan ruangan
         $PengelolaanAgendaService = new PengelolaanAgendaService;

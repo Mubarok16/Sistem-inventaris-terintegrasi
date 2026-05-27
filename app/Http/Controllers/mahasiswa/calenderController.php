@@ -14,7 +14,8 @@ class calenderController extends Controller
     public function calender()
     {
         // Deteksi prefix di Controller
-        $prefix = request()->is('admin/*') ? 'admin' : 'peminjam';
+        // $prefix = request()->is('admin/*') ? 'admin' : 'peminjam';
+        $prefix = request()->segment(1);
         $routeName = $prefix;
 
         // Ambil data dari Agenda Fakultas
@@ -128,8 +129,6 @@ class calenderController extends Controller
     public function calenderSpesifikAgendaDanPeminjaman()
     {
 
-        // dd(session('id_peminjaman_agenda'));
-
         // Ambil data dari Agenda Fakultas
         $agenda_fakultas = DB::table('agenda_fakultas')
             ->leftJoin('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
@@ -229,10 +228,10 @@ class calenderController extends Controller
                             'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
                             'allDay' => false,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            // 'url'   => route($routeName . '.agenda-calender', [
-                            //     urlencode($agenda->id_ref),
-                            //     $date->format('Y-m-d')
-                            // ]),
+                            'url'   => route('admin' . '.agenda-calender', [
+                                urlencode($agenda->id_ref),
+                                $date->format('Y-m-d')
+                            ]),
                         ];
                     }
                     // JAM NULL (FULL DAY)
@@ -245,10 +244,10 @@ class calenderController extends Controller
                             'end'   => $formattedDate,
                             'allDay' => true,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            // 'url'   => route($routeName . '.agenda-calender', [
-                            //     urlencode($agenda->id_ref),
-                            //     $date->format('Y-m-d')
-                            // ]),
+                            'url'   => route('admin' . '.agenda-calender', [
+                                urlencode($agenda->id_ref),
+                                $date->format('Y-m-d')
+                            ]),
                         ];
                     }
                 }
@@ -281,10 +280,10 @@ class calenderController extends Controller
                             'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
                             'allDay' => false,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            // 'url'   => route($routeName . '.agenda-calender', [
-                            //     urlencode($agenda->id_ref),
-                            //     $date->format('Y-m-d')
-                            // ]),
+                            'url'   => route('admin' . '.agenda-calender', [
+                                urlencode($agenda->id_ref),
+                                $date->format('Y-m-d')
+                            ]),
                         ];
                     }
                     // JAM NULL (FULL DAY)
@@ -297,10 +296,10 @@ class calenderController extends Controller
                             'end'   => $formattedDate,
                             'allDay' => true,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            // 'url'   => route($routeName . '.agenda-calender', [
-                            //     urlencode($agenda->id_ref),
-                            //     $date->format('Y-m-d')
-                            // ]),
+                            'url'   => route('admin' . '.agenda-calender', [
+                                urlencode($agenda->id_ref),
+                                $date->format('Y-m-d')
+                            ]),
                         ];
                     }
                 }

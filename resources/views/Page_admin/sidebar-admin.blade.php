@@ -47,6 +47,13 @@
             </div>
         </div> --}}
     </li>
+    <li
+        class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
+        <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Pengelolaan Agenda</span>
+        </a>
+    </li>
     <li class="nav-item {{ $halaman === 'contentDataBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/admin/data-barang') }}">
             <i class="fas fa-fw fa-database"></i>
@@ -65,13 +72,6 @@
         <a class="nav-link" href="{{ url('/dashboard/admin/data-ruangan') }}">
             <i class="fas fa-fw fa-database"></i>
             <span>Data Ruangan</span>
-        </a>
-    </li>
-    <li
-        class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
-            <i class="fas fa-fw fa-calendar-alt"></i>
-            <span>Pengelolaan Agenda</span>
         </a>
     </li>
     <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardControllerPimpinan;
 use App\Http\Controllers\EditAkun;
 use App\Http\Controllers\HapusAkun;
+use App\Http\Controllers\laporan\LaporanPenggunaanSarpras;
 use App\Http\Controllers\mahasiswa\calenderController;
 use App\Http\Controllers\mahasiswa\peminjamanbarangController;
 use App\Http\Controllers\mahasiswa\peminjamanRuanganController;
@@ -45,6 +46,15 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
 })->name('calender-users');
 
+Route::middleware(['auth'])->prefix('pimpinan')->group(function () {
+    Route::get('/events-calender', [calenderController::class, 'calender']);
+})->name('calender-pimpinan');
+
+Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
+    Route::get('/events-calender', [calenderController::class, 'calender']);
+})->name('calender-kaprodi');
+
+
 // Route::middleware(['auth'])->prefix('pimpinan')->group(function () {
 //     Route::get('/events-calender', [calenderController::class, 'calender']);
 // })->name('calender-pimpinan');
@@ -54,6 +64,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 // })->name('calender-kaprodi');
 
 Route::prefix('admin')->as('admin.')->group(function () {
+    Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
+});
+
+Route::prefix('pimpinan')->as('pimpinan.')->group(function () {
+    Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
+});
+
+Route::prefix('kaprodi')->as('kaprodi.')->group(function () {
     Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
 });
 
@@ -154,6 +172,10 @@ Route::middleware(['auth'])->group(function () {
     // download template import agenda
     Route::get('/download-template-import-jadwal-matkul', [pengelolaanAgenda::class, 'downloadTemplateImportMatkul'])->name('download-template-import-matkul');
     Route::get('/download-template-import-jadwal-ptspas', [pengelolaanAgenda::class, 'downloadTemplateImportPtsPas'])->name('download-template-import-PTS-PAS');
+    // edit barang ruangan
+    Route::get('admin/dashboard/agenda/detail-agenda/daftar-barang-dan-ruangan/edit/{id}/{date}', [DashboardController::class, 'editAdminDetailAgendaPerhari'])->name('edit-agenda-perhari');
+
+
 
     // --------------------------------------------- route untuk logika edit agenda -------------------------------------------------------------------- 
     // route fungsi temporary menambah menghapus barang dan ruang dan agenda sebelum di simpan permanen di db
@@ -197,6 +219,9 @@ Route::middleware(['auth'])->group(function () {
 
     // kalender unutk pengelolaan peminjaman dan agenda 
     Route::get('/pengelolaan-agenda-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman'])->name('calender-agenda-peminjan-spesifik');
+
+    // view file laporan penggunaan sarpras
+    Route::get('/lihat-laporan/{date}', [LaporanPenggunaanSarpras::class, 'bukaPdf'])->name('preview_laporan_penggunaan');
 
 
 

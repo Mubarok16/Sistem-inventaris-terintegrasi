@@ -370,7 +370,7 @@
             </div>
         </div> --}}
 
-        <!-- Items & room List -->
+        {{-- <!-- Items & room List -->
         <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div @click="open = !open"
                 class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 cursor-pointer">
@@ -501,6 +501,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> --}}
     </div>
 </main>

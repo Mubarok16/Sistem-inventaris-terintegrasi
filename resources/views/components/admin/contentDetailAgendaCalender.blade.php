@@ -17,19 +17,10 @@
 {{-- <hr class="border-1 border-gray-100 my-2"> --}}
 <main class="flex-1 overflow-y-auto bg-background-light px-2 mb-5">
     <div class="max-w-6xl mx-auto space-y-6">
+
+
         <!-- Page Heading -->
         @foreach ($headerAgenda as $agenda)
-            {{-- <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <h5 class="text-md! font-bold text-slate-900 tracking-tight">
-                            Peminjaman : {{ $agenda->kode_peminjaman ?? $agenda->kode_agenda }}
-                        </h5>
-                    </div>
-                    <span class="text-slate-500">Diajukan pada
-                        {{ date('d F Y, h:i', strtotime($agenda->created_at)) }} WIB</span>
-                </div>
-            </div> --}}
             <!-- Info Cards Grid -->
             <div class="">
 
@@ -40,12 +31,22 @@
                         <h5 class="font-semibold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Tanggal Penggunaan &amp; Nama Agenda
+
+                            {{-- {{ $date }} --}}
                         </h5>
-                        {{-- <button
-                            class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                            <i class="fa-solid fa-print text-md text-white"></i>
-                            <span class="text-white text-md">Lampiran file</span>
-                        </button> --}}
+                        {{-- @if (Auth::user()->hak_akses === 'admin')
+                            @if ($cekAgenda !== null)
+                              
+                                <a href="{{ route('edit-agenda-perhari', ['id' => urlencode($id), 'date' => $date]) }}">
+                                    <button
+                                        class="flex items-center gap-2 px-2 py-2 w-full md:w-auto bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                        <i class="fa-solid fa-pen-to-square text-md text-white"></i>
+                                        <span class="text-white text-md">Edit Daftar Barang dan Ruangan</span>
+                                    </button>
+                                </a>
+                              
+                            @endif
+                        @endif --}}
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
