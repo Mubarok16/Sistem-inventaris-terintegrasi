@@ -406,9 +406,11 @@
                                 <!-- Content -->
                                 <div class="px-3 py-3 flex flex-col gap-2">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                        <span x-show="currentTab === 'ruangan'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                             x-text="item.nama_tipe_item"></span>
-                                        <div class="flex items-center gap-1 text-green-500">
+                                        <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                            x-text="item.merek_model"></span>
+                                        <div x-show="currentTab === 'barang'"  class="flex items-center gap-1 text-green-500">
                                             stok:
                                             <span class="material-symbols-outlined text-[16px] leading-none"
                                                 x-text="item.qty_item">
@@ -421,10 +423,20 @@
                                             <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors"
                                                 x-text="item.nama_item">
                                             </h3>
+
                                             <input x-show="currentTab === 'barang'" type="number" name="qty_usage"
                                                 class="w-10 border-1 border-slate-300 rounded-md px-1" value="0">
+
+
                                             <input name="qty_item" type="text" :value="item.qty_item" hidden>
                                         </div>
+                                        <p>
+                                            <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                                                Lokasi: Ruangan 
+                                            </span>
+                                            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                                x-text="item.nama_room"></span>
+                                        </p>
                                         <div class="flex items-center justify-between mt-auto pt-2">
                                             <div class="flex gap-2 w-full">
                                                 {{-- <input name="id_agenda" type="text" value="{{ $id }}"
@@ -508,7 +520,7 @@
             <div class="px-3 py-3 flex flex-col gap-2">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                        {{ $dataBarang->nama_tipe_item ?? $dataBarang->nama_tipe_room }}
+                        {{ $dataBarang->merek_model ?? $dataBarang->nama_tipe_room }}
                     </span>
                     <div class="flex items-center gap-1 text-green-500">
                         <span
@@ -524,6 +536,20 @@
                         qty: {{ $dataBarang->qty_usage_item ?? '-' }}
                     </span>
                 </div>
+                <p>
+                    @if (isset($dataBarang->nama_room_barang))
+                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                            Lokasi: Ruangan
+                        </span>
+                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                            {{ $dataBarang->nama_room_barang ?? '-' }}
+                        </span>
+                    @else
+                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                            {{ '-' }}
+                        </span>
+                    @endif
+                </p>
             </div>
         </article>
     @endforeach

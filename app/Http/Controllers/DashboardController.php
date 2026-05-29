@@ -53,7 +53,7 @@ class DashboardController extends Controller
                 DB::raw('count(*) as total')
             )
             ->where('status_usage_item', 'selesai')
-            ->where('kode_agenda', null)
+            // ->where('kode_agenda', null)
             // ->whereBetween('tgl_pinjam_usage_item', [$startDate, $endDate])
             ->whereMonth('tgl_pinjam_usage_item', $bulan->month) // Mengambil angka bulan (misal: 5)
             ->whereYear('tgl_pinjam_usage_item', $bulan->year)
@@ -68,7 +68,7 @@ class DashboardController extends Controller
                 DB::raw('DATE(tgl_pinjam_usage_room) as tanggal'),
                 DB::raw('count(*) as total')
             )
-            ->where('kode_agenda', null)
+            // ->where('kode_agenda', null)
             ->where('status_usage_room', 'selesai')
             // ->whereBetween('tgl_pinjam_usage_room', [$startDate, $endDate])
             ->whereMonth('tgl_pinjam_usage_room', $bulan->month) // Mengambil angka bulan (misal: 5)
@@ -280,7 +280,7 @@ class DashboardController extends Controller
         $dataPengajuanPeminjaman = $PengelolaanPeminjamanService->dataPenggunaanBarangByStatus($status_penggunaan);
 
         // mengambil data total Peminjaman yg sudah di terjadwal dan sedang digunakan
-        $totalPeminjaman = $PengelolaanPeminjamanService->hitungTotalPeminjaman();
+        $totalPeminjaman = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('selesai');
 
         // mengambil data total yg diajukan
         $totalDiajukan = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('diajukan');
@@ -336,10 +336,10 @@ class DashboardController extends Controller
             ->get();
 
         $barang = DB::table('items')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->select(
                 'id_room',
-                'nama_tipe_item',
+                'merek_model',
                 'nama_item',
                 'qty_item'
             )
@@ -1046,7 +1046,7 @@ class DashboardController extends Controller
         $jmlhRuang = $listRuanganDiajukan->count();
         $jmlhBrng = $listBarangDiajukan->sum('qty_pinjam');
 
-        // dd($listRuanganDiajukan);
+        // dd($listRuanganDiajukan, $listBarangDiajukan, $jmlhRuang, $jmlhBrng);
 
         $user = Auth::guard('peminjam')->user()->nama_peminjam;
         $no_identitas = Auth::guard('peminjam')->user()->no_identitas;

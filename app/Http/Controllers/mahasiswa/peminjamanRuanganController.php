@@ -8,6 +8,7 @@ use App\Models\UsageRooms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class peminjamanRuanganController extends Controller
 {
@@ -72,6 +73,15 @@ class peminjamanRuanganController extends Controller
             ->select('rooms.nama_room', 'rooms.gambar_room', 'tipe_rooms.nama_tipe_room')
             ->get();
 
+        // mengambil barang yang disimpan di rungan
+        $dataBarang = DB::table('items')
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->select('items.id_item', 'items.nama_item', 'items.qty_item', 'items.merek_model', 'items.img_item', 'rooms.nama_room')
+            ->where('items.id_room', $request->id_room)
+            ->get();
+
+        // dd($dataBarangDb);
+
         // cek apakah session cart_barang sudah ada isinya atau tidak
         if (session()->get('cart_ruangan') === null) {
 
@@ -107,6 +117,63 @@ class peminjamanRuanganController extends Controller
             session()->push('cart_ruangan', $cartBarangbaru);
         }
 
+        // $coba = [];
+        // foreach ($dataBarang as  $dataBarangDb) {
+        //     $coba[] = [
+        //         'id_item' => $dataBarangDb->id_item,
+        //         'nama_item' => $dataBarangDb->nama_item,
+        //         'qty_item' => $dataBarangDb->qty_item,
+        //         'merek_model' => $dataBarangDb->merek_model,
+        //         'img_item' => $dataBarangDb->img_item,
+        //     ];
+        // }
+
+        // dd($coba);
+
+        foreach ($dataBarang as  $dataBarangDb) {
+
+            // cek apakah barang yang disimpan di ruangan melebihi stok barang yang tersedia
+            if (session()->get('cart') === null) {
+
+                // menyimpan data input peminjaman barang ke list peminjaman 
+                session()->put('cart', [
+                    [
+                        'id_item' => $dataBarangDb->id_item,
+                        'nama_item' => $dataBarangDb->nama_item,
+                        'nama_tipe_item' => $dataBarangDb->merek_model,
+                        'qty_pinjam' => $dataBarangDb->qty_item,
+                        'qty_item' => $dataBarangDb->qty_item,
+                        'img_item' => $dataBarangDb->img_item,
+                        'nama_room' => $dataBarangDb->nama_room,
+                    ]
+                ]);
+            } else {
+                // menyimpan data input peminjaman barang ke list peminjaman
+                // jika di session cart_barang sudah ada data, data baru akan ditambahkan setelahnya
+                // $cartBarang = session()->get('cart', []);
+
+                // // jika data dengan id yg diinput sudah ada maka gagal
+                // foreach ($cartBarang as $value) {
+                //     if ($value['id_item'] === $request->id_item) {
+                //         return back()->with('gagal', 'barang sudah ada di cart peminjaman!');
+                //     }
+                // }
+
+                $cartBarangbaru =
+                    [
+                        'id_item' => $dataBarangDb->id_item,
+                        'nama_item' => $dataBarangDb->nama_item,
+                        'nama_tipe_item' => $dataBarangDb->merek_model,
+                        'qty_pinjam' => $dataBarangDb->qty_item,
+                        'qty_item' => $dataBarangDb->qty_item,
+                        'img_item' => $dataBarangDb->img_item,
+                        'nama_room' => $dataBarangDb->nama_room,
+                    ];
+
+                session()->push('cart', $cartBarangbaru);
+            }
+        }
+
         // kembali ke halaman detail peminjaman barang
         return back()->with('success', 'barang berhasil ditambahkan ke cart peminjaman!');
     }
@@ -136,7 +203,7 @@ class peminjamanRuanganController extends Controller
     {
         // menyimpan tgl chosed di session
         session()->put('tgl_chosed_room', $request->input('ganti_tgl'));
-        
+
         $id = $request->input('id');
         // dd($ketersediaan);
 

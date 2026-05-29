@@ -20,7 +20,8 @@
         <div class="flex gap-2 bg-blue-50 text-blue-700 p-2.5 rounded-lg border border-blue-100 items-center">
             <i class="fa-solid fa-circle-info" style="color: #007bff;"></i>
             <span class="text-normal leading-relaxed font-medium">
-                "Tidak ada barang dan ruangan di cart peminjaman. Silahkan pilih barang atau ruangan yang ingin dipinjam!"
+                "Tidak ada barang dan ruangan di cart peminjaman. Silahkan pilih barang atau ruangan yang ingin
+                dipinjam!"
             </span>
         </div>
     </div>
@@ -29,7 +30,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
         <!-- Left Column: Cart Items List -->
-        <div class="lg:col-span-8 flex flex-col gap-4">
+        <div class="lg:col-span-8 flex flex-col gap-4 mb-4">
 
             <!-- Header for List (Desktop only)
         <div
@@ -55,6 +56,9 @@
                                 </div>
                                 <p class="text-[#617589] text-sm font-normal leading-normal">
                                     {{ $cartbarang['nama_tipe_item'] }}
+                                </p>
+                                <p class="text-[#617589] text-sm font-normal leading-normal">
+                                    Tempat simpan : Ruang {{ $cartbarang['nama_room'] }}
                                 </p>
                             </div>
                         </div>
@@ -109,11 +113,11 @@
                             <div>
                                 <div class="items-center">
                                     <p class="text-[#111418] text-lg font-bold leading-normal m-0!">
-                                        {{ $cartruangan['nama_room'] }}
+                                        {{ $cartruangan['nama_tipe_room'] }}
                                     </p>
                                 </div>
                                 <p class="text-[#617589] text-sm font-normal leading-normal">
-                                    {{ $cartruangan['nama_tipe_room'] }}
+                                    {{ $cartruangan['nama_room'] }}
                                 </p>
                             </div>
                         </div>

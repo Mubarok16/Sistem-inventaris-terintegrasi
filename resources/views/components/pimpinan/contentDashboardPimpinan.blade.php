@@ -57,7 +57,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h4 class="font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-primary"></i>
-                            Tren Penggunaan Barang dan Ruangan
+                            Penggunaan Barang dan Ruangan
                         </h4>
                     </div>
                     <div id="pieChart"></div>

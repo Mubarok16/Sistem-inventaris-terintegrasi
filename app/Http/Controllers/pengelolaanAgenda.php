@@ -569,6 +569,8 @@ class pengelolaanAgenda extends Controller
         $PengelolaanAgendaService = new PengelolaanAgendaService;
         $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
 
+        // dd($allBarangRuang);
+
         $user = Auth::user()->nama;
         $halaman = 'contentTambahAgenda';
         return view('Page_admin.dashboard-admin', compact(
@@ -651,7 +653,7 @@ class pengelolaanAgenda extends Controller
             ->where('id_item', $request->id_item_room)
             ->count();
 
-        // cek apakah yg di inputkan item jika item menjalankan if ini
+        // cek apakah yg di inputkan qtyitem tidak 0 dan tidak melebihi stok yang ada jika inputannya itu barang
         if ($itemcek > 0) {
             if ($request->qty_usage < 1) {
                 return redirect()->back()->with('gagal', 'pastikan qty barang yang ingin digunakan tidak 0');
@@ -714,6 +716,7 @@ class pengelolaanAgenda extends Controller
         // kembali ke halaman sebelunnya
         return redirect()->back()->with('success', 'Data barang berhasil ditambahkan sementara.');
     }
+
     // hapus input barang dan ruangan temp
     public function hapusInputBarangAgendaTemporary(Request $request)
     {
@@ -1082,13 +1085,14 @@ class pengelolaanAgenda extends Controller
 
         // data barang atau ruang dari db berdasarkan id_item_room yg di inputkan
         $databarang = DB::table('items')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select(
                 'items.id_item',
                 'items.nama_item',
                 'items.img_item',
                 'items.kondisi_item',
-                'tipe_item.nama_tipe_item'
+                'items.merek_model',
+                'rooms.nama_room as nama_room_barang'
             )
             ->where('items.id_item', $inputUser)
             ->get();
@@ -1105,7 +1109,39 @@ class pengelolaanAgenda extends Controller
             ->where('rooms.id_room', $inputUser)
             ->get();
 
-        $dataColection = collect($data);
+        // jika ruangan yg di inputkan maka jalankan query ini untuk mengambil data barang yang ada di ruangan itu untuk di tampilkan di daftar sementara barang dan ruangan
+        if ($itemcek == 0) {
+            $barangDariRuang = DB::table('items')
+                ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+                ->select(
+                    'items.id_item',
+                    'items.nama_item',
+                    'items.img_item',
+                    'items.kondisi_item',
+                    'items.merek_model',
+                    'items.qty_item as qty_usage_item',
+                    'rooms.nama_room as nama_room_barang'
+                ) // Pilih kolom yang diperlukan
+                ->where('rooms.id_room', $inputUser)->get();
+            
+            // memasukkan barang yg d simpan di ruangan masuk ke session
+            for ($index = 0; $index < count($barangDariRuang); $index++) {
+                $barang = $barangDariRuang[$index]; 
+                // agar data barang dari ruang tidak duplikat dengan data barang yang sudah ada di session jika barang itu sudah ada di session maka barang itu tidak akan di tambahkan ke session lagi
+                if (collect($data)->firstWhere('id_item', $barang->id_item)) {
+                    // Jika ketemu, kembalikan pesan eror
+                    continue; // Lewati iterasi ini dan lanjutkan ke barang berikutnya
+                }
+
+                // simpan array ke session
+                session()->push('data_add_agenda_barang_ruang', $barang);
+
+                // simpan session sebelum redirect
+                session()->save();
+            }
+        }
+
+        // $dataColection = collect($data);
 
         // jika item yg di inputkan maka push qty_usage di session databarangruang
         if ($itemcek > 0) {
@@ -1115,7 +1151,9 @@ class pengelolaanAgenda extends Controller
         $dataColectionBarangRuang = $databarang->concat($dataruang);
 
         // simpan array ke session
-        session()->put('data_add_agenda_barang_ruang', $dataColection->concat($dataColectionBarangRuang)->toArray());
+        // session()->put('data_add_agenda_barang_ruang', $dataColection->concat($dataColectionBarangRuang)->toArray());
+        session()->push('data_add_agenda_barang_ruang', $dataColectionBarangRuang->toArray()[0]);
+        // dd(session()->get('data_add_agenda_barang_ruang'));
 
         // simpan session sebelum redirect
         session()->save();

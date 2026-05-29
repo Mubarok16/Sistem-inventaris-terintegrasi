@@ -144,7 +144,7 @@
                         </button>
                     @endforeach
 
-                    {{-- all ruangan --}}
+                    {{-- all barang pindah barang --}}
                     <div x-show="showPicker" x-transition.opacity
                         class="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm flex items-center justify-center p-4 md:p-10"
                         x-cloak>
@@ -204,7 +204,8 @@
                                                 <div class="flex items-center justify-between">
                                                     <span
                                                         class="text-xs font-medium text-slate-400 uppercase tracking-wide"
-                                                        x-text="item.nama_tipe_item"></span>
+                                                        x-text="item.nama_item"></span>
+
                                                     <div class="flex items-center gap-1 text-green-500">
                                                         stok:
                                                         <span
@@ -213,15 +214,24 @@
                                                         </span>
                                                     </div>
                                                 </div>
+
                                                 <form action="{{ route('edit-ruangan-pindah-barang') }}"
                                                     method="post">
                                                     @csrf
                                                     <div class="flex justify-between">
                                                         <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors"
-                                                            x-text="item.nama_item">
+                                                            x-text="item.merek_model">
                                                         </h3>
                                                         <input name="qty_item" type="text" :value="item.qty_item"
                                                             hidden>
+                                                    </div>
+                                                    <div class="flex items-center justify-start">
+                                                        <span
+                                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                                                            Ruang&nbsp;</span>
+                                                        <span
+                                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                                            x-text="item.nama_room"></span>
                                                     </div>
                                                     <div class="flex items-center justify-between mt-auto pt-2">
                                                         <div class="flex gap-2 w-full">
@@ -229,8 +239,11 @@
                                                                 :value="item.id" hidden>
                                                             <input name="id_room_sekarang" type="text"
                                                                 value="{{ $id }}" hidden>
-                                                            <button type="submit" id="pilih_barangruang" :disabled="item.id_room === '{{ $id }}'"
-                                                                :class="item.id_room == '{{ $id ?? '' }}' ? 'bg-gray-400 opacity-50 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-300'"
+                                                            <button type="submit" id="pilih_barangruang"
+                                                                :disabled="item.id_room === '{{ $id }}'"
+                                                                :class="item.id_room == '{{ $id ?? '' }}' ?
+                                                                    'bg-gray-400 opacity-50 cursor-not-allowed' :
+                                                                    'bg-blue-500 hover:bg-blue-300'"
                                                                 class="py-1 px-2 text-white flex justify-center items-center text-center gap-1 w-full rounded ">
                                                                 Pindahkan <span
                                                                     x-text="currentTab === 'barang' ? 'Barang' : 'Ruangan'"></span>
@@ -279,8 +292,8 @@
                                                     <img src="{{ asset('storage/' . $item->img_item) }}"
                                                         class="w-full h-full object-cover border-0 rounded-lg!">
                                                 </div>
-                                                <span class="font-medium text-slate-700">{{ $item->nama_tipe_item }}
-                                                    {{ $item->nama_item }}</span>
+                                                <span class="font-medium text-slate-700">
+                                                    {{ $item->nama_item }} - {{ $item->merek_model }}</span>
                                             </div>
                                         </td>
                                         <td class="py-4 text-slate-600">{{ $item->qty_item }} Unit</td>
@@ -386,7 +399,6 @@
 </main>
 
 <script>
-
     const productsData = @json($allBarangRuang);
 
     function imageUploader(existingUrl = null) {

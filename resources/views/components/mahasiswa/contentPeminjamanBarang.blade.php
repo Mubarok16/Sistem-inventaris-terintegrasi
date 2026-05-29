@@ -59,7 +59,7 @@
                         <div class="px-3 py-3 flex flex-col gap-2">
                             <div class="flex items-center justify-between">
                                 <span
-                                    class="text-xs font-medium text-slate-400 uppercase tracking-wide">{{ $dataBarang->merek_model }}</span>
+                                    class="text-xs font-medium text-slate-400 uppercase tracking-wide">{{ $dataBarang->nama_item }}</span>
                                 <div class="flex items-center gap-1 text-green-500">
                                     <span
                                         class="material-symbols-outlined text-[16px] leading-none">{{ $dataBarang->kondisi_item }}</span>
@@ -68,7 +68,7 @@
                             </div>
                             <h3
                                 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors">
-                                {{ $dataBarang->nama_item }}
+                                {{ $dataBarang->merek_model }}
                             </h3>
                             <span
                                 class="text-xs font-medium text-slate-400 uppercase tracking-wide">Tempat: Ruang {{ $dataBarang->nama_room != null ? $dataBarang->nama_room : 'tidak diketahui' }}

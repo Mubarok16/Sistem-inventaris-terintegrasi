@@ -34,7 +34,10 @@ class peminjamanbarangController extends Controller
 
         // mengambil detail barang berdasarkan id_item
         $detailBarang = DB::table('items')
-            ->where('id_item', $id)
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select('items.*', 'rooms.nama_room', 'tipe_rooms.nama_tipe_room')
+            ->where('items.id_item', $id)
             ->get();
         // $detailBarang = DataBarang::where('id_item', $id)
         //     ->join('tipe_item' , 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
@@ -77,10 +80,12 @@ class peminjamanbarangController extends Controller
         ]);
 
         // mengambil nama barang berdasarkan id yg diinput
-        $dataBarangDb = DataBarang::where('id_item', $request->id_item)
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-            ->select('items.nama_item', 'items.qty_item', 'items.img_item', 'tipe_item.nama_tipe_item')
+        $dataBarangDb = DB::table('items')->where('id_item', $request->id_item)
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->select('items.nama_item', 'items.qty_item', 'items.img_item', 'items.merek_model', 'rooms.nama_room')
             ->get();
+
+        // dd($dataBarangDb);
 
         // cek apakah session cart_barang sudah ada isinya atau tidak
         if (session()->get('cart') === null) {
@@ -96,10 +101,11 @@ class peminjamanbarangController extends Controller
                 [
                     'id_item' => $request->id_item,
                     'nama_item' => $dataBarangDb[0]->nama_item,
-                    'nama_tipe_item' => $dataBarangDb[0]->nama_tipe_item,
+                    'nama_tipe_item' => $dataBarangDb[0]->merek_model,
                     'qty_pinjam' => $request->qty_pinjam,
                     'qty_item' => $dataBarangDb[0]->qty_item,
                     'img_item' => $dataBarangDb[0]->img_item,
+                    'nama_room' => $dataBarangDb[0]->nama_room,
                 ]
             ]);
         } else {
@@ -125,10 +131,11 @@ class peminjamanbarangController extends Controller
                 [
                     'id_item' => $request->id_item,
                     'nama_item' => $dataBarangDb[0]->nama_item,
-                    'nama_tipe_item' => $dataBarangDb[0]->nama_tipe_item,
+                    'nama_tipe_item' => $dataBarangDb[0]->merek_model,
                     'qty_pinjam' => $request->qty_pinjam,
                     'qty_item' => $dataBarangDb[0]->qty_item,
                     'img_item' => $dataBarangDb[0]->img_item,
+                    'nama_room' => $dataBarangDb[0]->nama_room,
                 ];
 
             session()->push('cart', $cartBarangbaru);

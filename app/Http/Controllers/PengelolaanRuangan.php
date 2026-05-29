@@ -176,14 +176,14 @@ class PengelolaanRuangan extends Controller
         $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
 
         $dataBarangYgDruangan = DB::table('items')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->where('items.id_room', '=', $id)
             ->select(
                 'items.id_item',
                 'items.nama_item',
                 'items.img_item',
                 'items.qty_item',
-                'tipe_item.nama_tipe_item'
+                'items.merek_model',
             )
             ->get();
 

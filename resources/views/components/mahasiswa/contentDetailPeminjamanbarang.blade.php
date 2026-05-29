@@ -37,11 +37,16 @@
             <div class="flex flex-col gap-3">
                 <div>
                     <h5 class="text-[#111418] tracking-tight text-[32px] md:text-4xl font-bold leading-tight">
-                        {{ $item->merek_model }}
+                        {{ $item->nama_item }}
                     </h5>
                     <h1 class="text-[#111418] tracking-tight text-[32px] md:text-4xl font-bold leading-tight">
-                        {{ $item->nama_item }}
+                        {{ $item->merek_model }}
                     </h1>
+                    <div class="flex text-gray-600">
+                        <span class="material-symbols-outlined text-md fill-current"
+                            style="font-variation-settings: 'FILL' 1">Tempat Simpan : {{ $item->nama_tipe_room }} {{ $item->nama_room }} 
+                        </span>
+                    </div>
                     <div class="flex items-center gap-2 mt-2">
                         <div class="flex text-gray-600">
                             <span class="material-symbols-outlined text-md fill-current"
@@ -96,7 +101,7 @@
                         <!-- Add to Cart -->
                         <input type="text" name="id_item" class="hidden" value="{{ $item->id_item }}">
                         <button type="submit"
-                             class="bg-blue-600 text-white px-4 w-full py-2 rounded-md! hover:bg-blue-700 transition-colors">
+                            class="bg-blue-600 text-white px-4 w-full py-2 rounded-md! hover:bg-blue-700 transition-colors">
                             <i class="fa-solid fa-cart-shopping"></i>
                             Tambahkan ke Cart
                         </button>
@@ -153,7 +158,8 @@
                         @if ($dataUsageItems->isEmpty())
                             <tr>
                                 <td colspan="5" class="px-6 py-4 text-center text-gray-700">
-                                    Tidak ada jadwal penggunaan barang tersebut untuk tanggal {{ date('d F Y', strtotime($tglForTblUsageBrng)) }} !
+                                    Tidak ada jadwal penggunaan barang tersebut untuk tanggal
+                                    {{ date('d F Y', strtotime($tglForTblUsageBrng)) }} !
                                 </td>
                             </tr>
                         @else
