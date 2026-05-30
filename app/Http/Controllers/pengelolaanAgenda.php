@@ -210,15 +210,59 @@ class pengelolaanAgenda extends Controller
                 return $item;
             });
 
-            // dd($agendaFakultas, $hasil_usage_room, $kodeReferensi);
-            // dd($agendaFakultas, $usage_room);
 
+            ///////////////////////////// ambil data item dari roomnya
+
+            // 1. Ambil semua id_room dari hasil pemrosesan room sebelumnya
+            $roomIds = collect($hasil_usage_room)->pluck('id_room')->toArray();
+
+            // 2. Tarik semua item yang berelasi dengan id_room tersebut (Hanya 1x Query ke DB)
+            $allItems = DB::table('items')
+                ->select('id_item', 'id_room', 'qty_item')
+                ->whereIn('id_room', $roomIds)
+                ->get()
+                ->groupBy('id_room'); // Dikelompokkan berdasarkan id_room agar mudah dicari
+
+            // dd($allItems);
+
+            $hasil_usage_item = [];
+
+            // 3. Looping data room untuk membangun data usage_item
+            foreach ($hasil_usage_room as $room) {
+                $id_room = $room['id_room'];
+
+                // Cek apakah room ini punya item di database
+                if (isset($allItems[$id_room])) {
+
+                    // Looping setiap item yang ada di room tersebut
+                    foreach ($allItems[$id_room] as $item) {
+                        $hasil_usage_item[] = [
+                            'kode_peminjaman'        => null,
+                            'kode_agenda'            => $room['kode_agenda'], // Menggunakan kode_agenda room yang sudah ter-update
+                            'id_item'                => $item->id_item,
+                            // 'id_room'                => $item->id_room,
+                            'qty_usage_item'         => $item->qty_item,
+                            'tgl_pinjam_usage_item'  => $room['tgl_pinjam_usage_room'],
+                            'tgl_kembali_usage_item' => $room['tgl_kembali_usage_room'],
+                            'status_usage_item'      => 'terjadwal',
+                            'created_at'             => now(),
+                            'updated_at'             => now(),
+                            'jam_mulai_usage_item'   => $room['jam_mulai_usage_room'],
+                            'jam_selesai_usage_item' => $room['jam_selesai_usage_room'],
+                        ];
+                    }
+                }
+            }
+
+            
+            // simpan data ke db agenda fakultas dan usage room serta usage item
             if ($agendaFakultas != null) {
                 DB::table('agenda_fakultas')->insert($agendaFakultas);
             }
 
             if ($usage_room != null) {
                 DB::table('usage_rooms')->insert($hasil_usage_room->toArray());
+                DB::table('usage_items')->insert($hasil_usage_item);
             }
 
             return redirect()->route('dashboard-admin-agenda')->with('success', 'Data Agenda Berhasil Diimport!');
@@ -1123,10 +1167,10 @@ class pengelolaanAgenda extends Controller
                     'rooms.nama_room as nama_room_barang'
                 ) // Pilih kolom yang diperlukan
                 ->where('rooms.id_room', $inputUser)->get();
-            
+
             // memasukkan barang yg d simpan di ruangan masuk ke session
             for ($index = 0; $index < count($barangDariRuang); $index++) {
-                $barang = $barangDariRuang[$index]; 
+                $barang = $barangDariRuang[$index];
                 // agar data barang dari ruang tidak duplikat dengan data barang yang sudah ada di session jika barang itu sudah ada di session maka barang itu tidak akan di tambahkan ke session lagi
                 if (collect($data)->firstWhere('id_item', $barang->id_item)) {
                     // Jika ketemu, kembalikan pesan eror
