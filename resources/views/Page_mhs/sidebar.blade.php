@@ -31,18 +31,18 @@
     </li>
     <li class="nav-item m-0" x-data="{ open: {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'true' : 'false' }} }">
 
-        <a href="#" @click.prevent="open = !open"
-            class="nav-link collapsed flex! items-center transition duration-150 ease-in-out {{ $halaman === 'contentListPeminjaman' || $halaman === 'contentCetakQR' || $halaman === 'contentDetailTransaksiPeminjamanMhs' ? 'bg-gray-200' : '' }}">
+        <a href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}"
+            class="nav-link collapsed">
 
-            <i class="fas fa-list"></i>
+            <i class="fas fa-shopping-cart"></i>
 
             <span class="flex-1">List Peminjaman</span>
 
-            <i class="fas fa-angle-down w-4 h-4 transition-transform duration-200"
-                :class="{ 'transform rotate-180': open, 'transform rotate-0': !open }"></i>
+            {{-- <i class="fas fa-angle-down w-4 h-4 transition-transform duration-200"
+                :class="{ 'transform rotate-180': open, 'transform rotate-0': !open }"></i> --}}
         </a>
 
-        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+        {{-- <div x-show="open" x-transition:enter="transition ease-out duration-100"
             x-transition:enter-start="opacity-0 scale-y-0" x-transition:enter-end="opacity-100 scale-y-100"
             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-y-100"
             x-transition:leave-end="opacity-0 scale-y-0" class="origin-top ml-4 pt-1 pb-2 space-y-1 py-2 collapse-inner">
@@ -55,7 +55,7 @@
                 <i class="fas fa-qrcode"></i>
                 <span>Cetak QR Code</span>
             </a>
-        </div>
+        </div> --}}
     </li>
     {{-- <li class="nav-item {{ $halaman === 'contentListPeminjaman' ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{ url('/dashboard/mahasiswa/list-peminjaman') }}">
