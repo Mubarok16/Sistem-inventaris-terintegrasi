@@ -47,6 +47,8 @@ class PengajuanPeminjamanController extends Controller
         $cartBarang = session()->get('cart');
         $cartRuangan = session()->get('cart_ruangan');
 
+        // dd($cartBarang, $cartRuangan);
+
         // mengecek apakah cart barang atau ruangan ada isinya
         if (!$cartBarang && !$cartRuangan) {
             return redirect()->back()->with('gagal', 'Tidak ada barang atau ruangan yang dipilih untuk diajukan peminjaman.');
@@ -55,6 +57,8 @@ class PengajuanPeminjamanController extends Controller
         // mengubah inputan tgl pinjam menjadi carbon
         $tglPinjamCarbon = Carbon::parse($tgl_pinjam . '00:00:00');
         $tglKembaliCarbon = Carbon::parse($tgl_kembali . '23:59:59');
+
+        // dd($tglPinjamCarbon->format('Y-m-d H:i:s'), $tglKembaliCarbon->format('Y-m-d H:i:s'));
 
         //jam mulai dan jam selesai digunakan hanya untuk opsi spesifik
         $jamMulai = null;
@@ -86,8 +90,8 @@ class PengajuanPeminjamanController extends Controller
             'created_at' => Carbon::now(), // dibuat pada
             'updated_at' => Carbon::now(), // diupdate pada
             'status_peminjaman' => 'diajukan', // status_peminjaman
-            'tgl_pinjam' => $tglPinjamCarbon,
-            'tgl_kembali' => $tglKembaliCarbon,
+            'tgl_pinjam' => $tglPinjamCarbon->format('Y-m-d H:i:s'),
+            'tgl_kembali' => $tglKembaliCarbon->format('Y-m-d H:i:s'),
         ]);
 
         // jika jam mulai dan jam selesai ada maka peminjaman itu kategori spesifik

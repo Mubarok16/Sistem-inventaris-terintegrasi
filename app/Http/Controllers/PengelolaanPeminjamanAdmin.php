@@ -219,8 +219,9 @@ class PengelolaanPeminjamanAdmin extends Controller
             // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
             $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
             $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
-
+            
             if ($isRoomFullDay || $isItemFullDay) {
+                // dd($isRoomFullDay, $isItemFullDay);
                 # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi digunakan
                 # hanya untuk mengupdate semua usage room yg ada karna full day 
                 DB::table('usage_rooms')
@@ -230,7 +231,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_room'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
+                    // ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
                     ->where('status_usage_room', 'terjadwal')
                     ->update([
                         'status_usage_room' => 'digunakan',
@@ -244,7 +245,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'status_usage_item'
                     )
                     ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
+                    // ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
                     ->where('status_usage_item', 'terjadwal')
                     ->update([
                         'status_usage_item' => 'digunakan',
@@ -288,7 +289,7 @@ class PengelolaanPeminjamanAdmin extends Controller
             $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
 
             if ($isRoomFullDay || $isItemFullDay) {
-                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi selesai
+                # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi selesai
                 # hanya untuk mengupdate semua usage room yg ada karna full day 
                 DB::table('usage_rooms')
                     ->select(
@@ -318,7 +319,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                         'updated_at' => now(),
                     ]);
             } else {
-                # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi selesai
+                # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi selesai
                 # hanya untuk mengupdate semua usage room yg ada karna spesifik
                 DB::table('usage_rooms')
                     ->select(
