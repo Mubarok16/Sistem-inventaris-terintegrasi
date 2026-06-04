@@ -1,13 +1,13 @@
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/dashboard/mahasiswa') }}">
         <div class="sidebar-brand-icon">
-            <img src="{{ Vite::asset('resources/img/logo/logo2.png') }}">
+            <img src="{{ asset('images/logo_ft.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">RuangAdmin</div>
+        <div class="sidebar-brand-text mx-3">SIPRA</div> {{-- Sistem inteGrasi peMinjaman sarana prasarana dan Agenda kegiatan --}}
     </a>
     <hr class="sidebar-divider my-0">
-    <li class="nav-item active">
+    <li class="nav-item {{ $halaman === 'contentDashborKaprodi' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ route('dashboard-kaprodi') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -16,13 +16,13 @@
     <div class="sidebar-heading">
         Features
     </div>
-    <li class="nav-item">
+    <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ route('pengadaan-barang-kaprodi') }}">
             <i class="fas fa-fw fa-truck-loading"></i>
             <span>Pengadaan Barang</span>
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item {{ $halaman === 'contentPerawatanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link collapsed" href="{{ route('page-pengajuan-perawatan-barang-kaprodi') }}">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Perawatan Barang dan Ruang</span>
