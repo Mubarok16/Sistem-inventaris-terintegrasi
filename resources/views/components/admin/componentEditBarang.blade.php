@@ -56,15 +56,6 @@
                                         class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-slate-900"
                                         placeholder="Contoh: Lab Komputer 1" type="text"
                                         value="{{ $ruang->merek_model }}" />
-                                    {{-- <select name="tipe_item"
-                                        class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-slate-900">
-                                        @foreach ($tipeBarang as $tipe)
-                                            <option value="{{ $tipe->id_tipe_item }}"
-                                                {{ $ruang->id_tipe_item == $tipe->id_tipe_item ? 'selected' : '' }}>
-                                                {{ $tipe->nama_tipe_item }}
-                                            </option>
-                                        @endforeach
-                                    </select> --}}
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ asset('storage/' . $ruang->img_item) }}')">
@@ -96,7 +87,7 @@
                                     </div>
 
                                     <h5 class="text-xl font-bold text-slate-800"
-                                        x-text="imageUrl ? 'Gambar Ruangan' : 'Tambah Gambar'"></h5>
+                                        x-text="imageUrl ? 'Gambar Barang' : 'Tambah Gambar'"></h5>
 
                                     <p class="text-slate-400 text-sm mb-8 max-w-[240px] mx-auto text-center">
                                         <span x-show="!imageUrl">Seret gambar baru untuk mengganti gambar lama.</span>

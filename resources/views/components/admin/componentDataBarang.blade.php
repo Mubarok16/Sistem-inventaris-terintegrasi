@@ -133,24 +133,61 @@
         {{-- informasi menampilkan bnayaknya barang --}}
         <div class="flex items-center justify-between mb-12">
             <div class="text-sm text-slate-500 font-medium">
-                Menampilkan <span class="text-slate-900 font-bold">3</span> dari <span
-                    class="text-slate-900 font-bold">45</span> barang
+                Menampilkan
+                <span class="text-slate-900 font-bold">{{ $DataBarang->count() }}</span>
+                dari
+                <span class="text-slate-900 font-bold">{{ $DataBarang->total() }}</span>
+                barang
             </div>
+
             <div class="flex gap-2">
-                <button
-                    class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button
-                    class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">1</button>
-                <button
-                    class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">2</button>
-                <button
-                    class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                {{-- Tombol ke Halaman Sebelumnya --}}
+                @if ($DataBarang->onFirstPage())
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                @else
+                    <a href="{{ $DataBarang->previousPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                @endif
+
+                {{-- Nomor Halaman --}}
+                @foreach ($DataBarang->getUrlRange(1, $DataBarang->lastPage()) as $page => $url)
+                    @if ($page == $DataBarang->currentPage())
+                        {{-- Halaman Aktif --}}
+                        <button
+                            class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                            {{ $page }}
+                        </button>
+                    @else
+                        {{-- Halaman Lain --}}
+                        <a href="{{ $url }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol ke Halaman Selanjutnya --}}
+                @if ($DataBarang->hasMorePages())
+                    <a href="{{ $DataBarang->nextPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                @else
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                @endif
             </div>
         </div>
+
         {{-- summary ketersediaan dan stok --}}
         {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
@@ -211,21 +248,6 @@
                                 <label class="form-label">Merk/model Barang</label>
                             </div>
                         </div>
-                        {{-- <div class="col-12 m-0">
-                            <div class="input-group mb-2">
-                                <span class="input-group-text">
-                                    <i class="fa-solid fa-home"></i>
-                                </span>
-                                <select name="tipe" class="form-select" required>
-                                    <option value="">--- Pilih Tipe Barang ---</option>
-                                    @foreach ($DataTipeBarang as $dataTipeBarang)
-                                        <option value="{{ $dataTipeBarang->id_tipe_item }}">
-                                            {{ $dataTipeBarang->nama_tipe_item }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div> --}}
                         <div class="col-12 m-0">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">

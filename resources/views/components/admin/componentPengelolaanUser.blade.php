@@ -271,7 +271,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+            {{-- <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
                 <p class="text-sm font-medium text-slate-500">Menampilkan <span class="text-slate-900 font-bold">1 -
                         5</span> dari <span class="text-slate-900 font-bold">1,284</span> pengguna</p>
                 <div class="flex items-center gap-2">
@@ -294,21 +294,9 @@
                         <span class="material-icons text-[20px]">chevron_right</span>
                     </button>
                 </div>
-            </div>
+            </div> --}}
         </div>
-        <div
-            class="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl flex gap-4 items-start shadow-sm shadow-blue-900/5">
-            <div class="bg-blue-100 p-2 rounded-lg">
-                <span class="material-icons text-blue-600">info</span>
-            </div>
-            <div class="text-sm text-blue-900/80">
-                <p class="font-bold text-blue-900">Tips Admin</p>
-                <p class="mt-1 leading-relaxed font-medium">Anda dapat mengatur ulang kata sandi pengguna
-                    secara massal dengan memilih beberapa kotak centang di sebelah nama pengguna (fitur ini
-                    sedang dalam pengembangan). Hubungi dukungan IT jika Anda membutuhkan bantuan lebih lanjut.
-                </p>
-            </div>
-        </div>
+       
     </div>
 
     {{-- show image identitas --}}

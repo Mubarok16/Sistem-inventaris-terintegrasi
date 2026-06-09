@@ -61,7 +61,6 @@ class PengelolaanUserService
                 ->orderBy('created_at', 'desc')
                 ->get();
         } elseif ($role === 'mahasiswa') {
-
             $AkunPeminjams = DB::table('peminjam')
                 ->where('status', '=', $status)
                 ->orderBy('created_at', 'desc')
@@ -72,9 +71,8 @@ class PengelolaanUserService
                 ->where('hak_akses', '=', 'mahasiswa')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
         } elseif ($role === 'pimpinan') {
-
+            
             $AkunPeminjams = DB::table('peminjam')
                 ->where('status', '=', $status)
                 ->where('no_identitas', '=', 'asd')

@@ -34,7 +34,8 @@ class PengelolaanPeminjamanService
             // ->where('peminjaman.status_peminjaman', $status)
             ->orderBy('peminjaman.kode_peminjaman') // Mengelompokkan berdasarkan kode unik
             ->orderBy('peminjaman.created_at', 'asc')
-            ->get();
+            ->paginate(3);
+            // ->get();
 
         return $dataPengajuanPeminjaman;
     }

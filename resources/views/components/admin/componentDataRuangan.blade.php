@@ -262,7 +262,7 @@
         </div>
 
         {{-- footer menampilkan info banyaknya data --}}
-        <div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-slate-200 pt-8">
+        {{-- <div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-slate-200 pt-8">
             <div class="text-sm text-slate-500">
                 Menampilkan <span class="font-bold text-slate-800">3</span> dari <span
                     class="font-bold text-slate-800">12</span> ruangan terdaftar
@@ -281,6 +281,62 @@
                     class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:text-primary transition-colors hover:border-primary">
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
+            </div>
+        </div> --}}
+        <div class="flex items-center justify-between mb-12">
+            <div class="text-sm text-slate-500 font-medium">
+                Menampilkan
+                <span class="text-slate-900 font-bold">{{ $DataRuangan->count() }}</span>
+                dari
+                <span class="text-slate-900 font-bold">{{ $DataRuangan->total() }}</span>
+                ruangan terdaftar
+            </div>
+
+            <div class="flex gap-2">
+                {{-- Tombol ke Halaman Sebelumnya --}}
+                @if ($DataRuangan->onFirstPage())
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                @else
+                    <a href="{{ $DataRuangan->previousPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                @endif
+
+                {{-- Nomor Halaman --}}
+                @foreach ($DataRuangan->getUrlRange(1, $DataRuangan->lastPage()) as $page => $url)
+                    @if ($page == $DataRuangan->currentPage())
+                        {{-- Halaman Aktif --}}
+                        <button
+                            class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                            {{ $page }}
+                        </button>
+                    @else
+                        {{-- Halaman Lain --}}
+                        <a href="{{ $url }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol ke Halaman Selanjutnya --}}
+                @if ($DataRuangan->hasMorePages())
+                    <a href="{{ $DataRuangan->nextPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                @else
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                @endif
             </div>
         </div>
     </div>

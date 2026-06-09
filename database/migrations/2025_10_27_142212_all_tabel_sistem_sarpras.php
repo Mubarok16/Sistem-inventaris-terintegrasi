@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('username', 12);
             $table->string('password', 255);
             $table->string('hak_akses', 10);
-            $table->integer('no_hp')->nullable();
+            $table->decimal('no_hp', 50)->nullable();
             $table->string('status', 10)->nullable();
+            $table->text('jabatan')->nullable();
             $table->timestamps(0);
         });
 
@@ -43,11 +44,11 @@ return new class extends Migration
             $table->text('nama_tipe_room');
         });
 
-        // Database/migrations/xxxx_xx_xx_create_tipe_item_table.php
-        Schema::create('tipe_item', function (Blueprint $table) {
-            $table->string('id_tipe_item', 12)->primary();
-            $table->text('nama_tipe_item');
-        });
+        // tipe item
+        // Schema::create('tipe_item', function (Blueprint $table) {
+        //     $table->string('id_tipe_item', 12)->primary();
+        //     $table->text('nama_tipe_item');
+        // });
 
         // Database/migrations/xxxx_xx_xx_create_rooms_table.php
         Schema::create('rooms', function (Blueprint $table) {
@@ -66,7 +67,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->string('id_item', 12)->primary();
             $table->string('id_room', 12);
-            $table->string('id_tipe_item', 12);
+            // $table->string('id_tipe_item', 12);
             $table->string('nama_item', 12);
             $table->string('merek_model', 12);
             $table->integer('qty_item');
@@ -76,12 +77,13 @@ return new class extends Migration
             $table->timestamps(0);
 
             $table->foreign('id_room')->references('id_room')->on('rooms');
-            $table->foreign('id_tipe_item')->references('id_tipe_item')->on('tipe_item');
+            // $table->foreign('id_tipe_item')->references('id_tipe_item')->on('tipe_item');
         });
 
         // Database/migrations/xxxx_xx_xx_create_agenda_fakultas_table.php
         Schema::create('agenda_fakultas', function (Blueprint $table) {
             $table->string('kode_agenda', 12)->primary();
+            $table->string('kode_referensi', 12);
             $table->string('id_user', 12);
             $table->text('nama_agenda');
             $table->date('tgl_mulai_agenda')->nullable();
@@ -145,6 +147,40 @@ return new class extends Migration
             $table->foreign('kode_agenda')->references('kode_agenda')->on('agenda_fakultas');
             $table->foreign('kode_peminjaman')->references('kode_peminjaman')->on('peminjaman');
         });
+
+        Schema::create('pengadaan_barang', function (Blueprint $table) {
+            $table->string('id_pengadaan', 12)->primary();
+            $table->string('id_pemohon', 12);
+            $table->string('id_penyetuju', 12)->nullable();
+            $table->text('nama_item');
+            $table->string('merek_model', 20);
+            $table->integer('qty_item');
+            $table->string('status_pengadaan', 20);
+            $table->string('tahun_akademik', 15);
+            $table->text('keperluan_prodi');
+            $table->timestamps(0);
+
+            $table->foreign('id_pemohon')->references('id_user')->on('users');
+            $table->foreign('id_penyetuju')->references('id_user')->on('users');
+        });
+
+        Schema::create('perawatan_barang', function (Blueprint $table) {
+            $table->string('id_perawatan', 100)->primary();
+            $table->string('id_pemohon', 12);
+            $table->string('id_penyetuju', 12)->nullable();
+            $table->string('id_item', 12)->nullable();
+            $table->string('id_room', 12)->nullable();
+            $table->integer('qty_perawatan');
+            $table->string('status_perawatan', 20);
+            $table->string('tahun_akademik', 15);
+            $table->text('keperluan_prodi');
+            $table->timestamps(0);
+
+            $table->foreign('id_pemohon')->references('id_user')->on('users');
+            $table->foreign('id_penyetuju')->references('id_user')->on('users');
+            $table->foreign('id_item')->references('id_item')->on('items');
+            $table->foreign('id_room')->references('id_room')->on('rooms');
+        });
     }
 
     /**
@@ -162,5 +198,7 @@ return new class extends Migration
         Schema::dropIfExists('agenda_fakultas');
         Schema::dropIfExists('usage_rooms');
         Schema::dropIfExists('usage_items');
+        Schema::dropIfExists('pengadaan_barang');
+        Schema::dropIfExists('perawatan_barang');
     }
 };

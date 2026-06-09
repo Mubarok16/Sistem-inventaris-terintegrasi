@@ -69,7 +69,7 @@
 
         <!-- Content List -->
         <div class="flex flex-col gap-3 mb-6">
-            @foreach ($dataAgendas as $riwayat)
+            @forelse ($dataAgendas as $riwayat)
                 <div
                     class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden ring-1 ring-primary/20">
                     <div
@@ -150,8 +150,71 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
-            {{-- @endif --}}
+            @empty
+                <div
+                    class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden ring-1 ring-primary/20 p-4 text-center">
+                    <i class="fa-solid fa-calendar-xmark text-3xl text-slate-400 mb-2"></i>
+                    <p class="text-sm text-slate-500">Belum ada agenda yang dibuat.</p>
+                </div>
+            @endforelse
+
+            <div class="flex items-center justify-between mb-12">
+                <div class="text-sm text-slate-500 font-medium">
+                    Menampilkan
+                    <span class="text-slate-900 font-bold">{{ $dataAgendas->count() }}</span>
+                    dari
+                    <span class="text-slate-900 font-bold">{{ $dataAgendas->total() }}</span>
+                    agenda
+                </div>
+
+                <div class="flex gap-2">
+                    {{-- Tombol ke Halaman Sebelumnya --}}
+                    @if ($dataAgendas->onFirstPage())
+                        <button
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                            disabled>
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    @else
+                        <a href="{{ $dataAgendas->previousPageUrl() }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </a>
+                    @endif
+
+                    {{-- Nomor Halaman --}}
+                    @foreach ($dataAgendas->getUrlRange(1, $dataAgendas->lastPage()) as $page => $url)
+                        @if ($page == $dataAgendas->currentPage())
+                            {{-- Halaman Aktif --}}
+                            <button
+                                class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                                {{ $page }}
+                            </button>
+                        @else
+                            {{-- Halaman Lain --}}
+                            <a href="{{ $url }}"
+                                class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endforeach
+
+                    {{-- Tombol ke Halaman Selanjutnya --}}
+                    @if ($dataAgendas->hasMorePages())
+                        <a href="{{ $dataAgendas->nextPageUrl() }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    @else
+                        <button
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                            disabled>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    @endif
+                </div>
+            </div>
+
 
         </div>
 

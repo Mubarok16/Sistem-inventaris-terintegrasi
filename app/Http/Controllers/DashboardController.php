@@ -231,6 +231,8 @@ class DashboardController extends Controller
         // dd($AkunPeminjams);
         $AkunUsers = $filter['AkunUsers'];
 
+        // dd($AkunPeminjams, $AkunUsers);
+
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $jmlhPenggunaAll = User::where('status', 'active')->count() + Peminjam::where('status', 'active')->count();
         $jmlhMhs = Peminjam::where('status', 'active')->count();
@@ -248,17 +250,7 @@ class DashboardController extends Controller
         }
 
         $user = Auth::user()->nama;
-        // $dataPengajuanPeminjaman = Peminjaman::latest()->get();
-
-        // $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
-        //     ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
-        //     ->leftJoin('usage_rooms', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
-        //     ->select('peminjaman.*', 'peminjam.nama_peminjam', 'usage_items.tgl_pinjam_usage_item', 'usage_items.tgl_kembali_usage_item', 'usage_rooms.tgl_pinjam_usage_room', 'usage_rooms.tgl_kembali_usage_room', 'usage_rooms.jam_mulai_usage_room', 'usage_rooms.jam_selesai_usage_room', 'usage_items.jam_mulai_usage_item', 'usage_items.jam_selesai_usage_item') // Pilih kolom yang diperlukan
-        //     ->where('peminjaman.status_peminjaman', 'diajukan')
-        //     ->orderBy('peminjaman.created_at', 'asc')
-        //     ->get();
-
-        // dd($dataPengajuanPeminjaman);
+        
 
         $dataPeminjamanDisetujui = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
             // ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
@@ -312,9 +304,10 @@ class DashboardController extends Controller
                 'rooms.nama_room'
             ) // Pilih kolom yang diperlukan
             ->latest()
-            ->get();
+            ->paginate(3);
+            // ->get();
         // mengambil data tipe barang
-        $DataTipeBarang = TipeBarang::get();
+        $DataTipeBarang = TipeRuangan::get();
         // mengambil data user yang sedang login
         $user = Auth::user()->nama;
         // membuat variable dengan isi content data barang
@@ -333,7 +326,8 @@ class DashboardController extends Controller
             ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
             ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->latest()
-            ->get();
+            ->paginate(3);
+            // ->get();
 
         $barang = DB::table('items')
             // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
@@ -399,7 +393,8 @@ class DashboardController extends Controller
             // ->where('peminjaman.status_peminjaman', $status)
             ->orderBy('agenda_fakultas.kode_agenda') // Mengelompokkan berdasarkan kode unik
             ->orderBy('agenda_fakultas.created_at', 'asc')
-            ->get();
+            ->paginate(3);
+            // ->get();
 
         // dd($dataAgendas);
 

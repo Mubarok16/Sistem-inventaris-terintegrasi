@@ -22,11 +22,11 @@ class PengelolaanBarang extends Controller
         }
         $DataBarang = DataBarang::where('id_item', $id)->get();
 
-        $tipeBarang = TipeBarang::get();
+        // $tipeBarang = TipeBarang::get();
         // dd($DataBarang);
         $user = Auth::user()->nama;
         $halaman = 'contentEditBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user', 'tipeBarang'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user'));
     }
 
     // fungsi untuk mengedit informasi dasar barang

@@ -28,7 +28,7 @@ class CreateAkun extends Controller
                 'nama_peminjam' => 'required|string|max:100',
                 'username' => 'required|string|max:50|unique:peminjam,username',
                 'password' => 'required|string|max:12',
-                // 'fakultas' => 'required|string',
+                'tahun_masuk' => 'required',
                 'prodi' => 'required|string',
                 'img_identitas' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             ]);
@@ -71,6 +71,8 @@ class CreateAkun extends Controller
                 'fakultas' => $fakultas,
                 'prodi' => $request->prodi,
                 'img_identitas' => $imgPath,
+                'status' => 'active',
+                'tahun_masuk' => $request->tahun_masuk,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

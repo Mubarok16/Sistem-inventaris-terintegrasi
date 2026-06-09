@@ -101,7 +101,7 @@
                                     <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                                 </div>
                             </div>
-                            
+
                             {{-- konfirmasi pengambilan barang atau kunci ruangan --}}
                             {{-- <div class="relative flex-grow max-w-md">
                                 <i
@@ -283,18 +283,64 @@
                             </table>
                         </div>
                         <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-                            <span class="text-xs text-slate-500">Menampilkan 1-4 dari 128
-                                data</span>
-                            <div class="flex items-center gap-2">
-                                <button
-                                    class="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 disabled:opacity-50"
-                                    disabled="">
-                                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                                </button>
-                                <button class="p-1 rounded text-slate-600 hover:bg-slate-200">
-                                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                                </button>
-                            </div>
+                        
+                                <div class="text-sm text-slate-500 font-medium">
+                                    Menampilkan
+                                    <span
+                                        class="text-slate-900 font-bold">{{ $dataPengajuanPeminjaman->count() }}</span>
+                                    dari
+                                    <span
+                                        class="text-slate-900 font-bold">{{ $dataPengajuanPeminjaman->total() }}</span>
+                                    data
+                                </div>
+
+                                <div class="flex gap-2">
+                                    {{-- Tombol ke Halaman Sebelumnya --}}
+                                    @if ($dataPengajuanPeminjaman->onFirstPage())
+                                        <button
+                                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                                            disabled>
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </button>
+                                    @else
+                                        <a href="{{ $dataPengajuanPeminjaman->previousPageUrl() }}"
+                                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </a>
+                                    @endif
+
+                                    {{-- Nomor Halaman --}}
+                                    @foreach ($dataPengajuanPeminjaman->getUrlRange(1, $dataPengajuanPeminjaman->lastPage()) as $page => $url)
+                                        @if ($page == $dataPengajuanPeminjaman->currentPage())
+                                            {{-- Halaman Aktif --}}
+                                            <button
+                                                class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                                                {{ $page }}
+                                            </button>
+                                        @else
+                                            {{-- Halaman Lain --}}
+                                            <a href="{{ $url }}"
+                                                class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                                                {{ $page }}
+                                            </a>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Tombol ke Halaman Selanjutnya --}}
+                                    @if ($dataPengajuanPeminjaman->hasMorePages())
+                                        <a href="{{ $dataPengajuanPeminjaman->nextPageUrl() }}"
+                                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </a>
+                                    @else
+                                        <button
+                                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                                            disabled>
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </button>
+                                    @endif
+                                </div>
+                           
                         </div>
                     </div>
                 </div>

@@ -81,6 +81,13 @@
                                             <label for="password" class="form-label">password</label>
                                         </div>
                                     </div>
+                                    <div class="col-12 m-0">
+                                        <div class="form-floating mb-2">
+                                            <input type="number" class="form-control" name="tahun_masuk" id="tahun_masuk"
+                                                value="" placeholder=" " required>
+                                            <label for="tahun_masuk" class="form-label">Tahun Masuk</label>
+                                        </div>
+                                    </div>
 
                                     <div class="col-12 m-0">
                                         <div class="input-group mb-2">
