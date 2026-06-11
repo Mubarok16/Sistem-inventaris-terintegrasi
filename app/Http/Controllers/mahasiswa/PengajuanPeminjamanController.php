@@ -24,8 +24,8 @@ class PengajuanPeminjamanController extends Controller
     // menampilkan halaman detail transaksi peminjaman mahasiswa
     public function mahasiswaDetailTransaksi()
     {
-        $user = auth()->guard('peminjam')->user()->nama_peminjam;
-        $no_identitas = auth()->guard('peminjam')->user()->no_identitas;
+        $user = DB::table('peminjam')->where('id_user', Auth::user()->id_user)->value('nama_peminjam');
+        $no_identitas = DB::table('peminjam')->where('id_user', Auth::user()->id_user)->value('no_identitas');
         $halaman = 'contentDetailTransaksiPeminjamanMhs';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'no_identitas'));
     }
@@ -47,7 +47,7 @@ class PengajuanPeminjamanController extends Controller
         $cartBarang = session()->get('cart');
         $cartRuangan = session()->get('cart_ruangan');
 
-        // dd($cartBarang, $cartRuangan);
+        // dd($id_peminjam);
 
         // mengecek apakah cart barang atau ruangan ada isinya
         if (!$cartBarang && !$cartRuangan) {
@@ -95,7 +95,6 @@ class PengajuanPeminjamanController extends Controller
         ]);
 
         // jika jam mulai dan jam selesai ada maka peminjaman itu kategori spesifik
-        // if ($jam_mulai != null && $jam_selesai != null) {
 
         // Array untuk Insert Usage Room 
         $dataRoom = [];
@@ -149,61 +148,17 @@ class PengajuanPeminjamanController extends Controller
             DB::table('usage_items')->insert($dataItem);
         }
 
-        // } else { // jika jam mulai dan jam selesai tidak ada maka peminjaman itu kategori full day
-
-        //     // loop untuk menyimpan lebih dari 1 brang yg dinputkan dari array input barang di session
-        //     if ($cartBarang != null) {
-        //         foreach ($cartBarang as $barang) {
-        //             //simpan barang ke db usage_barang
-        //             UsageItems::create([
-        //                 'kode_peminjaman' => $kode_peminjaman,
-        //                 'kode_agenda' => NULL,
-        //                 'id_item' => $barang['id_item'],
-        //                 'qty_usage_item' => $barang['qty_pinjam'],
-        //                 'tgl_pinjam_usage_item' => $tglPinjamCarbon,
-        //                 'tgl_kembali_usage_item' => $tglKembaliCarbon,
-        //                 'status_usage_item' => 'diajukan',
-        //                 'created_at' => now(),
-        //                 'updated_at' => now(),
-        //                 'jam_mulai_usage_item' => $jamMulai,
-        //                 'jam_selesai_usage_item' => $jamSelesai,
-        //             ]);
-        //         }
-        //     }
-
-        //     // loop untuk menyimpan lebih dari 1 ruangan yg dinputkan dari array input barang di session
-        //     if ($cartRuangan != null) {
-        //         foreach ($cartRuangan as $ruangan) {
-        //             //simpan barang ke db usage_barang
-        //             UsageRooms::create([
-        //                 'kode_peminjaman' => $kode_peminjaman,
-        //                 'kode_agenda' => NULL,
-        //                 'id_room' => $ruangan['id_room'],
-        //                 'tgl_pinjam_usage_room' => $tglPinjamCarbon,
-        //                 'tgl_kembali_usage_room' => $tglKembaliCarbon,
-        //                 'status_usage_room' => 'diajukan',
-        //                 'created_at' => now(),
-        //                 'updated_at' => now(),
-        //                 'jam_mulai_usage_room' => $jamMulai,
-        //                 'jam_selesai_usage_room' => $jamSelesai,
-        //             ]);
-        //         }
-        //     }
-        // }
-
         // data untuk dikirim ke Telegram
         $dataTelegram = [
             'nama_user' => Auth::guard('peminjam')->user()->nama_peminjam, // Mengambil nama user yang sedang login
             'kode_peminjaman' => $kode_peminjaman,
             'keterangan_peminjaman' => $nama_kegiatan,
-            'tanggal_pinjam' => \Carbon\Carbon::parse($tgl_pinjam)->translatedFormat('d F Y'),
-            'tanggal_kembali' => \Carbon\Carbon::parse($tgl_kembali)->translatedFormat('d F Y'),
+            'tanggal_pinjam' => Carbon::parse($tgl_pinjam)->translatedFormat('d F Y'),
+            'tanggal_kembali' => Carbon::parse($tgl_kembali)->translatedFormat('d F Y'),
         ];
 
         // KIRIM NOTIFIKASI KE TELEGRAM (Menggunakan Chat ID dari .env)
         // Notification::route('telegram', env('TELEGRAM_CHAT_ID'))
-        //     ->notify(new PengajuanPeminjaman($dataTelegram));
-
         $allAdmin = User::where('hak_akses', 'admin')->whereNotNull('no_hp')->get();
         foreach ($allAdmin as $admin) {
             Notification::route('telegram', $admin->no_hp)

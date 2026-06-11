@@ -54,7 +54,8 @@ class peminjamanRuanganController extends Controller
 
         $id_room = $id;
         // dd($dataUsageRooms);
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        // $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = DB::table('peminjam')->where('id_user', Auth::user()->id_user)->value('nama_peminjam');
         $halaman = 'contentDetailPeminjamanRuangan';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'detailRuangan', 'dataUsageRooms', 'id_room', 'tglForTblUsageRuang'));
     }
@@ -117,19 +118,6 @@ class peminjamanRuanganController extends Controller
             session()->push('cart_ruangan', $cartBarangbaru);
         }
 
-        // $coba = [];
-        // foreach ($dataBarang as  $dataBarangDb) {
-        //     $coba[] = [
-        //         'id_item' => $dataBarangDb->id_item,
-        //         'nama_item' => $dataBarangDb->nama_item,
-        //         'qty_item' => $dataBarangDb->qty_item,
-        //         'merek_model' => $dataBarangDb->merek_model,
-        //         'img_item' => $dataBarangDb->img_item,
-        //     ];
-        // }
-
-        // dd($coba);
-
         foreach ($dataBarang as  $dataBarangDb) {
 
             // cek apakah barang yang disimpan di ruangan melebihi stok barang yang tersedia
@@ -148,16 +136,6 @@ class peminjamanRuanganController extends Controller
                     ]
                 ]);
             } else {
-                // menyimpan data input peminjaman barang ke list peminjaman
-                // jika di session cart_barang sudah ada data, data baru akan ditambahkan setelahnya
-                // $cartBarang = session()->get('cart', []);
-
-                // // jika data dengan id yg diinput sudah ada maka gagal
-                // foreach ($cartBarang as $value) {
-                //     if ($value['id_item'] === $request->id_item) {
-                //         return back()->with('gagal', 'barang sudah ada di cart peminjaman!');
-                //     }
-                // }
 
                 $cartBarangbaru =
                     [

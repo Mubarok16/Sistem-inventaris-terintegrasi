@@ -249,12 +249,21 @@
                                         min="1" placeholder="0" type="number" />
                                 </div>
                             </div>
-                            @if (Auth::user()->jabatan === 'kaprodi teknik sipil')
+                            @php
+                                $id = Auth::user()->id_user;
+                                $detail_dosen = DB::table('detail_dosen')
+                                    ->where('id_user', $id)
+                                    ->first();
+                                $jabatan = $detail_dosen->jabatan;
+                            @endphp
+                            @if ($jabatan === 'kaprodi teknik sipil')
                                 <input name="keperluan_prodi" type="text" value="Teknik Sipil" hidden />
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik komputer')
+                            @elseif ($jabatan === 'kaprodi teknik komputer')
                                 <input name="keperluan_prodi" type="text" value="Teknik Komputer" hidden />
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik lingkungan')
+                            @elseif ($jabatan === 'kaprodi teknik lingkungan')
                                 <input name="keperluan_prodi" type="text" value="Teknik Lingkungan" hidden />
+                            @else
+                                <input name="keperluan_prodi" type="text" value="ssss" hidden />
                             @endif
                             <div>
                                 <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">

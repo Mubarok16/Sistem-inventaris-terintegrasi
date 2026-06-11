@@ -48,7 +48,7 @@ class PerawatanBarang extends Controller
 
         // dd($allBarangRuang);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengajuanPerawatanBarang';
         return view('Page_admin.dashboard-admin', compact(
             'halaman',
@@ -61,6 +61,7 @@ class PerawatanBarang extends Controller
         ));
     }
 
+    // simpan data perawatan barang dan ruangan ke database
     public function kunciInputPerawatan(Request $request)
     {
         // dd($request->all());
@@ -147,11 +148,12 @@ class PerawatanBarang extends Controller
         // 2. Ambil data pengadaan dari database
         $dataDb = DB::table('perawatan_barang')
             ->leftJoin('users', 'perawatan_barang.id_penyetuju', '=', 'users.id_user')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
             ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
             ->select(
                 'perawatan_barang.*',
-                'users.nama', // Beri alias di sini
+                'detail_dosen.nama', // Beri alias di sini
                 'users.id_user', // Beri alias di sini
                 'items.nama_item',
                 'items.merek_model',
@@ -207,11 +209,12 @@ class PerawatanBarang extends Controller
 
         $data = DB::table('perawatan_barang')
             ->leftJoin('users', 'perawatan_barang.id_penyetuju', '=', 'users.id_user')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
             ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
             ->select(
                 'perawatan_barang.*',
-                'users.nama as nama_penyetuju', // Beri alias di sini
+                'detail_dosen.nama as nama_penyetuju', // Beri alias di sini
                 'users.id_user', // Beri alias di sini
                 'items.nama_item',
                 'items.merek_model',

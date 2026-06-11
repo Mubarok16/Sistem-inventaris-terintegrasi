@@ -37,7 +37,7 @@ Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPemin
 Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar')->middleware('guest');
 
 // URL: /peminjam/dashboard
-Route::middleware(['auth:peminjam'])->prefix('peminjam')->group(function () {
+Route::middleware(['auth'])->prefix('peminjam')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
 });
 
@@ -54,14 +54,6 @@ Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
 })->name('calender-kaprodi');
 
-
-// Route::middleware(['auth'])->prefix('pimpinan')->group(function () {
-//     Route::get('/events-calender', [calenderController::class, 'calender']);
-// })->name('calender-pimpinan');
-
-// Route::middleware(['auth'])->prefix('kaprodi')->group(function () {
-//     Route::get('/events-calender', [calenderController::class, 'calender']);
-// })->name('calender-kaprodi');
 
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('/dashboard/agenda/{id}/{date}', [DashboardController::class, 'adminDetailAgenda'])->name('agenda-calender');
@@ -83,9 +75,8 @@ Route::prefix('peminjam')->as('peminjam.')->group(function () {
 Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifikasi'])->name('verifikasi.surat');
 
 
-// routes for dashboard admin
-Route::middleware(['auth'])->group(function () {
-
+Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function () {
+    
     // dashboard admin
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
     Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser'])->name('pengelolaan-user');
@@ -258,9 +249,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/profile-users', [DashboardController::class, 'profile'])->name('profile-users');
 });
 
-
-// routes for dashboard peminjam (mahasiswa)
-Route::middleware(['auth:peminjam'])->group(function () {
+Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
     // dashbord
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard-mhs');
 
@@ -321,3 +310,5 @@ Route::middleware(['auth:peminjam'])->group(function () {
     Route::post('/mahasiswa/edit-akun-peminjam/{id}', [EditAkun::class, 'EditAkunPeminjam'])->name('edit-akun-mhs-peminjam');
 
 });
+
+

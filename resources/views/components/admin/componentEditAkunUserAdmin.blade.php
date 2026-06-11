@@ -17,7 +17,7 @@
 <main class="flex-1 min-w-0 overflow-auto bg-slate-50/50 mb-5">
 
     <div class="mt-3 mx-auto">
-        @if ($dataUser != null)
+        @if ($dataUser->hak_akses != 'mahasiswa')
         {{-- edit admin dan pimpinan --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-slate-100 flex items-center gap-4">
@@ -27,7 +27,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">
-                            {{ $dataUser->nama }}
+                            {{ $dataUser->nama_staff ?? $dataUser->nama_dosen }}
                         </h3>
                         <p class="text-sm text-slate-500 font-medium">Informasi Profil Pengguna</p>
                     </div>
@@ -41,7 +41,7 @@
                                 Lengkap</label>
                             <input name="nama"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                placeholder="Masukkan nama lengkap" type="text" value="{{ $dataUser->nama }}" />
+                                placeholder="Masukkan nama lengkap" type="text" value="{{ $dataUser->nama_staff ?? $dataUser->nama_dosen }}" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -74,11 +74,7 @@
                             </label>
                             <input name="no_hp" readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                value="{{ $dataUser->no_hp }}" type="text" />
-                            {{-- <label class="text-xs font-bold text-slate-500 tracking-wider block">
-                                Dapatkan ID Telegram Anda dengan menghubungi Bot Telegram kami di
-                                <a href="https://t.me/userinfobot" target="_blank">sipraunwir_bot</a>
-                            </label> --}}
+                                value="{{ $dataUser->no_hp_staff ?? $dataUser->no_hp_dosen }}" type="text" />
                         </div>
                         @if ($dataUser->hak_akses === 'admin' && $JmlhAdmin > 1)
                             <div class="space-y-3 md:col-span-2 pt-2">
@@ -140,13 +136,13 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">
-                            {{ $dataPeminjam->nama_peminjam }}
+                            {{ $dataUser->nama_peminjam }}
                         </h3>
                         <p class="text-sm text-slate-500 font-medium">Informasi Profil Pengguna</p>
                     </div>
                 </div>
                 <form class="p-8 space-y-6" method="POST"
-                    action="{{ route('edit-akun-mhs', ['id' => $dataPeminjam->no_identitas]) }}"
+                    action="{{ route('edit-akun-mhs', ['id' => $dataUser->no_identitas]) }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -156,7 +152,7 @@
                             <input name="nama_peminjam"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="Masukkan nama lengkap" type="text"
-                                value="{{ $dataPeminjam->nama_peminjam }}" />
+                                value="{{ $dataUser->nama_peminjam }}" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -164,7 +160,7 @@
                             </label>
                             <input name="username"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                type="text" value="{{ $dataPeminjam->username }}" />
+                                type="text" value="{{ $dataUser->username }}" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -191,68 +187,68 @@
                                 <option value="">pilih prodi</option>
                                 <optgroup label="TEKNIK">
                                     <option value="teknik sipil"
-                                        {{ $dataPeminjam->prodi === 'teknik sipil' ? 'selected' : '' }}>Teknik Sipil
+                                        {{ $dataUser->prodi === 'teknik sipil' ? 'selected' : '' }}>Teknik Sipil
                                     </option>
                                     <option value="teknik komputer"
-                                        {{ $dataPeminjam->prodi === 'teknik komputer' ? 'selected' : '' }}>Teknik
+                                        {{ $dataUser->prodi === 'teknik komputer' ? 'selected' : '' }}>Teknik
                                         Komputer
                                     </option>
                                 </optgroup>
                                 <optgroup label="HUKUM">
                                     <option value="ilmu hukum"
-                                        {{ $dataPeminjam->prodi === 'ilmu hukum' ? 'selected' : '' }}>Ilmu Hukum
+                                        {{ $dataUser->prodi === 'ilmu hukum' ? 'selected' : '' }}>Ilmu Hukum
                                     </option>
                                 </optgroup>
                                 <optgroup label="KEGURUAN DAN ILMU PENDIDIKAN">
                                     <option value="pendidikan bahasa inggris"
-                                        {{ $dataPeminjam->prodi === 'pendidikan bahasa inggris' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'pendidikan bahasa inggris' ? 'selected' : '' }}>
                                         Pendidikan Bahasa Inggris
                                     </option>
                                     <option
-                                        value="pendidikan bahasa indonesia {{ $dataPeminjam->prodi === 'pendidikan bahasa indonesia' ? 'selected' : '' }}">
+                                        value="pendidikan bahasa indonesia {{ $dataUser->prodi === 'pendidikan bahasa indonesia' ? 'selected' : '' }}">
                                         Pendidikan Bahasa
                                         Indonesia</option>
                                     <option value="pendidikan matematika"
-                                        {{ $dataPeminjam->prodi === 'pendidikan matematika' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'pendidikan matematika' ? 'selected' : '' }}>
                                         Pendidikan Matematika</option>
                                     <option value="pendidikan biologi"
-                                        {{ $dataPeminjam->prodi === 'pendidikan biologi' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'pendidikan biologi' ? 'selected' : '' }}>
                                         Pendidikan
                                         Biologi</option>
                                 </optgroup>
                                 <optgroup label="ILMU SOSIAL DAN ILMU POLITIK">
                                     <option value="ilmu politik"
-                                        {{ $dataPeminjam->prodi === 'ilmu politik' ? 'selected' : '' }}>Ilmu Politik
+                                        {{ $dataUser->prodi === 'ilmu politik' ? 'selected' : '' }}>Ilmu Politik
                                     </option>
                                 </optgroup>
                                 <optgroup label="EKONOMI">
                                     <option value="manajemen"
-                                        {{ $dataPeminjam->prodi === 'manajemen' ? 'selected' : '' }}>Manajemen</option>
+                                        {{ $dataUser->prodi === 'manajemen' ? 'selected' : '' }}>Manajemen</option>
                                 </optgroup>
                                 <optgroup label="AGAMA ISLAM">
                                     <option value="pendidikan agama islam"
-                                        {{ $dataPeminjam->prodi === 'pendidikan agama islam' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'pendidikan agama islam' ? 'selected' : '' }}>
                                         pendidikan agama islam
                                     </option>
                                     <option value="perbankan syariah"
-                                        {{ $dataPeminjam->prodi === 'perbankan syariah' ? 'selected' : '' }}>perbankan
+                                        {{ $dataUser->prodi === 'perbankan syariah' ? 'selected' : '' }}>perbankan
                                         syariah</option>
                                     <option value="bimbingan konseling islam"
-                                        {{ $dataPeminjam->prodi === 'bimbingan konseling islam' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'bimbingan konseling islam' ? 'selected' : '' }}>
                                         bimbingan konseling islam
                                     </option>
                                 </optgroup>
                                 <optgroup label="PERTANIAN">
                                     <option value="agribisnis"
-                                        {{ $dataPeminjam->prodi === 'agribisnis' ? 'selected' : '' }}>agribisnis
+                                        {{ $dataUser->prodi === 'agribisnis' ? 'selected' : '' }}>agribisnis
                                     </option>
                                     <option value="agroteknologi"
-                                        {{ $dataPeminjam->prodi === 'agroteknologi' ? 'selected' : '' }}>agroteknologi
+                                        {{ $dataUser->prodi === 'agroteknologi' ? 'selected' : '' }}>agroteknologi
                                     </option>
                                 </optgroup>
                                 <optgroup label="KESEHATAN MASYARAKAT">
                                     <option value="kesehatan masyarakat"
-                                        {{ $dataPeminjam->prodi === 'kesehatan masyarakat' ? 'selected' : '' }}>
+                                        {{ $dataUser->prodi === 'kesehatan masyarakat' ? 'selected' : '' }}>
                                         Kesehatan
                                         Masyarakat</option>
                                 </optgroup>
@@ -275,14 +271,14 @@
                             </label>
                             <input name="tahun_masuk"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                type="text" value="{{ $dataPeminjam->tahun_masuk }}" />
+                                type="text" value="{{ $dataUser->tahun_masuk }}" />
                         </div>
                         <div class="space-y-3 md:col-span-2 pt-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Status
                                 Akun</label>
                             <div class="flex flex-col md:flex-row gap-2">
                                 <label class="flex-1 cursor-pointer">
-                                    <input {{ $dataPeminjam->status === 'active' ? 'checked="active"' : '' }}
+                                    <input {{ $dataUser->status === 'active' ? 'checked="active"' : '' }}
                                         class="peer hidden" name="status" type="radio" value="active" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all">
@@ -295,7 +291,7 @@
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer">
-                                    <input {{ $dataPeminjam->status === 'unactive' ? 'checked="uncative"' : '' }}
+                                    <input {{ $dataUser->status === 'unactive' ? 'checked="unactive"' : '' }}
                                         class="peer hidden" name="status" type="radio" value="unactive" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-red-500 peer-checked:bg-red-50 transition-all">
@@ -324,17 +320,5 @@
                 </form>
             </div>
         @endif
-
-        {{-- <div class="mt-8 bg-blue-50/50 border border-blue-100 p-5 rounded-2xl flex gap-4 items-start">
-            <div class="bg-blue-100 p-2 rounded-lg">
-                <span class="material-icons text-blue-600">info</span>
-            </div>
-            <div class="text-sm text-blue-900/80">
-                <p class="font-bold text-blue-900">Catatan Perubahan</p>
-                <p class="mt-1 leading-relaxed font-medium">Setiap perubahan pada akun akan dicatat dalam log
-                    aktivitas admin. Pengguna akan menerima notifikasi email otomatis jika terdapat perubahan
-                    pada email atau status akun mereka.</p>
-            </div>
-        </div> --}}
     </div>
 </main>

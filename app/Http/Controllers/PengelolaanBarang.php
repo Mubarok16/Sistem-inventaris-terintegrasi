@@ -20,11 +20,11 @@ class PengelolaanBarang extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
-        $DataBarang = DataBarang::where('id_item', $id)->get();
+        $DataBarang = DB::table('items')->where('id_item', $id)->get();
 
         // $tipeBarang = TipeBarang::get();
         // dd($DataBarang);
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentEditBarang';
         return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user'));
     }
@@ -32,17 +32,6 @@ class PengelolaanBarang extends Controller
     // fungsi untuk mengedit informasi dasar barang
     public function editBarangInfoDasar(Request $request)
     {
-        // dd($request->all());
-
-        // $DataRuang_lama = DataBarang::where('nama_item', $request->nama_item)
-        //     // ->where('id_tipe_item', $request->tipe_item)
-        //     ->whereNot('id_item', $request->id_item)
-        //     ->count();
-
-        // if ($DataRuang_lama > 0) {
-        //     return redirect()->back()->with('gagal', 'Nama barang sudah ada!');
-        // }
-
         // jika tidak ada gambar baru yang di upload, maka simpan perubahan data ruangan tanpa mengubah gambar
         if (!isset($request->gambar_item)) {
             // simapan perubahan data barang tanpa mengubah gambar
@@ -50,6 +39,8 @@ class PengelolaanBarang extends Controller
                 ->where('id_item', $request->id_item)
                 ->update([
                     'nama_item' => $request->nama_item,
+                    'sumber_perolehan' => $request->sumber_perolehan,
+                    'tahun_perolehan' => $request->tahun_perolehan,
                     'merek_model' => $request->merk_model,
                     'updated_at' => now(),
                 ]);
@@ -79,6 +70,8 @@ class PengelolaanBarang extends Controller
                 ->update([
                     'nama_item' => $request->nama_item,
                     'merek_model' => $request->merk_model,
+                    'sumber_perolehan' => $request->sumber_perolehan,
+                    'tahun_perolehan' => $request->tahun_perolehan,
                     // 'kondisi_item' => $request->kondisi_item,
                     'img_item' => $path,
                     'updated_at' => now(),
@@ -216,13 +209,14 @@ class PengelolaanBarang extends Controller
     // fungsi untuk menambah barang
     public function tambahBarang(Request $request)
     {
-        // dd($request->all());
+        // dd($request->all());/
         try {
             $request->validate([
                 'nama_item' => 'required',
                 'merek_model' => 'required',
                 'kondisi' => 'required',
                 'qty' => 'required|integer|min:1',
+                'tahun_perolehan' => 'required|integer',
                 'gambar_item' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
@@ -232,13 +226,6 @@ class PengelolaanBarang extends Controller
                 ->select('nama_item')
                 ->latest()
                 ->count();
-            ///////////// salah /////////////////
-            // $urutan = DB::table('items')
-            //     ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-            //     ->select('items.*', 'tipe_item.nama_tipe_item') // Pilih kolom yang diperlukan
-            //     ->where('items.id_tipe_item', '=', $request->tipe)
-            //     ->latest()
-            //     ->count();
 
             $DataBarang = new \App\Models\DataBarang(); // instance untuk mengakses method model
             $idBarang = $DataBarang->generateIdItem($request->nama_item, Str::random(2), $urutan); // memanggil method generateIdItem dari model DataBarang
@@ -251,7 +238,7 @@ class PengelolaanBarang extends Controller
             }
 
             // Simpan barang ke database
-            \App\Models\DataBarang::create([
+            DB::table('items')->insert([
                 'id_item' => $idBarang,
                 'id_room' => $request->tempat_menyimpan,
                 // 'id_tipe_item' => $request->tipe,
@@ -259,6 +246,8 @@ class PengelolaanBarang extends Controller
                 'merek_model' => $request->merek_model,
                 'qty_item' => $request->qty,
                 'kondisi_item' => $request->kondisi,
+                'sumber_perolehan' => $request->sumber_perolehan ?? null,
+                'tahun_perolehan' => $request->tahun_perolehan,
                 'img_item' => $imgPath,
                 'created_at' => now(),
                 'updated_at' => now(),

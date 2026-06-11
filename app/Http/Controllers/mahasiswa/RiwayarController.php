@@ -35,7 +35,13 @@ class RiwayarController extends Controller
 
         $detailBarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
-            ->select('usage_items.*', 'items.nama_item', 'items.id_item', 'items.kondisi_item', 'items.img_item') // Pilih kolom yang diperlukan
+            ->select(
+                'usage_items.*', 
+                'items.nama_item', 
+                'items.id_item', 
+                'items.kondisi_item', 
+                'items.img_item'
+            ) // Pilih kolom yang diperlukan
             ->where('usage_items.kode_peminjaman', $id)
             ->first();
 
@@ -120,7 +126,7 @@ class RiwayarController extends Controller
 
         // dd($tglStartKalender);
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = DB::table('peminjam')->where('id_user', Auth::user()->id_user)->value('nama_peminjam');
         $halaman = 'contentRiwayatDetail';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'DetailRiwayatPerHari', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok', 'tglStartKalender'));
     }
@@ -373,13 +379,13 @@ class RiwayarController extends Controller
             ->values();
 
         // 5. Mencegah error 'Attempt to read property on null' dengan objek fallback kosong yang aman
-        $Pengambilan = $semuaRiwayatTergabung->where('status_usage', 'terjadwal')->first() 
-                       ?? $semuaRiwayatTergabung->first() 
-                       ?? (object)['status_usage' => 'tidak berlaku', 'tgl_pinjam_usage' => now()->toDateString(), 'jam_mulai_usage' => null, 'jam_selesai_usage' => null];
+        $Pengambilan = $semuaRiwayatTergabung->where('status_usage', 'terjadwal')->first()
+            ?? $semuaRiwayatTergabung->first()
+            ?? (object)['status_usage' => 'tidak berlaku', 'tgl_pinjam_usage' => now()->toDateString(), 'jam_mulai_usage' => null, 'jam_selesai_usage' => null];
 
-        $Pengembalian = $semuaRiwayatTergabung->whereIn('status_usage', ['dipinjam', 'digunakan'])->first() 
-                        ?? $semuaRiwayatTergabung->first() 
-                        ?? (object)['status_usage' => 'tidak berlaku', 'tgl_pinjam_usage' => now()->toDateString(), 'jam_mulai_usage' => null, 'jam_selesai_usage' => null];
+        $Pengembalian = $semuaRiwayatTergabung->whereIn('status_usage', ['dipinjam', 'digunakan'])->first()
+            ?? $semuaRiwayatTergabung->first()
+            ?? (object)['status_usage' => 'tidak berlaku', 'tgl_pinjam_usage' => now()->toDateString(), 'jam_mulai_usage' => null, 'jam_selesai_usage' => null];
 
         if ($aksi === 'QR') {
             // Return ke halaman QR Code dengan membawa collection lengkap
@@ -407,5 +413,4 @@ class RiwayarController extends Controller
             return back()->with('success', 'Transaksi ' . $kode_peminjaman . ' berhasil dibatalkan');
         }
     }
-
 }

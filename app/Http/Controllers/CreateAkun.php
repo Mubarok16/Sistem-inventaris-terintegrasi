@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Peminjam;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -24,9 +25,9 @@ class CreateAkun extends Controller
     {
         try {
             $request->validate([
-                'no_identitas' => 'required|integer|unique:peminjam,no_identitas',
+                'no_identitas' => 'required|integer',
                 'nama_peminjam' => 'required|string|max:100',
-                'username' => 'required|string|max:50|unique:peminjam,username',
+                'username' => 'required|string|max:50',
                 'password' => 'required|string|max:12',
                 'tahun_masuk' => 'required',
                 'prodi' => 'required|string',
@@ -34,7 +35,7 @@ class CreateAkun extends Controller
             ]);
 
             // cek username sudah ada atau belum
-            if (Peminjam::where('username', $request->username)->exists()) {
+            if (DB::table('users')->where('username', $request->username)->exists()) {
                 return redirect()->back()->with('gagal', 'pastikan username dan password anda unik!, silakan gunakan username lain!');
             }
 
@@ -62,16 +63,26 @@ class CreateAkun extends Controller
             } elseif ($request->prodi === 'kesehatan masyarakat') {
                 $fakultas = 'kesehatan masyarakat';
             }
+
             // Simpan data ke database
-            Peminjam::create([
-                'no_identitas' => $request->no_identitas,
-                'nama_peminjam' => $request->nama_peminjam,
+            $id_user_acak = Str::random(12);
+            DB::table('users')->insert([
+                'id_user' => $id_user_acak,
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
+                'hak_akses' => 'mahasiswa',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'status' => 'active',
+            ]);
+
+            DB::table('peminjam')->insert([
+                'no_identitas' => $request->no_identitas,
+                'id_user' => $id_user_acak,
+                'nama_peminjam' => $request->nama_peminjam,
                 'fakultas' => $fakultas,
                 'prodi' => $request->prodi,
                 'img_identitas' => $imgPath,
-                'status' => 'active',
                 'tahun_masuk' => $request->tahun_masuk,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -79,8 +90,8 @@ class CreateAkun extends Controller
 
             return redirect()->intended('/create-akun-peminjam')->with('success', 'Akun berhasil dibuat!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal dibuat pastikan anda belum memiliki akun dan npm sesuai!!');
-            // dd('Error saat update:', $e->getMessage());
+            // return redirect()->back()->with('gagal', 'Akun gagal dibuat pastikan anda belum memiliki akun dan npm yang anda input sesuai!!');
+            dd('Error saat update:', $e->getMessage());
 
         }
     }
@@ -92,9 +103,9 @@ class CreateAkun extends Controller
         try {
 
             $request->validate([
-                'no_identitas' => 'required|integer|unique:peminjam,no_identitas',
+                'no_identitas' => 'required|integer',
                 'nama_peminjam' => 'required|string|max:100',
-                'username' => 'required|string|max:50|unique:peminjam,username',
+                'username' => 'required|string|max:50',
                 'password' => 'required|string|max:12',
                 'prodi' => 'required|string',
                 'img_identitas' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -103,7 +114,7 @@ class CreateAkun extends Controller
             ]);
 
             // cek username sudah ada atau belum
-            if (Peminjam::where('username', $request->username)->exists()) {
+            if (DB::table('users')->where('username', $request->username)->exists()) {
                 return redirect()->back()->with('gagal', 'pastikan username dan password anda unik!, silakan gunakan username lain!');
             }
 
@@ -133,18 +144,27 @@ class CreateAkun extends Controller
             }
 
             // Simpan data ke database
-            Peminjam::create([
-                'no_identitas' => $request->no_identitas,
-                'nama_peminjam' => $request->nama_peminjam,
+            $id_user_acak = Str::random(12);
+            DB::table('users')->insert([
+                'id_user' => $id_user_acak,
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
-                'fakultas' => $fakultas,
-                'prodi' => $request->prodi,
-                'img_identitas' => $imgPath,
+                'hak_akses' => 'mahasiswa',
                 'created_at' => now(),
                 'updated_at' => now(),
                 'status' => $request->status,
+            ]);
+
+            DB::table('peminjam')->insert([
+                'no_identitas' => $request->no_identitas,
+                'id_user' => $id_user_acak,
+                'nama_peminjam' => $request->nama_peminjam,
+                'fakultas' => $fakultas,
+                'prodi' => $request->prodi,
+                'img_identitas' => $imgPath,
                 'tahun_masuk' => $request->tahun_masuk,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama . ' berhasil dibuat!');
@@ -164,7 +184,8 @@ class CreateAkun extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $user = Auth::user()->nama;
+        // $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentAddAllUserByAdmin';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
@@ -172,6 +193,7 @@ class CreateAkun extends Controller
     public function SimpanAkunAdmin(Request $request)
     {
         $request->validate([
+            'nip' => 'required|max:12',
             'nama' => 'required|string|max:100',
             'username' => 'required|string|max:50',
             'password' => 'required|string|max:8',
@@ -195,13 +217,26 @@ class CreateAkun extends Controller
         // dd($id_user_acak);
         User::create([
             'id_user' => $id_user_acak,
-            'nama' => $request->nama,
+            // 'nama' => $request->nama,
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'hak_akses' => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
             'status' => $request->status,
+        ]);
+
+        DB::table('detail_staff')->insert([
+            'nip' => $request->nip,
+            'id_user' => $id_user_acak,
+            'nama' => $request->nama,
+            'jabatan' => 'Administrasi Akademik',
+            // 'username' => $request->username,
+            // 'password' => Hash::make($request->password),
+            // 'hak_akses' => 'admin',
+            'created_at' => now(),
+            'updated_at' => now(),
+            // 'status' => $request->status,
         ]);
 
         return redirect()->back()->with('success', 'Akun admin berhasil dibuat!');

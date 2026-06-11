@@ -3,9 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,28 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function ($middleware) {
         $middleware->alias([
-            'auth' => function (Request $request, \Closure $next) {
-                // cek apakah user login di salah satu guard
-                if (!Auth::guard('web')->check()) {
-                    // abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
-                    $request->session()->put('halaman-yang-dikunjungi', $request->fullUrl());
-                    // dd($request->session()->get('halaman-yang-dikunjungi'));
-                    return redirect()->route('login')->with('gagal', 'Anda harus login sebagai admin untuk mengakses halaman ini.');
-                }
-
-                return $next($request);
-            },
-
-            'auth:peminjam' => function (Request $request, \Closure $next) {
-                // cek apakah user login di salah satu guard
-                if (!Auth::guard('peminjam')->check()) {
-                    abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
-                }
-
-                return $next($request);
-            },
+            'hak_akses' => \App\Http\Middleware\Authenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

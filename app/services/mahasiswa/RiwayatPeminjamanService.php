@@ -64,11 +64,11 @@ class RiwayatPeminjamanService
         // 3. Query Items
         $items = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->where('usage_items.kode_peminjaman', $id)
             ->select(
                 'items.nama_item',
-                'tipe_item.nama_tipe_item',
+                // 'tipe_item.nama_tipe_item',
                 DB::raw('DATE(usage_items.tgl_pinjam_usage_item) as tanggal'),
                 'usage_items.jam_mulai_usage_item',
                 'usage_items.jam_selesai_usage_item',
@@ -109,7 +109,7 @@ class RiwayatPeminjamanService
                         } else {
                             return [
                                 "nama_item" => $item->nama_item,
-                                "nama_tipe_item" => $item->nama_tipe_item,
+                                // "nama_tipe_item" => $item->nama_tipe_item,
                                 "qty" => $item->qty_usage_item,
                                 "img_item" => $item->img_item
                             ];

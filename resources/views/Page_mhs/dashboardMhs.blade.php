@@ -7,6 +7,7 @@
     @include('Page_mhs.sidebar')
 
     <div id="content-wrapper" class="d-flex flex-column">
+      
         <div id="content">
             {{-- Navbar --}}
             @include('Page_mhs.navbarmhs')

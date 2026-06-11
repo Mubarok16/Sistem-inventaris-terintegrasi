@@ -22,7 +22,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $peminjam = DB::table('peminjam')->where('username', $request->username)->first();
+        // $peminjam = DB::table('peminjam')->where('username', $request->username)->first();
         $user = DB::table('users')->where('username', $request->username)->first();
         if ($user) {
             if ($user->status === 'active') {
@@ -39,6 +39,8 @@ class AuthController extends Controller
                         return redirect()->intended('/dashboard/pimpinan'); // arahkan ke dashboard dosen
                     } elseif (Auth::user()->hak_akses === "kaprodi") { // cek jika hak_akses adalah 'kaprodi'
                         return redirect()->intended('/dashboard/kaprodi'); // arahkan ke dashboard kaprodi
+                    } elseif (Auth::user()->hak_akses === "mahasiswa") { // cek jika hak_akses adalah 'mahasiswa'
+                        return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard mahasiswa
                     } else {
                         Auth::logout();
                         return back()->withErrors([
@@ -49,14 +51,14 @@ class AuthController extends Controller
             }
         }
 
-        if ($peminjam) {
-            if ($peminjam->status === 'active') {
-                if (Auth::guard('peminjam')->attempt($credentials)) {
-                    $request->session()->regenerate();
-                    return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard admin
-                }
-            }
-        }
+        // if ($peminjam) {
+        //     if ($peminjam->status === 'active') {
+        //         if (Auth::guard('peminjam')->attempt($credentials)) {
+        //             $request->session()->regenerate();
+        //             return redirect()->intended('/dashboard/mahasiswa'); // arahkan ke dashboard admin
+        //         }
+        //     }
+        // }
 
         return back()->withErrors([
             'username' => 'akun tidak ditemukan pastikan username password benar atau hubungi staff',

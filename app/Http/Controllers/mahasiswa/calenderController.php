@@ -18,6 +18,8 @@ class calenderController extends Controller
         $prefix = request()->segment(1);
         $routeName = $prefix;
 
+        // dd($routeName);
+
         // Ambil data dari Agenda Fakultas
         $agenda_fakultas = DB::table('agenda_fakultas')
             ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')

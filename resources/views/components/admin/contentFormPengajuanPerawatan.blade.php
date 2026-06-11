@@ -59,7 +59,7 @@
                                 Nama Pemohon
                             </label>
 
-                            <input type="text" readonly name="nama_pemohon" value="{{ Auth::user()->nama }}"
+                            <input type="text" readonly name="nama_pemohon" value="{{ $user }}"
                                 class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
 
                         </div>
@@ -83,13 +83,20 @@
                         </div>
 
                         <!-- KEBUTUHAN -->
+
                         @if (Auth::user()->hak_akses === 'kaprodi')
-                            @if (Auth::user()->jabatan === 'kaprodi teknik sipil')
-                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Sipil">
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik komputer')
-                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Komputer">
-                            @elseif (Auth::user()->jabatan === 'kaprodi teknik lingkungan')
-                                <input type="text" name="kebutuhan_prodi" hidden value="Teknik Lingkungan">
+                            @php
+                                $jabatan = DB::table('detail_dosen')
+                                    ->where('id_user', Auth::user()->id_user)
+                                    ->value('jabatan');
+                            @endphp
+
+                            @if ($jabatan === 'kaprodi teknik sipil')
+                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Sipil">
+                            @elseif ($jabatan === 'kaprodi teknik komputer')
+                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Komputer">
+                            @elseif ($jabatan === 'kaprodi teknik lingkungan')
+                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Lingkungan">
                             @endif
                         @else
                             <div>
@@ -422,7 +429,7 @@
                 <button type="submit"
                     class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm w-full justify-center mt-3">
                     <i class="fas fa-check-circle text-white"></i>
-                    <span class="text-white">kunci sementara</span>
+                    <span class="text-white">Ajukan perawatan</span>
                 </button>
 
             </form>

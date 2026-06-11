@@ -58,6 +58,24 @@
                                         value="{{ $ruang->merek_model }}" />
                                 </div>
                             </div>
+                            <div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">Sumber Perolehan</label>
+                                    <input name="sumber_perolehan"
+                                        class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-black"
+                                        placeholder="Contoh: Lab Komputer 1" type="text"
+                                        value="{{ $ruang->sumber_perolehan }}" />
+                                </div>
+                            </div>
+                            <div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">Tahun Perolehan</label>
+                                    <input name="tahun_perolehan"
+                                        class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-black"
+                                        placeholder="Contoh: Lab Komputer 1" type="text"
+                                        value="{{ $ruang->tahun_perolehan }}" />
+                                </div>
+                            </div>
                             <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ asset('storage/' . $ruang->img_item) }}')">
                                 <div class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-all group min-h-[400px]"
                                     :class="isDragging ? 'border-blue-500 bg-blue-50' :
@@ -174,7 +192,7 @@
                             </div>
                         </form>
                         <div class="text-xs text-slate-400 leading-relaxed">
-                            Terakhir diupdate oleh <b>Admin </b> pada {{ $ruang->updated_at->format('d M Y, H:i') }}.
+                            Terakhir diupdate oleh <b>Admin </b> pada {{ \Carbon\Carbon::parse($ruang->updated_at)->format('d M Y, H:i') }}.
                         </div>
                     @endforeach
                 </div>

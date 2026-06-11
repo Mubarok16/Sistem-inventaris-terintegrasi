@@ -254,7 +254,7 @@ class pengelolaanAgenda extends Controller
                 }
             }
 
-            
+
             // simpan data ke db agenda fakultas dan usage room serta usage item
             if ($agendaFakultas != null) {
                 DB::table('agenda_fakultas')->insert($agendaFakultas);
@@ -445,7 +445,8 @@ class pengelolaanAgenda extends Controller
     // kode untuk menampilkan halaman edit agenda
     public function HalamanEditAgenda($id)
     {
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
+
 
         $dataAgendas = DB::table('agenda_fakultas')
             ->where('agenda_fakultas.kode_agenda', $id)
@@ -615,7 +616,7 @@ class pengelolaanAgenda extends Controller
 
         // dd($allBarangRuang);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentTambahAgenda';
         return view('Page_admin.dashboard-admin', compact(
             'halaman',

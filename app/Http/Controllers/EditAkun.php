@@ -20,20 +20,41 @@ class EditAkun extends Controller
         }
 
         // mengamil data peminjam by id
-        $dataPeminjam = DB::table('peminjam')
-            ->where('no_identitas', '=', $id)
-            ->first();
+        // $dataPeminjam = DB::table('peminjam')
+        //     ->where('no_identitas', '=', $id)
+        //     ->first();
 
         // mengambil data user
         $dataUser = DB::table('users')
-            ->where('id_user', '=', $id)
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
+            ->leftJoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
+            ->leftJoin('peminjam', 'peminjam.id_user', '=', 'users.id_user')
+             ->select(
+                'users.*',
+
+                'detail_dosen.nidn',
+                'detail_dosen.nama as nama_dosen',
+                'detail_dosen.no_hp as no_hp_dosen',
+
+                'detail_staff.nip',
+                'detail_staff.nama as nama_staff',
+                'detail_staff.no_hp as no_hp_staff',
+
+                'peminjam.no_identitas',
+                'peminjam.nama_peminjam',
+                'peminjam.prodi',
+                'peminjam.img_identitas',
+                'peminjam.tahun_masuk'
+            )
+            ->where('users.id_user', '=', $id)
             ->first();
 
-        // dd($dataPeminjam, $dataUser);
+        // dd($dataUser);
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
-        $user = Auth::user()->nama;
+        // $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentEditUser';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataUser', 'dataPeminjam', 'JmlhAdmin'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataUser', 'JmlhAdmin'));
     }
 
     // edit akun pimpinan dan admin
@@ -53,6 +74,8 @@ class EditAkun extends Controller
             }
 
             $User = User::where('id_user', $id)->firstOrFail();
+            $dosen = DB::table('detail_dosen')->where('id_user', $id)->first();
+            $admin = DB::table('detail_staff')->where('id_user', $id)->first();
 
             if ($request->input('status') != null) {
                 $User->update([
@@ -62,21 +85,58 @@ class EditAkun extends Controller
 
             if ($request->password === null) {
                 $User->update([
-                    'nama' => $request->nama,
+                    // 'nama' => $request->nama,
                     'username' => $request->username,
                     'hak_akses' => $request->role,
-                    'no_hp' => $request->no_hp,
+                    // 'no_hp' => $request->no_hp,
                     'updated_at' => now(),
                 ]);
+
+                if ($dosen) {
+                    DB::table('detail_dosen')
+                        ->where('id_user', $id)
+                        ->update([
+                            'nama' => $request->nama,
+                            'no_hp' => $request->no_hp,
+                            'updated_at' => now(),
+                        ]);
+                } elseif ($admin) {
+                    DB::table('detail_staff')
+                        ->where('id_user', $id)
+                        ->update([
+                            'nama' => $request->nama,
+                            'no_hp' => $request->no_hp,
+                            'updated_at' => now(),
+                        ]);
+                }
+
             } else {
                 $User->update([
-                    'nama' => $request->nama,
+                    // 'nama' => $request->nama,
                     'username' => $request->username,
                     'password' => Hash::make($request->password),
                     'hak_akses' => $request->role,
-                    'no_hp' => $request->no_hp,
+                    // 'no_hp' => $request->no_hp,
                     'updated_at' => now(),
                 ]);
+
+                if ($dosen) {
+                    DB::table('detail_dosen')
+                        ->where('id_user', $id)
+                        ->update([
+                            'nama' => $request->nama,
+                            'no_hp' => $request->no_hp,
+                            'updated_at' => now(),
+                        ]);
+                } elseif ($admin) {
+                    DB::table('detail_staff')
+                        ->where('id_user', $id)
+                        ->update([
+                            'nama' => $request->nama,
+                            'no_hp' => $request->no_hp,
+                            'updated_at' => now(),
+                        ]);
+                }
             }
 
             return redirect()->back()->with('success', 'Akun ' . $User->nama . ' berhasil diperbarui!');
@@ -89,6 +149,7 @@ class EditAkun extends Controller
     public function EditAkunPeminjam(Request $request, $id)
     {
         // dd($request->all());
+        // dd($id);
         try {
             $request->validate([
                 'nama_peminjam' => 'required|string|max:100',
@@ -99,7 +160,7 @@ class EditAkun extends Controller
 
             // dd($request->all());
             // cek apakah username sudah ada di db
-            if (Peminjam::where('username', $request->username)->count() > 1) {
+            if (DB::table('users')->where('username', $request->username)->count() > 1) {
                 return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
             }
 
@@ -147,10 +208,16 @@ class EditAkun extends Controller
                 // $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
                 $update = [
                     'nama_peminjam' => $request->nama_peminjam,
-                    'username' => $request->username,
+                    // 'username' => $request->username,
                     'fakultas' => $fakultas,
                     'prodi' => $request->prodi,
                     'tahun_masuk' => $request->tahun_masuk,
+                    // 'status' => $request->status,
+                    'updated_at' => now(),
+                ];
+
+                $users = [
+                    'username' => $request->username,
                     'status' => $request->status,
                     'updated_at' => now(),
                 ];
@@ -158,11 +225,18 @@ class EditAkun extends Controller
                 // $peminjam = Peminjam::where('no_identitas', $id)->firstOrFail();
                 $update = [
                     'nama_peminjam' => $request->nama_peminjam,
-                    'username' => $request->username,
-                    'password' => Hash::make($request->password),
+                    // 'username' => $request->username,
+                    // 'password' => Hash::make($request->password),
                     'fakultas' => $fakultas,
                     'prodi' => $request->prodi,
                     'tahun_masuk' => $request->tahun_masuk,
+                    // 'status' => $request->status,
+                    'updated_at' => now(),
+                ];
+
+                $users = [
+                    'username' => $request->username,
+                    'password' => Hash::make($request->password),
                     'status' => $request->status,
                     'updated_at' => now(),
                 ];
@@ -173,6 +247,11 @@ class EditAkun extends Controller
                 ->where('no_identitas', $id)
                 ->update($update);
 
+            $id_user = DB::table('peminjam')->where('no_identitas', $id)->value('id_user');
+
+            DB::table('users')
+                ->where('id_user', $id_user)
+                ->update($users);
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama_peminjam . ' berhasil diperbarui!');
         } catch (\Exception $e) {

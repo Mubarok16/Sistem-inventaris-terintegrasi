@@ -17,118 +17,136 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'staff',
-        //     'username' => 'admin',
-        //     'password' => bcrypt('admin'),
-        //     'hak_akses' => 'admin',
-        //     'no_hp' => '08123423',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-        
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'Ka Prodi teknik komputer',
-        //     'username' => 'kaproditkm',
-        //     'password' => bcrypt('kaproditkm'),
-        //     'hak_akses' => 'kaprodi',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'Ka Prodi teknik sipil',
-        //     'username' => 'kaprodispl',
-        //     'password' => bcrypt('kaprodispl'),
-        //     'hak_akses' => 'kaprodi',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-
-        // User::create([
-        //     'id_user' => Str::random(12),
-        //     'nama' => 'wakil dekan',
-        //     'username' => 'wadek',
-        //     'password' => bcrypt('wadek'),
-        //     'hak_akses' => 'pimpinan',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-
-        // 1. DATA UNTUK TABEL USERS (Dipastikan hanya menggunakan role & jabatan yang diminta)
+         // ==========================================
+        // 1. DATA DOSEN
+        // ==========================================
         DB::table('users')->insert([
-            [
-                'id_user'   => Str::random(12),
-                'nama'      => 'Andi Wijaya, M.T.',
-                'username'  => 'kaprodi_tk',
-                'password'  => Hash::make('password123'),
-                'hak_akses' => 'kaprodi', // Role: kaprodi
-                'no_hp'     => null,
-                'status'    => 'aktif',
-                'jabatan'   => 'Kaprodi Teknik Komputer', // Jabatan 1
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_user'   => Str::random(12),
-                'nama'      => 'kaprodi teknik sipil',
-                'username'  => 'kaprodi_ts',
-                'password'  =>  Hash::make('password123'),
-                'hak_akses' => 'kaprodi', // Role: kaprodi
-                'no_hp'     =>  null,
-                'status'    => 'aktif',
-                'jabatan'   => 'Kaprodi Teknik Sipil', // Jabatan 2
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_user'   => Str::random(12),
-                'nama'      => 'kaprodi teknik lingkungan',
-                'username'  => 'kaprodi_tl',
-                'password'  => Hash::make('password123'),
-                'hak_akses' => 'kaprodi', // Role: kaprodi
-                'no_hp'     => null,
-                'status'    => 'aktif',
-                'jabatan'   => 'Kaprodi Teknik Lingkungan', // Jabatan 3
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_user'   => Str::random(12),
-                'nama'      => 'admin sarpras',
-                'username'  => 'admin',
-                'password'  => Hash::make('admin123'),
-                'hak_akses' => 'admin', // Role: admin
-                'no_hp'     =>  null,
-                'status'    => 'aktif',
-                'jabatan'   => 'Staf Administrasi Sarpras',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_user'   => Str::random(12),
-                'nama'      => 'wakil dekan',
-                'username'  => 'pimpinan_wd',
-                'password'  => Hash::make('pimpinan123'),
-                'hak_akses' => 'pimpinan', // Role: pimpinan
-                'no_hp'     => null,
-                'status'    => 'aktif',
-                'jabatan'   => 'Wakil Dekan', // Jabatan 4
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            'id_user'   => 'USR-DSN001',
+            'username'  => 'kaproditkm',
+            'password'  => Hash::make('kaproditkm'), // Enkripsi password
+            'hak_akses' => 'kaprodi',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
         ]);
 
+        DB::table('detail_dosen')->insert([
+            'nidn'       => '0412038901',
+            'id_user'    => 'USR-DSN001',
+            'nama'       => 'kaprodi Teknik komputer',
+            'no_hp'      => null,
+            'jabatan'    => 'kaprodi Teknik komputer',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('users')->insert([
+            'id_user'   => 'USR-DSN002',
+            'username'  => 'kaprodispl',
+            'password'  => Hash::make('kaprodispl'), // Enkripsi password
+            'hak_akses' => 'kaprodi',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
+
+        DB::table('detail_dosen')->insert([
+            'nidn'       => '0412038902',
+            'id_user'    => 'USR-DSN002',
+            'nama'       => 'kaprodi teknik sipil',
+            'no_hp'      => null,
+            'jabatan'    => 'kaprodi teknik sipil',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('users')->insert([
+            'id_user'   => 'USR-DSN003',
+            'username'  => 'kaproditl',
+            'password'  => Hash::make('kaproditl'), // Enkripsi password
+            'hak_akses' => 'kaprodi',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
+
+        DB::table('detail_dosen')->insert([
+            'nidn'       => '0412038903',
+            'id_user'    => 'USR-DSN003',
+            'nama'       => 'kaprodi teknik lingkungan',
+            'no_hp'      => null,
+            'jabatan'    => 'kaprodi teknik lingkungan',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('users')->insert([
+            'id_user'   => 'USR-DSN004',
+            'username'  => 'wadek',
+            'password'  => Hash::make('wadek'), // Enkripsi password
+            'hak_akses' => 'kaprodi',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
+
+        DB::table('detail_dosen')->insert([
+            'nidn'       => '0412038904',
+            'id_user'    => 'USR-DSN004',
+            'nama'       => 'Wadek',
+            'no_hp'      => null,
+            'jabatan'    => 'Wakil Dekan',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // ==========================================
+        // 2. DATA STAFF / ADMIN
+        // ==========================================
+        DB::table('users')->insert([
+            'id_user'   => 'USR-STF001',
+            'username'  => 'admin',
+            'password'  => Hash::make('admin123'),
+            'hak_akses' => 'admin',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
+
+        DB::table('detail_staff')->insert([
+            'nip'        => '19950812001',
+            'id_user'    => 'USR-STF001',
+            'nama'       => 'Admin',
+            'no_hp'      =>  null,
+            'jabatan'    => 'Administrasi Akademik',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // ==========================================
+        // 3. DATA PEMINJAM (MAHASISWA/UMUM)
+        // ==========================================
+        DB::table('users')->insert([
+            'id_user'   => 'USR-PMJ001',
+            'username'  => 'farhan',
+            'password'  => Hash::make('farhan'),
+            'hak_akses' => 'mahasiswa',
+            'status'    => 'aktif',
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
+
+        DB::table('peminjam')->insert([
+            'no_identitas'  => '22010304001',
+            'id_user'       => 'USR-PMJ001',
+            'nama_peminjam' => 'Farhan',
+            'fakultas'      => 'Teknik',
+            'prodi'         => 'Teknik Informatika',
+            'img_identitas' => 'ktm_farhan.jpg', // Nama file contoh gambar
+            'tahun_masuk'   => 2021,
+            'created_at'    => now(),
+            'updated_at'    => now(),
+        ]);
 
     }
 }

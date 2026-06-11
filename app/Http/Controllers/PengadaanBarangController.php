@@ -9,13 +9,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-use function Symfony\Component\Clock\now;
-
 class PengadaanBarangController extends Controller
 {
     // menerima data pengajuan pengadaan barang dari form
     public function pengajuanPengadaanBarang(Request $request)
     {
+        // dd($request->all());
 
         try {
 
@@ -26,7 +25,6 @@ class PengadaanBarangController extends Controller
                 'nama_item' => $request->nama_item,
                 'merek_model' => $request->merk,
                 'qty_item' => $request->qty,
-                'surat_pengadaan' => null,
                 'status_pengadaan' => "pendding",
                 'tahun_akademik' => $request->tahun_akademik,
                 'keperluan_prodi' => $request->keperluan_prodi,
@@ -35,7 +33,7 @@ class PengadaanBarangController extends Controller
             ]);
 
             // Jika sukses, redirect ke halaman index dengan pesan
-            return redirect()->route('page_pengadaan_barang')->with('success', 'Surat pengadaan berhasil disimpan!');
+            return back()->with('success', 'Surat pengadaan berhasil disimpan!');
         } catch (\Exception $e) {
             // Jika gagal
             return back()->with('gagal', 'Gagal menyimpan surat: ' . $e->getMessage());
@@ -51,20 +49,27 @@ class PengadaanBarangController extends Controller
         // 2. Ambil data pengadaan dari database
         $dataDb = DB::table('pengadaan_barang')
             ->leftJoin('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->select(
                 'pengadaan_barang.*',
-                'users.nama', // Beri alias di sini
-                'users.id_user' // Beri alias di sini
+                'detail_dosen.nama', // Beri alias di sini
+                'detail_dosen.nidn' // Beri alias di sini
             )
             ->where('id_pengadaan', $nomorSuratAsli)
             ->first();
+
+        // dd($dataDb);
 
         if (!$dataDb) {
             abort(404, 'Data pengadaan tidak ditemukan di database.');
         }
 
         // 3. Opsi Keamanan: Hanya pemohon atau pimpinan yang bisa lihat
-        if (Auth::id() !== $dataDb->id_pemohon && Auth::user()->hak_akses !== 'pimpinan') {
+        if (
+            Auth::user()->hak_akses !== 'admin'
+            && Auth::user()->hak_akses !== 'pimpinan'
+            && Auth::user()->id_user !== $dataDb->id_pemohon
+        ) {
             abort(403, 'Anda tidak memiliki hak akses untuk melihat surat ini.');
         }
 
@@ -79,7 +84,7 @@ class PengadaanBarangController extends Controller
             'tahun_akademik'  => $dataDb->tahun_akademik,
             'keperluan_prodi' => $dataDb->keperluan_prodi,
             'dekan'           => $dataDb->nama ?? 'Nama Belum Diatur',
-            'nidn'            => $dataDb->id_user ?? '-',
+            'nidn'            => $dataDb->nidn ?? '-',
             'is_approved'     => $dataDb->status_pengadaan, // Variabel penting untuk Watermark & TTD
             'verif_url'       => url('/verifikasi/surat/' . $id), // URL untuk QR Code
             'created_at'        => $dataDb->created_at,
@@ -101,9 +106,10 @@ class PengadaanBarangController extends Controller
         $nomorSurat = base64_decode($id);
         $data = DB::table('pengadaan_barang')
             ->join('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->join('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->select(
                 'pengadaan_barang.*',
-                'users.nama'
+                'detail_dosen.nama'
 
             )
             ->where('id_pengadaan', $nomorSurat)
@@ -126,9 +132,10 @@ class PengadaanBarangController extends Controller
 
         $data = DB::table('pengadaan_barang')
             ->leftJoin('users', 'pengadaan_barang.id_penyetuju', '=', 'users.id_user')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->select(
                 'pengadaan_barang.*',
-                'users.nama as nama_penyetuju', // Beri alias di sini
+                'detail_dosen.nama as nama_penyetuju', // Beri alias di sini
                 'users.id_user' // Beri alias di sini
             )
             ->where('id_pengadaan', $id_pengadaan)
@@ -243,6 +250,8 @@ class PengadaanBarangController extends Controller
                     'nama_item'    => $namaItem,
                     'merek_model'  => $merkModel,
                     'qty_item'     => $qty,
+                    'sumber_perolehan' => 'Universitas',
+                    'tahun_perolehan' => now()->year,
                     'kondisi_item' => $kondisi,
                     'img_item'     => 'default.png',
                     'updated_at'   => now(),

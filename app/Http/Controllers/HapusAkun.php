@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Peminjam;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class HapusAkun extends Controller
 {
     public function HapusAkunAdmin($id)
     {
 
-
         $user = User::where('id_user', $id)->first();
+        DB::table('detail_staff')->where('id_user', $id)->delete();
         $user->delete();
 
         return redirect()->back()->with('success', 'Akun berhasil dihapus!');
@@ -28,6 +29,7 @@ class HapusAkun extends Controller
             // dd($request->all());
 
             $user = Peminjam::where('no_identitas', $request->no_identitas)->first();
+            $user = User::where('id_user', $user->id_user)->first();
             $user->delete();
 
             return redirect()->back()->with('success', 'Akun berhasil dihapus!');

@@ -43,6 +43,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                                Nip
+                            </label>
+                            <input name="nip"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
+                                type="number" />
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nama
                                 Lengkap</label>
                             <input name="nama"

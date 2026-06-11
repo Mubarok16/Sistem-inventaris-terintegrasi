@@ -14,28 +14,47 @@ return new class extends Migration
         // Database/migrations/xxxx_xx_xx_create_users_table.php
         Schema::create('users', function (Blueprint $table) {
             $table->string('id_user', 12)->primary();
-            $table->text('nama');
             $table->string('username', 12);
             $table->string('password', 255);
             $table->string('hak_akses', 10);
-            $table->decimal('no_hp', 50)->nullable();
             $table->string('status', 10)->nullable();
+            $table->timestamps(0);
+        });
+
+        Schema::create('detail_dosen', function (Blueprint $table) {
+            $table->string('nidn', 12)->primary();
+            $table->string('id_user', 12);
+            $table->text('nama');
+            $table->decimal('no_hp', 50)->nullable();
             $table->text('jabatan')->nullable();
             $table->timestamps(0);
+
+            $table->foreign('id_user')->references('id_user')->on('users');
+        });
+
+        Schema::create('detail_staff', function (Blueprint $table) {
+            $table->string('nip', 12)->primary();
+            $table->string('id_user', 12);
+            $table->text('nama');
+            $table->decimal('no_hp', 50)->nullable();
+            $table->text('jabatan')->nullable();
+            $table->timestamps(0);
+
+            $table->foreign('id_user')->references('id_user')->on('users');
         });
 
         // Database/migrations/xxxx_xx_xx_create_peminjam_table.php
         Schema::create('peminjam', function (Blueprint $table) {
             $table->string('no_identitas', 12)->primary();
+            $table->string('id_user', 12);
             $table->text('nama_peminjam');
-            $table->string('username', 12);
-            $table->string('password', 255);
             $table->text('fakultas');
             $table->text('prodi');
             $table->text('img_identitas');
-            $table->string('status', 10)->nullable();
             $table->integer('tahun_masuk')->nullable();
             $table->timestamps(0);
+
+            $table->foreign('id_user')->references('id_user')->on('users');
         });
 
         // Database/migrations/xxxx_xx_xx_create_tipe_rooms_table.php
@@ -74,6 +93,8 @@ return new class extends Migration
             $table->string('kondisi_item', 12);
             $table->text('img_item');
             $table->text('visibility_item')->nullable();
+            $table->text('sumber_perolehan')->nullable();
+            $table->integer('tahun_perolehan')->nullable();
             $table->timestamps(0);
 
             $table->foreign('id_room')->references('id_room')->on('rooms');

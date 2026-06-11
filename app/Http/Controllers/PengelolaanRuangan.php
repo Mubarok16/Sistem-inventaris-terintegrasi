@@ -192,7 +192,7 @@ class PengelolaanRuangan extends Controller
 
         // dd($allBarangRuang);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDetailRuangan';
         return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan', 'allBarangRuang', 'id'));
     }

@@ -188,37 +188,6 @@
             </div>
         </div>
 
-        {{-- summary ketersediaan dan stok --}}
-        {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
-                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-3xl">inventory_2</span>
-                </div>
-                <div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Barang</div>
-                    <div class="text-3xl font-extrabold text-slate-900">124</div>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
-                <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-                    <span class="material-symbols-outlined text-3xl">check_box</span>
-                </div>
-                <div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Tersedia</div>
-                    <div class="text-3xl font-extrabold text-slate-900">98</div>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
-                <div class="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600">
-                    <span class="material-symbols-outlined text-3xl">shopping_cart_checkout</span>
-                </div>
-                <div>
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Sedang Dipinjam</div>
-                    <div class="text-3xl font-extrabold text-slate-900">26</div>
-                </div>
-            </div>
-        </div> --}}
-
         {{-- ====================================== show ============================================================= --}}
 
         {{-- shwo add barang --}}
@@ -282,6 +251,18 @@
                                 <label for="foto" class="form-label">Masukkan gambar Barang</label>
                                 <input type="file" name="gambar_item" class="form-control"
                                     accept="image/jpeg, image/png,.doc" capture="environment" required>
+                            </div>
+                        </div>
+                        <div class="col-12 m-0">
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control" name="sumber_perolehan" placeholder=" " required>
+                                <label class="form-label">sumber perolehan</label>
+                            </div>
+                        </div>
+                        <div class="col-12 m-0">
+                            <div class="form-floating mb-2">
+                                <input type="number" class="form-control" name="tahun_perolehan" placeholder=" " required>
+                                <label class="form-label">tahun perolehan</label>
                             </div>
                         </div>
                         <div class="col-12">

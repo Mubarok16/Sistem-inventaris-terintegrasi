@@ -18,13 +18,25 @@ class PengadaanBarangControllerPimpinan extends Controller
         }
 
         $pengadaan = DB::table('pengadaan_barang')
-            ->join('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
-            ->select('pengadaan_barang.*', 'users.nama as nama_pemohon')
+            ->leftjoin('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
+            ->leftjoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
+            ->leftjoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
+            ->select(
+                'pengadaan_barang.*',
+                DB::raw('COALESCE(detail_staff.nama, detail_dosen.nama) as nama_pemohon')
+            )
             ->get();
 
         // dd($pengadaan);
 
-        $user = Auth::user()->nama;
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentPengadaanBarang';
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'pengadaan'));
     }
@@ -94,12 +106,14 @@ class PengadaanBarangControllerPimpinan extends Controller
         }
 
         $perawatan = DB::table('perawatan_barang')
-            ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftjoin('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftjoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
+            ->leftjoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
             ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
             ->select(
                 'perawatan_barang.*',
-                'users.nama as nama_pemohon',
+                DB::raw('COALESCE(detail_staff.nama, detail_dosen.nama) as nama_pemohon'),
                 'items.nama_item',
                 'items.merek_model',
                 'rooms.nama_room',
@@ -108,7 +122,14 @@ class PengadaanBarangControllerPimpinan extends Controller
 
         // dd($perawatan);
 
-        $user = Auth::user()->nama;
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentPerawatanBarang';
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'perawatan'));
     }

@@ -171,7 +171,8 @@ class DashboardController extends Controller
 
         // dd($bulanInput);
 
-        $user = Auth::user()->nama;
+        // $user = Auth::user()->id_user;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDashbord';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'labels', 'countsBarang', 'countsRuangan', 'totalPeminjamanAktif', 'totalBarang', 'totalRuangan', 'AgendaToday', 'Agendaberlangsung', 'pengajuanPeminjaman', 'bulanInput'));
     }
@@ -200,7 +201,7 @@ class DashboardController extends Controller
             ->where('usage_rooms.status_usage_room', 'terjadwal')
             ->get();
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentAgendaBerlangsung';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'Agendaberlangsung'));
     }
@@ -227,20 +228,20 @@ class DashboardController extends Controller
         $filter = $PengelolaanUserService->dataAllUsersByFilter($role, $status);
         // $filterStatus = $PengelolaanUserService->dataAllUsersByStatus($status);
 
-        $AkunPeminjams = $filter['AkunPeminjams'];
+        // $AkunPeminjams = $filter['AkunUsers']->where('hak_akses', 'mahasiswa');
         // dd($AkunPeminjams);
-        $AkunUsers = $filter['AkunUsers'];
+        $AkunUsers = $filter['AkunUsers']->paginate(5);
 
-        // dd($AkunPeminjams, $AkunUsers);
+        // dd($AkunUsers->paginate(3));
 
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
-        $jmlhPenggunaAll = User::where('status', 'active')->count() + Peminjam::where('status', 'active')->count();
-        $jmlhMhs = Peminjam::where('status', 'active')->count();
-        $jmlhMhsTA = Peminjam::where('status', 'unactive')->count();
+        $jmlhPenggunaAll = User::where('status', 'active')->count();
+        $jmlhMhs = User::where('hak_akses', 'mahasiswa')->count();
+        $jmlhMhsTA = User::where('hak_akses', 'admin')->where('status', 'unactive')->count();
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengelolaanUser';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunPeminjams', 'AkunUsers', 'JmlhAdmin', 'jmlhPenggunaAll', 'jmlhMhs', 'jmlhMhsTA', 'role', 'status'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'AkunUsers', 'JmlhAdmin', 'jmlhPenggunaAll', 'jmlhMhs', 'jmlhMhsTA', 'role', 'status'));
     }
 
     public function adminPengajuanPeminjaman()
@@ -248,9 +249,6 @@ class DashboardController extends Controller
         if (Auth::user()->hak_akses  !== "admin") {
             abort(403, 'Unauthorized');
         }
-
-        $user = Auth::user()->nama;
-        
 
         $dataPeminjamanDisetujui = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
             // ->join('users', 'peminjaman.id_user', '=', 'users.id_user')
@@ -282,6 +280,7 @@ class DashboardController extends Controller
         $totalTerlambat = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('terlambat');
         // dd($totalPeminjaman);
 
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengajuanPeminjaman';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPengajuanPeminjaman', 'dataPeminjamanDisetujui', 'status_penggunaan', 'totalPeminjaman', 'totalDiajukan', 'totalDipinjam', 'totalTerlambat'));
     }
@@ -305,11 +304,11 @@ class DashboardController extends Controller
             ) // Pilih kolom yang diperlukan
             ->latest()
             ->paginate(3);
-            // ->get();
+        // ->get();
         // mengambil data tipe barang
         $DataTipeBarang = TipeRuangan::get();
         // mengambil data user yang sedang login
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         // membuat variable dengan isi content data barang
         $halaman = 'contentDataBarang';
         // mengirimkan view ke halaman dahsboard pengelolaan barang dengan mengirimkan variable yg di butuhkan di halaman
@@ -327,7 +326,7 @@ class DashboardController extends Controller
             ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
             ->latest()
             ->paginate(3);
-            // ->get();
+        // ->get();
 
         $barang = DB::table('items')
             // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
@@ -356,7 +355,7 @@ class DashboardController extends Controller
 
         // dd($DataRuangan);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDataRuangan';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan'));
     }
@@ -394,11 +393,11 @@ class DashboardController extends Controller
             ->orderBy('agenda_fakultas.kode_agenda') // Mengelompokkan berdasarkan kode unik
             ->orderBy('agenda_fakultas.created_at', 'asc')
             ->paginate(3);
-            // ->get();
+        // ->get();
 
         // dd($dataAgendas);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentAgenda';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataAgendas'));
     }
@@ -418,7 +417,7 @@ class DashboardController extends Controller
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDetailAgendaCalender';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'id', 'date'));
     }
@@ -474,9 +473,9 @@ class DashboardController extends Controller
             ->where('usage_items.tgl_pinjam_usage_item', $date)
             // ->whereNotIn('status_usage_item', ['selesai', 'digunakan', 'ditolak'])
             ->get();
-            // ->unique('usage_items.id_item');
+        // ->unique('usage_items.id_item');
 
-            // dd($databarang);
+        // dd($databarang);
 
         $dataruangan = DB::table('usage_rooms')
             ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
@@ -494,7 +493,7 @@ class DashboardController extends Controller
             ->where('usage_rooms.tgl_pinjam_usage_room', $date)
             // ->whereNotIn('status_usage_room', ['selesai', 'digunakan', 'ditolak'])
             ->get();
-            // ->unique('usage_rooms.id_room');
+        // ->unique('usage_rooms.id_room');
 
         // menggabungkan data barang dan ruangan menjadi array
         $databarangruangan = $databarang->merge($dataruangan)->toArray();
@@ -574,7 +573,7 @@ class DashboardController extends Controller
 
         // dd($semuaData, $databarangruangan);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDetailAgendaEditPerhari';
         return view(
             'Page_admin.dashboard-admin',
@@ -602,12 +601,18 @@ class DashboardController extends Controller
 
         $pengadaan = DB::table('pengadaan_barang')
             ->join('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
-            ->select('pengadaan_barang.*', 'users.nama as nama_pemohon')
+            ->leftJoin('detail_staff', 'detail_staff.id_user', '=', 'pengadaan_barang.id_pemohon')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'pengadaan_barang.id_pemohon')
+            ->select(
+                'pengadaan_barang.*',
+                // 'users.nama as nama_pemohon'
+                DB::raw('COALESCE(detail_staff.nama, detail_dosen.nama) as nama_pemohon')
+            )
             ->get();
 
         // dd($pengadaan);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengadaanBarang';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'pengadaan'));
     }
@@ -620,6 +625,8 @@ class DashboardController extends Controller
 
         $perawatan = DB::table('perawatan_barang')
             ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftJoin('detail_staff', 'detail_staff.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'perawatan_barang.id_pemohon')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
             ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
             ->select(
@@ -627,13 +634,14 @@ class DashboardController extends Controller
                 'items.nama_item',
                 'items.merek_model',
                 'rooms.nama_room',
-                'users.nama as nama_pemohon'
+                DB::raw('COALESCE(detail_staff.nama, detail_dosen.nama) as nama_pemohon')
+
             )
             ->get();
 
         // dd($perawatan);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPerawatanBarang';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'perawatan'));
     }
@@ -646,7 +654,7 @@ class DashboardController extends Controller
         }
 
         $halaman = 'contentAgendaBerlangsung';
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
 
@@ -729,8 +737,15 @@ class DashboardController extends Controller
 
         // dd($countsBarang->sum(), $countsRuangan->sum());
 
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentDashbordPimpinan';
-        $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
     }
     // page kalender di pimpinan
@@ -740,8 +755,15 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentCalenderPimpinan';
-        $user = Auth::user()->nama;
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user'));
     }
 
@@ -822,8 +844,15 @@ class DashboardController extends Controller
         $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
 
 
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentDashborKaprodi';
-        $user = Auth::user()->nama;
         return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
     }
 
@@ -840,7 +869,14 @@ class DashboardController extends Controller
 
         // dd($pengadaan);
 
-        $user = Auth::user()->nama;
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentPengadaanBarang';
         return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'pengadaan'));
     }
@@ -854,6 +890,7 @@ class DashboardController extends Controller
 
         $perawatan = DB::table('perawatan_barang')
             ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
+            ->join('detail_staff', 'users.id_user', '=', 'users.id_user')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
             ->leftJoin('rooms', 'rooms.id_room', '=', 'perawatan_barang.id_room')
             ->select(
@@ -861,14 +898,21 @@ class DashboardController extends Controller
                 'items.nama_item',
                 'items.merek_model',
                 'rooms.nama_room',
-                'users.nama as nama_pemohon'
+                'detail_staff.nama as nama_pemohon'
             )
             ->where('perawatan_barang.id_pemohon', '=', Auth::user()->id_user)
             ->get();
 
         // dd($perawatan);
 
-        $user = Auth::user()->nama;
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentPerawatanBarang';
         return view('Page_kaprodi.dashboardKaprodi', compact(
             'halaman',
@@ -907,7 +951,16 @@ class DashboardController extends Controller
         $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
 
 
-        $user = Auth::user()->nama;
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
+        // dd($user);
+
         $halaman = 'contentFormPerawatanBarang';
         return view('Page_kaprodi.dashboardKaprodi', compact(
             'halaman',
@@ -927,8 +980,15 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
+        $user = $dosen->nama;
+
         $halaman = 'contentCalenderKaprodi';
-        $user = Auth::user()->nama;
         return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user'));
     }
 
@@ -942,7 +1002,15 @@ class DashboardController extends Controller
     public function mahasiswa()
     {
 
-        $no_identitas = Auth::guard('peminjam')->user()->no_identitas;
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
+
+        $no_identitas = $peminjam->no_identitas;
+
+        // dd($no_identitas);
 
         $dataPeminjamanByMhs = DB::table('peminjaman')
             ->where('no_identitas', '=', $no_identitas)
@@ -961,7 +1029,7 @@ class DashboardController extends Controller
 
         // dd($dataPeminjamanDiajukanByMhs);
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = $peminjam->nama_peminjam;
         $halaman = 'contentDashbord'; // variable untuk menampilkan content dashboard
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjamanByMhs', 'dataPeminjamanLewatByMhs', 'dataPeminjamanDiajukanByMhs'));
     }
@@ -969,6 +1037,12 @@ class DashboardController extends Controller
     // memanggil halaman detail agenda dari calender di user
     public function mahasiswaAgenda($id, $date)
     {
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
+
 
         $detailAgendaService = new DetailAgendaService;
         $dataAgenda = $detailAgendaService->dataPenggunaanBarangDanRuang($id, $date);
@@ -978,7 +1052,7 @@ class DashboardController extends Controller
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = $peminjam->nama_peminjam;
         $halaman = 'contentDetailAgenda'; // variable untuk menampilkan content dashboard
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam'));
     }
@@ -986,12 +1060,11 @@ class DashboardController extends Controller
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa
     public function mahasiswaPeminjamanBarang()
     {
-        // mengambil semua data barang dan nama tipe barang dan nama ruangan
-        // $dataTablePengajuanPeminjaman = DataBarang::join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-        //     ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-        //     ->select('items.*', 'tipe_item.nama_tipe_item', 'rooms.nama_room') // Pilih kolom yang diperlukan
-        //     ->latest()
-        //     ->get();
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
 
         $dataTablePengajuanPeminjaman = DataBarang::join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select('items.*', 'rooms.nama_room') // Pilih kolom yang diperlukan
@@ -1000,7 +1073,7 @@ class DashboardController extends Controller
             ->get();
 
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = $peminjam->nama_peminjam;
         $halaman = 'contentPeminjamanBarang'; // variable untuk menampilkan content peminjaman barang
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman'));
     }
@@ -1008,6 +1081,11 @@ class DashboardController extends Controller
     // method untuk menampilkan semua halaman peminjaman ruangan mahasiswa
     public function mahasiswaPeminjamanRuang()
     {
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
 
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $dataTablePengajuanPeminjaman = DataRuangan::join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
@@ -1019,7 +1097,7 @@ class DashboardController extends Controller
 
         // dd($dataTablePengajuanPeminjaman);
         // mengambil nama peminjam yg sedang login
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = $peminjam->nama_peminjam;
         $halaman = 'contentPeminjamanRuang'; // variable untuk menampilkan content peminjaman ruang
         // return ke halaman pengajuan peminjaman user dengan menyisipkan data yg dibutuhkan
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman'));
@@ -1043,8 +1121,15 @@ class DashboardController extends Controller
 
         // dd($listRuanganDiajukan, $listBarangDiajukan, $jmlhRuang, $jmlhBrng);
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
-        $no_identitas = Auth::guard('peminjam')->user()->no_identitas;
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
+
+        $user = $peminjam->nama_peminjam;
+        $no_identitas = $peminjam->no_identitas;
+
         $halaman = 'contentListPeminjaman'; // variable untuk menampilkan content list peminjaman
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'no_identitas', 'listBarangDiajukan', 'listRuanganDiajukan', 'jmlhBrng', 'jmlhRuang'));
     }
@@ -1054,7 +1139,13 @@ class DashboardController extends Controller
     {
         $RiwayatService = new RiwayatPeminjamanService;
 
-        $idUser = Auth::guard('peminjam')->user()->no_identitas;
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
+
+        $idUser = $peminjam->no_identitas;
 
         // filter riwayat berdasarkan status tertentu
         $status_penggunaan = null;
@@ -1070,7 +1161,13 @@ class DashboardController extends Controller
 
         // dd($dataPeminjamanByPeminjam);
 
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $id_user = Auth::user()->id_user;
+
+        $peminjam = DB::table('peminjam')
+            ->where('id_user', '=', $id_user)
+            ->first();
+
+        $user = $peminjam->nama_peminjam;
         $halaman = 'contentRiwayat'; // variable untuk menampilkan content riwayat
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjamanByPeminjam', 'status_penggunaan'));
     }
@@ -1090,58 +1187,54 @@ class DashboardController extends Controller
             $id = Auth::user()->id_user;
 
             // mengamil data peminjam by id
-            $dataPeminjam = DB::table('peminjam')
-                ->where('no_identitas', '=', $id)
-                ->first();
+            $dataPeminjam = null;
 
             // mengambil data user
             $dataUser = DB::table('users')
-                ->where('id_user', '=', $id)
+                ->join('detail_staff', 'users.id_user', '=', 'detail_staff.id_user')
+                ->where('users.id_user', '=', $id)
                 ->first();
 
             $JmlhAdmin = User::where('hak_akses', 'admin')->count();
 
 
             $halaman = 'contentProfile';
-            $user = Auth::user()->nama;
+            $user = $dataUser->nama;
             return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
         } elseif (Auth::user()->hak_akses == 'pimpinan') {
             $id = Auth::user()->id_user;
 
             // mengamil data peminjam by id
-            $dataPeminjam = DB::table('peminjam')
-                ->where('no_identitas', '=', $id)
-                ->first();
+            $dataPeminjam = null;
 
             // mengambil data user
             $dataUser = DB::table('users')
-                ->where('id_user', '=', $id)
+                ->join('detail_dosen', 'users.id_user', '=', 'detail_dosen.id_user')
+                ->where('users.id_user', '=', $id)
                 ->first();
 
             $JmlhAdmin = User::where('hak_akses', 'admin')->count();
 
 
             $halaman = 'contentProfile';
-            $user = Auth::user()->nama;
+            $user = $dataUser->nama;
             return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
         } elseif (Auth::user()->hak_akses == 'kaprodi') {
             $id = Auth::user()->id_user;
 
             // mengamil data peminjam by id
-            $dataPeminjam = DB::table('peminjam')
-                ->where('no_identitas', '=', $id)
-                ->first();
-
+            $dataPeminjam = null;
             // mengambil data user
             $dataUser = DB::table('users')
-                ->where('id_user', '=', $id)
+                ->join('detail_dosen', 'users.id_user', '=', 'detail_dosen.id_user')
+                ->where('users.id_user', '=', $id)
                 ->first();
 
             $JmlhAdmin = User::where('hak_akses', 'admin')->count();
 
 
             $halaman = 'contentProfile';
-            $user = Auth::user()->nama;
+            $user = $dataUser->nama;
             return view('Page_kaprodi.dashboardKaprodi', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
         } else {
             abort(403, 'Unauthorized');
@@ -1151,23 +1244,48 @@ class DashboardController extends Controller
     // peminjam
     public function profilePeminjam()
     {
-        $id =  Auth::guard('peminjam')->user()->no_identitas;
+        $id_user = Auth::user()->id_user;
 
-        // mengamil data peminjam by id
-        $dataPeminjam = DB::table('peminjam')
-            ->where('no_identitas', '=', $id)
-            ->first();
 
-        // mengambil data user
-        $dataUser = DB::table('users')
-            ->where('id_user', '=', $id)
-            ->first();
+        if (Auth::user()->hak_akses == 'mahasiswa') {
+            // mengamil data peminjam by id
+            $dataPeminjam = DB::table('users')
+                ->join('peminjam', 'users.id_user', '=', 'peminjam.id_user')
+                ->where('users.id_user', '=', $id_user)
+                ->first();
+            $dataUser = null;
+            $user = $dataPeminjam->nama_peminjam;
+        } else {
+
+            if (Auth::user()->hak_akses == 'admin') {
+                # code...
+                // mengambil data user
+                $dataUser = DB::table('users')
+                    ->join('detail_staff', 'users.id_user', '=', 'detail_staff.id_user')
+                    ->where('users.id_user', '=', $id_user)
+                    ->first();
+
+                $dataPeminjam = null;
+
+                $user = $dataUser->nama;
+            } else {
+                $dataUser = DB::table('users')
+                    ->join('detail_dosen', 'users.id_user', '=', 'detail_dosen.id_user')
+                    ->where('users.id_user', '=', $id_user)
+                    ->first();
+
+                $dataPeminjam = null;
+
+                $user = $dataUser->nama;
+            }
+        }
+
+
 
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
 
 
         $halaman = 'contentProfile';
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataPeminjam', 'dataUser', 'JmlhAdmin'));
     }
 }
