@@ -31,8 +31,10 @@ class RiwayatPeminjamanService
             })
             // ->where('peminjaman.status_peminjaman', $status)
             ->orderBy('peminjaman.kode_peminjaman') // Mengelompokkan berdasarkan kode unik
-            ->orderBy('peminjaman.created_at', 'asc')
-            ->get();
+            ->orderBy('peminjaman.created_at', 'desc') // Mengurutkan berdasarkan tanggal terbaru
+            ->get()
+            ->sortByDesc('created_at')
+            ->values();
 
         return $dataPengajuanPeminjaman;
     }

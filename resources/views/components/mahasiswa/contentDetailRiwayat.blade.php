@@ -415,15 +415,6 @@
             @endforeach
         </div>
 
-        <!-- Qr Code -->
-        {{-- <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 px-4 py-3 rounded-lg shadow-sm">
-                <div class="flex items-center"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-3"></i>
-                    <span class="text-sm text-yellow-800 leading-none">
-                        Pastikan menunjukkan QR CODE dibawah saat melakukan pengambilan barang dan pengembalian
-                    </span>
-                </div>
-            </div> --}}
         <div class="flex flex-col gap-4">
             <form method="POST" action="{{ route('QR-dan-batal-peminjaman') }}">
                 @csrf

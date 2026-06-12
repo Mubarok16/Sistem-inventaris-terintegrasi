@@ -89,7 +89,7 @@ class PengelolaanPeminjamanAdmin extends Controller
         // simpan id di session
         session()->put('id_peminjaman_agenda', $id);
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDetailPenminjaman';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'dataDetailPengajuanPeminjaman', 'detailBarang', 'detailRuangan', 'tglPinjam', 'tglKembali', 'itemBentrok', 'roomBentrok', 'tglStartKalender'));
     }

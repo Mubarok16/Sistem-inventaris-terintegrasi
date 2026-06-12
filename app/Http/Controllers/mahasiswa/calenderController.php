@@ -5,6 +5,7 @@ namespace App\Http\Controllers\mahasiswa;
 use App\Http\Controllers\Controller;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class calenderController extends Controller
@@ -131,6 +132,18 @@ class calenderController extends Controller
     public function calenderSpesifikAgendaDanPeminjaman()
     {
 
+        $user = Auth::user()->hak_akses;
+
+        if ($user == 'admin') {
+            $prefix = 'admin';
+        }elseif ($user == 'mahasiswa') {
+            $prefix = 'peminjam';
+        }elseif ($user == 'kapordi') {
+            $prefix = 'kaprodi';
+        }elseif ($user == 'pimpinan') {
+            $prefix = 'pimpinan';
+        }
+
         // Ambil data dari Agenda Fakultas
         $agenda_fakultas = DB::table('agenda_fakultas')
             ->leftJoin('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
@@ -230,7 +243,7 @@ class calenderController extends Controller
                             'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
                             'allDay' => false,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            'url'   => route('admin' . '.agenda-calender', [
+                            'url'   => route($prefix . '.agenda-calender', [
                                 urlencode($agenda->id_ref),
                                 $date->format('Y-m-d')
                             ]),
@@ -246,7 +259,7 @@ class calenderController extends Controller
                             'end'   => $formattedDate,
                             'allDay' => true,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            'url'   => route('admin' . '.agenda-calender', [
+                            'url'   => route($prefix . '.agenda-calender', [
                                 urlencode($agenda->id_ref),
                                 $date->format('Y-m-d')
                             ]),
@@ -282,7 +295,7 @@ class calenderController extends Controller
                             'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
                             'allDay' => false,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            'url'   => route('admin' . '.agenda-calender', [
+                            'url'   => route($prefix . '.agenda-calender', [
                                 urlencode($agenda->id_ref),
                                 $date->format('Y-m-d')
                             ]),
@@ -298,7 +311,7 @@ class calenderController extends Controller
                             'end'   => $formattedDate,
                             'allDay' => true,
                             'color' => $this->statusColorPeminjamanAgenda($agenda->status_usage_room, $agenda->id_ref),
-                            'url'   => route('admin' . '.agenda-calender', [
+                            'url'   => route($prefix . '.agenda-calender', [
                                 urlencode($agenda->id_ref),
                                 $date->format('Y-m-d')
                             ]),
@@ -308,57 +321,6 @@ class calenderController extends Controller
             }
             return response()->json($events);
         }
-
-        // dd($agendas);
-
-        // foreach ($agendas as $agenda) {
-
-        //     // loop per hari
-        //     $period = CarbonPeriod::create(
-        //         $agenda->tgl_pinjam_usage_room,
-        //         $agenda->tgl_kembali_usage_room
-        //     );
-
-        //     // JAM ADA (BUKAN FULL DAY)
-        //     foreach ($period as $date) {
-
-        //         $formattedDate = $date->format('Y-m-d');
-
-        //         if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room) {
-
-        //             $events[] = [
-        //                 'id' => $agenda->id_ref,
-        //                 'title' => $agenda->title_ref,
-        //                 'start' => $formattedDate . 'T' . $agenda->jam_mulai_usage_room,
-        //                 'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
-        //                 'allDay' => false,
-        //                 'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
-        //                 'url'   => route($routeName . '.agenda-calender', [
-        //                     urlencode($agenda->id_ref),
-        //                     $date->format('Y-m-d')
-        //                 ]),
-        //             ];
-        //         }
-        //         // JAM NULL (FULL DAY)
-        //         else {
-
-        //             $events[] = [
-        //                 'id' => $agenda->id_ref,
-        //                 'title' => $agenda->title_ref,
-        //                 'start' => $formattedDate,
-        //                 'end'   => $formattedDate,
-        //                 'allDay' => true,
-        //                 'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
-        //                 'url'   => route($routeName . '.agenda-calender', [
-        //                     urlencode($agenda->id_ref),
-        //                     $date->format('Y-m-d')
-        //                 ]),
-        //             ];
-        //         }
-        //     }
-        // }
-
-        // return response()->json($events);
     }
 
     private function statusColorPeminjamanAgenda($status, $id)

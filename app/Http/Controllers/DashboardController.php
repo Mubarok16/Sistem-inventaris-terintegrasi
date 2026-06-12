@@ -417,7 +417,17 @@ class DashboardController extends Controller
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
 
-        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
+        // $user = null;
+
+        if(Auth::user()->hak_akses === 'admin') {
+            $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
+        }elseif(Auth::user()->hak_akses === 'pimpinan') {
+            $user = DB::table('detail_dosen')->where('id_user', Auth::user()->id_user)->value('nama');
+        }elseif(Auth::user()->hak_akses === 'kaprodi') {
+            $user = DB::table('detail_dosen')->where('id_user', Auth::user()->id_user)->value('nama');
+        }
+
+        // dd($user, $date);
         $halaman = 'contentDetailAgendaCalender';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'id', 'date'));
     }

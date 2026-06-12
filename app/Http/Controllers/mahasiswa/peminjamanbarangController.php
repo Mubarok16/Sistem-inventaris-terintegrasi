@@ -19,7 +19,7 @@ class peminjamanbarangController extends Controller
 {
     // ke halaman detail pengajuan peminjaman
     public function DetailPeminjamanBarang($id)
-    {   
+    {
         // mengambil tgl chosed dari session 
         $tgl_chosed = session()->get('tgl_chosed');
         // membuat var tgl table jadwal penggunaan barang
@@ -28,7 +28,7 @@ class peminjamanbarangController extends Controller
         // jika tgl chosed null maka tgl = tgl sekarang
         if ($tgl_chosed === null) {
             $tglForTblUsageBrng = now()->format('Y-m-d');
-        }else{
+        } else {
             $tglForTblUsageBrng = $tgl_chosed;
         }
 
@@ -62,10 +62,10 @@ class peminjamanbarangController extends Controller
             ->where('status_usage_item', '!=', 'diajukan')
             ->orderBy('tgl_pinjam_usage_item', 'asc')
             ->get();
-        
+
         $id_item = $id;
         // dd($dataUsageItems);
-        $user = Auth::guard('peminjam')->user()->nama_peminjam;
+        $user = DB::table('peminjam')->where('id_user', Auth::user()->id_user)->value('nama_peminjam');
         $halaman = 'contentDetailPeminjamanBarang';
         return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'detailBarang', 'dataUsageItems', 'id_item', 'tglForTblUsageBrng'));
     }
@@ -172,7 +172,7 @@ class peminjamanbarangController extends Controller
     {
         // menyimpan tgl chosed di session
         session()->put('tgl_chosed', $request->input('ganti_tgl'));
-        
+
         $id = $request->input('id');
         // dd($ketersediaan);
 

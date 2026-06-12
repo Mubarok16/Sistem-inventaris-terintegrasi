@@ -74,9 +74,9 @@ Route::prefix('peminjam')->as('peminjam.')->group(function () {
 // verivikasi e sign penerima surat
 Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifikasi'])->name('verifikasi.surat');
 
-
+// admin pimpinan kaprodi
 Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function () {
-    
+
     // dashboard admin
     Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
     Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser'])->name('pengelolaan-user');
@@ -146,7 +146,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/admin/pengajuan-peminjaman/detail/{id}', [PengelolaanPeminjamanAdmin::class, 'DetailPeminjamanAdmin'])->name('admin.detailPeminjaman');
     Route::post('admin/pengajuan-peminjaman/persetujuan', [PengelolaanPeminjamanAdmin::class, 'persetujuan'])->name('persetujuanPeminjaman');
     Route::post('admin/pengajuan-peminjaman/pilih-data-pengelolaan-peminjaman-by-status', [PengelolaanPeminjamanAdmin::class, 'pilihDataPengajuanPeminjamanAdmin'])->name('pilih-data-pengelolaan-peminjaman-by-status');
-    Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
+    // Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
 
 
     //Pengelolaan Agenda ========================================================================================================================
@@ -295,10 +295,6 @@ Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
     Route::post('simpan-riwayat-session-status', [RiwayarController::class, 'SimpanSessionriwayatByStatus'])->name('simpan-riwayat-session');
     // btn batal dan cetak qr user
     Route::post('cetak-QRriwayat-dan-batal-peminjaman', [RiwayarController::class, 'QrDanBatalPeminjaman'])->name('QR-dan-batal-peminjaman');
-    // download file lampiran pengajuan peminjaman
-    Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
-
-
 
     // kalender unutk riwayat peminjaman
     Route::get('/riwayat-peminjaman-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman']);
@@ -308,7 +304,10 @@ Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
 
     // edit profile
     Route::post('/mahasiswa/edit-akun-peminjam/{id}', [EditAkun::class, 'EditAkunPeminjam'])->name('edit-akun-mhs-peminjam');
-
 });
 
-
+// admin adn mahasiswa bisa akses
+Route::middleware(['auth', 'hak_akses:admin,mahasiswa'])->group(function () {
+    // download file lampiran pengajuan peminjaman
+    Route::post('view-file-pengajuan-peminjaman', [PengelolaanPeminjamanAdmin::class, 'viewFilePengajuanPeminjaman'])->name('view-file-pengajuan-peminjaman');
+});
