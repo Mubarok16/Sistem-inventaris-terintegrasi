@@ -13,29 +13,138 @@ class PengelolaanPeminjamanService
     // mengambil data jadwal penggunaan barang atau ruangan berdasarkan status
     public function dataPenggunaanBarangByStatus($status)
     {
-        $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
-            ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
-            ->leftJoin('usage_rooms', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
-            ->selectRaw('DISTINCT ON (peminjaman.kode_peminjaman) 
-                peminjaman.*, 
-                peminjam.nama_peminjam, 
-                usage_items.tgl_pinjam_usage_item, 
-                usage_items.tgl_kembali_usage_item, 
-                usage_rooms.tgl_pinjam_usage_room, 
-                usage_rooms.tgl_kembali_usage_room, 
-                usage_rooms.jam_mulai_usage_room, 
-                usage_rooms.jam_selesai_usage_room, 
-                usage_items.jam_mulai_usage_item, 
-                usage_items.jam_selesai_usage_item')
+        // $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+        //     ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+        //     ->leftJoin('usage_rooms', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+        //     ->selectRaw('
+        //         DISTINCT ON (peminjaman.kode_peminjaman) 
+        //         peminjaman.*, 
+        //         peminjam.nama_peminjam, 
+        //         usage_items.tgl_pinjam_usage_item, 
+        //         usage_items.tgl_kembali_usage_item, 
+        //         usage_rooms.tgl_pinjam_usage_room, 
+        //         usage_rooms.tgl_kembali_usage_room, 
+        //         usage_rooms.jam_mulai_usage_room, 
+        //         usage_rooms.jam_selesai_usage_room, 
+        //         usage_items.jam_mulai_usage_item, 
+        //         usage_items.jam_selesai_usage_item',
+        //     )
+
+        //     ->when($status !== 'semua', function ($query) use ($status) {
+        //         return $query->where('peminjaman.status_peminjaman', $status);
+        //     })
+        //     ->orderBy('peminjaman.kode_peminjaman') // Mengelompokkan berdasarkan kode unik
+        //     ->orderBy('peminjaman.created_at', 'asc')
+        //     ->paginate(3);
+
+        $dataPengajuanPeminjaman = Peminjaman::join(
+            'peminjam',
+            'peminjaman.no_identitas',
+            '=',
+            'peminjam.no_identitas'
+        )
+            ->select(
+                'peminjaman.*',
+                'peminjam.nama_peminjam'
+            )
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('tgl_mulai')
+                    ->whereColumn(
+                        'usages.kode_peminjaman',
+                        'peminjaman.kode_peminjaman'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'tgl_mulai')
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('jam_mulai')
+                    ->whereColumn(
+                        'usages.kode_peminjaman',
+                        'peminjaman.kode_peminjaman'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'jam_mulai')
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_peminjaman,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('jam_selesai')
+                    ->whereColumn(
+                        'usages.kode_peminjaman',
+                        'peminjaman.kode_peminjaman'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'jam_selesai')
 
             ->when($status !== 'semua', function ($query) use ($status) {
-                return $query->where('peminjaman.status_peminjaman', $status);
+                $query->where('peminjaman.status_peminjaman', $status);
             })
-            // ->where('peminjaman.status_peminjaman', $status)
-            ->orderBy('peminjaman.kode_peminjaman') // Mengelompokkan berdasarkan kode unik
-            ->orderBy('peminjaman.created_at', 'asc')
-            ->paginate(3);
-            // ->get();
+
+            // ->orderBy('tgl_mulai')
+            ->orderBy('peminjaman.created_at', 'desc')
+            ->paginate(5);
 
         return $dataPengajuanPeminjaman;
     }

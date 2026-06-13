@@ -269,6 +269,8 @@ class DashboardController extends Controller
         $PengelolaanPeminjamanService = new PengelolaanPeminjamanService;
         $dataPengajuanPeminjaman = $PengelolaanPeminjamanService->dataPenggunaanBarangByStatus($status_penggunaan);
 
+        // dd($dataPengajuanPeminjaman);
+
         // mengambil data total Peminjaman yg sudah di terjadwal dan sedang digunakan
         $totalPeminjaman = $PengelolaanPeminjamanService->hitungTotalPenggunaanByStatus('selesai');
 

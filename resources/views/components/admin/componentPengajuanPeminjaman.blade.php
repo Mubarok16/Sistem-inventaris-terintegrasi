@@ -195,21 +195,14 @@
                                                         {{-- <span class="text-xs text-slate-500 pl-6">
                                                         10:00 - 12:00 (2 Jam)
                                                     </span> --}}
-                                                        @if ($dataPeminjaman->jam_mulai_usage_room != null || $dataPeminjaman->jam_mulai_usage_item != null)
+                                                        @if ($dataPeminjaman->jam_mulai)
                                                             <div class="flex items-center gap-2 mb-1 ">
                                                                 <i class="fa-solid fa-clock text-gray-700 text-xs"></i>
                                                                 <span class="text-xs text-slate-500">
-                                                                    @if ($dataPeminjaman->jam_mulai_usage_room != null)
-                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_mulai_usage_room)) }}
+                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_mulai)) }}
                                                                         -
-                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_selesai_usage_room)) }}
+                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_selesai)) }}
                                                                         WIB
-                                                                    @else
-                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_mulai_usage_item)) }}
-                                                                        -
-                                                                        {{ date('H : i', strtotime($dataPeminjaman->jam_selesai_usage_item)) }}
-                                                                        WIB
-                                                                    @endif
                                                                 </span>
                                                             </div>
                                                         @else
