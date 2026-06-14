@@ -65,9 +65,9 @@
                             <div class="relative flex-grow max-w-md">
                                 <i
                                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                                <input
+                                <input name="cari_pengajuan_peminjaman"
                                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
-                                    placeholder="Cari nama peminjaman atau kode peminjaman" type="text" />
+                                    placeholder="Cari nama peminjaman" type="text" value="{{ $cari != 'null' ? $cari : '' }}"/>
                             </div>
 
                             {{-- filter --}}
@@ -275,6 +275,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                         <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
 
                             <div class="text-sm text-slate-500 font-medium">

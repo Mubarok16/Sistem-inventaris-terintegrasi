@@ -23,9 +23,12 @@
             <div class="relative flex-grow max-w-md">
                 <i
                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input
-                    class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
-                    placeholder="Cari nama ruangan atau lokasi..." type="text" />
+                <form action="{{ route('cari-data-ruang') }}" method="post">
+                    @csrf
+                    <input name="cari_ruang"
+                        class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
+                        placeholder="Cari nama ruangan" type="text" value="{{ $cari != 'null' ? $cari : '' }}"/>
+                </form>
             </div>
             <div class="flex items-center gap-2 ml-auto">
                 <button @click="activeTab = 'ruangan'"
@@ -343,59 +346,25 @@
 
     {{-- tipe ruangan --}}
     <div x-show="activeTab === 'tipe'" x-transition>
-        {{-- pencarian tipe --}}
         <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 flex flex-wrap gap-4 items-center shadow-sm">
-            <div class="relative flex-grow max-w-md">
+            {{-- <div class="relative flex-grow max-w-md">
                 <i
                     class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input
                     class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
                     placeholder="Cari nama ruangan atau lokasi..." type="text" />
-            </div>
+            </div> --}}
             <div class="flex items-center gap-2 ml-auto">
                 <button @click="activeTab = 'ruangan'"
                     class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg! text-sm font-medium hover:bg-slate-50 transition-colors text-slate-600">
-                    {{-- <i class="fa-solid fa-filter text-xs"></i> --}}
                     Data Ruangan
                 </button>
                 <button @click="activeTab = 'tipe'"
                     class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg! text-sm font-medium hover:bg-blue-400 transition-colors text-white bg-blue-600">
-                    {{-- <i class="fa-solid fa-sort-amount-down text-xs"></i> --}}
                     Tipe Ruangan
                 </button>
             </div>
         </div>
-
-        {{-- kategori --}}
-        {{-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4">
-                <div class="bg-primary/10 p-3 rounded-lg text-primary">
-                    <span class="material-symbols-outlined">category</span>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">Total Tipe</p>
-                    <p class="text-xl font-bold text-slate-900">4 Kategori</p>
-                </div>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4">
-                <div class="bg-emerald-100 p-3 rounded-lg text-emerald-600">
-                    <span class="material-symbols-outlined">meeting_room</span>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">Ruangan Terkait</p>
-                    <p class="text-xl font-bold text-slate-900">24 Ruangan</p>
-                </div>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-4">
-                <div class="bg-amber-100 p-3 rounded-lg text-amber-600">
-                    <span class="material-symbols-outlined">update</span>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">Terakhir Diperbarui</p>
-                    <p class="text-xl font-bold text-slate-900">Hari ini</p>
-                </div>
-            </div>
-        </div> --}}
 
         {{-- data tipe ruangan --}}
         <div x-data="{ AddTipeRuangan: false, EditTipeRuangan: false, selectedTipeRuangan: {}, DeleteTipeRuangan: false }">

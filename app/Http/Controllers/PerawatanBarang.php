@@ -324,4 +324,15 @@ class PerawatanBarang extends Controller
         // dd($dataDb);
         return back()->with('succes', 'perawatan selesai item berhasil di berbaharui!');
     }
+
+    function sortir_status_perawatan(Request $request)
+    {
+        // Mengambil nilai dari tombol yang diklik
+        $status = $request->input('status_perawatan');
+
+        // Menyimpan data ke session
+        $request->session()->put('status-perawatan', $status);
+
+        return back();
+    }
 }

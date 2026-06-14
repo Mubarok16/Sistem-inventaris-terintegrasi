@@ -268,4 +268,15 @@ class PengelolaanBarang extends Controller
             return redirect()->back()->with('gagal', 'Terjadi kesalahan saat menghapus barang' . $e->getMessage());
         }
     }
+
+    function caridatabarang(Request $request)
+    {
+        // Mengambil nilai dari tombol yang diklik
+        $cari_barang = $request->input('cari_barang');
+
+        // Menyimpan data ke session
+        $request->session()->put('cari_barang', $cari_barang);
+
+        return back();
+    }
 }

@@ -24,21 +24,26 @@
                 <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
             </div>
 
-            <select onchange="this.form.submit()" name="status"
-                class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
-                <option value="semua">Semua Status Pengadaan Barang
-                </option>
-                <option value="pending">
-                    pending</option>
-                <option value="diterima">
-                    Diajukan ke rektorat</option>
-                <option value="ditolak">
-                    Ditolak</option>
-                <option value="dibatalkan">
-                    Dibatalkan</option>
-                <option value="selesai">
-                    Selesai</option>
-            </select>
+            <form action="{{ route('sortir_status_pengadaan') }}" method="post">
+                @csrf
+                <select onchange="this.form.submit()" name="status_pengadaan"
+                    class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
+                        <option {{ $status_pengadaan == 'semua' ? 'selected' : '' }} value="semua">Semua Status Pengadaan
+                            Barang
+                        </option>
+                        <option {{ $status_pengadaan == 'pendding' ? 'selected' : '' }} value="pendding">
+                            pending</option>
+                        <option {{ $status_pengadaan == 'diterima' ? 'selected' : '' }} value="diterima">
+                            Diajukan ke rektorat</option>
+                        <option {{ $status_pengadaan == 'ditolak' ? 'selected' : '' }} value="ditolak">
+                            Ditolak</option>
+                        <option {{ $status_pengadaan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
+                            Dibatalkan</option>
+                        <option {{ $status_pengadaan == 'selesai' ? 'selected' : '' }} value="selesai">
+                            Selesai</option>
+                </select>
+            </form>
+
 
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
@@ -70,14 +75,14 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
-                    @if ($pengadaan->isEmpty())
+                    @if ($pengadaanBarang->isEmpty())
                         <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
                             <td colspan="7" class="text-center py-10 text-slate-500 italic">
                                 Data tidak ditemukan atau masih kosong.
                             </td>
                         </tr>
                     @else
-                        @foreach ($pengadaan as $pengadaan)
+                        @foreach ($pengadaanBarang as $pengadaan)
                             {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
                             <tr>
                                 <td class="px-6 py-4 align-middle">
@@ -158,10 +163,9 @@
                                     <div class="flex gap-2">
                                         <form method="get"
                                             action="{{ route('pageCheckInBarang', base64_encode($pengadaan->id_pengadaan)) }}">
-                                            
+
                                             @csrf
-                                            <button type="submit"
-                                                @disabled(strtolower($pengadaan->status_pengadaan) != 'disetujui')
+                                            <button type="submit" @disabled(strtolower($pengadaan->status_pengadaan) != 'disetujui')
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $pengadaan->status_pengadaan == 'disetujui' ? 'bg-green-500 hover:bg-green-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
                                                 Barang diterima
                                             </button>
@@ -183,23 +187,69 @@
             </table>
         </div>
         <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Menampilkan 1-4 dari 128
-                data</span>
-            <div class="flex items-center gap-2">
-                <button class="p-1 rounded text-slate-600 hover:bg-slate-200" disabled="">
-                    <i class="fa-solid fa-chevron-left text-[20px]"></i>
-                </button>
-                <button class="p-1 rounded text-slate-600 hover:bg-slate-200">
-                    <i class="fa-solid fa-chevron-right text-[20px]"></i>
-                </button>
+
+            <div class="text-sm text-slate-500 font-medium">
+                Menampilkan
+                <span class="text-slate-900 font-bold">{{ $pengadaanBarang->count() }}</span>
+                dari
+                <span class="text-slate-900 font-bold">{{ $pengadaanBarang->total() }}</span>
+                data
             </div>
+
+            <div class="flex gap-2">
+                {{-- Tombol ke Halaman Sebelumnya --}}
+                @if ($pengadaanBarang->onFirstPage())
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                @else
+                    <a href="{{ $pengadaanBarang->previousPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                @endif
+
+                {{-- Nomor Halaman --}}
+                @foreach ($pengadaanBarang->getUrlRange(1, $pengadaanBarang->lastPage()) as $page => $url)
+                    @if ($page == $pengadaanBarang->currentPage())
+                        {{-- Halaman Aktif --}}
+                        <button
+                            class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                            {{ $page }}
+                        </button>
+                    @else
+                        {{-- Halaman Lain --}}
+                        <a href="{{ $url }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol ke Halaman Selanjutnya --}}
+                @if ($pengadaanBarang->hasMorePages())
+                    <a href="{{ $pengadaanBarang->nextPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                @else
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                @endif
+            </div>
+
         </div>
     </div>
 
     {{-- form input pengadaan barang --}}
     <div x-show="openformpengadaanbarang"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50" x-transition
-        x-cloak>
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
+        x-transition x-cloak>
         <div @click.outside="openformpengadaanbarang = false"
             class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
 

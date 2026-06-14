@@ -392,11 +392,14 @@ class PengelolaanPeminjamanAdmin extends Controller
 
     function pilihDataPengajuanPeminjamanAdmin(Request $request)
     {
+        // dd($request->all());
         // Mengambil nilai dari tombol yang diklik
         $status = $request->input('status');
+        $cari_pengajuan_peminjaman = $request->input('cari_pengajuan_peminjaman');
 
         // Menyimpan data ke session
         $request->session()->put('status-peminjaman', $status);
+        $request->session()->put('cari_pengajuan_peminjaman', $cari_pengajuan_peminjaman);
 
         return back();
     }

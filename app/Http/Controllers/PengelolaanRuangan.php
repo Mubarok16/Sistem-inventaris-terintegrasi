@@ -335,4 +335,16 @@ class PengelolaanRuangan extends Controller
 
         return redirect()->back()->with('success', 'Barang berhasil dipindahkan!');
     }
+
+    // cari data ruang
+     function caridataruang(Request $request)
+    {
+        // Mengambil nilai dari tombol yang diklik
+        $cari_ruang = $request->input('cari_ruang');
+
+        // Menyimpan data ke session
+        $request->session()->put('cari_ruang', $cari_ruang);
+
+        return back();
+    }
 }

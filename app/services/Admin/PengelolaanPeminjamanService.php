@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class PengelolaanPeminjamanService
 {
     // mengambil data jadwal penggunaan barang atau ruangan berdasarkan status
-    public function dataPenggunaanBarangByStatus($status)
+    public function dataPenggunaanBarangByStatus($status, $cari)
     {
         // $dataPengajuanPeminjaman = Peminjaman::join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
         //     ->leftJoin('usage_items', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
@@ -140,6 +140,10 @@ class PengelolaanPeminjamanService
 
             ->when($status !== 'semua', function ($query) use ($status) {
                 $query->where('peminjaman.status_peminjaman', $status);
+            })
+
+            ->when($cari !== 'null', function ($query) use ($cari) {
+                $query->where('peminjam.nama_peminjam', 'ILIKE', "%{$cari}%");
             })
 
             // ->orderBy('tgl_mulai')

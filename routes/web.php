@@ -122,6 +122,8 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::post('/admin/edit-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'editTipeRuangan']);
     Route::post('/admin/delete-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'hapusTipeRuangan']);
     Route::post('/admin/tambah-ruangan', [PengelolaanRuangan::class, 'tambahRuangan'])->name('addRuangan');
+    Route::post('/admin/cari-data-ruang/', [PengelolaanRuangan::class, 'caridataruang'])->name('cari-data-ruang');
+
     Route::post('/admin/delete-ruangan/{id}', [PengelolaanRuangan::class, 'hapusRuangan']);
     Route::get('/admin/data-ruangan/edit/{id}', [PengelolaanRuangan::class, 'DetailRuangan'])->name('edit-ruangan');
     Route::post('/edit-ruangan-informasi-dasar', [PengelolaanRuangan::class, 'editRuanganInfoDasar'])->name('edit-ruangan-informasi-dasar');
@@ -133,6 +135,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     // pengelolaan barang ======================================================================================================================
     Route::post('admin/tambah-tipe-barang', [PengelolaanBarang::class, 'simpanTipeBarang'])->name('addTipeBarang');
     Route::post('/admin/edit-tipe-barang/{id}', [PengelolaanBarang::class, 'editTipeBarang']);
+    Route::post('/admin/cari-data-barang/', [PengelolaanBarang::class, 'caridatabarang'])->name('cari-data-barang');
     Route::delete('/admin/delete-tipe-barang/{id}', [PengelolaanBarang::class, 'hapusTipeBarang']);
     Route::post('/admin/tambah-barang', [PengelolaanBarang::class, 'tambahBarang'])->name('addBarang');
     Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang']);
@@ -199,7 +202,10 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('dashboard/pengadaan-barang/chekinBarang/{id}', [PengadaanBarangController::class, 'pageCheckInBarang'])->name('pageCheckInBarang');
     // simpan checkin
     Route::post('dashboard/simpan/chekinBarang/{id}', [PengadaanBarangController::class, 'simpandistribusi'])->name('simpan-distribusi');
-
+    // filter status pengadaan
+    Route::post('dashboard/filter/pengadaan', [PengadaanBarangController::class, 'sortir_status_pengadaan'])->name('sortir_status_pengadaan');
+    Route::post('dashboard/filter/pengadaan/kaprodi', [PengadaanBarangController::class, 'sortir_status_pengadaan'])->name('sortir_status_pengadaan_kaprodi');
+    
     // Perawatan barang admin ========================================================================================================================
     // page pengajuan perawatan barang
     Route::get('/dashboard/admin/pengajuan-perawatan-barang', [PerawatanBarang::class, 'PagePengajuanPerawatanBarang'])->name('page-pengajuan-perawatan-barang');
@@ -207,7 +213,8 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/lihat-surat-perawatan/{id}', [PerawatanBarang::class, 'bukaPdf'])->name('preview_surat_perawatan');
     Route::post('/download-surat-perawatan/{id}', [PerawatanBarang::class, 'downloadSuratPerawatan'])->name('download-surat-perawatan');
     Route::get('dashboard/perawatan-barang/chekinBarang/{id}', [PerawatanBarang::class, 'pageCheckInPerawatan'])->name('pageCheckInPerawatan');
-
+    Route::post('dashboard/filter/pengadaan', [PerawatanBarang::class, 'sortir_status_perawatan'])->name('sortir_status_perawatan');
+    
     // kalender unutk pengelolaan peminjaman dan agenda 
     Route::get('/pengelolaan-agenda-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman'])->name('calender-agenda-peminjan-spesifik');
 
