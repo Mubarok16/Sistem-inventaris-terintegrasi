@@ -372,7 +372,7 @@
                         <div class="flex items-center justify-between">
                             <span
                                 class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                                {{ $dataBarang->nama_tipe_item ?? $dataBarang->nama_tipe_room }}
+                                {{ $dataBarang->merek_model ?? $dataBarang->nama_tipe_room }}
                             </span>
                             <div class="flex items-center gap-1 text-green-500">
                                 <span

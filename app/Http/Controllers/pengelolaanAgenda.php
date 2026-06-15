@@ -464,14 +464,15 @@ class pengelolaanAgenda extends Controller
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $databarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
-            ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            // ->leftjoin('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->select(
                 'usage_items.id_item',
                 'usage_items.qty_usage_item',
                 'items.nama_item',
+                'items.merek_model',
                 'items.img_item',
                 'items.kondisi_item',
-                'tipe_item.nama_tipe_item',
+                // 'tipe_item.nama_tipe_item',
                 'usage_items.jam_mulai_usage_item',
                 'usage_items.jam_selesai_usage_item',
             )
@@ -499,6 +500,8 @@ class pengelolaanAgenda extends Controller
 
         // menggabungkan data barang dan ruangan menjadi array
         $databarangruangan = $databarang->merge($dataruangan)->toArray();
+
+        // dd($databarangruangan);
 
         // ambil jam mulai dan jam selesainya saja 
         foreach ($databarangruangan as $item) {

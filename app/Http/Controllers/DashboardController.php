@@ -1169,16 +1169,25 @@ class DashboardController extends Controller
             ->where('id_user', '=', $id_user)
             ->first();
 
+        if (session()->get('cari_barang') === null) {
+            $cari = '';
+        } else {
+            $cari = session()->get('cari_barang');
+        }
+
         $dataTablePengajuanPeminjaman = DataBarang::join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->select('items.*', 'rooms.nama_room') // Pilih kolom yang diperlukan
             ->where('visibility_item', '1')
+            ->when($cari !== 'null' && $cari != '', function ($query) use ($cari) {
+                $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
+            })
             ->latest()
             ->get();
 
 
         $user = $peminjam->nama_peminjam;
         $halaman = 'contentPeminjamanBarang'; // variable untuk menampilkan content peminjaman barang
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman', 'cari'));
     }
 
     // method untuk menampilkan semua halaman peminjaman ruangan mahasiswa

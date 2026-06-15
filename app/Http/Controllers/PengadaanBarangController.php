@@ -279,28 +279,11 @@ class PengadaanBarangController extends Controller
     function sortir_status_pengadaan(Request $request)
     {
 
-        // dd($request->all());
-        // if (Auth::user()->hak_akses === 'admin') {
-            # code...
-            // Mengambil nilai dari tombol yang diklik
-            $status = $request->input('status_pengadaan');
+        // Mengambil nilai dari tombol yang diklik
+        $status = $request->input('status_pengadaan');
 
-            // Menyimpan data ke session
-            $request->session()->put('status-pengadaan', $status);
-        // } elseif (Auth::user()->hak_akses === 'kaprodi') {
-        //     // Mengambil nilai dari tombol yang diklik
-        //     $status = $request->input('status_pengadaan');
-
-        //     // Menyimpan data ke session
-        //     $request->session()->put('status-pengadaan-kaprodi', $status);
-        // } else {
-        //     dd($request->all());
-        //     // Mengambil nilai dari tombol yang diklik
-        //     $status = $request->input('status_pengadaan');
-
-        //     // Menyimpan data ke session
-        //     $request->session()->put('status-pengadaan-pimpinan', $status);
-        // }
+        // Menyimpan data ke session
+        $request->session()->put('status-pengadaan', $status);
 
         return back();
     }

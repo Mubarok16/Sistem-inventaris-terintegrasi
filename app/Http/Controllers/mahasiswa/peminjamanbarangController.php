@@ -230,4 +230,16 @@ class peminjamanbarangController extends Controller
             ];
         }
     }
+
+    //
+    public function cariBarang(Request $request){
+        
+        // Mengambil nilai dari tombol yang diklik
+        $cari = $request->input('cari_barang');
+
+        // Menyimpan data ke session
+        $request->session()->put('cari_barang', $cari);
+
+        return back();
+    }
 }
