@@ -168,6 +168,8 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/download-template-import-jadwal-ptspas', [pengelolaanAgenda::class, 'downloadTemplateImportPtsPas'])->name('download-template-import-PTS-PAS');
     // edit barang ruangan
     Route::get('admin/dashboard/agenda/detail-agenda/daftar-barang-dan-ruangan/edit/{id}/{date}', [DashboardController::class, 'editAdminDetailAgendaPerhari'])->name('edit-agenda-perhari');
+    // filter agenda
+    Route::post('admin/agenda/filter', [pengelolaanAgenda::class, 'pengelolaanAgendaFilter'])->name('pengelolaan-agenda-filter');
 
 
 
@@ -203,7 +205,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     // simpan checkin
     Route::post('dashboard/simpan/chekinBarang/{id}', [PengadaanBarangController::class, 'simpandistribusi'])->name('simpan-distribusi');
     // filter status pengadaan
-    Route::post('dashboard/filter/pengadaan', [PengadaanBarangController::class, 'sortir_status_pengadaan'])->name('sortir_status_pengadaan');
+    // Route::post('dashboard/filter/pengadaan', [PengadaanBarangController::class, 'sortir_status_pengadaan'])->name('sortir_status_pengadaan');
     Route::post('dashboard/filter/pengadaan/kaprodi', [PengadaanBarangController::class, 'sortir_status_pengadaan'])->name('sortir_status_pengadaan_kaprodi');
     
     // Perawatan barang admin ========================================================================================================================

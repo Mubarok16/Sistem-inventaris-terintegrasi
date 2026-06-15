@@ -30,7 +30,7 @@ class pengelolaanAgenda extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentImportAgenda';
         return view('Page_admin.dashboard-admin', compact('halaman', 'user'));
     }
@@ -267,7 +267,7 @@ class pengelolaanAgenda extends Controller
 
             return redirect()->route('dashboard-admin-agenda')->with('success', 'Data Agenda Berhasil Diimport!');
         } catch (\Throwable $th) {
-            dd($th);
+            return back()->with('gagal', 'Data Agenda gagal Diimport! pastikan nama runangan ada di dalam database');
         }
     }
 
@@ -424,7 +424,7 @@ class pengelolaanAgenda extends Controller
 
 
         // mengambil nama dari user yang sdng login
-        $user = Auth::user()->nama;
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         // menyimpan halaman variable
         $halaman = 'contentDetailAgenda';
         return view('Page_admin.dashboard-admin', compact(
@@ -1494,5 +1494,19 @@ class pengelolaanAgenda extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
         }
+    }
+
+    // filter agenda 
+    public function pengelolaanAgendaFilter(Request $request)
+    {
+        // Mengambil nilai dari tombol yang diklik
+        $tipe_agenda = $request->input('tipe_agenda');
+        $cari_agenda = $request->input('cari_agenda');
+
+        // Menyimpan data ke session
+        $request->session()->put('tipe-agenda', $tipe_agenda);
+        $request->session()->put('cari_agenda', $cari_agenda);
+
+        return back();
     }
 }

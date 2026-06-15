@@ -9,21 +9,25 @@
                 <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
             </div>
 
-            <select onchange="this.form.submit()" name="status"
-                class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
-                <option value="semua">Semua Status Pengadaan Barang
-                </option>
-                <option value="pending">
-                    pending</option>
-                <option value="diterima">
-                    Diajukan ke rektorat</option>
-                <option value="ditolak">
-                    Ditolak</option>
-                <option value="dibatalkan">
-                    Dibatalkan</option>
-                <option value="selesai">
-                    Selesai</option>
-            </select>
+            <form action="{{ route('sortir_status_perawatan') }}" method="post">
+                @csrf
+                <select onchange="this.form.submit()" name="status_perawatan"
+                    class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
+                    <option {{ $status_perawatan == 'semua' ? 'selected' : '' }} value="semua">Semua Status Pengadaan
+                        Barang
+                    </option>
+                    <option {{ $status_perawatan == 'pendding' ? 'selected' : '' }} value="pendding">
+                        pending</option>
+                    <option {{ $status_perawatan == 'diterima' ? 'selected' : '' }} value="diterima">
+                        Diajukan ke rektorat</option>
+                    <option {{ $status_perawatan == 'ditolak' ? 'selected' : '' }} value="ditolak">
+                        Ditolak</option>
+                    <option {{ $status_perawatan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
+                        Dibatalkan</option>
+                    <option {{ $status_perawatan == 'selesai' ? 'selected' : '' }} value="selesai">
+                        Selesai</option>
+                </select>
+            </form>
 
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
@@ -48,14 +52,14 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-sm">
-                    @if ($perawatan->isEmpty())
+                    @if ($perawatanBarang->isEmpty())
                         <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
                             <td colspan="7" class="text-center py-10 text-slate-500 italic">
                                 Data tidak ditemukan atau masih kosong.
                             </td>
                         </tr>
                     @else
-                        @foreach ($perawatan as $perawatan)
+                        @foreach ($perawatanBarang as $perawatan)
                             {{-- <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"> --}}
                             <tr>
                                 <td class="px-6 py-4 align-middle">
@@ -170,15 +174,60 @@
             </table>
         </div>
         <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Menampilkan 1-4 dari 128
-                data</span>
-            <div class="flex items-center gap-2">
-                <button class="p-1 rounded text-slate-600 hover:bg-slate-200" disabled="">
-                    <i class="fa-solid fa-chevron-left text-[20px]"></i>
-                </button>
-                <button class="p-1 rounded text-slate-600 hover:bg-slate-200">
-                    <i class="fa-solid fa-chevron-right text-[20px]"></i>
-                </button>
+
+            <div class="text-sm text-slate-500 font-medium">
+                Menampilkan
+                <span class="text-slate-900 font-bold">{{ $perawatanBarang->count() }}</span>
+                dari
+                <span class="text-slate-900 font-bold">{{ $perawatanBarang->total() }}</span>
+                data
+            </div>
+
+            <div class="flex gap-2">
+                {{-- Tombol ke Halaman Sebelumnya --}}
+                @if ($perawatanBarang->onFirstPage())
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                @else
+                    <a href="{{ $perawatanBarang->previousPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                @endif
+
+                {{-- Nomor Halaman --}}
+                @foreach ($perawatanBarang->getUrlRange(1, $perawatanBarang->lastPage()) as $page => $url)
+                    @if ($page == $perawatanBarang->currentPage())
+                        {{-- Halaman Aktif --}}
+                        <button
+                            class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                            {{ $page }}
+                        </button>
+                    @else
+                        {{-- Halaman Lain --}}
+                        <a href="{{ $url }}"
+                            class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-sm font-medium hover:border-primary hover:text-primary transition-all bg-white">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol ke Halaman Selanjutnya --}}
+                @if ($perawatanBarang->hasMorePages())
+                    <a href="{{ $perawatanBarang->nextPageUrl() }}"
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary transition-all bg-white">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                @else
+                    <button
+                        class="w-10 h-10 border border-slate-200 rounded-lg flex items-center justify-center text-slate-300 bg-gray-50 cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                @endif
             </div>
         </div>
     </div>

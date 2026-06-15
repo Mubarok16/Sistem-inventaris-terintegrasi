@@ -20,31 +20,68 @@
         <!-- Filters -->
         <div
             class="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-3">
-            <form action="{{ route('simpan-riwayat-session') }}" method="post">
+            <form action="{{ route('pengelolaan-agenda-filter') }}" method="post">
                 @csrf
-                <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
-                    <button value="semua" name="status"
-                        class="px-4 py-2 text-sm font-medium text-slate-500 bg-white rounded shadow-sm  transition-all whitespace-nowrap">
-                        Semua Agenda
-                    </button>
-                    <button value="kbm" name="status"
-                        class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
-                        KBM
-                    </button>
-                    <button value="pts/pas" name="status"
-                        class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
-                        PTS/PAS
-                    </button>
-                    <button value="rapat" name="status"
-                        class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
-                        Rapat Pimpinan
-                    </button>
-                    <button value="seminar" name="status"
-                        class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
-                        Seminar
-                    </button>
+                <div class="flex items-center justify-end gap-3">
+                    {{-- <div class="flex! gap-1 bg-slate-100 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
+                        <button value="semua" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 bg-white rounded shadow-sm  transition-all whitespace-nowrap">
+                            Semua Agenda
+                        </button>
+                        <button value="kbm" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
+                            KBM
+                        </button>
+                        <button value="pts/pas" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
+                            PTS/PAS
+                        </button>
+                        <button value="rapat" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
+                            Rapat Pimpinan
+                        </button>
+                        <button value="seminar" name="status"
+                            class="px-4 py-2 text-sm font-medium text-slate-500 transition-all whitespace-nowrap">
+                            Seminar
+                        </button>
+                    </div> --}}
+
+                    {{-- search --}}
+                    <div class="relative flex-grow max-w-md">
+                        <i
+                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input name="cari_agenda"
+                            class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
+                            placeholder="Cari nama agenda" type="text"
+                            value="{{ $cari != 'null' ? $cari : '' }}" />
+                    </div>
+
+                    {{-- filter by tipe agenda --}}
+                    <div class="relative inline-block">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
+                        </div>
+                        <select onchange="this.form.submit()" name="tipe_agenda"
+                            class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
+                            <option {{ $tipe_agenda == 'semua' ? 'selected' : '' }} value="semua">Semua Agenda
+                            </option>
+                            <option {{ $tipe_agenda == 'kegiatan belajar mengajar' ? 'selected' : '' }}
+                                value="kegiatan belajar mengajar">
+                                KBM</option>
+                            <option {{ $tipe_agenda == 'pts/pas' ? 'selected' : '' }} value="pts/pas">
+                                PTS/PAS</option>
+                            <option {{ $tipe_agenda == 'rapat' ? 'selected' : '' }} value="rapat">
+                                Rapat Pimpinan</option>
+                            <option {{ $tipe_agenda == 'seminar' ? 'selected' : '' }} value="seminar">Seminar
+                            </option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                        </div>
+                    </div>
                 </div>
             </form>
+
             <div class="flex items-center justify-end gap-3">
                 <form action="{{ route('dashboard-admin-page-import-agenda') }}" method="get">
                     @csrf
@@ -122,14 +159,14 @@
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-clock text-slate-400"></i>
                                     <span class="text-xs">
-                                        @if ($riwayat->jam_mulai_usage_item != null)
-                                            {{ date('H:i', strtotime($riwayat->jam_mulai_usage_item)) }}
+                                        @if ($riwayat->jam_mulai != null)
+                                            {{ date('H:i', strtotime($riwayat->jam_mulai)) }}
                                             -
-                                            {{ date('H:i', strtotime($riwayat->jam_selesai_usage_item)) }}
-                                        @elseif($riwayat->jam_mulai_usage_room != null)
-                                            {{ date('H:i', strtotime($riwayat->jam_mulai_usage_room)) }}
+                                            {{ date('H:i', strtotime($riwayat->jam_selesai)) }}
+                                            {{-- @elseif($riwayat->jam_mulai_usage_room != null)
+                                            {{ date('H:i', strtotime($riwayat->jam_mulai_usage)) }}
                                             -
-                                            {{ date('H:i', strtotime($riwayat->jam_selesai_usage_room)) }}
+                                            {{ date('H:i', strtotime($riwayat->jam_selesai_usage)) }} --}}
                                         @else
                                             Full day
                                         @endif

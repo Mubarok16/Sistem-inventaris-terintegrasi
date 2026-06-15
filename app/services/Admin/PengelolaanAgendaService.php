@@ -138,4 +138,114 @@ class PengelolaanAgendaService
 
         return $allBarangRuang;
     }
+
+    public function dataPenggunaanAgenda($status, $cari)
+    {
+        $dataAgendas = DB::table('agenda_fakultas')
+
+            ->select('agenda_fakultas.*')
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('tgl_mulai')
+                    ->whereColumn(
+                        'usages.kode_agenda',
+                        'agenda_fakultas.kode_agenda'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'tgl_mulai')
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('jam_mulai')
+                    ->whereColumn(
+                        'usages.kode_agenda',
+                        'agenda_fakultas.kode_agenda'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'jam_mulai')
+
+            ->selectSub(function ($query) {
+                $query->fromRaw("
+            (
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_item AS tgl_mulai,
+                    jam_mulai_usage_item AS jam_mulai,
+                    jam_selesai_usage_item AS jam_selesai
+                FROM usage_items
+
+                UNION ALL
+
+                SELECT
+                    kode_agenda,
+                    tgl_pinjam_usage_room AS tgl_mulai,
+                    jam_mulai_usage_room AS jam_mulai,
+                    jam_selesai_usage_room AS jam_selesai
+                FROM usage_rooms
+            ) usages
+        ")
+                    ->select('jam_selesai')
+                    ->whereColumn(
+                        'usages.kode_agenda',
+                        'agenda_fakultas.kode_agenda'
+                    )
+                    ->orderBy('tgl_mulai')
+                    ->orderBy('jam_mulai')
+                    ->limit(1);
+            }, 'jam_selesai')
+
+            ->when($status !== 'semua', function ($query) use ($status) {
+                $query->where('agenda_fakultas.tipe_agenda', $status);
+            })
+
+            ->when($cari !== 'null' && $cari != '', function ($query) use ($cari) {
+                $query->where('agenda_fakultas.nama_agenda', 'ILIKE', "%{$cari}%");
+            })
+
+            ->orderBy('agenda_fakultas.created_at', 'desc')
+            ->paginate(10);
+
+        return $dataAgendas;
+    }
 }

@@ -17,7 +17,13 @@ class PengadaanBarangControllerPimpinan extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $pengadaan = DB::table('pengadaan_barang')
+        if (session()->get('status-pengadaan') === null) {
+            $status_pengadaan = 'semua';
+        } else {
+            $status_pengadaan = session()->get('status-pengadaan');
+        }
+
+        $pengadaanBarang = DB::table('pengadaan_barang')
             ->leftjoin('users', 'users.id_user', '=', 'pengadaan_barang.id_pemohon')
             ->leftjoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
             ->leftjoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
@@ -25,7 +31,11 @@ class PengadaanBarangControllerPimpinan extends Controller
                 'pengadaan_barang.*',
                 DB::raw('COALESCE(detail_staff.nama, detail_dosen.nama) as nama_pemohon')
             )
-            ->get();
+            ->when($status_pengadaan !== 'semua', function ($query) use ($status_pengadaan) {
+                $query->where('pengadaan_barang.status_pengadaan', $status_pengadaan);
+            })
+            // ->get()
+            ->paginate(5);
 
         // dd($pengadaan);
 
@@ -38,7 +48,7 @@ class PengadaanBarangControllerPimpinan extends Controller
         $user = $dosen->nama;
 
         $halaman = 'contentPengadaanBarang';
-        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'pengadaan'));
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'pengadaanBarang', 'status_pengadaan'));
     }
 
     // acc pengadaan barang
@@ -105,7 +115,13 @@ class PengadaanBarangControllerPimpinan extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $perawatan = DB::table('perawatan_barang')
+        if (session()->get('status-perawatan') === null) {
+            $status_perawatan = 'semua';
+        } else {
+            $status_perawatan = session()->get('status-perawatan');
+        }
+
+        $perawatanBarang = DB::table('perawatan_barang')
             ->leftjoin('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
             ->leftjoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
             ->leftjoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
@@ -118,7 +134,10 @@ class PengadaanBarangControllerPimpinan extends Controller
                 'items.merek_model',
                 'rooms.nama_room',
             )
-            ->get();
+            ->when($status_perawatan !== 'semua', function ($query) use ($status_perawatan) {
+                $query->where('perawatan_barang.status_perawatan', $status_perawatan);
+            })
+            ->paginate(5);
 
         // dd($perawatan);
 
@@ -131,7 +150,7 @@ class PengadaanBarangControllerPimpinan extends Controller
         $user = $dosen->nama;
 
         $halaman = 'contentPerawatanBarang';
-        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'perawatan'));
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'perawatanBarang', 'status_perawatan'));
     }
 
     // acc surat perawatan

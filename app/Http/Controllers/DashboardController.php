@@ -401,36 +401,56 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        $dataAgendas = DB::table('agenda_fakultas')
-            // ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
-            ->leftJoin('usage_items', 'usage_items.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
-            ->leftJoin('usage_rooms', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
-            ->selectRaw('DISTINCT ON (agenda_fakultas.kode_agenda) 
-                agenda_fakultas.*,
-                usage_items.tgl_pinjam_usage_item, 
-                usage_items.tgl_kembali_usage_item, 
-                usage_rooms.tgl_pinjam_usage_room, 
-                usage_rooms.tgl_kembali_usage_room, 
-                usage_rooms.jam_mulai_usage_room, 
-                usage_rooms.jam_selesai_usage_room, 
-                usage_items.jam_mulai_usage_item, 
-                usage_items.jam_selesai_usage_item')
-            // ->where('peminjaman.no_identitas', '=', $id)
+        $tipe_agenda = null;
 
-            // ->when($status !== 'semua', function ($query) use ($status) {
-            //     return $query->where('peminjaman.status_peminjaman', $status);
-            // })
-            // ->where('peminjaman.status_peminjaman', $status)
-            ->orderBy('agenda_fakultas.kode_agenda') // Mengelompokkan berdasarkan kode unik
-            ->orderBy('agenda_fakultas.created_at', 'asc')
-            ->paginate(3);
+        if (session()->get('tipe-agenda') === null) {
+            $tipe_agenda = 'semua';
+        } else {
+            $tipe_agenda = session()->get('tipe-agenda');
+        }
+
+        if (session()->get('cari_agenda') === null) {
+            $cari = 'null';
+        } else {
+            $cari = session()->get('cari_agenda');
+        }
+
+        $PengelolaanAgendaService = new PengelolaanAgendaService;
+        $dataAgendas = $PengelolaanAgendaService->dataPenggunaanAgenda($tipe_agenda, $cari);
+
+        // dd($dataAgendas);
+
+
+        // $dataAgendas = DB::table('agenda_fakultas')
+        //     // ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+        //     ->leftJoin('usage_items', 'usage_items.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+        //     ->leftJoin('usage_rooms', 'usage_rooms.kode_agenda', '=', 'agenda_fakultas.kode_agenda')
+        //     ->selectRaw('DISTINCT ON (agenda_fakultas.kode_agenda) 
+        //         agenda_fakultas.*,
+        //         usage_items.tgl_pinjam_usage_item, 
+        //         usage_items.tgl_kembali_usage_item, 
+        //         usage_rooms.tgl_pinjam_usage_room, 
+        //         usage_rooms.tgl_kembali_usage_room, 
+        //         usage_rooms.jam_mulai_usage_room, 
+        //         usage_rooms.jam_selesai_usage_room, 
+        //         usage_items.jam_mulai_usage_item, 
+        //         usage_items.jam_selesai_usage_item')
+        //     // ->where('peminjaman.no_identitas', '=', $id)
+
+        //     // ->when($status !== 'semua', function ($query) use ($status) {
+        //     //     return $query->where('peminjaman.status_peminjaman', $status);
+        //     // })
+        //     // ->where('peminjaman.status_peminjaman', $status)
+        //     ->orderBy('agenda_fakultas.kode_agenda') // Mengelompokkan berdasarkan kode unik
+        //     ->orderBy('agenda_fakultas.created_at', 'asc')
+        //     ->paginate(3);
         // ->get();
 
         // dd($dataAgendas);
 
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentAgenda';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataAgendas'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataAgenda', 'dataAgendas', 'tipe_agenda', 'cari'));
     }
 
     // detail agenda calender di admin
@@ -960,7 +980,14 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $perawatan = DB::table('perawatan_barang')
+        // dd(session()->get('status-pengadaan'));
+        if (session()->get('status-perawatan') === null) {
+            $status_perawatan = 'semua';
+        } else {
+            $status_perawatan = session()->get('status-perawatan');
+        }
+
+        $perawatanBarang = DB::table('perawatan_barang')
             ->join('users', 'users.id_user', '=', 'perawatan_barang.id_pemohon')
             ->join('detail_staff', 'users.id_user', '=', 'users.id_user')
             ->leftJoin('items', 'items.id_item', '=', 'perawatan_barang.id_item')
@@ -973,7 +1000,10 @@ class DashboardController extends Controller
                 'detail_staff.nama as nama_pemohon'
             )
             ->where('perawatan_barang.id_pemohon', '=', Auth::user()->id_user)
-            ->get();
+            ->when($status_perawatan !== 'semua', function ($query) use ($status_perawatan) {
+                $query->where('perawatan_barang.status_perawatan', $status_perawatan);
+            })
+            ->paginate(5);
 
         // dd($perawatan);
 
@@ -989,7 +1019,8 @@ class DashboardController extends Controller
         return view('Page_kaprodi.dashboardKaprodi', compact(
             'halaman',
             'user',
-            'perawatan',
+            'perawatanBarang',
+            'status_perawatan',
         ));
     }
 

@@ -24,7 +24,7 @@
                 <i class="fa-solid fa-filter text-slate-400 text-xs"></i>
             </div>
 
-            <form action="{{ route('sortir_status_pengadaan') }}" method="post">
+            <form action="{{ route('sortir_status_pengadaan_kaprodi') }}" method="post">
                 @csrf
                 <select onchange="this.form.submit()" name="status_pengadaan"
                     class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">

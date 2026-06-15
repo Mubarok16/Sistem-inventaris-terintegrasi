@@ -1,3 +1,19 @@
+@if (session('success'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
+        <ul style="margin-bottom: 0;">
+            {{ session('success') }}
+        </ul>
+    </div>
+@endif
+
+@if (session('gagal'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            {{ session('gagal') }}
+        </ul>
+    </div>
+@endif
+
 <main x-data="{ activeTab: 'Mata Kuliah' }"  class="flex-1 flex flex-col h-full overflow-hidden bg-background-light mt-4">
 
     <div class="bg-white p-1 rounded-xl border border-slate-200 inline-flex shadow-sm mb-3 gap-2">
