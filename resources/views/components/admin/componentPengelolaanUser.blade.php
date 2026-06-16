@@ -54,6 +54,8 @@
                 </div>
             </div>
         </div>
+
+        {{-- atas data --}}
         <div
             class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div class="flex flex-1 flex-wrap items-center gap-4">
@@ -78,14 +80,28 @@
                 </form>
 
             </div>
-            <form action="{{ route('page-buat-akun-by-admin') }}" method="get">
+            {{-- <form action="{{ route('page-buat-akun-by-admin') }}" method="get">
                 <button
                     class="bg-primary hover:bg-blue-700 text-white px-6 border-0 py-2.5 rounded-md! font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
                     <i class="fas fa-user-plus text-lg"></i>
                     Tambah Pengguna
                 </button>
-            </form>
+            </form> --}}
+
+            <a href="{{ route('page-buat-akun-by-admin') }}"
+                class="no-underline! bg-primary hover:bg-blue-700 text-white px-6 border-0 py-2.5 rounded-md! font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                <i class="fas fa-user-plus text-lg"></i>
+                Tambah Pengguna
+            </a>
+
+            <a href="{{ route('page-prodi') }}"
+                class="no-underline! bg-primary hover:bg-blue-700 text-white px-6 border-0 py-2.5 rounded-md! font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                <i class="fas fa-university text-lg"></i>
+                program studi
+            </a>
         </div>
+
+        {{-- isi data --}}
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">

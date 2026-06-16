@@ -187,4 +187,17 @@ class peminjamanRuanganController extends Controller
 
         return redirect()->route('mhs-detail-peminjaman-ruang', $id);
     }
+
+    // cari ruang
+    public function cariRuang(Request $request)
+    {
+
+        // Mengambil nilai dari tombol yang diklik
+        $cari = $request->input('cari_ruang');
+
+        // Menyimpan data ke session
+        $request->session()->put('cari_ruang', $cari);
+
+        return back();
+    }
 }

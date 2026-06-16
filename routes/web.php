@@ -101,6 +101,11 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/dashboard/admin/edit-akun/{id}', [EditAkun::class, 'editAkun'])->name('page-edit-akun');
     // page add akun all
     Route::get('/dashboard/admin/add-akun-all/', [CreateAkun::class, 'buatAkunPenggunaByAdmin'])->name('page-buat-akun-by-admin');
+    // page tambah prodi
+    Route::get('/dashboard/admin/prodi/', [CreateAkun::class, 'Prodi'])->name('page-prodi');
+    Route::post('/dashboard/admin/tambah-prodi/', [CreateAkun::class, 'tambahProdi'])->name('tambah-prodi');
+    Route::post('/dashboard/admin/hps-prodi/{id}', [CreateAkun::class, 'hpsProdi'])->name('hps-prodi');
+    Route::post('/simpan-akun-kaprodi', [CreateAkun::class, 'simpanAkunKaprodi'])->name('addAkunKaprodi');
 
     // fungsi crud users
     Route::post('/daftar-akun-admin', [CreateAkun::class, 'simpanAkunAdmin'])->name('addAkunAdmin');
@@ -278,6 +283,8 @@ Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
     Route::post('mahasiswa/ganti-tgl-chosed-barang', [peminjamanbarangController::class, 'gantiTgl'])->name('ganti-tgl-chosed-barang');
     // cari barang
     Route::post('mahasiswa/cari_barang', [peminjamanbarangController::class, 'cariBarang'])->name('cari_barang');
+    // cari euang
+    Route::post('mahasiswa/cari_barang', [peminjamanRuanganController::class, 'cariRuang'])->name('cari_ruang');
 
     // peminjaman ruang
     Route::get('/dashboard/mahasiswa/peminjaman-ruang', [DashboardController::class, 'mahasiswaPeminjamanRuang'])->name('mhs-peminjaman-ruang');

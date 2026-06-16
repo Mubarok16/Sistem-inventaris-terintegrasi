@@ -15,22 +15,25 @@
 @endif
 
 <div x-data="{ selectedBarang: {} }" class=" mb-4">
-    <div class="mb-4 bg-white flex">
-        <label class="flex flex-col w-full flex-grow">
-            <div class="relative w-full">
-                <i
-                    class="fa-solid fa-magnifying-glass search-icon material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input
-                    class="w-full! pl-10 pr-4 py-2 bg-background-light border-l border-y border-slate-200 rounded-l-lg focus:ring-0 focus:outline-none text-black"
-                    placeholder="Search" type="text" />
-            </div>
-        </label>
-        <button type="submit"
-            class="py-1 px-2 text-white bg-blue-500 hover:bg-blue-300 flex justify-center items-center text-center gap-1 border-r border-y border-slate-200!  rounded-r-lg!">
-            <i class="fa-solid fa-search"></i>
-            <span>cari</span>
-        </button>
-    </div>
+    <form action="{{ route('cari_ruang') }}" method="post">
+        <div class="mb-4 bg-white flex">
+            @csrf
+            <label class="flex flex-col w-full flex-grow">
+                <div class="relative w-full">
+                    <i
+                        class="fa-solid fa-magnifying-glass search-icon material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input name="cari_ruang"
+                        class="w-full! pl-10 pr-4 py-2 bg-background-light border-l border-y border-slate-200 rounded-l-lg focus:ring-0 focus:outline-none text-black"
+                        placeholder="Search" type="text" value="{{ $cari }}" />
+                </div>
+            </label>
+            <button type="submit"
+                class="py-1 px-2 text-white bg-blue-500 hover:bg-blue-300 flex justify-center items-center text-center gap-1 border-r border-y border-slate-200!  rounded-r-lg!">
+                <i class="fa-solid fa-search"></i>
+                <span>cari</span>
+            </button>
+        </div>
+    </form>
 
     <main class="layout-container flex grow flex-col items-center justify-center mb-4 px-0 sm:px-8 lg:px-20">
         <div class="w-full max-w-[1200px] flex flex-col gap-10">

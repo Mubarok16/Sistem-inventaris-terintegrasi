@@ -318,6 +318,14 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Profile</a>
                     </div>
                     @include('components.dashboard.page_profile_users')
+                @elseif ($halaman === 'contentProdi')
+                    <h4>Program Studi</h4>
+                    <div>
+                        <a href="/dashboard/admin" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">content-prodi</a>
+                    </div>
+                    @include('components.admin.contentProdi')
                 @endif
             </div>
         </div>

@@ -28,13 +28,14 @@ class HapusAkun extends Controller
 
             // dd($request->all());
 
-            $user = Peminjam::where('no_identitas', $request->no_identitas)->first();
-            $user = User::where('id_user', $user->id_user)->first();
+            $peminjam = Peminjam::where('no_identitas', $request->no_identitas)->first();
+            $user = User::where('id_user', $peminjam->id_user)->first();
+            $peminjam->delete();
             $user->delete();
 
             return redirect()->back()->with('success', 'Akun berhasil dihapus!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', $e->getMessage());
+            return redirect()->back()->with('gagal', 'akun ini masih terkait peminjaman');
         }
     }
 }
