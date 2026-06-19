@@ -92,12 +92,24 @@
                                 </span>
                             </div>
                             <div class="flex items-center text-slate-600 text-sm gap-2">
+                                <i class="fa-solid fa-university w-6 text-primary text-base"></i>
+                                <span>Lingkup Pengelolaan: <span class="font-semibold text-slate-900">
+                                        {{ $dataBarang->kepemilikan_pengelolaan != 'fakultas teknik' ? $dataBarang->kepemilikan_pengelolaan : $dataBarang->kepemilikan_pengelolaan }}</span>
+                                </span>
+                            </div>
+                            <div class="flex items-center text-slate-600 text-sm gap-2">
                                 <i class="fa-solid fa-boxes-stacked w-6 text-primary text-base"></i>
-                                <span>Stok: <span class="font-semibold text-slate-900">{{ $dataBarang->qty_item }}
+                                <span>Tersedia: <span class="font-semibold text-slate-900">{{ $dataBarang->qty_item }}
+                                        Unit</span></span>
+                            </div>
+                            <div class="flex items-center text-red-600 text-sm gap-2">
+                                <i class="fa-solid fa-boxes-stacked w-6 text-red text-base"></i>
+                                <span>Rusak: <span
+                                        class="font-semibold text-slate-900">{{ $dataBarang->qty_perawatan ?? '0' }}
                                         Unit</span></span>
                             </div>
                         </div>
-                        <div class="pt-4 border-t border-slate-100">
+                        {{-- <div class="pt-4 border-t border-slate-100">
                             <p class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">
                                 Kondisi
                             </p>
@@ -114,7 +126,7 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3">
                         <a href="{{ route('edit-barang', ['id' => $dataBarang->id_item]) }}"
@@ -197,13 +209,14 @@
         <div x-show="AddDataBarang"
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
             x-transition x-cloak>
+
             <div @click.outside="AddDataBarang = false"
-                class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
+                class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-xl relative">
 
                 <button @click="AddDataBarang = false"
                     class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
 
-                <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Add Tipe Barang</h2>
+                <h2 class="text-lg font-semibold mb-4 text-center text-gray-700">Tambah Data Barang</h2>
 
                 <form method="POST" action="{{ route('addBarang') }}" enctype="multipart/form-data">
                     @csrf
@@ -250,13 +263,65 @@
                                 <label for="pria">Rusak</label>
                             </div>
                         </div>
-                        <div class="col-12 m-0">
-                            <div class="mb-2">
-                                <label for="foto" class="form-label">Masukkan gambar Barang</label>
-                                <input type="file" name="gambar_item" class="form-control"
-                                    accept="image/jpeg, image/png,.doc" capture="environment" required>
+
+                        {{-- <div class="flex gap-4 items-end w-full">
+                            <div class="col-12 m-0">
+                                <div class="mb-2">
+                                    <label for="foto" class="form-label">Masukkan gambar Barang</label>
+                                    <input type="file" name="gambar_item" class="form-control"
+                                        accept="image/jpeg, image/png,.doc" capture="environment" required>
+                                </div>
+                            </div>
+                            <div class="col-12 m-0">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-home"></i>
+                                    </span>
+                                    <select name="kepemilikan_pengelolaan" class="form-select" required>
+                                        <option value="">--- Pilih Lingkup Pengelolaan ---</option>
+                                        <option value="fakultas teknik">fakultas teknik</option>
+                                        @foreach ($prodi as $prodi)
+                                            <option value="{{ $prodi->nama_prodi }}">
+                                                {{ $prodi->nama_prodi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div> --}}
+
+                        <div class="flex gap-4 items-end w-full">
+                            <!-- Kolom Masukkan Gambar -->
+                            <div class="flex-1 m-0">
+                                <div class="mb-2">
+                                    <label for="foto" class="form-label">Masukkan gambar Barang</label>
+                                    <input type="file" name="gambar_item" class="form-control"
+                                        accept="image/jpeg, image/png,.doc" capture="environment" required>
+                                </div>
+                            </div>
+
+                            <!-- Kolom Pilih Lingkup Pengelolaan -->
+                            <div class="flex-1 m-0">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">
+                                        <!-- Sudah diubah menjadi ikon gedung kuliah -->
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </span>
+                                    <select name="kepemilikan_pengelolaan" class="form-select" required>
+                                        <option value="">Lingkup Pengelolaan</option>
+                                        <option value="fakultas teknik">fakultas teknik</option>
+
+                                        <!-- PERBAIKAN KUNCI: Mengubah nama variabel tunggal menjadi $p agar tidak bentrok -->
+                                        @foreach ($prodi as $p)
+                                            <option value="{{ $p->nama_prodi }}">
+                                                {{ $p->nama_prodi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-12 m-0">
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control" name="sumber_perolehan" placeholder=" "

@@ -41,6 +41,25 @@
                                         value="{{ $ruang->id_room }}" disabled />
                                 </div>
                             </div>
+                            <div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">Lingkup pengelolaan</label>
+                                    <select name="kepemilikan_pengelolaan" class="form-select" required>
+                                        <option value="">Lingkup Pengelolaan</option>
+                                        <option value="fakultas teknik"
+                                            {{ $ruang->kepemilikan_pengelolaan === 'fakultas teknik' ? 'selected' : '' }}>
+                                            fakultas teknik</option>
+
+                                        <!-- PERBAIKAN KUNCI: Mengubah nama variabel tunggal menjadi $p agar tidak bentrok -->
+                                        @foreach ($prodi as $p)
+                                            <option value="{{ $p->nama_prodi }}"
+                                                {{ $ruang->kepemilikan_pengelolaan === $p->nama_prodi ? 'selected' : '' }}>
+                                                {{ $p->nama_prodi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">Nama Ruangan</label>
@@ -317,19 +336,11 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <h3 class="font-bold text-slate-900 mb-4">Kondisi &amp; Visibilitas</h3>
                 <div class="space-y-4">
-                    {{-- <div
-                        class="flex items-center justify-between p-3 rounded-xl bg-green-50 text-green-700 border border-green-100">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span class="text-sm font-semibold">Tersedia</span>
-                        </div>
-                        <button class="text-[10px] font-bold uppercase underline">Ubah</button>
-                    </div> --}}
                     @foreach ($DataRuangan as $ruang)
-                        <form action="{{ route('edit-ruangan-kondisi') }}" method="post">
+                        {{-- kondisi --}}
+                        {{-- <form action="{{ route('edit-ruangan-kondisi') }}" method="post">
                             @csrf
                             <input type="text" name="id_room" value="{{ $ruang->id_room }}" hidden>
-                            {{-- kondisi --}}
                             <label class="text-sm font-semibold text-slate-500">Kondisi</label>
                             <div x-data="{ tersedia: {{ $ruang->kondisi_room === 'Baik' ? 'true' : 'false' }} }"
                                 :class="tersedia ? 'bg-green-50 text-green-700 border-green-100' :
@@ -349,7 +360,7 @@
                                     </div>
                                 </label>
                             </div>
-                        </form>
+                        </form> --}}
 
                         <form action="{{ route('edit-ruangan-visibility') }}" method="post">
                             @csrf
@@ -382,18 +393,6 @@
                     @endforeach
                 </div>
             </div>
-            {{-- <div class="mb-4 flex items-center justify-end">
-                <div class="flex gap-3">
-                    <button
-                        class="px-6 py-2.5 rounded-xl! border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100 transition-all">
-                        Batal
-                    </button>
-                    <button
-                        class="px-6 py-2.5 rounded-xl! bg-blue-600 text-white font-bold shadow-lg shadow-primary/20 hover:bg-blue-700 transition-all transform">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </div> --}}
         </div>
     </div>
 </main>

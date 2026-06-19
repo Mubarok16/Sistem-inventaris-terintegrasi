@@ -27,7 +27,7 @@
                     @csrf
                     <input name="cari_ruang"
                         class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm outline-none transition-all"
-                        placeholder="Cari nama ruangan" type="text" value="{{ $cari != 'null' ? $cari : '' }}"/>
+                        placeholder="Cari nama ruangan" type="text" value="{{ $cari != 'null' ? $cari : '' }}" />
                 </form>
             </div>
             <div class="flex items-center gap-2 ml-auto">
@@ -45,7 +45,8 @@
         </div>
 
         {{-- data ruangan --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false, OpenImgRuangan: false }">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+            x-data="{ AddDataRuangan: false, EditDataRuangan: false, selectedDataRuangan: {}, DeleteDataRuangan: false, OpenImgRuangan: false }">
 
             {{-- add raungan baru --}}
             <div
@@ -69,7 +70,7 @@
                 <div
                     class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col group hover:shadow-md transition-shadow">
                     <div class="p-6 flex-grow">
-                        <div class="flex justify-between items-start mb-4">
+                        <div class="flex justify-between items-start mb-2">
                             <div>
                                 <span
                                     class="inline-block py-0.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded mb-2">
@@ -77,29 +78,45 @@
                                 </span>
                                 <h5 class="text-xl font-bold text-slate-900">{{ $ruang->nama_room }}</h5>
                             </div>
-                            @if ($ruang->visibility_room === '1')
-                                <span
-                                    class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
-                                    Visible
-                                </span>
-                            @else
-                                <span class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
-                                    Invisible
-                                </span>
-                            @endif
+                            <div class="flex gap-2">
+                                @if ($ruang->kondisi_room === 'Baik')
+                                    <span
+                                        class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                        Baik
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                        Rusak
+                                    </span>
+                                @endif
+                                @if ($ruang->visibility_room === '1')
+                                    <span
+                                        class="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                        Visible
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
+                                        Invisible
+                                    </span>
+                                @endif
+                            </div>
                         </div>
-                        {{-- <div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
-                            <i class="fa-solid fa-location-dot text-slate-400"></i>
-                            <span>Lantai 2, Sayap Kanan</span>
-                        </div> --}}
+
+                        <div class="flex items-center text-slate-600 text-sm gap-2 mb-4">
+                            <i class="fa-solid fa-university w-6 text-primary text-base"></i>
+                            <span>Lingkup Pengelolaan:
+                                <span class="font-semibold text-slate-900">
+                                    {{ $ruang->kepemilikan_pengelolaan != 'fakultas teknik' ? $ruang->kepemilikan_pengelolaan : $ruang->kepemilikan_pengelolaan }}
+                                </span>
+                            </span>
+                        </div>
+
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Daftar Barang
                                 </h4>
-                                {{-- <button
-                                class="text-primary text-[10px] font-bold uppercase hover:underline flex items-center gap-1">
-                                <i class="fa-solid fa-plus text-[8px]"></i> Tambah
-                            </button> --}}
                             </div>
                             <ul class="space-y-2 p-0!">
                                 @forelse($ruang->items as $items)
@@ -111,9 +128,6 @@
                                                 ({{ $items->qty_item }} Unit)
                                             </span>
                                         </div>
-                                        {{-- <button class="text-slate-300 hover:text-danger transition-colors" title="Hapus Barang">
-                                    <i class="fa-solid fa-trash-can text-sm"></i>
-                                </button> --}}
                                     </li>
                                 @empty
                                     <li
@@ -212,16 +226,34 @@
                                         accept="image/jpeg, image/png,.doc" capture="environment" required>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="d-grid">
-                                    <button class="btn btn-primary w-100" type="submit">Simpan</button>
+                            <div class="flex-1 m-0">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">
+                                        <!-- Sudah diubah menjadi ikon gedung kuliah -->
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </span>
+                                    <select name="kepemilikan_pengelolaan" class="form-select" required>
+                                        <option value="">Lingkup Pengelolaan</option>
+                                        <option value="fakultas teknik">fakultas teknik</option>
+
+                                        <!-- PERBAIKAN KUNCI: Mengubah nama variabel tunggal menjadi $p agar tidak bentrok -->
+                                        @foreach ($prodi as $p)
+                                            <option value="{{ $p->nama_prodi }}">
+                                                {{ $p->nama_prodi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button class="btn btn-primary w-100" type="submit">Simpan</button>
+                            </div>
+                        </div>
                 </div>
+                </form>
             </div>
-
             {{-- shwo img ruangan --}}
             <div x-show="OpenImgRuangan"
                 class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
@@ -231,24 +263,24 @@
                     <img :src="`/storage/${selectedDataRuangan.img}`" alt="Foto Peminjam" class="container">
                 </div>
             </div>
-
+    
             {{-- show hapus ruangan --}}
             <div x-show="DeleteDataRuangan" x-cloak
                 class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
                 x-transition>
                 <div @click.outside="DeleteDataRuangan = false"
                     class="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md relative">
-
+    
                     <button @click="DeleteDataRuangan = false"
                         class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-
+    
                     <h4 class="text-lg font-semibold mb-4 text-center text-gray-700">Yakin ingin menghapus ruangan?
                     </h4>
-
+    
                     <form method="POST" :action="'/admin/delete-ruangan/' + selectedDataRuangan.id_room"
                         enctype="multipart/form-data">
                         @csrf
-
+    
                         <div class="row gy-2 overflow-hidden">
                             <div class="col-12">
                                 {{-- <input type="text" class="hidden" name="id_tipe" x-model="selectedTipeRuangan.id_tipe"> --}}
@@ -257,35 +289,15 @@
                                 </div>
                             </div>
                         </div>
-
+    
                     </form>
-
+    
                 </div>
             </div>
         </div>
 
+
         {{-- footer menampilkan info banyaknya data --}}
-        {{-- <div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-slate-200 pt-8">
-            <div class="text-sm text-slate-500">
-                Menampilkan <span class="font-bold text-slate-800">3</span> dari <span
-                    class="font-bold text-slate-800">12</span> ruangan terdaftar
-            </div>
-            <div class="flex items-center gap-2">
-                <button
-                    class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:text-primary transition-colors hover:border-primary">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold">1</button>
-                <button
-                    class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:border-primary hover:text-primary transition-all">2</button>
-                <button
-                    class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:border-primary hover:text-primary transition-all">3</button>
-                <button
-                    class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:text-primary transition-colors hover:border-primary">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-            </div>
-        </div> --}}
         <div class="flex items-center justify-between mb-12">
             <div class="text-sm text-slate-500 font-medium">
                 Menampilkan
@@ -294,7 +306,7 @@
                 <span class="text-slate-900 font-bold">{{ $DataRuangan->total() }}</span>
                 ruangan terdaftar
             </div>
-
+    
             <div class="flex gap-2">
                 {{-- Tombol ke Halaman Sebelumnya --}}
                 @if ($DataRuangan->onFirstPage())
@@ -309,7 +321,7 @@
                         <i class="fa-solid fa-chevron-left"></i>
                     </a>
                 @endif
-
+    
                 {{-- Nomor Halaman --}}
                 @foreach ($DataRuangan->getUrlRange(1, $DataRuangan->lastPage()) as $page => $url)
                     @if ($page == $DataRuangan->currentPage())
@@ -326,7 +338,7 @@
                         </a>
                     @endif
                 @endforeach
-
+    
                 {{-- Tombol ke Halaman Selanjutnya --}}
                 @if ($DataRuangan->hasMorePages())
                     <a href="{{ $DataRuangan->nextPageUrl() }}"
@@ -343,6 +355,7 @@
             </div>
         </div>
     </div>
+
 
     {{-- tipe ruangan --}}
     <div x-show="activeTab === 'tipe'" x-transition>
@@ -428,7 +441,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                {{-- <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
                     <p class="text-sm text-slate-500">Menampilkan <span class="font-medium">4</span> dari <span
                             class="font-medium">4</span> tipe</p>
                     <div class="flex items-center gap-2">
@@ -443,12 +456,8 @@
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
-                </div>
+                </div> --}}
             </div>
-
-            <footer class="mt-12 pt-8 border-t border-slate-200 text-center text-slate-400 text-sm">
-                <p>© 2024 Sistem Peminjaman Fakultas. Administrasi Tipe Ruangan v1.3</p>
-            </footer>
 
             {{-- shwo add tipe ruangan --}}
             <div x-show="AddTipeRuangan"

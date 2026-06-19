@@ -243,7 +243,9 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/dashboard/pimpinan/perawatan-barang', [PengadaanBarangControllerPimpinan::class, 'PagePerawatanBarang'])->name('perawatan-barang-pimpinan');
     Route::post('/dashboard/approve-surat-perawatan/{id}', [PengadaanBarangControllerPimpinan::class, 'signSuratPerawatan'])->name('sign-surat-perawatan');
     Route::post('/dashboard/tolak-surat-perawatan/{id}', [PengadaanBarangControllerPimpinan::class, 'tolakSuratPerawatan'])->name('tolak-surat-perawatan');
-
+    // data barang dan ruangan
+    Route::get('/dashboard/pimpinan/data-barang', [DashboardController::class, 'DataBarangPimpinan'])->name('data-barang-pimpinan');
+    Route::get('/dashboard/pimpinan/data-ruangan', [DashboardController::class, 'DataRuanganPimpinan'])->name('data-ruangan-pimpinan');
 
 
     // ---------------------------------------------------kaprodi---------------------------------------------

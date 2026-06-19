@@ -327,10 +327,12 @@
                                     <select name="keperluan_prodi"
                                         class="w-full px-3 py-2  border border-slate-200 rounded-xl font-body-md text-body-md appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
                                         <option>pilih untuk keperluan prodi atau fakultas</option>
-                                        <option value="Fakultas Teknik">Fakultas Teknik</option>
-                                        <option value="Program Studi Teknik Sipil">Teknik Sipil</option>
-                                        <option value="Program Studi Teknik Komputer">Teknik Komputer</option>
-                                        <option value="Program Studi Teknik Lingkungan">Teknik Lingkungan</option>
+                                        <option value="fakultas teknik">fakultas teknik</option>
+                                        @foreach ($prodi as $p)
+                                        <option class="camel-case" value="{{ $p->nama_prodi }}">
+                                            {{ $p->nama_prodi }}
+                                        </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

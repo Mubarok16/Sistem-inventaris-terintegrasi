@@ -51,7 +51,7 @@
 
             {{-- chart --}}
             {{-- grid grid-cols-1 lg:grid-cols-2 gap-8  --}}
-            <div class="mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <!-- chart -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
@@ -61,6 +61,17 @@
                         </h4>
                     </div>
                     <div id="pieChart"></div>
+
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-primary"></i>
+                            Kondisi sarana prasarana
+                        </h4>
+                    </div>
+                    <div id="pieChartKondisi"></div>
 
                 </div>
             </div>
@@ -140,32 +151,39 @@
 </script> --}}
 
 <script>
+    // penggunaaan barang
     window.addEventListener('load', function() {
         const pieChartElement = document.querySelector("#pieChart");
         if (!pieChartElement) return;
 
-        let dataBarang = {{ (int)$countsBarang }};
-        let dataRuangan = {{ (int)$countsRuangan }};
-        
+        let dataBarang = {{ (int) $countsBarang }};
+        let dataRuangan = {{ (int) $countsRuangan }};
+
         let seriesData = [dataBarang, dataRuangan];
         let labelData = ['Barang', 'Ruangan'];
         let colorData = ['#008FFB', '#00E396'];
 
         // Jika data 0 semua, ganti visual ke lingkaran abu-abu tunggal
         if (dataBarang === 0 && dataRuangan === 0) {
-            seriesData = [1]; 
+            seriesData = [1];
             labelData = ['Tidak Ada Data'];
             colorData = ['#e0e0e0']; // Warna abu-abu terang
         }
 
         var options = {
-            chart: { type: 'pie', height: 400 },
+            chart: {
+                type: 'pie',
+                height: 400
+            },
             series: seriesData,
             labels: labelData,
             colors: colorData,
+            legend: {
+                position: 'bottom'
+            },
             tooltip: {
                 // Matikan tooltip jika datanya cuma visual abu-abu
-                enabled: dataBarang + dataRuangan > 0 
+                enabled: dataBarang + dataRuangan > 0
             },
             dataLabels: {
                 enabled: dataBarang + dataRuangan > 0
@@ -173,6 +191,52 @@
         };
 
         var chart = new ApexCharts(pieChartElement, options);
+        chart.render();
+    });
+
+    // kondisi barang dan ruangan
+    window.addEventListener('load', function() {
+
+        const kondisiChartElement = document.querySelector("#pieChartKondisi");
+        if (!kondisiChartElement) return;
+
+        let barangRusak = {{ (int) $barang_rusak }};
+        let ruanganRusak = {{ (int) $ruang_rusak }};
+
+        let seriesData = [barangRusak, ruanganRusak];
+        let labelData = ['Barang Rusak', 'Ruangan Rusak'];
+        let colorData = ['#EF4444', '#F59E0B'];
+
+        // Jika tidak ada data
+        if (barangRusak === 0 && ruanganRusak === 0) {
+            seriesData = [1];
+            labelData = ['Tidak Ada Data'];
+            colorData = ['#e0e0e0'];
+        }
+
+        var options = {
+            chart: {
+                type: 'pie',
+                height: 400
+            },
+            series: seriesData,
+            labels: labelData,
+            colors: colorData,
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                enabled: barangRusak + ruanganRusak > 0
+            },
+            dataLabels: {
+                enabled: barangRusak + ruanganRusak > 0,
+                formatter: function(val, opts) {
+                    return opts.w.config.series[opts.seriesIndex];
+                }
+            }
+        };
+
+        var chart = new ApexCharts(kondisiChartElement, options);
         chart.render();
     });
 </script>

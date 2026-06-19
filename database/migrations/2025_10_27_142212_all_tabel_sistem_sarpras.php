@@ -57,7 +57,6 @@ return new class extends Migration
             $table->foreign('id_user')->references('id_user')->on('users');
         });
 
-        // Database/migrations/xxxx_xx_xx_create_tipe_rooms_table.php
         Schema::create('tipe_rooms', function (Blueprint $table) {
             $table->string('id_tipe_room', 12)->primary();
             $table->text('nama_tipe_room');
@@ -69,6 +68,11 @@ return new class extends Migration
         //     $table->text('nama_tipe_item');
         // });
 
+        Schema::create('prodi', function (Blueprint $table) {
+            $table->string('id_prodi', 12)->primary();
+            $table->text('nama_prodi');
+        });
+
         // Database/migrations/xxxx_xx_xx_create_rooms_table.php
         Schema::create('rooms', function (Blueprint $table) {
             $table->string('id_room', 12)->primary();
@@ -77,6 +81,7 @@ return new class extends Migration
             $table->string('kondisi_room', 12);
             $table->text('gambar_room');
             $table->text('visibility_room')->nullable();
+            $table->text('kepemilikan_pengelolaan')->nullable();
             $table->timestamps(0);
 
             $table->foreign('id_tipe_room')->references('id_tipe_room')->on('tipe_rooms');
@@ -86,6 +91,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->string('id_item', 12)->primary();
             $table->string('id_room', 12);
+
             // $table->string('id_tipe_item', 12);
             $table->string('nama_item', 12);
             $table->string('merek_model', 12);
@@ -95,6 +101,7 @@ return new class extends Migration
             $table->text('visibility_item')->nullable();
             $table->text('sumber_perolehan')->nullable();
             $table->integer('tahun_perolehan')->nullable();
+            $table->text('kepemilikan_pengelolaan')->nullable();
             $table->timestamps(0);
 
             $table->foreign('id_room')->references('id_room')->on('rooms');
@@ -211,6 +218,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('tipe_rooms');
+        Schema::dropIfExists('prodi');
         Schema::dropIfExists('rooms');
         Schema::dropIfExists('tipe_item');
         Schema::dropIfExists('items');

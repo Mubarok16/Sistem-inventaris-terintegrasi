@@ -21,12 +21,13 @@ class PengelolaanBarang extends Controller
             abort(403, 'Unauthorized');
         }
         $DataBarang = DB::table('items')->where('id_item', $id)->get();
+        $prodi = DB::table('prodi')->select('nama_prodi')->get();
 
         // $tipeBarang = TipeBarang::get();
         // dd($DataBarang);
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentEditBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user','prodi'));
     }
 
     // fungsi untuk mengedit informasi dasar barang
@@ -42,6 +43,7 @@ class PengelolaanBarang extends Controller
                     'sumber_perolehan' => $request->sumber_perolehan,
                     'tahun_perolehan' => $request->tahun_perolehan,
                     'merek_model' => $request->merk_model,
+                    'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                     'updated_at' => now(),
                 ]);
 
@@ -65,13 +67,14 @@ class PengelolaanBarang extends Controller
             $path = $file->store('uploads/barang/', 'public');
 
             // simpan data barang yang sudah di update ke database
-            $ruangan = DB::table('items')
+            DB::table('items')
                 ->where('id_item', $request->id_item)
                 ->update([
                     'nama_item' => $request->nama_item,
                     'merek_model' => $request->merk_model,
                     'sumber_perolehan' => $request->sumber_perolehan,
                     'tahun_perolehan' => $request->tahun_perolehan,
+                    'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                     // 'kondisi_item' => $request->kondisi_item,
                     'img_item' => $path,
                     'updated_at' => now(),
@@ -217,6 +220,7 @@ class PengelolaanBarang extends Controller
                 'kondisi' => 'required',
                 'qty' => 'required|integer|min:1',
                 'tahun_perolehan' => 'required|integer',
+                'kepemilikan_pengelolaan' => 'required',
                 'gambar_item' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
@@ -248,6 +252,7 @@ class PengelolaanBarang extends Controller
                 'kondisi_item' => $request->kondisi,
                 'sumber_perolehan' => $request->sumber_perolehan ?? null,
                 'tahun_perolehan' => $request->tahun_perolehan,
+                'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                 'img_item' => $imgPath,
                 'created_at' => now(),
                 'updated_at' => now(),

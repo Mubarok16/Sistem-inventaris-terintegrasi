@@ -58,6 +58,27 @@
                                         value="{{ $ruang->merek_model }}" />
                                 </div>
                             </div>
+
+                            <div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-700">Lingkup pengelolaan</label>
+                                    <select name="kepemilikan_pengelolaan" class="form-select" required>
+                                        <option value="">Lingkup Pengelolaan</option>
+                                        <option value="fakultas teknik" {{ $ruang->kepemilikan_pengelolaan === 'fakultas teknik' ? 'selected': ''}}>fakultas teknik</option>
+
+                                        <!-- PERBAIKAN KUNCI: Mengubah nama variabel tunggal menjadi $p agar tidak bentrok -->
+                                        @foreach ($prodi as $p)
+                                            <option value="{{ $p->nama_prodi }}" {{ $ruang->kepemilikan_pengelolaan === $p->nama_prodi ? 'selected': ''}}>
+                                                {{ $p->nama_prodi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    {{-- <input name="sumber_perolehan"
+                                        class="w-full px-2 py-2.5 rounded-lg! bg-slate-100 border-slate-500! focus:ring-primary focus:border-primary text-black"
+                                        placeholder="Contoh: Lab Komputer 1" type="text"
+                                        value="{{ $ruang->sumber_perolehan }}" /> --}}
+                                </div>
+                            </div>
                             <div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-700">Sumber Perolehan</label>
@@ -141,10 +162,10 @@
                 <h3 class="font-bold text-slate-900 mb-4">Kondisi &amp; Visibilitas</h3>
                 <div class="space-y-4">
                     @foreach ($DataBarang as $ruang)
-                        <form action="{{ route('edit-barang-kondisi') }}" method="post">
+                        {{-- kondisi --}}
+                        {{-- <form action="{{ route('edit-barang-kondisi') }}" method="post">
                             @csrf
                             <input type="text" name="id_item" value="{{ $ruang->id_item }}" hidden>
-                            {{-- kondisi --}}
                             <label class="text-sm font-semibold text-slate-500">Kondisi</label>
                             <div x-data="{ tersedia: {{ $ruang->kondisi_item === 'Baik' ? 'true' : 'false' }} }"
                                 :class="tersedia ? 'bg-green-50 text-green-700 border-green-100' :
@@ -164,7 +185,7 @@
                                     </div>
                                 </label>
                             </div>
-                        </form>
+                        </form> --}}
 
                         <form action="{{ route('edit-barang-visibility') }}" method="post">
                             @csrf
@@ -192,7 +213,8 @@
                             </div>
                         </form>
                         <div class="text-xs text-slate-400 leading-relaxed">
-                            Terakhir diupdate oleh <b>Admin </b> pada {{ \Carbon\Carbon::parse($ruang->updated_at)->format('d M Y, H:i') }}.
+                            Terakhir diupdate oleh <b>Admin </b> pada
+                            {{ \Carbon\Carbon::parse($ruang->updated_at)->format('d M Y, H:i') }}.
                         </div>
                     @endforeach
                 </div>

@@ -88,12 +88,14 @@ class PengelolaanRuangan extends Controller
     // fungsi untuk menambah ruangan baru =============================================================
     public function tambahRuangan(Request $request)
     {
+        // dd($request->kepemilikan_pengelolaan);
         try {
             $request->validate([
                 'nama_room' => 'required',
                 'tipe' => 'required',
                 'kondisi' => 'required',
                 'gambar_room' => 'required',
+                'kepemilikan_pengelolaan' => 'required'
             ]);
 
             //cek apakah nama ruangan sudah ada
@@ -118,19 +120,20 @@ class PengelolaanRuangan extends Controller
             }
 
             // dd($idroom_singkat);
-            DataRuangan::create([
+            DB::table('rooms')->insert([
                 'id_room' => $idroom_singkat,
                 'id_tipe_room' => $request->tipe,
                 'nama_room' => $request->nama_room,
                 'kondisi_room' => $request->kondisi,
                 'gambar_room' => $imgPath,
+                'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             return redirect()->back()->with('success', 'Data Ruangan berhasil di tambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', $e->getMessage());
+            return redirect()->back()->with('gagal', 'Data Ruangan gagal di tambahkan.');
         }
     }
     // fungsi untuk menghapus ruangan
@@ -187,6 +190,8 @@ class PengelolaanRuangan extends Controller
             )
             ->get();
 
+        $prodi = DB::table('prodi')->select('nama_prodi')->get();
+
         // session(['dataRuangTemp' => $DataRuangan]);
         // session(['dataBarangYgDruangan' => $dataBarangYgDruangan]);
 
@@ -194,7 +199,7 @@ class PengelolaanRuangan extends Controller
 
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDetailRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan', 'allBarangRuang', 'id'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataRuangan', 'user', 'tipeRuangan', 'dataBarangYgDruangan', 'allBarangRuang', 'id', 'prodi'));
     }
 
     // fungsi untuk edit informasi dasar ruangan
@@ -217,6 +222,7 @@ class PengelolaanRuangan extends Controller
                 ->update([
                     'nama_room' => $request->nama_room,
                     'id_tipe_room' => $request->tipe_room,
+                    'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                     // 'kondisi_room' => $request->kondisi_room,
                     'updated_at' => now(),
                 ]);
@@ -246,6 +252,7 @@ class PengelolaanRuangan extends Controller
                 ->update([
                     'nama_room' => $request->nama_room,
                     'id_tipe_room' => $request->tipe_room,
+                    'kepemilikan_pengelolaan' => $request->kepemilikan_pengelolaan,
                     // 'kondisi_room' => $request->kondisi_room,
                     'gambar_room' => $path,
                     'updated_at' => now(),
@@ -337,7 +344,7 @@ class PengelolaanRuangan extends Controller
     }
 
     // cari data ruang
-     function caridataruang(Request $request)
+    public function caridataruang(Request $request)
     {
         // Mengambil nilai dari tombol yang diklik
         $cari_ruang = $request->input('cari_ruang');

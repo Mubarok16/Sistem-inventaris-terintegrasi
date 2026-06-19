@@ -253,6 +253,7 @@ class PengadaanBarangController extends Controller
                     'sumber_perolehan' => 'Universitas',
                     'tahun_perolehan' => now()->year,
                     'kondisi_item' => $kondisi,
+                    'kepemilikan_pengelolaan' => $pengadaan->keperluan_prodi,
                     'img_item'     => 'default.png',
                     'updated_at'   => now(),
                     'created_at'   => now(),

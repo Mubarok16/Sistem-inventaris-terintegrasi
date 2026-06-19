@@ -50,6 +50,22 @@
                         <a href="" class="text-gray-400! no-underline! font-medium">Penggunaan-Ruangan</a>
                     </div>
                     @include('components.pimpinan.contentCalender')
+                @elseif ($halaman === 'contentDataBarang')
+                    <h4>Data Barang</h4>
+                    <div class="mb-8">
+                        <a href="{{ route('dashboard-pimpinan') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Data-Barang</a>
+                    </div>
+                    @include('components.pimpinan.contentDataBarang')
+                @elseif ($halaman === 'contentDataRuangan')
+                    <h4>Data Ruangan</h4>
+                    <div class="mb-8">
+                        <a href="{{ route('dashboard-pimpinan') }}" class="text-gray-400! no-underline!">Dahsboard</a>
+                        <span class="text-gray-500">/</span>
+                        <a href="" class="text-gray-400! no-underline! font-medium">Data-Ruangan</a>
+                    </div>
+                    @include('components.pimpinan.contentDataRuangan')
                 @elseif ($halaman === 'contentPengadaanBarang')
                     <h4>Pengadaan Barang</h4>
                     <div>

@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Services\Admin\PengelolaanPeminjamanService;
 use App\Services\Admin\PengelolaanUserService;
+use App\Services\Admin\DataBarangRuangService;
 use App\Services\mahasiswa\DetailAgendaService;
 use App\Services\mahasiswa\RiwayatPeminjamanService;
 use Illuminate\Support\Facades\Session;
@@ -314,19 +315,21 @@ class DashboardController extends Controller
         $DataRuangan = DataRuangan::get();
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $DataBarang = DB::table('items')
-            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
             ->select(
                 'items.*',
-                // 'tipe_item.nama_tipe_item', 
-                'rooms.nama_room'
+                'rooms.nama_room',
+                'perawatan_barang.qty_perawatan'
             ) // Pilih kolom yang diperlukan
             ->when($cari !== 'null', function ($query) use ($cari) {
                 $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
             })
             ->latest()
             ->paginate(6);
-        // ->get();
+
+        $prodi = DB::table('prodi')->select('nama_prodi')->get();
+
         // mengambil data tipe barang
         $DataTipeBarang = TipeRuangan::get();
         // mengambil data user yang sedang login
@@ -334,7 +337,7 @@ class DashboardController extends Controller
         // membuat variable dengan isi content data barang
         $halaman = 'contentDataBarang';
         // mengirimkan view ke halaman dahsboard pengelolaan barang dengan mengirimkan variable yg di butuhkan di halaman
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeBarang', 'DataRuangan', 'DataBarang', 'cari'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeBarang', 'DataRuangan', 'DataBarang', 'cari', 'prodi'));
     }
 
     public function adminDataRuangan()
@@ -382,13 +385,16 @@ class DashboardController extends Controller
             return $room;
         });
 
+        $prodi = DB::table('prodi')->select('nama_prodi')->get();
+
+
         $DataTipeRuangan = TipeRuangan::get();
 
         // dd($DataRuangan);
 
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentDataRuangan';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan', 'cari'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan', 'cari', 'prodi'));
     }
 
     public function adminAgenda()
@@ -683,9 +689,11 @@ class DashboardController extends Controller
 
         // dd($pengadaanBarang);
 
+        $prodi = DB::table('prodi')->select('nama_prodi')->get();
+
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengadaanBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'pengadaanBarang', 'status_pengadaan'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'pengadaanBarang', 'status_pengadaan', 'prodi'));
     }
 
     public function AdminPerawatanBarang()
@@ -815,7 +823,16 @@ class DashboardController extends Controller
         $countsBarang = collect($finalData)->pluck('total')->sum();
         $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
 
-        // dd($countsBarang->sum(), $countsRuangan->sum());
+        // unutk chart kondisi srpras
+        $barang_rusak = DB::table('perawatan_barang')
+            ->where('perawatan_barang.id_item', '!=', null)
+            ->where('perawatan_barang.status_perawatan', '!=', 'selesai')
+            ->count('perawatan_barang.qty_perawatan');
+        $ruang_rusak = DB::table('perawatan_barang')
+            ->where('perawatan_barang.id_room', '!=', null)
+            ->where('perawatan_barang.status_perawatan', '!=', 'selesai')
+            ->count();
+        // dd($barang_rusak, $ruang_rusak);
 
         $id_user = Auth::user()->id_user;
 
@@ -824,9 +841,8 @@ class DashboardController extends Controller
             ->first();
 
         $user = $dosen->nama;
-
         $halaman = 'contentDashbordPimpinan';
-        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan'));
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'bulanInput', 'labels', 'countsBarang', 'countsRuangan', 'barang_rusak', 'ruang_rusak'));
     }
     // page kalender di pimpinan
     public function calenderPimpinan(Request $request)
@@ -845,6 +861,104 @@ class DashboardController extends Controller
 
         $halaman = 'contentCalenderPimpinan';
         return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user'));
+    }
+    public function DataBarangPimpinan()
+    {
+        // cek jika user yg login bukan admin akan di arahkan ke halaman unauthorize
+        if (Auth::user()->hak_akses  !== "pimpinan") {
+            abort(403, 'Unauthorized');
+        }
+
+
+        if (session()->get('cari_barang') === null) {
+            $cari = 'null';
+        } else {
+            $cari = session()->get('cari_barang');
+        }
+
+        // dd($cari);
+
+        // mengambil data ruangan
+        $DataRuangan = DataRuangan::get();
+        // mengambil semua data barang dan nama tipe barang dan nama ruangan
+        $DataBarang = DB::table('items')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
+            ->select(
+                'items.*',
+                // 'tipe_item.nama_tipe_item', 
+                'rooms.nama_room',
+                'perawatan_barang.qty_perawatan'
+            ) // Pilih kolom yang diperlukan
+            ->when($cari !== 'null', function ($query) use ($cari) {
+                $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
+            })
+            ->latest()
+            ->paginate(6);
+        // ->get();
+        // mengambil data tipe barang
+        $DataTipeBarang = TipeRuangan::get();
+        // mengambil data user yang sedang login
+        $user = DB::table('detail_dosen')->where('id_user', Auth::user()->id_user)->value('nama');
+        // membuat variable dengan isi content data barang
+        $halaman = 'contentDataBarang';
+        // mengirimkan view ke halaman dahsboard pengelolaan barang dengan mengirimkan variable yg di butuhkan di halaman
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'DataTipeBarang', 'DataRuangan', 'DataBarang', 'cari'));
+    }
+
+    public function DataRuanganPimpinan()
+    {
+        if (Auth::user()->hak_akses  !== "pimpinan") {
+            abort(403, 'Unauthorized');
+        }
+
+        if (session()->get('cari_ruang') === null) {
+            $cari = 'null';
+        } else {
+            $cari = session()->get('cari_ruang');
+        }
+
+        $DataRuangan = DB::table('rooms')
+            ->join('tipe_rooms', 'rooms.id_tipe_room', '=', 'tipe_rooms.id_tipe_room')
+            ->select('rooms.*', 'tipe_rooms.nama_tipe_room') // Pilih kolom yang diperlukan
+            ->when($cari !== 'null', function ($query) use ($cari) {
+                $query->where('rooms.nama_room', 'ILIKE', "%{$cari}%");
+            })
+            ->latest()
+            ->paginate(5);
+        // ->get();
+
+        $barang = DB::table('items')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
+            ->select(
+                'id_room',
+                'merek_model',
+                'nama_item',
+                'qty_item'
+            )
+            ->get()
+            ->groupBy('id_room');
+
+        $DataRuangan->map(function ($room) use ($barang) {
+            // Masukkan daftar barang ke dalam properti baru bernama 'items'
+            // Jika tidak ada barang di room tersebut, berikan array kosong
+            $room->items = $barang->get($room->id_room) ?? collect([]);
+            // Simpan total jumlah asli barang
+            $room->total_items_count = $room->items->count();
+
+            // Ambil hanya 3 barang pertama untuk ditampilkan
+            $room->items = $room->items->take(3);
+            return $room;
+        });
+
+        $DataTipeRuangan = TipeRuangan::get();
+
+        // dd($DataRuangan);
+
+        $user = DB::table('detail_dosen')->where('id_user', Auth::user()->id_user)->value('nama');
+        $halaman = 'contentDataRuangan';
+        return view('Page_pimpinan.dahsboardPimpinan', compact('halaman', 'user', 'DataTipeRuangan', 'DataRuangan', 'cari'));
     }
 
 
@@ -1031,6 +1145,12 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $id_user = Auth::user()->id_user;
+
+        $dosen = DB::table('detail_dosen')
+            ->where('id_user', $id_user)
+            ->first();
+
         $dataBarang = DataBarang::join('rooms', 'items.id_room', 'rooms.id_room')
             ->select('items.*', 'rooms.nama_room')
             ->latest() // Pilih kolom yang diperlukan
@@ -1047,18 +1167,13 @@ class DashboardController extends Controller
         // mengambil data tambh agenda yg di input admin
         $dataAgenda = collect(session('data_header_perawatan_temp'));
 
-        // dd($semuaData);
+        // dd($dosen->jabatan);
 
         // mengambil semua data barang dan ruangan
-        $PengelolaanAgendaService = new PengelolaanAgendaService;
-        $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
+        $barangRuangService = new DataBarangRuangService;
+        $allBarangRuang = $barangRuangService->getBarangDanRaung($dosen->jabatan)->toArray();
 
-
-        $id_user = Auth::user()->id_user;
-
-        $dosen = DB::table('detail_dosen')
-            ->where('id_user', $id_user)
-            ->first();
+        // dd($allBarangRuang);
 
         $user = $dosen->nama;
 
@@ -1221,7 +1336,7 @@ class DashboardController extends Controller
         $user = $peminjam->nama_peminjam;
         $halaman = 'contentPeminjamanRuang'; // variable untuk menampilkan content peminjaman ruang
         // return ke halaman pengajuan peminjaman user dengan menyisipkan data yg dibutuhkan
-        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman','cari'));
+        return view('Page_mhs.dashboardMhs', compact('halaman', 'user', 'dataTablePengajuanPeminjaman', 'cari'));
     }
 
     // method untuk menampilkan semua halaman peminjaman barang mahasiswa

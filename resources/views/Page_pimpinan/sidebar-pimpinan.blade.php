@@ -16,6 +16,18 @@
     <div class="sidebar-heading">
         Features
     </div>
+    <li class="nav-item {{ $halaman === 'DataBarang' ? 'bg-gray-200' : '' }}">
+        <a class="nav-link" href="{{ route('data-barang-pimpinan') }}">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Data Barang</span>
+        </a>
+    </li>
+    <li class="nav-item {{ $halaman === 'DataRuangan' ? 'bg-gray-200' : '' }}">
+        <a class="nav-link" href="{{ route('data-ruangan-pimpinan') }}">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Data Ruangan</span>
+        </a>
+    </li>
     <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">
         <a class="nav-link" href="{{ route('pengadaan-barang') }}">
             <i class="fas fa-fw fa-truck-loading"></i>

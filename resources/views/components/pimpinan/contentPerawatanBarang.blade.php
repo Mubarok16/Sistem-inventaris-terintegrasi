@@ -20,10 +20,10 @@
                         pending</option>
                     <option {{ $status_perawatan == 'diterima' ? 'selected' : '' }} value="diterima">
                         Diajukan ke rektorat</option>
-                    <option {{ $status_perawatan == 'ditolak' ? 'selected' : '' }} value="ditolak">
-                        Ditolak</option>
-                    <option {{ $status_perawatan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
-                        Dibatalkan</option>
+                    {{-- <option {{ $status_perawatan == 'ditolak' ? 'selected' : '' }} value="ditolak">
+                        Ditolak</option> --}}
+                    {{-- <option {{ $status_perawatan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
+                        Dibatalkan</option> --}}
                     <option {{ $status_perawatan == 'selesai' ? 'selected' : '' }} value="selesai">
                         Selesai</option>
                 </select>
@@ -146,14 +146,14 @@
                                                 Acc
                                             </button>
                                         </form>
-                                        <form method="POST"
+                                        {{-- <form method="POST"
                                             action="{{ route('tolak-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
                                             <button type="submit" @disabled(strtolower($perawatan->status_perawatan) != 'pendding')
                                                 class="flex items-center gap-2 cursor-pointer justify-center rounded-lg! h-10 px-4  text-white text-sm font-semibold leading-normal {{ $perawatan->status_perawatan == 'pendding' ? 'bg-red-500 hover:bg-red-400 hover:' : 'bg-gray-500 hover:bg-gray-400 hover:' }} ">
                                                 Reject
                                             </button>
-                                        </form>
+                                        </form> --}}
                                         <form method="POST"
                                             action="{{ route('download-surat-perawatan', base64_encode($perawatan->id_perawatan)) }}">
                                             @csrf
