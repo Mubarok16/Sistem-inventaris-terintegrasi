@@ -216,6 +216,12 @@ class pengelolaanAgenda extends Controller
             // 1. Ambil semua id_room dari hasil pemrosesan room sebelumnya
             $roomIds = collect($hasil_usage_room)->pluck('id_room')->toArray();
 
+            $cekNull = collect($roomIds)->contains(null);
+
+            if($cekNull === true){
+                return redirect()->back()->with('gagal', 'Pastikan nama ruangan ada di dalam data ruangan!');
+            }
+
             // 2. Tarik semua item yang berelasi dengan id_room tersebut (Hanya 1x Query ke DB)
             $allItems = DB::table('items')
                 ->select('id_item', 'id_room', 'qty_item')

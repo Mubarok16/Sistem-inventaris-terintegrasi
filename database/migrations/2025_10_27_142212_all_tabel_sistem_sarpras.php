@@ -62,12 +62,6 @@ return new class extends Migration
             $table->text('nama_tipe_room');
         });
 
-        // tipe item
-        // Schema::create('tipe_item', function (Blueprint $table) {
-        //     $table->string('id_tipe_item', 12)->primary();
-        //     $table->text('nama_tipe_item');
-        // });
-
         Schema::create('prodi', function (Blueprint $table) {
             $table->string('id_prodi', 12)->primary();
             $table->text('nama_prodi');
@@ -231,3 +225,9 @@ return new class extends Migration
         Schema::dropIfExists('perawatan_barang');
     }
 };
+
+        // tipe item
+        // Schema::create('tipe_item', function (Blueprint $table) {
+        //     $table->string('id_tipe_item', 12)->primary();
+        //     $table->text('nama_tipe_item');
+        // });
