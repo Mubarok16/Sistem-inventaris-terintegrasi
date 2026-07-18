@@ -130,7 +130,7 @@ class PerawatanBarang extends Controller
             }
         } catch (\Exception $e) {
             // Jika gagal
-            return back()->with('gagal', 'Gagal menyimpan surat: ' . $e->getMessage());
+            return back()->with('gagal', 'Gagal menyimpan surat: pastikan nomor surat unik');
         }
     }
 

@@ -278,7 +278,10 @@
 
                                                     </div> --}}
                                                     <div x-show="currentTab === 'barang'" class="flex-shrink-0">
-                                                        <input type="number" min="1" :max="item.qty_item"
+                                                        <input 
+                                                            type="number" 
+                                                            min="1" 
+                                                            :max="item.qty_item > 0 ? item.qty_item : null"
                                                             x-model="item.qty_input"
                                                             :class="item.qty_input > item.qty_item ? 'border-red-500' :
                                                                 'border-slate-300'"

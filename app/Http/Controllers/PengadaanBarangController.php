@@ -36,7 +36,7 @@ class PengadaanBarangController extends Controller
             return back()->with('success', 'Surat pengadaan berhasil disimpan!');
         } catch (\Exception $e) {
             // Jika gagal
-            return back()->with('gagal', 'Gagal menyimpan surat: ' . $e->getMessage());
+            return back()->with('gagal', 'Gagal menyimpan surat: patikan nomor surat tidak unik');
         }
     }
 

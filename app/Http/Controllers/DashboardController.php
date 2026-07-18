@@ -724,7 +724,9 @@ class DashboardController extends Controller
             )
             ->when($status_perawatan !== 'semua', function ($query) use ($status_perawatan) {
                 $query->where('perawatan_barang.status_perawatan', $status_perawatan);
+                // $query->whereDate('perawatan_barang.created_at', today());
             })
+            ->orderBy('perawatan_barang.created_at')
             ->paginate(5);
 
         // dd($perawatan);
