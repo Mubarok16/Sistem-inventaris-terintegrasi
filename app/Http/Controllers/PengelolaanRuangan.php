@@ -81,7 +81,7 @@ class PengelolaanRuangan extends Controller
 
             return redirect()->back()->with('success', 'Tipe berhasil dihapus!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', $e->getMessage());
+            return redirect()->back()->with('gagal', 'gagal menghapus tipe ruangan karena masih terkait ruangan');
         }
     }
 
@@ -158,7 +158,7 @@ class PengelolaanRuangan extends Controller
 
             return redirect()->back()->with('success', 'Ruangan berhasil dihapus!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', $e->getMessage());
+            return redirect()->back()->with('gagal', 'gagal menghapus ruangan karena masih terkait dengan transaksi');
         }
     }
 

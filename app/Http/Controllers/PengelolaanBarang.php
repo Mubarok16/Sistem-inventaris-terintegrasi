@@ -270,7 +270,7 @@ class PengelolaanBarang extends Controller
             \App\Models\DataBarang::where('id_item', $id)->delete();
             return redirect()->back()->with('success', 'Barang berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Terjadi kesalahan saat menghapus barang' . $e->getMessage());
+            return redirect()->back()->with('gagal', 'Barang tidak bisa di hapus karena masih ada transaksi yang masih terhubung');
         }
     }
 

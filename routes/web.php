@@ -286,7 +286,7 @@ Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
     // cari barang
     Route::post('mahasiswa/cari_barang', [peminjamanbarangController::class, 'cariBarang'])->name('cari_barang');
     // cari euang
-    Route::post('mahasiswa/cari_barang', [peminjamanRuanganController::class, 'cariRuang'])->name('cari_ruang');
+    Route::post('mahasiswa/cari_ruang', [peminjamanRuanganController::class, 'cariRuang'])->name('cari_ruang');
 
     // peminjaman ruang
     Route::get('/dashboard/mahasiswa/peminjaman-ruang', [DashboardController::class, 'mahasiswaPeminjamanRuang'])->name('mhs-peminjaman-ruang');

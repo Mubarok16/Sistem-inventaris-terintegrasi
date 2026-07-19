@@ -36,10 +36,45 @@ class AutoUpdateStatusAgenda extends Command
         $currentTime = $now->toTimeString();
 
         // =================== update status auto untuk peminjaman yang sudah lewat tgl nya tpi blm d acc jadi ditolak =================================
-        DB::table('peminjaman')
-            ->whereIn('status_peminjaman', ['diajukan'])
-            ->where('tgl_pinjam', '<', $today)
-            ->update(['status_peminjaman' => 'ditolak']);
+        // DB::table('peminjaman')
+        //     ->whereIn('status_peminjaman', ['diajukan'])
+        //     ->where('tgl_pinjam', '<', $today)
+        //     ->update(['status_peminjaman' => 'ditolak']);
+        DB::transaction(function () use ($today) {
+
+            // Ambil seluruh kode peminjaman yang sudah lewat tetapi masih diajukan
+            $kodePeminjaman = DB::table('peminjaman')
+                ->where('status_peminjaman', 'diajukan')
+                ->where('tgl_pinjam', '<', $today)
+                ->pluck('kode_peminjaman');
+
+            // $this->info($kodePeminjaman->count());
+
+            // if ($kodePeminjaman->isEmpty()) {
+            //     return;
+            // }
+
+            // Update status peminjaman
+            DB::table('peminjaman')
+                ->whereIn('kode_peminjaman', $kodePeminjaman)
+                ->update([
+                    'status_peminjaman' => 'ditolak'
+                ]);
+
+            // Update usage room
+            DB::table('usage_rooms')
+                ->whereIn('kode_peminjaman', $kodePeminjaman)
+                ->update([
+                    'status_usage_room' => 'ditolak'
+                ]);
+
+            // Update usage item
+            DB::table('usage_items')
+                ->whereIn('kode_peminjaman', $kodePeminjaman)
+                ->update([
+                    'status_usage_item' => 'ditolak'
+                ]);
+        });
 
         // =================== update status auto untuk peminjaman yang sudah sudah selesai semua di usagenya jadi selesai =====================================
         // khusus unutk peminjaman
