@@ -218,7 +218,7 @@ class pengelolaanAgenda extends Controller
 
             $cekNull = collect($roomIds)->contains(null);
 
-            if($cekNull === true){
+            if ($cekNull === true) {
                 return redirect()->back()->with('gagal', 'Pastikan nama ruangan ada di dalam data ruangan!');
             }
 
@@ -932,6 +932,7 @@ class pengelolaanAgenda extends Controller
             } catch (\Exception $e) {
                 DB::rollback();
                 return response()->json(['error' => $e->getMessage()], 500);
+                // return redirect()->back()->with('gagal', 'berhasil memperbarui agenda!');
             }
         } else {
             // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
@@ -1237,6 +1238,7 @@ class pengelolaanAgenda extends Controller
         return redirect()->back()->with('gagal', 'Barang atau ruangan berhasil dihapus dari daftar.');
     }
 
+    // simpan agenda baru
     public function simpanTambahAgendaBaru(Request $request)
     {
         // dd($request->all());
@@ -1245,23 +1247,28 @@ class pengelolaanAgenda extends Controller
         // kode agenda lama
         $kode_agenda_lama = $request->kode_agenda_lama;
 
-        // dd($kode_agenda_lama);
+        try {
+            //code...
+            // ambil data dari session data brang dan ruang serta data agenda
+            $semuaDataBrngRuang = session('data_add_agenda_barang_ruang');
+            $dataAgenda = session('data_add_agenda_temp');
 
-        // ambil data dari session data brang dan ruang serta data agenda
-        $semuaDataBrngRuang = session('data_add_agenda_barang_ruang');
-        $dataAgenda = session('data_add_agenda_temp');
+            // get data agenda disimpan ke variable
+            $kode_agenda = $dataAgenda[0]->kode_referensi;
+            $kode_referensi = $dataAgenda[0]->kode_agenda;
+            $nama_agenda = $dataAgenda[0]->nama_agenda;
+            $tgl_mulai = $dataAgenda[0]->tgl_mulai_agenda;
+            $tgl_selesai = $dataAgenda[0]->tgl_selesai_agenda;
+            $loop_hari = $dataAgenda[0]->loop_hari;
+            $jam_mulai = $dataAgenda[0]->jam_mulai;
+            $jam_selesai = $dataAgenda[0]->jam_selesai;
+            $tipe_jam = $dataAgenda[0]->tipe_jam;
+            $tipe_agenda = $dataAgenda[0]->tipe_agenda;
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('gagal', 'gagal memperbarui agenda!, pastikan formulir tidak kosong!');
+        }
 
-        // get data agenda disimpan ke variable
-        $kode_agenda = $dataAgenda[0]->kode_referensi;
-        $kode_referensi = $dataAgenda[0]->kode_agenda;
-        $nama_agenda = $dataAgenda[0]->nama_agenda;
-        $tgl_mulai = $dataAgenda[0]->tgl_mulai_agenda;
-        $tgl_selesai = $dataAgenda[0]->tgl_selesai_agenda;
-        $loop_hari = $dataAgenda[0]->loop_hari;
-        $jam_mulai = $dataAgenda[0]->jam_mulai;
-        $jam_selesai = $dataAgenda[0]->jam_selesai;
-        $tipe_jam = $dataAgenda[0]->tipe_jam;
-        $tipe_agenda = $dataAgenda[0]->tipe_agenda;
 
 
         // perulangan usage room atau barang jika setiap hari atau perminggu
@@ -1379,10 +1386,11 @@ class pengelolaanAgenda extends Controller
                 session()->forget('data_add_agenda_barang_ruang');
                 session()->forget('data_add_agenda_temp');
 
-                return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
+                return redirect()->back()->with('success', 'berhasil menambah agenda baru!');
             } catch (\Exception $e) {
                 DB::rollback();
-                return response()->json(['error' => $e->getMessage()], 500);
+                // return response()->json(['error' => $e->getMessage()], 500);
+                return redirect()->back()->with('gagal', 'gagal memperbarui agenda!, pastikan formulir tidak kosong!');
             }
         } else {
             // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
@@ -1500,7 +1508,8 @@ class pengelolaanAgenda extends Controller
                 return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
             } catch (\Exception $e) {
                 DB::rollback();
-                return response()->json(['error' => $e->getMessage()], 500);
+                // return response()->json(['error' => $e->getMessage()], 500);
+                return redirect()->back()->with('gagal', 'gagal memperbarui agenda!, pastikan formulir tidak kosong!');
             }
         }
     }
