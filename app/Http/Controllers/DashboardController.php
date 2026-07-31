@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use App\Models\Peminjaman;
 use App\Models\PengelolaanPeminjamanAdmin;
 use App\Models\UsageItems;
-use App\Services\Admin\PengelolaanAgendaService;
+use App\services\Admin\PengelolaanAgendaService;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;

@@ -404,7 +404,6 @@
             </div>
         </div>
 
-        {{-- tambah barang --}}
         <div class="flex flex-col md:flex-row md:items-center justify-end gap-6 mb-10">
             <button @click="AddTipeBarang = true"
                 class="bg-primary hover:bg-blue-700 text-white px-6 py-3 rounded-xl! flex items-center justify-center gap-3 font-semibold transition-all shadow-lg shadow-primary/20">
@@ -485,7 +484,7 @@
         {{-- ====================================== show ============================================================= --}}
 
         {{-- shwo add tipe ruangan --}}
-        <div x-show="AddTipeBarang"
+        {{-- <div x-show="AddTipeBarang"
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
             x-transition x-cloak>
             <div @click.outside="AddTipeBarang = false"
@@ -514,10 +513,10 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
 
         {{-- show edit tipe ruangan --}}
-        <div x-show="EditTipeBarang" x-cloak
+        {{-- <div x-show="EditTipeBarang" x-cloak
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
             x-transition>
             <div @click.outside="EditTipeBarang = false"
@@ -547,10 +546,10 @@
                 </form>
 
             </div>
-        </div>
+        </div> --}}
 
         {{-- show hps tipe ruangan --}}
-        <div x-show="DeleteTipeBarang" x-cloak
+        {{-- <div x-show="DeleteTipeBarang" x-cloak
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-50"
             x-transition>
             <div @click.outside="DeleteTipeBarang = false"
@@ -566,7 +565,6 @@
                     @method('DELETE')
                     <div class="row gy-2 overflow-hidden">
                         <div class="col-12">
-                            {{-- <input type="text" class="hidden" name="id_tipe" x-model="selectedTipeRuangan.id_tipe"> --}}
                             <div class="d-grid">
                                 <button class="btn btn-primary w-100" type="submit">Hapus tipe</button>
                             </div>
@@ -576,7 +574,7 @@
                 </form>
 
             </div>
-        </div>
+        </div> --}}
 
     </div>
 </main>
