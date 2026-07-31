@@ -39,7 +39,7 @@ Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar'
 // URL: /peminjam/dashboard
 Route::middleware(['auth'])->prefix('peminjam')->group(function () {
     Route::get('/events-calender', [calenderController::class, 'calender']);
-});
+})->name('calender-pemijam');
 
 // URL: /users/dashboard
 Route::middleware(['auth'])->prefix('admin')->group(function () {
@@ -78,7 +78,7 @@ Route::get('/verifikasi/surat/{id}', [PengadaanBarangController::class, 'verifik
 Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function () {
 
     // dashboard admin
-    Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard-admin');
     Route::get('/dashboard/admin/pengelolaan-user', [DashboardController::class, 'AdminPengelolaanUser'])->name('pengelolaan-user');
     Route::get('/dashboard/admin/pengajuan-peminjaman', [DashboardController::class, 'AdminPengajuanPeminjaman'])->name('admin.pengajuan.peminjaman');
     Route::get('/dashboard/admin/data-barang', [DashboardController::class, 'AdminDataBarang'])->name('peng-barang');
@@ -124,12 +124,12 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
 
     // pengelolaan ruangan ====================================================================================================================
     Route::post('admin/tambah-tipe-ruangan', [PengelolaanRuangan::class, 'simpanTipeRuangan'])->name('addTipeRuangan');
-    Route::post('/admin/edit-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'editTipeRuangan']);
-    Route::post('/admin/delete-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'hapusTipeRuangan']);
+    Route::post('/admin/edit-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'editTipeRuangan'])->name('edit-tipe-ruangan');
+    Route::post('/admin/delete-tipe-ruangan/{id}', [PengelolaanRuangan::class, 'hapusTipeRuangan'])->name('delete-tipe-ruangan');
     Route::post('/admin/tambah-ruangan', [PengelolaanRuangan::class, 'tambahRuangan'])->name('addRuangan');
     Route::post('/admin/cari-data-ruang/', [PengelolaanRuangan::class, 'caridataruang'])->name('cari-data-ruang');
 
-    Route::post('/admin/delete-ruangan/{id}', [PengelolaanRuangan::class, 'hapusRuangan']);
+    Route::post('/admin/delete-ruangan/{id}', [PengelolaanRuangan::class, 'hapusRuangan'])->name('admin-delete-ruangan');
     Route::get('/admin/data-ruangan/edit/{id}', [PengelolaanRuangan::class, 'DetailRuangan'])->name('edit-ruangan');
     Route::post('/edit-ruangan-informasi-dasar', [PengelolaanRuangan::class, 'editRuanganInfoDasar'])->name('edit-ruangan-informasi-dasar');
     Route::post('/edit-ruangan-kondisi', [PengelolaanRuangan::class, 'editRuanganKondisi'])->name('edit-ruangan-kondisi');
@@ -138,12 +138,12 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
 
 
     // pengelolaan barang ======================================================================================================================
-    Route::post('admin/tambah-tipe-barang', [PengelolaanBarang::class, 'simpanTipeBarang'])->name('addTipeBarang');
-    Route::post('/admin/edit-tipe-barang/{id}', [PengelolaanBarang::class, 'editTipeBarang']);
+    // Route::post('admin/tambah-tipe-barang', [PengelolaanBarang::class, 'simpanTipeBarang'])->name('addTipeBarang');
+    // Route::post('/admin/edit-tipe-barang/{id}', [PengelolaanBarang::class, 'editTipeBarang']);
+    // Route::delete('/admin/delete-tipe-barang/{id}', [PengelolaanBarang::class, 'hapusTipeBarang']);
     Route::post('/admin/cari-data-barang/', [PengelolaanBarang::class, 'caridatabarang'])->name('cari-data-barang');
-    Route::delete('/admin/delete-tipe-barang/{id}', [PengelolaanBarang::class, 'hapusTipeBarang']);
     Route::post('/admin/tambah-barang', [PengelolaanBarang::class, 'tambahBarang'])->name('addBarang');
-    Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang']);
+    Route::delete('/admin/delete-barang/{id}', [PengelolaanBarang::class, 'hapusBarang'])->name('delete-barang');
     Route::get('/admin/data-barang/edit/{id}', [PengelolaanBarang::class, 'haleditBarang'])->name('edit-barang');
     Route::post('/edit-barang-informasi-dasar', [PengelolaanBarang::class, 'editBarangInfoDasar'])->name('edit-barang-informasi-dasar');
     Route::post('/edit-barang-kondisi', [PengelolaanBarang::class, 'editBarangKondisi'])->name('edit-barang-kondisi');
@@ -317,7 +317,7 @@ Route::middleware(['auth', 'hak_akses:mahasiswa'])->group(function () {
     Route::post('cetak-QRriwayat-dan-batal-peminjaman', [RiwayarController::class, 'QrDanBatalPeminjaman'])->name('QR-dan-batal-peminjaman');
 
     // kalender unutk riwayat peminjaman
-    Route::get('/riwayat-peminjaman-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman']);
+    Route::get('/riwayat-peminjaman-calender', [calenderController::class, 'calenderSpesifikAgendaDanPeminjaman'])->name('riwayat-peminjaman-calender');
 
     // profile peminjam
     Route::get('/dashboard/profile-peminjam', [DashboardController::class, 'profilePeminjam'])->name('profile-peminjam');

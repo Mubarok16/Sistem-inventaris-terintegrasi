@@ -8,7 +8,7 @@
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item {{ $halaman === 'contentDashbord' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link" href="{{ url('/dashboard/admin') }}">
+        <a class="nav-link" href="{{ route('dashboard-admin') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -17,7 +17,7 @@
         Features
     </div>
     <li class="nav-item {{ $halaman === 'contentPengelolaanUser' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengelolaan-user') }}">
+        <a class="nav-link collapsed" href="{{ route('pengelolaan-user') }}">
             <i class="fas fa-fw fa-user"></i>
             <span>Pengelolaan User</span>
         </a>
@@ -35,7 +35,7 @@
     </li>
     <li
         class="nav-item {{ $halaman === 'contentPengajuanPeminjaman' || $halaman === 'contentDetailPenminjaman' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link collapsed" href="{{ url('/dashboard/admin/pengajuan-peminjaman') }}">
+        <a class="nav-link collapsed" href="{{ route('admin.pengajuan.peminjaman') }}">
             <i class="fas fa-fw fa-exchange-alt"></i>
             <span>Pengelolaan Peminjaman</span>
         </a>
@@ -49,13 +49,13 @@
     </li>
     <li
         class="nav-item {{ $halaman === 'contentAgenda' || $halaman === 'contentDetailAgenda' || $halaman === 'contentTambahAgenda' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link" href="{{ url('/dashboard/admin/agenda') }}">
+        <a class="nav-link" href="{{ route('dashboard-admin-agenda') }}">
             <i class="fas fa-fw fa-calendar-alt"></i>
             <span>Pengelolaan Agenda</span>
         </a>
     </li>
     <li class="nav-item {{ $halaman === 'contentDataBarang' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link collapsed" href="{{ url('/dashboard/admin/data-barang') }}">
+        <a class="nav-link collapsed" href="{{ route('peng-barang') }}">
             <i class="fas fa-fw fa-database"></i>
             <span>Data Barang</span>
         </a>
@@ -69,13 +69,13 @@
     </li>
     <li
         class="nav-item {{ $halaman === 'contentDataRuangan' || $halaman === 'contentDetailRuangan' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link" href="{{ url('/dashboard/admin/data-ruangan') }}">
+        <a class="nav-link" href="{{ route('peng-ruang') }}">
             <i class="fas fa-fw fa-database"></i>
             <span>Data Ruangan</span>
         </a>
     </li>
     <li class="nav-item {{ $halaman === 'contentPengadaanBarang' ? 'bg-gray-200' : '' }}">
-        <a class="nav-link" href="{{ url('/dashboard/admin/pengadaan-barang') }}">
+        <a class="nav-link" href="{{ route('page_pengadaan_barang') }}">
             <i class="fas fa-fw fa-truck-loading"></i>
             <span>Pengadaan Barang</span>
         </a>
