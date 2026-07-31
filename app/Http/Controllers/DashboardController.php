@@ -19,7 +19,7 @@ use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\services\Admin\PengelolaanPeminjamanService;
-use App\services\Admin\PengelolaanUserService;
+use App\services\Admin\pengelolaanUserService;
 use App\services\Admin\DataBarangRuangService;
 use App\services\mahasiswa\DetailAgendaService;
 use App\services\mahasiswa\RiwayatPeminjamanService;
