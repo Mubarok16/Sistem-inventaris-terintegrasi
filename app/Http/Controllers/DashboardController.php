@@ -18,11 +18,11 @@ use App\services\Admin\PengelolaanAgendaService;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Services\Admin\PengelolaanPeminjamanService;
-use App\Services\Admin\PengelolaanUserService;
-use App\Services\Admin\DataBarangRuangService;
-use App\Services\mahasiswa\DetailAgendaService;
-use App\Services\mahasiswa\RiwayatPeminjamanService;
+use App\services\Admin\PengelolaanPeminjamanService;
+use App\services\Admin\PengelolaanUserService;
+use App\services\Admin\DataBarangRuangService;
+use App\services\mahasiswa\DetailAgendaService;
+use App\services\mahasiswa\RiwayatPeminjamanService;
 use Illuminate\Support\Facades\Session;
 
 // controlller untuk halaman awal di dshboard setiap user atau peminjam
