@@ -11,6 +11,7 @@
         "irazasyed/telegram-bot-sdk": "^3.16",
         "laravel/framework": "^12.56.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "^3.35",
         "livewire/livewire": "^4.1",
         "maatwebsite/excel": "^3.1",
         "simplesoftwareio/simple-qrcode": "^4.2"
