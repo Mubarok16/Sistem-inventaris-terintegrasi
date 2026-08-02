@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TipeRuangan;
 use App\Models\DataRuangan;
-use App\Services\Admin\PengelolaanAgendaService;
+use App\services\Admin\PengelolaanAgendaService;
 use Illuminate\Support\Facades\Auth;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\DB;
