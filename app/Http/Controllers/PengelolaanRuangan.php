@@ -116,7 +116,8 @@ class PengelolaanRuangan extends Controller
 
             $imgPath = null;
             if ($request->hasFile('gambar_room')) {
-                $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 'public');
+                // $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 'public');
+                $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 's3');
             }
 
             // dd($idroom_singkat);
@@ -244,7 +245,8 @@ class PengelolaanRuangan extends Controller
             // ambil path gambar baru dari request
             $file = $request->gambar_room;
             // simpan file baru
-            $path = $file->store('uploads/ruangan/', 'public');
+            // $path = $file->store('uploads/ruangan/', 'public');
+            $path = $file->store('uploads/ruangan/', 's3');
 
             // simpan data ruangan yang sudah di update ke database
             $ruangan = DB::table('rooms')

@@ -64,7 +64,8 @@ class PengelolaanBarang extends Controller
             // ambil path gambar baru dari request
             $file = $request->gambar_item;
             // simpan file baru
-            $path = $file->store('uploads/barang/', 'public');
+            // $path = $file->store('uploads/barang/', 'public');
+            $path = $file->store('uploads/barang/', 's3');
 
             // simpan data barang yang sudah di update ke database
             DB::table('items')
@@ -238,7 +239,8 @@ class PengelolaanBarang extends Controller
             // upload gambar barang
             $imgPath = null;
             if ($request->hasFile('gambar_item')) {
-                $imgPath = $request->file('gambar_item')->store('uploads/barang', 'public');
+                // $imgPath = $request->file('gambar_item')->store('uploads/barang', 'public');
+                $imgPath = $request->file('gambar_item')->store('uploads/barang', 's3');
             }
 
             // Simpan barang ke database
