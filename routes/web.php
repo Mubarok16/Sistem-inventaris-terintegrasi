@@ -27,6 +27,18 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Storage;
+
+
+Route::get('/cek-config', function () {
+    return [
+        'default_disk' => config('filesystems.default'),
+        'driver' => config('filesystems.disks.s3.driver'),
+        'bucket' => config('filesystems.disks.s3.bucket'),
+        'endpoint' => config('filesystems.disks.s3.endpoint'),
+    ];
+});
+
 // routes for authentication
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest'); // menampilkan halaman login
 Route::post('/', [AuthController::class, 'login'])->middleware('guest'); // proses login

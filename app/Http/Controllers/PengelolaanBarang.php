@@ -243,6 +243,8 @@ class PengelolaanBarang extends Controller
                 $imgPath = $request->file('gambar_item')->store('uploads/barang', 's3');
             }
 
+            dd($imgPath);
+
             // Simpan barang ke database
             DB::table('items')->insert([
                 'id_item' => $idBarang,
