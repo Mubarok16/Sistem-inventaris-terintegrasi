@@ -30,6 +30,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 
+Route::get('/cek-s3', function () {
+
+    $path = 'uploads/barang/d5xRZH6KxFOclhas3CQWCZwDEVCQC6q1XCw0ZGRB.jpg';
+
+    return response()->json([
+        'exists' => Storage::disk('s3')->exists($path),
+    ]);
+});
+
+
 Route::get('/cek-config', function () {
     return [
         'default_disk' => config('filesystems.default'),
