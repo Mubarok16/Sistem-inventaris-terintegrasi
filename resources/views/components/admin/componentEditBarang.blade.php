@@ -97,7 +97,7 @@
                                         value="{{ $ruang->tahun_perolehan }}" />
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ str_replace('//', '/', Storage::disk('s3')->url($ruang->img_item)) }}')">
+                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ asset('storage/' . $ruang->img_item) }}')">
                                 <div class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-all group min-h-[400px]"
                                     :class="isDragging ? 'border-blue-500 bg-blue-50' :
                                         'border-slate-200 bg-white/50 hover:border-primary/40 hover:bg-white'"
