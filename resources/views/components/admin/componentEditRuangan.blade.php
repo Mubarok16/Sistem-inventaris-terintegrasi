@@ -82,7 +82,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ asset('storage/' . $ruang->gambar_room) }}')">
+                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ Storage::disk('s3')->url(str_replace('//', '/', $ruang->gambar_room)) }}')">
                                 <div class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-all group min-h-[400px]"
                                     :class="isDragging ? 'border-blue-500 bg-blue-50' :
                                         'border-slate-200 bg-white/50 hover:border-primary/40 hover:bg-white'"
@@ -207,7 +207,7 @@
                                             <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                                                 <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                                     data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                                    :style="`background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item)) }}/${item.img_item}')`">
+                                                    :style="`background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item)) }}')`">
                                                 </div>
                                                 <!-- Quick Action Overlay -->
                                                 <div
