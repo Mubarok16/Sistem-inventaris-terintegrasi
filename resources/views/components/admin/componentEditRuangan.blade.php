@@ -309,7 +309,7 @@
                                                 <div
                                                     class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
                                                     {{-- <i class="fa-solid fa-snowflake text-xs"></i> --}}
-                                                    <img src="{{ asset('storage/' . $item->img_item) }}"
+                                                    <img src="{{ Storage::disk('s3')->url(str_replace('//', '/', $item->img_item)) }}"
                                                         class="w-full h-full object-cover border-0 rounded-lg!">
                                                 </div>
                                                 <span class="font-medium text-slate-700">
