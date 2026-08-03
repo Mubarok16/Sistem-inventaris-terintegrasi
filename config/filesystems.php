@@ -61,16 +61,26 @@ return [
         // ],
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID', env('AWS_KEY')),
-            'secret' => env('AWS_SECRET_ACCESS_KEY', env('AWS_SECRET')),
-            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'bucket' => env('AWS_BUCKET', env('AWS_BUCKET_NAME')),
+            // Wajib mendahulukan AWS_KEY & AWS_SECRET bawaan Laravel Cloud
+            'key' => env('AWS_KEY', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('AWS_SECRET', env('AWS_SECRET_ACCESS_KEY')),
+
+            // Mengikuti nilai di dasbor Anda (AWS_DEFAULT_REGION=auto)
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+
+            // Mengikuti nilai di dasbor Anda (AWS_BUCKET_NAME / AWS_BUCKET)
+            'bucket' => env('AWS_BUCKET_NAME', env('AWS_BUCKET')),
+
+            // Mengikuti nilai URL & Endpoint di dasbor Anda
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
+
+            // Wajib diset false sesuai data dasbor Anda
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => true, // Ubah menjadi true agar error sistem terlihat jelas
+            'throw' => true,
             'report' => false,
         ],
+
 
 
     ],
