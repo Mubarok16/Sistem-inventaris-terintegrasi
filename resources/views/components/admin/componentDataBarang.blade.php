@@ -57,7 +57,7 @@
                     class="item-card bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
                     <div class="relative h-48 overflow-hidden bg-slate-100">
                         <img alt="Laptop" class="w-full h-full object-cover"
-                            src="/storage/{{ $dataBarang->img_item }}" />
+                            src="{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item)) }}" />
                         <div class="absolute top-3 right-3">
                             @if ($dataBarang->visibility_item === '1')
                                 <span

@@ -157,7 +157,7 @@
                         <button
                             class="px-4 bg-white hover:bg-primary hover:text-white text-primary border border-danger/20 rounded-lg! transition-all flex items-center justify-center shadow-sm"
                             @click="OpenImgRuangan = true; true; selectedDataRuangan = {
-                                            img: '{{ $ruang->gambar_room }}',
+                                            img: '{{ Storage::disk('s3')->url(str_replace('//', '/', $ruang->gambar_room)) }}',
                                         }">
                             <i class="fa-solid fa-images"></i>
                         </button>
