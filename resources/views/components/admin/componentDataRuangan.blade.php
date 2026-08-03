@@ -260,7 +260,7 @@
                 x-transition x-cloak>
                 <div class="flex justify-center rounded-2xl w-full max-w-xl relative"
                     @click.outside="OpenImgRuangan = false">
-                    <img :src="`/storage/${selectedDataRuangan.img}`" alt="Foto Peminjam" class="container">
+                    <img :src="`/${selectedDataRuangan.img}`" alt="Foto Peminjam" class="container">
                 </div>
             </div>
     
