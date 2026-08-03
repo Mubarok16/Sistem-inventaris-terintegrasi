@@ -27,7 +27,7 @@ class PengelolaanBarang extends Controller
         // dd($DataBarang);
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentEditBarang';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user','prodi'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'DataBarang', 'user', 'prodi'));
     }
 
     // fungsi untuk mengedit informasi dasar barang
@@ -57,8 +57,8 @@ class PengelolaanBarang extends Controller
             // dd($gambar_lama['gambar_item']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            if (Storage::disk('public')->exists($gambar_lama['img_item'])) {
-                Storage::disk('public')->delete($gambar_lama['img_item']);
+            if (Storage::disk('s3')->exists($gambar_lama['img_item'])) {
+                Storage::disk('s3')->delete($gambar_lama['img_item']);
             }
 
             // ambil path gambar baru dari request

@@ -238,8 +238,8 @@ class PengelolaanRuangan extends Controller
             // dd($gambar_lama['gambar_room']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            if (Storage::disk('public')->exists($gambar_lama['gambar_room'])) {
-                Storage::disk('public')->delete($gambar_lama['gambar_room']);
+            if (Storage::disk('s3')->exists($gambar_lama['gambar_room'])) {
+                Storage::disk('s3')->delete($gambar_lama['gambar_room']);
             }
 
             // ambil path gambar baru dari request
