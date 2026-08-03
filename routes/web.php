@@ -30,15 +30,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 
-Route::get('/cek-s3', function () {
+
+Route::get('/cek-url', function () {
 
     $path = 'uploads/barang/d5xRZH6KxFOclhas3CQWCZwDEVCQC6q1XCw0ZGRB.jpg';
 
     return response()->json([
         'exists' => Storage::disk('s3')->exists($path),
+        'url' => Storage::disk('s3')->url($path),
     ]);
-});
 
+});
 
 Route::get('/cek-config', function () {
     return [
