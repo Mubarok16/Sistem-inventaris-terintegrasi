@@ -231,16 +231,16 @@ class PengelolaanRuangan extends Controller
             return redirect()->back()->with('success', 'data informasi dasar berhasil diperbarui!');
         } else {
 
-            $gambar_lama = DataRuangan::where('id_room', $request->id_room)
-                ->select('gambar_room')
-                ->first();
+            // $gambar_lama = DataRuangan::where('id_room', $request->id_room)
+            //     ->select('gambar_room')
+            //     ->first();
 
             // dd($gambar_lama['gambar_room']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            if (Storage::disk('s3')->exists($gambar_lama['gambar_room'])) {
-                Storage::disk('s3')->delete($gambar_lama['gambar_room']);
-            }
+            // if (Storage::disk('s3')->exists($gambar_lama['gambar_room'])) {
+            //     Storage::disk('s3')->delete($gambar_lama['gambar_room']);
+            // }
 
             // ambil path gambar baru dari request
             $file = $request->gambar_room;

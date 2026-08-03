@@ -50,16 +50,16 @@ class PengelolaanBarang extends Controller
             return redirect()->back()->with('success', 'data informasi dasar berhasil diperbarui!');
         } else {
 
-            $gambar_lama = DataBarang::where('id_item', $request->id_item)
-                ->select('img_item')
-                ->first();
+            // $gambar_lama = DataBarang::where('id_item', $request->id_item)
+            //     ->select('img_item')
+            //     ->first();
 
             // dd($gambar_lama['gambar_item']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            if (Storage::disk('s3')->exists($gambar_lama['img_item'])) {
-                Storage::disk('s3')->delete($gambar_lama['img_item']);
-            }
+            // if (Storage::disk('s3')->exists($gambar_lama['img_item'])) {
+            //     Storage::disk('s3')->delete($gambar_lama['img_item']);
+            // }
 
             // ambil path gambar baru dari request
             $file = $request->gambar_item;
