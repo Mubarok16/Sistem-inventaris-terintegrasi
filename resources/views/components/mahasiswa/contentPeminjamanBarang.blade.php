@@ -47,7 +47,8 @@
                         <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                             <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                 data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                style='background-image: url("/storage/{{ $dataBarang->img_item }}");'>
+                                style='background-image: url("{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item)) }}");'>
+                                
                             </div>
                             <!-- Quick Action Overlay -->
                             <div

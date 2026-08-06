@@ -28,7 +28,7 @@
                 <div class="w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden relative group">
                     <div class="w-full h-full bg-center bg-no-repeat bg-cover hover:scale-105 transition-transform duration-500 cursor-zoom-in"
                         data-alt="Close up of modern blue running shoes on a clean background"
-                        style='background-image: url("/storage/{{ $item->img_item }}");'>
+                        style='background-image: url("{{ Storage::disk('s3')->url(str_replace('//', '/', $item->img_item)) }}");'>
                     </div>
                 </div>
 
