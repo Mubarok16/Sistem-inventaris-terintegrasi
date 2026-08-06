@@ -45,7 +45,7 @@
                     <div class="flex items-start gap-4 flex-1">
                         <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-24 md:size-[100px] shrink-0"
                             data-alt="Nike Air running shoes side profile on grey background"
-                            style='background-image: url("/storage/{{ $cartbarang['img_item'] }}");'>
+                            style='background-image: url("{{ Storage::disk('s3')->url(str_replace('//', '/', $cartbarang['img_item'])) }}");'>
                         </div>
                         <div class="flex flex-1 flex-col justify-between h-full min-h-[100px]">
                             <div>
