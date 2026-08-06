@@ -193,15 +193,27 @@ class CreateAkun extends Controller
     // simpan akun admin
     public function SimpanAkunAdmin(Request $request)
     {
-        $request->validate([
-            'nip' => 'required|max:12',
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:50',
-            'password' => 'required|string|max:8',
-            'role' => 'required|string',
-            'status' => 'string',
-            // 'no_hp' => 'integer'
-        ]);
+        try {
+            $request->validate([
+                'nip' => 'required|max:12',
+                'nama' => 'required|string|max:100',
+                'username' => 'required|string|max:50',
+                'password' => 'required|string|max:8',
+                'role' => 'required|string',
+                'status' => 'string',
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('gagal', 'Gagal membuat akun admin! pastikan data yang anda input sudah benar');
+        }
+        // $request->validate([
+        //     'nip' => 'required|max:12',
+        //     'nama' => 'required|string|max:100',
+        //     'username' => 'required|string|max:50',
+        //     'password' => 'required|string|max:8',
+        //     'role' => 'required|string',
+        //     'status' => 'string',
+        //     // 'no_hp' => 'integer'
+        // ]);
         // dd($request->all());
         if (User::where('username', $request->username)->exists()) {
             return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
@@ -216,31 +228,37 @@ class CreateAkun extends Controller
         } while ($idSudahAda);
 
         // dd($id_user_acak);
-        User::create([
-            'id_user' => $id_user_acak,
-            // 'nama' => $request->nama,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'hak_akses' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'status' => $request->status,
-        ]);
 
-        DB::table('detail_staff')->insert([
-            'nip' => $request->nip,
-            'id_user' => $id_user_acak,
-            'nama' => $request->nama,
-            'jabatan' => 'Administrasi Akademik',
-            // 'username' => $request->username,
-            // 'password' => Hash::make($request->password),
-            // 'hak_akses' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-            // 'status' => $request->status,
-        ]);
+        try {
+            //code...
+            User::create([
+                'id_user' => $id_user_acak,
+                // 'nama' => $request->nama,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'hak_akses' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'status' => $request->status,
+            ]);
 
-        return redirect()->back()->with('success', 'Akun admin berhasil dibuat!');
+            DB::table('detail_staff')->insert([
+                'nip' => $request->nip,
+                'id_user' => $id_user_acak,
+                'nama' => $request->nama,
+                'jabatan' => 'Administrasi Akademik',
+                // 'username' => $request->username,
+                // 'password' => Hash::make($request->password),
+                // 'hak_akses' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // 'status' => $request->status,
+            ]);
+            return redirect()->back()->with('success', 'Akun admin berhasil dibuat!');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('gagal', 'Gagal membuat akun admin!');
+        }
     }
 
     //========================== simpan akun kaprodi
@@ -248,7 +266,7 @@ class CreateAkun extends Controller
     public function SimpanAkunKaprodi(Request $request)
     {
         // dd($request->all());
-        
+
         try {
             $request->validate([
                 'nip' => 'required|max:12',
