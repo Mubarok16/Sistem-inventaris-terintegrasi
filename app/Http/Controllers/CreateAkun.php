@@ -247,7 +247,7 @@ class CreateAkun extends Controller
     // simpan akun kaprodi
     public function SimpanAkunKaprodi(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $request->validate([
             'nip' => 'required|max:12',
             'nama' => 'required|string|max:100',
