@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataBarang;
 use App\Models\DataRuangan;
-use App\Services\Admin\PengelolaanAgendaService;
+use App\services\Admin\PengelolaanAgendaService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
