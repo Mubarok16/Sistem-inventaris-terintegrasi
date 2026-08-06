@@ -31,25 +31,25 @@ use Illuminate\Support\Facades\Storage;
 
 
 
-Route::get('/cek-url', function () {
+// Route::get('/cek-url', function () {
 
-    $path = 'uploads/barang/d5xRZH6KxFOclhas3CQWCZwDEVCQC6q1XCw0ZGRB.jpg';
+//     $path = 'uploads/barang/d5xRZH6KxFOclhas3CQWCZwDEVCQC6q1XCw0ZGRB.jpg';
 
-    return response()->json([
-        'exists' => Storage::disk('s3')->exists($path),
-        'url' => Storage::disk('s3')->url($path),
-    ]);
+//     return response()->json([
+//         'exists' => Storage::disk('s3')->exists($path),
+//         'url' => Storage::disk('s3')->url($path),
+//     ]);
 
-});
+// });
 
-Route::get('/cek-config', function () {
-    return [
-        'default_disk' => config('filesystems.default'),
-        'driver' => config('filesystems.disks.s3.driver'),
-        'bucket' => config('filesystems.disks.s3.bucket'),
-        'endpoint' => config('filesystems.disks.s3.endpoint'),
-    ];
-});
+// Route::get('/cek-config', function () {
+//     return [
+//         'default_disk' => config('filesystems.default'),
+//         'driver' => config('filesystems.disks.s3.driver'),
+//         'bucket' => config('filesystems.disks.s3.bucket'),
+//         'endpoint' => config('filesystems.disks.s3.endpoint'),
+//     ];
+// });
 
 // routes for authentication
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest'); // menampilkan halaman login

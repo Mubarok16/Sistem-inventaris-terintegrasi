@@ -271,32 +271,37 @@ class CreateAkun extends Controller
             $idSudahAda = User::where('id_user', $id_user_acak)->exists();
         } while ($idSudahAda);
 
-        // dd($id_user_acak);
-        User::create([
-            'id_user' => $id_user_acak,
-            // 'nama' => $request->nama,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'hak_akses' => 'kaprodi',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'status' => $request->status,
-        ]);
+        try {
+            //code...
+            // dd($id_user_acak);
+            User::create([
+                'id_user' => $id_user_acak,
+                // 'nama' => $request->nama,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'hak_akses' => 'kaprodi',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'status' => $request->status,
+            ]);
 
-        DB::table('detail_dosen')->insert([
-            'nidn' => $request->nip,
-            'id_user' => $id_user_acak,
-            'nama' => $request->nama,
-            'jabatan' => $request->jabatan,
-            // 'username' => $request->username,
-            // 'password' => Hash::make($request->password),
-            // 'hak_akses' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-            // 'status' => $request->status,
-        ]);
-
-        return redirect()->back()->with('success', 'Akun kaprodi berhasil dibuat!');
+            DB::table('detail_dosen')->insert([
+                'nidn' => $request->nip,
+                'id_user' => $id_user_acak,
+                'nama' => $request->nama,
+                'jabatan' => $request->jabatan,
+                // 'username' => $request->username,
+                // 'password' => Hash::make($request->password),
+                // 'hak_akses' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // 'status' => $request->status,
+            ]);
+            return redirect()->back()->with('success', 'Akun kaprodi berhasil dibuat!');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('gagal', 'Gagal membuat akun kaprodi!');
+        }
     }
 
     //============================= tambah prodi
