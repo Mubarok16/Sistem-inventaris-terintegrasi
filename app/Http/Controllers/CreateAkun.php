@@ -247,17 +247,32 @@ class CreateAkun extends Controller
     // simpan akun kaprodi
     public function SimpanAkunKaprodi(Request $request)
     {
-        dd($request->all());
-        $request->validate([
-            'nip' => 'required|max:12',
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:50',
-            'password' => 'required|string|max:8',
-            'jabatan' => 'required',
-            'role' => 'required|string',
-            'status' => 'string',
-            // 'no_hp' => 'integer'
-        ]);
+        // dd($request->all());
+        
+        try {
+            $request->validate([
+                'nip' => 'required|max:12',
+                'nama' => 'required|string|max:100',
+                'username' => 'required|string|max:50',
+                'password' => 'required|string|max:8',
+                'jabatan' => 'required',
+                'role' => 'required|string',
+                'status' => 'string',
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('gagal', 'Gagal membuat akun kaprodi! pastikan data yang anda input sudah benar');
+        }
+
+        // $request->validate([
+        //     'nip' => 'required|max:12',
+        //     'nama' => 'required|string|max:100',
+        //     'username' => 'required|string|max:50',
+        //     'password' => 'required|string|max:8',
+        //     'jabatan' => 'required',
+        //     'role' => 'required|string',
+        //     'status' => 'string',
+        //     // 'no_hp' => 'integer'
+        // ]);
         // dd($request->all());
         if (User::where('username', $request->username)->exists()) {
             return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
