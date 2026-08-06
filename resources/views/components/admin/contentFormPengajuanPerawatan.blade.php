@@ -231,9 +231,15 @@
                                             <!-- IMAGE -->
                                             <div class="relative aspect-square overflow-hidden bg-gray-200">
 
-                                                <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
+                                                {{-- <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                                     :style="`background-image: url('/storage/${item.img_item ?? item.gambar_room}')`">
-                                                </div>
+                                                </div> --}}
+
+                                                <img :src="`${bucketUrl}/${item.img_item ?? item.gambar_room}`.replace(
+                                                    'uploads/barang//', 'uploads/barang/')"
+                                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    alt="Gambar Aset">
+
 
                                             </div>
 
@@ -278,9 +284,7 @@
 
                                                     </div> --}}
                                                     <div x-show="currentTab === 'barang'" class="flex-shrink-0">
-                                                        <input 
-                                                            type="number" 
-                                                            min="1" 
+                                                        <input type="number" min="1"
                                                             :max="item.qty_item > 0 ? item.qty_item : null"
                                                             x-model="item.qty_input"
                                                             :class="item.qty_input > item.qty_item ? 'border-red-500' :
@@ -443,6 +447,7 @@
 <script>
     // DATA DARI LARAVEL
     const productsData = @json($allBarangRuang);
+    const bucketUrl = "{{ rtrim(Storage::disk('s3')->url(''), '/') }}";
 
     function perawatanHandler() {
 
