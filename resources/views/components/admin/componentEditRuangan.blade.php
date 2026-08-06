@@ -207,9 +207,9 @@
                                             <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                                                 <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                                     data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                                    :style="`background-image: url('${bucketUrl}/${item.img_item.replace(/^\/+/, '')}')`">
+                                                    :style="`background-image: url('${bucketUrl}/${item.img_item}')`">
                                                 </div>
-
+                                                {{-- :style="`background-image: url('${bucketUrl}/${item.img_item.replace(/^\/+/, '')}')`" --}}
                                                 {{-- :style="`background-image: url('${item.img_item}')`"> --}}
                                                 <!-- Quick Action Overlay -->
                                                 <div
