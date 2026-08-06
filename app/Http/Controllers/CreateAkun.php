@@ -198,7 +198,7 @@ class CreateAkun extends Controller
                 'nip' => 'required|max:12',
                 'nama' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
-                'password' => 'required|string|max:8',
+                'password' => 'required|string|max:12',
                 'role' => 'required|string',
                 'status' => 'string',
             ]);
@@ -272,7 +272,7 @@ class CreateAkun extends Controller
                 'nip' => 'required|max:12',
                 'nama' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
-                'password' => 'required|string|max:8',
+                'password' => 'required|string|max:12',
                 'jabatan' => 'required',
                 'role' => 'required|string',
                 'status' => 'string',
