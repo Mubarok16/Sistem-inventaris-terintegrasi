@@ -235,7 +235,8 @@
                                                     :style="`background-image: url('/storage/${item.img_item ?? item.gambar_room}')`">
                                                 </div> --}}
 
-                                                <img :src="`${bucketUrl}/${item.img_item ?? item.gambar_room}`"
+                                                <img :src="`${bucketUrl}/${item.img_item ?? item.gambar_room}`.replace(
+                                                    '//', '/')"
                                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                     alt="Gambar Aset">
 
