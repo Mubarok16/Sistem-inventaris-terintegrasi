@@ -14,15 +14,6 @@
     </div>
 @endif
 
-@if ($errors->any())
-    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-danger">
-        <ul style="margin-bottom: 0;">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 
 <main class="flex-1 min-w-0 overflow-auto bg-slate-50/50 mb-5">
 
@@ -54,7 +45,7 @@
                                 <label
                                     class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIDN</label>
                             @endif
-                            <input name="nomorIdentitas" maxlength="12" type="number"
+                            <input name="nomorIdentitas" maxlength="12" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="Masukkan nomor identitas" type="text"
                                 value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
