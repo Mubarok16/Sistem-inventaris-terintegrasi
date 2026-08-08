@@ -62,6 +62,7 @@ class EditAkun extends Controller
     {
         try {
             $request->validate([
+                'nomorIdentitas' => 'required|numeric|max:12',
                 'nama' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'max:12',
@@ -96,6 +97,7 @@ class EditAkun extends Controller
                     DB::table('detail_dosen')
                         ->where('id_user', $id)
                         ->update([
+                            'nidn' => $request->nomorIdentitas,
                             'nama' => $request->nama,
                             'no_hp' => $request->no_hp,
                             'updated_at' => now(),
@@ -104,6 +106,7 @@ class EditAkun extends Controller
                     DB::table('detail_staff')
                         ->where('id_user', $id)
                         ->update([
+                            'nip' => $request->nomorIdentitas,
                             'nama' => $request->nama,
                             'no_hp' => $request->no_hp,
                             'updated_at' => now(),

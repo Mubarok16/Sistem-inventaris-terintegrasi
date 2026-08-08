@@ -37,6 +37,16 @@
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2 md:col-span-2">
+                            @if ($dataUser->hak_akses === 'admin')
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIP</label>
+                            @else
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIDN</label>
+                            @endif
+                            <input name="nomorIdentitas"
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
+                                placeholder="Masukkan nomor identitas" type="text" value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
                                 Lengkap</label>
                             <input name="nama"
@@ -68,14 +78,16 @@
                                 value="{{ $dataUser->hak_akses }}"
                                 type="text" />
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                                ID Telegram (Notifikasi)</label>
-                            </label>
-                            <input name="no_hp" readonly
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                value="{{ $dataUser->no_hp_staff ?? $dataUser->no_hp_dosen }}" type="text" />
-                        </div>
+                        @if ($dataUser->hak_akses === 'admin')
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                                    ID Telegram (Notifikasi)</label>
+                                </label>
+                                <input name="no_hp" readonly
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
+                                    value="{{ $dataUser->no_hp_staff ?? $dataUser->no_hp_dosen }}" type="text" />
+                            </div>
+                        @endif                      
                         @if ($dataUser->hak_akses === 'admin' && $JmlhAdmin > 1)
                             <div class="space-y-3 md:col-span-2 pt-2">
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Status
