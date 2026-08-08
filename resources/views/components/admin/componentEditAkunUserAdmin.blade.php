@@ -42,7 +42,7 @@
                             @else
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIDN</label>
                             @endif
-                            <input name="nomorIdentitas"
+                            <input name="nomorIdentitas" maxlength="12"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="Masukkan nomor identitas" type="text" value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
                         </div>
@@ -57,7 +57,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Username
                             </label>
-                            <input name="username"
+                            <input name="username" maxlength="12"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" value="{{ $dataUser->username }}" />
                         </div>
@@ -65,7 +65,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Password
                             </label>
-                            <input name="password"
+                            <input name="password" maxlength="255"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="kosongkan jika tidak ingin mengubah password!" type="password" />
                         </div>
