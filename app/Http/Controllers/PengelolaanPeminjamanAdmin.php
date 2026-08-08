@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\UsageItems;
 use App\Models\UsageRooms;
-use App\Services\Admin\PengelolaanPeminjamanService;
+use App\services\Admin\PengelolaanPeminjamanService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
