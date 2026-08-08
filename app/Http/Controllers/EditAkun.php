@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Validator;
+    
 class EditAkun extends Controller
 {
     // page edit akun
@@ -68,13 +69,24 @@ class EditAkun extends Controller
                 'password' => 'max:12',
                 'role' => 'required|string',
                 // 'no_hp' => 'required'
-            ], [
-                // Tulis pesan kustom Anda di sini
-                'role.required' => 'Role harus diisi!',
-                'nama.required' => 'Nama lengkap wajib diisi!',
-                'nomorIdentitas.max' => 'Nomor identitas maksimal 12 karakter!',
-                'username.max' => 'Username maksimal 12 karakter!',
             ]);
+
+            $validator = Validator::make($request->all(), [
+                'nomorIdentitas' => 'required|max:12',
+                'nama' => 'required|string|max:100',
+                'username' => 'required|string|max:12',
+                'password' => 'max:12',
+                'role' => 'required|string',
+                // 'no_hp' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                // Ambil semua pesan error dalam bentuk array, lalu gabungkan jadi teks biasa
+                $semuaError = implode(', ', $validator->errors()->all());
+
+                // Kirim sebagai SESSION FLASH kustom bernama 'gagal'
+                return redirect()->back()->with('gagal', 'Gagal: ' . $semuaError)->withInput();
+            }
 
             if (User::where('username', $request->username)->count() > 1) {
                 return redirect()->back()->with('gagal', 'username dan password sudah digunakan, silakan gunakan username lain!');
