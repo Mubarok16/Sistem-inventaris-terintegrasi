@@ -29,7 +29,7 @@ class EditAkun extends Controller
             ->leftJoin('detail_dosen', 'detail_dosen.id_user', '=', 'users.id_user')
             ->leftJoin('detail_staff', 'detail_staff.id_user', '=', 'users.id_user')
             ->leftJoin('peminjam', 'peminjam.id_user', '=', 'users.id_user')
-             ->select(
+            ->select(
                 'users.*',
 
                 'detail_dosen.nidn',
@@ -64,10 +64,16 @@ class EditAkun extends Controller
             $request->validate([
                 'nomorIdentitas' => 'required|max:12',
                 'nama' => 'required|string|max:100',
-                'username' => 'required|string|max:50',
+                'username' => 'required|string|max:12',
                 'password' => 'max:12',
                 'role' => 'required|string',
                 // 'no_hp' => 'required'
+            ], [
+                // Tulis pesan kustom Anda di sini
+                'role.required' => 'Role harus diisi!',
+                'nama.required' => 'Nama lengkap wajib diisi!',
+                'nomorIdentitas.max' => 'Nomor identitas maksimal 12 karakter!',
+                'username.max' => 'Username maksimal 12 karakter!',
             ]);
 
             if (User::where('username', $request->username)->count() > 1) {
@@ -112,7 +118,6 @@ class EditAkun extends Controller
                             'updated_at' => now(),
                         ]);
                 }
-
             } else {
                 $User->update([
                     // 'nama' => $request->nama,
@@ -144,7 +149,7 @@ class EditAkun extends Controller
 
             return redirect()->back()->with('success', 'Akun ' . $User->nama . ' berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!'. $e);
+            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!' . $e);
         }
     }
 
@@ -258,7 +263,7 @@ class EditAkun extends Controller
 
             return redirect()->back()->with('success', 'Akun ' . $request->nama_peminjam . ' berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!'.$e);
+            return redirect()->back()->with('gagal', 'Akun gagal diperbarui!' . $e);
         }
     }
 }
