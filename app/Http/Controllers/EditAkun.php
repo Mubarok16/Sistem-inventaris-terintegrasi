@@ -62,7 +62,7 @@ class EditAkun extends Controller
     {
         try {
             $request->validate([
-                'nomorIdentitas' => 'required|numeric|max:12',
+                'nomorIdentitas' => 'required|max:12',
                 'nama' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'max:12',
