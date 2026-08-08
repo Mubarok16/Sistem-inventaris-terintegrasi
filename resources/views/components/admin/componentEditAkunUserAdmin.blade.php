@@ -42,14 +42,14 @@
                             @else
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIDN</label>
                             @endif
-                            <input name="nomorIdentitas" maxlength="12" type="number"
+                            <input name="nomorIdentitas" maxlength="12" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="Masukkan nomor identitas" type="text" value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
                                 Lengkap</label>
-                            <input name="nama"
+                            <input name="nama" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="Masukkan nama lengkap" type="text" value="{{ $dataUser->nama_staff ?? $dataUser->nama_dosen }}" />
                         </div>
@@ -57,7 +57,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Username
                             </label>
-                            <input name="username" maxlength="12"
+                            <input name="username" maxlength="12" type="text" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" value="{{ $dataUser->username }}" />
                         </div>
@@ -65,7 +65,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Password
                             </label>
-                            <input name="password" maxlength="255"
+                            <input name="password" maxlength="255" type="password"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 placeholder="kosongkan jika tidak ingin mengubah password!" type="password" />
                         </div>
