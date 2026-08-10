@@ -304,11 +304,11 @@
                                 $detail_dosen = DB::table('detail_dosen')->where('id_user', $id)->first();
                                 $jabatan = $detail_dosen->jabatan;
                             @endphp
-                            @if ($jabatan === 'kaprodi teknik sipil')
+                            @if ($jabatan === 'teknik sipil')
                                 <input name="keperluan_prodi" type="text" value="Teknik Sipil" hidden />
-                            @elseif ($jabatan === 'kaprodi teknik komputer')
+                            @elseif ($jabatan === 'teknik komputer')
                                 <input name="keperluan_prodi" type="text" value="Teknik Komputer" hidden />
-                            @elseif ($jabatan === 'kaprodi teknik lingkungan')
+                            @elseif ($jabatan === 'teknik lingkungan')
                                 <input name="keperluan_prodi" type="text" value="Teknik Lingkungan" hidden />
                             @else
                                 <input name="keperluan_prodi" type="text" value="ssss" hidden />
@@ -317,11 +317,15 @@
                                 <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
                                     Tahun akademik
                                 </label>
-                                <div class="relative">
 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <input name="tahun_akademik"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                                        placeholder="cth : 2025/2026" type="text" />
+                                        placeholder="cth : 2025/2026" type="number" />
+
+                                    <input name="tahun_akademik1"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : 2025/2026" type="number" />
                                 </div>
                             </div>
 
