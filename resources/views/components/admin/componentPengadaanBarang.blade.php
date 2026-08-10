@@ -28,19 +28,19 @@
                 @csrf
                 <select onchange="this.form.submit()" name="status_pengadaan"
                     class="appearance-none bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold pl-9 pr-8 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white transition-all text-slate-700 outline-none">
-                        <option {{ $status_pengadaan == 'semua' ? 'selected' : '' }} value="semua">Semua Status Pengadaan
-                            Barang
-                        </option>
-                        <option {{ $status_pengadaan == 'pendding' ? 'selected' : '' }} value="pendding">
-                            pending</option>
-                        <option {{ $status_pengadaan == 'diterima' ? 'selected' : '' }} value="diterima">
-                            Diajukan ke rektorat</option>
-                        <option {{ $status_pengadaan == 'ditolak' ? 'selected' : '' }} value="ditolak">
-                            Ditolak</option>
-                        <option {{ $status_pengadaan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
-                            Dibatalkan</option>
-                        <option {{ $status_pengadaan == 'selesai' ? 'selected' : '' }} value="selesai">
-                            Selesai</option>
+                    <option {{ $status_pengadaan == 'semua' ? 'selected' : '' }} value="semua">Semua Status Pengadaan
+                        Barang
+                    </option>
+                    <option {{ $status_pengadaan == 'pendding' ? 'selected' : '' }} value="pendding">
+                        pending</option>
+                    <option {{ $status_pengadaan == 'diterima' ? 'selected' : '' }} value="diterima">
+                        Diajukan ke rektorat</option>
+                    <option {{ $status_pengadaan == 'ditolak' ? 'selected' : '' }} value="ditolak">
+                        Ditolak</option>
+                    <option {{ $status_pengadaan == 'dibatalkan' ? 'selected' : '' }} value="dibatalkan">
+                        Dibatalkan</option>
+                    <option {{ $status_pengadaan == 'selesai' ? 'selected' : '' }} value="selesai">
+                        Selesai</option>
                 </select>
             </form>
 
@@ -329,9 +329,9 @@
                                         <option>pilih untuk keperluan prodi atau fakultas</option>
                                         <option value="fakultas teknik">fakultas teknik</option>
                                         @foreach ($prodi as $p)
-                                        <option class="camel-case" value="{{ $p->nama_prodi }}">
-                                            {{ $p->nama_prodi }}
-                                        </option>
+                                            <option class="camel-case" value="{{ $p->nama_prodi }}">
+                                                {{ $p->nama_prodi }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -340,13 +340,20 @@
                                 <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
                                     Tahun akademik
                                 </label>
-                                <div class="relative">
-                                    {{-- <span
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
-                                        data-icon="inventory">inventory</span> --}}
+                                {{-- <div class="relative">
+                                   
                                     <input name="tahun_akademik"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2025/2026" type="text" />
+                                </div> --}}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <input name="tahun_akademik"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : 2025" type="number" />
+
+                                    <input name="tahun_akademiksatu"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : 2026" type="number" />
                                 </div>
                             </div>
                             {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

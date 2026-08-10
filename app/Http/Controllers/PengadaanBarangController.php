@@ -26,7 +26,7 @@ class PengadaanBarangController extends Controller
                 'merek_model' => $request->merk,
                 'qty_item' => $request->qty,
                 'status_pengadaan' => "pendding",
-                'tahun_akademik' => $request->tahun_akademik,
+                'tahun_akademik' => $request->tahun_akademik."/".$request->tahun_akademiksatu,
                 'keperluan_prodi' => $request->keperluan_prodi,
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -345,30 +345,36 @@
                                 <label class="block font-semibold text-xs text-on-surface-variant uppercase mb-2">
                                     Tahun akademik
                                 </label>
-                                <div class="relative">
-                                    {{-- <span
+                                {{-- <div class="relative"> --}}
+                                {{-- <span
                                         class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
                                         data-icon="inventory">inventory</span> --}}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <input name="tahun_akademik"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                                        placeholder="cth : 2025/2026" type="text" />
+                                        placeholder="cth : 2025" type="number" />
+
+                                    <input name="tahun_akademiksatu"
+                                        class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                        placeholder="cth : 2026" type="number" />
                                 </div>
                             </div>
-                            <!-- Footer Actions -->
-                            <div class="pt-6 flex items-center justify-center gap-4 border-t border-slate-100">
-
-                                <button
-                                    class="w-full px-8 py-2.5 rounded-xl! justify-center font-body-md text-body-md text-white bg-primary hover:bg-primary/90 shadow-md shadow-primary/10 transition-all duration-200 flex items-center gap-2"
-                                    type="submit">
-                                    <span>Kirim Pengajuan</span>
-                                    {{-- <span class="material-symbols-outlined text-sm" data-icon="send">send</span> --}}
-                                </button>
-                            </div>
-                        </form>
                     </div>
+                    <!-- Footer Actions -->
+                    <div class="pt-6 flex items-center justify-center gap-4 border-t border-slate-100">
+
+                        <button
+                            class="w-full px-8 py-2.5 rounded-xl! justify-center font-body-md text-body-md text-white bg-primary hover:bg-primary/90 shadow-md shadow-primary/10 transition-all duration-200 flex items-center gap-2"
+                            type="submit">
+                            <span>Kirim Pengajuan</span>
+                            {{-- <span class="material-symbols-outlined text-sm" data-icon="send">send</span> --}}
+                        </button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 </section>

@@ -76,9 +76,18 @@
                                 Tahun Akademik
                             </label>
 
-                            <input type="text" name="tahun_akademik" required
+                            {{-- <input type="text" name="tahun_akademik" required
                                 value="{{ $dataPerawatan->tahun_akademik ?? '' }}" placeholder="2025/2026"
-                                class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
+                                class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2"> --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <input name="tahun_akademik"
+                                    class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                    placeholder="cth : 2025" type="number" />
+
+                                <input name="tahun_akademiksatu"
+                                    class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                                    placeholder="cth : 2026" type="number" />
+                            </div>
 
                         </div>
 
@@ -235,7 +244,9 @@
                                                     :style="`background-image: url('/storage/${item.img_item ?? item.gambar_room}')`">
                                                 </div> --}}
 
-                                                <img :src="`${bucketUrl}/${item.img_item ?? item.gambar_room}`.replace('uploads/barang//', 'uploads/barang/').replace('uploads/ruangan//', 'uploads/ruangan/')"
+                                                <img :src="`${bucketUrl}/${item.img_item ?? item.gambar_room}`.replace(
+                                                    'uploads/barang//', 'uploads/barang/').replace(
+                                                    'uploads/ruangan//', 'uploads/ruangan/')"
                                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                     alt="Gambar Aset">
 

@@ -323,7 +323,7 @@
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2025" type="number" />
 
-                                    <input name="tahun_akademik1"
+                                    <input name="tahun_akademiksatu"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2026" type="number" />
                                 </div>
