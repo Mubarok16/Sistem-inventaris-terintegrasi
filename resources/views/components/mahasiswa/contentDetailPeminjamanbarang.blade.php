@@ -168,6 +168,7 @@
                                     <td class="px-6 py-4 font-bold text-[#111418]">
                                         {{ date('H:i', strtotime($item->jam_mulai_usage_item)) }} -
                                         {{ date('H:i', strtotime($item->jam_selesai_usage_item)) }}
+                                        {{ $item->jam_selesai_usage_item }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="font-medium text-[#111418]">
