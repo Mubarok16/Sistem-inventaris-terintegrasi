@@ -69,7 +69,7 @@ class PerawatanBarang extends Controller
         try {
 
             // $keperluan_prodi = $request->keperluan_prodi;
-            dd($request->all());
+            // dd($request->all());
 
             DB::table('perawatan_barang')->insert([
                 'id_perawatan' => $request->nomor_surat,

@@ -101,11 +101,11 @@
                             @endphp
 
                             @if ($jabatan === 'teknik sipil')
-                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Sipil">
+                                <input type="hidden" name="keperluan_prodi" value="Teknik Sipil">
                             @elseif ($jabatan === 'teknik komputer')
-                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Komputer">
+                                <input type="hidden" name="keperluan_prodi" value="Teknik Komputer">
                             @elseif ($jabatan === 'teknik lingkungan')
-                                <input type="hidden" name="kebutuhan_prodi" value="Teknik Lingkungan">
+                                <input type="hidden" name="keperluan_prodi" value="Teknik Lingkungan">
                             @endif
                         @else
                             <div>
