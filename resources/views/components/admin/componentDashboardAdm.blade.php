@@ -145,13 +145,13 @@
 
             <!-- table peminjaman -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-6 border-bottom border-slate-100 flex justify-between items-center">
+                {{-- <div class="p-6 border-bottom border-slate-100 flex justify-between items-center">
                     <h4 class="font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list text-primary"></i>
                         Pengajuan peminjaman
                     </h4>
                     <button class="text-primary text-xs font-bold hover:underline">Lihat Semua</button>
-                </div>
+                </div> --}}
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>

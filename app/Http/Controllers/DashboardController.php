@@ -685,6 +685,7 @@ class DashboardController extends Controller
                 $query->where('pengadaan_barang.status_pengadaan', $status_pengadaan);
             })
             // ->get()
+            ->orderBy('pengadaan_barang.created_at', 'desc')
             ->paginate(5);
 
         // dd($pengadaanBarang);
