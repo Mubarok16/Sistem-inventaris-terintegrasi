@@ -46,7 +46,7 @@
                                 Nomor Surat
                             </label>
 
-                            <input type="text" name="nomor_surat" required
+                            <input type="text" name="nomor_surat" maxlength="12" required
                                 value="{{ $dataPerawatan->nomor_surat ?? '' }}"
                                 class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
 

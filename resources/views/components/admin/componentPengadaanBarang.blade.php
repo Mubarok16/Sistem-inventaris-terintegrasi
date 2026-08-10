@@ -282,7 +282,7 @@
                                     {{-- <span
                                         class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
                                         data-icon="inventory">inventory</span> --}}
-                                    <input name="nomor_surat"
+                                    <input name="nomor_surat" maxlength="12" required
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : /Pr/Sr/FT.UW/IV/2026" type="text" />
                                 </div>

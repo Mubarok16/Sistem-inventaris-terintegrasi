@@ -264,7 +264,7 @@
                                 </label>
                                 <div class="relative">
 
-                                    <input name="nomor_surat"
+                                    <input name="nomor_surat" maxlength="12" required
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : /Pr/Sr/FT.UW/IV/2026" type="text" />
                                 </div>
