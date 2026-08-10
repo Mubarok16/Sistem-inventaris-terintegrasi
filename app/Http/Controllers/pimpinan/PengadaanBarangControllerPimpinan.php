@@ -34,7 +34,7 @@ class PengadaanBarangControllerPimpinan extends Controller
             ->when($status_pengadaan !== 'semua', function ($query) use ($status_pengadaan) {
                 $query->where('pengadaan_barang.status_pengadaan', $status_pengadaan);
             })
-            // ->get()
+            ->orderBy('pengadaan_barang.created_at', 'desc')
             ->paginate(5);
 
         // dd($pengadaan);
@@ -137,6 +137,7 @@ class PengadaanBarangControllerPimpinan extends Controller
             ->when($status_perawatan !== 'semua', function ($query) use ($status_perawatan) {
                 $query->where('perawatan_barang.status_perawatan', $status_perawatan);
             })
+            ->orderBy('perawatan_barang.created_at', 'desc')
             ->paginate(5);
 
         // dd($perawatan);
