@@ -79,7 +79,7 @@ class PerawatanBarang extends Controller
                 'qty_perawatan' => $request->category == 'barang' ? $request->qty_usage : null,
                 // 'surat_pengadaan' => null,
                 'status_perawatan' => "pendding",
-                'tahun_akademik' => $request->tahun_akademik,
+                'tahun_akademik' => $request->tahun_akademik."/".$request->tahun_akademik1,
                 'keperluan_prodi' => $request->keperluan_prodi,
                 'created_at' => now(),
                 'updated_at' => now(),
