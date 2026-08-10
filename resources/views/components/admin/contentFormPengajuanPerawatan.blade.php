@@ -100,11 +100,11 @@
                                     ->value('jabatan');
                             @endphp
 
-                            @if ($jabatan === 'kaprodi teknik sipil')
+                            @if ($jabatan === 'teknik sipil')
                                 <input type="hidden" name="kebutuhan_prodi" value="Teknik Sipil">
-                            @elseif ($jabatan === 'kaprodi teknik komputer')
+                            @elseif ($jabatan === 'teknik komputer')
                                 <input type="hidden" name="kebutuhan_prodi" value="Teknik Komputer">
-                            @elseif ($jabatan === 'kaprodi teknik lingkungan')
+                            @elseif ($jabatan === 'teknik lingkungan')
                                 <input type="hidden" name="kebutuhan_prodi" value="Teknik Lingkungan">
                             @endif
                         @else
@@ -114,7 +114,7 @@
                                     Fakultas / Prodi
                                 </label>
 
-                                <select name="kebutuhan_prodi" required
+                                <select name="keperluan_prodi" required
                                     class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2">
 
                                     <option value="">Pilih</option>
