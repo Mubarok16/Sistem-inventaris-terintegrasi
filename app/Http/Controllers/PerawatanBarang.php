@@ -68,6 +68,11 @@ class PerawatanBarang extends Controller
 
         try {
 
+            $keperluan_prodi = DB::table('users')
+                ->join('detail_dosen', 'users.id_user', '=', 'detail_dosen.id_user')
+                ->where('users.id_user', Auth::user()->id_user)
+                ->value('detail_dosen.jabatan');
+
             DB::table('perawatan_barang')->insert([
                 'id_perawatan' => $request->nomor_surat,
                 'id_pemohon' => Auth::user()->id_user,
@@ -78,7 +83,7 @@ class PerawatanBarang extends Controller
                 // 'surat_pengadaan' => null,
                 'status_perawatan' => "pendding",
                 'tahun_akademik' => $request->tahun_akademik,
-                'keperluan_prodi' => $request->kebutuhan_prodi,
+                'keperluan_prodi' => $keperluan_prodi,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
