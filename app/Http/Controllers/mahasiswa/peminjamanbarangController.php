@@ -51,6 +51,8 @@ class peminjamanbarangController extends Controller
             ->select(
                 'usage_items.tgl_pinjam_usage_item',
                 'usage_items.tgl_kembali_usage_item',
+                'usage_items.jam_mulai_usage_item',
+                'usage_items.jam_selesai_usage_item',
                 'usage_items.status_usage_item',
                 'usage_items.qty_usage_item',
                 'agenda_fakultas.nama_agenda',

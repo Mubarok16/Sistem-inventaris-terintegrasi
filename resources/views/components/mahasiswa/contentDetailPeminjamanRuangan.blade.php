@@ -140,8 +140,8 @@
                             @foreach ($dataUsageRooms as $item)
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4 font-bold text-[#111418]">
-                                        {{ date('H:i', strtotime($item->tgl_pinjam_usage_room)) }} -
-                                        {{ date('H:i', strtotime($item->tgl_kembali_usage_room)) }}
+                                        {{ date('H:i', strtotime($item->jam_mulai_usage_room)) }} -
+                                        {{ date('H:i', strtotime($item->jam_selesai_usage_room)) }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="font-medium text-[#111418]">

@@ -41,6 +41,8 @@ class peminjamanRuanganController extends Controller
             ->select(
                 'usage_rooms.tgl_pinjam_usage_room',
                 'usage_rooms.tgl_kembali_usage_room',
+                'usage_rooms.jam_mulai_usage_room',
+                'usage_rooms.jam_selesai_usage_room',
                 'usage_rooms.status_usage_room',
                 'agenda_fakultas.nama_agenda',
                 'peminjaman.ket_peminjaman',
