@@ -351,8 +351,8 @@
                                         class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400"
                                         data-icon="inventory">inventory</span> --}}
 
-                                {{-- ini benar tapi ada kesalahan --}}
-                                {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                               
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <input name="tahun_akademik"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2025" type="number" />
@@ -360,31 +360,6 @@
                                     <input name="tahun_akademiksatu"
                                         class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                                         placeholder="cth : 2026" type="number" />
-                                </div> --}}
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    <!-- Tahun awal -->
-                                    <div>
-                                        <input type="text" name="tahun_akademik" x-data
-                                            x-model="$store.tahunAkademik" readonly
-                                            @click="$refs.yearPicker.showPicker()"
-                                            class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                                            placeholder="Pilih tahun">
-
-                                        <input x-ref="yearPicker" type="date" class="hidden"
-                                            @change="$store.tahunAkademik = $event.target.value.substring(0, 4)">
-                                    </div>
-
-                                    <!-- Tahun akhir -->
-                                    <div>
-                                        <input type="text" name="tahun_akademiksatu" x-data
-                                            x-model="$store.tahunAkademikSatu" readonly
-                                            @click="$refs.yearPicker.showPicker()"
-                                            class="w-full pl-3 pr-4 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                                            placeholder="Pilih tahun">
-
-                                        <input x-ref="yearPicker" type="date" class="hidden"
-                                            @change="$store.tahunAkademikSatu = $event.target.value.substring(0, 4)">
-                                    </div>
                                 </div>
                             </div>
                     </div>
