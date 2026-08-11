@@ -98,12 +98,12 @@
                             
                                 years: [],
                             
-                                init() {
-                                    for (let year = this.currentYear - 10; year <= this.currentYear + 10; year++) {
-                                        this.years.push(year);
+                                    init() {
+                                        for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
+                                            this.years.push(year);
+                                        }
                                     }
-                                }
-                            }" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                }" class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <!-- Tahun Awal -->
                                 <div class="relative">
                                     <input type="text" name="tahun_akademik" x-model="selectedYear"
@@ -146,11 +146,11 @@
                                     years: [],
                                 
                                     init() {
-                                        for (let year = this.currentYear - 10; year <= this.currentYear + 10; year++) {
-                                            this.years.push(year);
+                                            for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
+                                                this.years.push(year);
+                                            }
                                         }
-                                    }
-                                }" class="relative">
+                                    }" class="relative">
                                     <input type="text" name="tahun_akademiksatu" x-model="selectedYear"
                                         @click="open = !open" readonly placeholder="Pilih tahun"
                                         class="w-full pl-3 pr-10 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
