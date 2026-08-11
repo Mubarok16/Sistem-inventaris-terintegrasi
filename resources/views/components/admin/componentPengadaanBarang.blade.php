@@ -359,7 +359,7 @@
                                 </div> --}}
 
                                 {{-- baru --}}
-                                <div x-data="{
+                                {{-- <div x-data="{
                                     open: false,
                                     selectedYear: '',
                                     currentYear: new Date().getFullYear(),
@@ -367,11 +367,11 @@
                                     years: [],
                                 
                                     init() {
-                                        for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
-                                            this.years.push(year);
+                                            for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
+                                                this.years.push(year);
+                                            }
                                         }
-                                    }
-                                }" class="grid grid-cols-1 gap-2">
+                                    }" class="grid grid-cols-1 gap-2">
                                     <!-- Tahun Awal -->
                                     <div class="relative">
                                         <input type="text" name="tahun_akademik" x-model="selectedYear"
@@ -414,11 +414,11 @@
                                         years: [],
                                     
                                         init() {
-                                            for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
-                                                this.years.push(year);
+                                                for (let year = this.currentYear; year <= this.currentYear + 10; year++) {
+                                                    this.years.push(year);
+                                                }
                                             }
-                                        }
-                                    }" class="relative">
+                                        }" class="relative">
                                         <input type="text" name="tahun_akademiksatu" x-model="selectedYear"
                                             @click="open = !open" readonly placeholder="Pilih tahun"
                                             class="w-full pl-3 pr-10 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
@@ -448,6 +448,150 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div> --}}
+
+                                <div x-data="{
+                                    // =========================
+                                    // TAHUN AWAL
+                                    // =========================
+                                    openAwal: false,
+                                    selectedYearAwal: '',
+                                    currentYear: new Date().getFullYear(),
+                                    years: [],
+                                
+                                    // =========================
+                                    // TAHUN AKHIR
+                                    // =========================
+                                    openAkhir: false,
+                                    selectedYearAkhir: '',
+                                
+                                    init() {
+                                            // Tahun sekarang sampai 10 tahun ke depan
+                                            for (
+                                                let year = this.currentYear; year <= this.currentYear + 10; year++
+                                            ) {
+                                                this.years.push(year);
+                                            }
+                                        }
+                                    }" class="grid grid-cols-1 gap-2">
+
+                                    {{-- ========================================================= --}}
+                                    {{-- TAHUN AWAL --}}
+                                    {{-- ========================================================= --}}
+
+                                    <div class="relative">
+
+                                        <input type="text" name="tahun_akademik" x-model="selectedYearAwal"
+                                            @click="openAwal = !openAwal; openAkhir = false" readonly
+                                            placeholder="Pilih tahun" required
+                                            class="w-full pl-3 pr-10 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
+
+                                        {{-- Icon --}}
+                                        <button type="button" @click="openAwal = !openAwal; openAkhir = false"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                            <i class="fa-solid fa-calendar"></i>
+                                        </button>
+
+                                        {{-- Year Picker --}}
+                                        <div x-show="openAwal" @click.outside="openAwal = false" x-transition
+                                            class="absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-3"
+                                            style="display: none;">
+
+                                            {{-- Judul --}}
+                                            <div class="flex items-center justify-between mb-3">
+                                                <span class="text-sm font-semibold text-slate-700">
+                                                    Pilih Tahun
+                                                </span>
+
+                                                <button type="button" @click="openAwal = false"
+                                                    class="text-slate-400 hover:text-slate-600">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                            </div>
+
+                                            {{-- Daftar Tahun --}}
+                                            <div class="grid grid-cols-3 gap-2 h-48 overflow-y-auto pr-1">
+
+                                                <template x-for="year in years" :key="year">
+
+                                                    <button type="button"
+                                                        @click="
+                                                        selectedYearAwal = year;
+                                                        openAwal = false;
+                                                    "
+                                                        class="px-3 py-2 rounded-lg text-sm transition duration-200"
+                                                        :class="selectedYearAwal == year ?
+                                                            'bg-primary text-white' :
+                                                            'text-slate-700 bg-slate-50 hover:bg-primary hover:text-white'"
+                                                        x-text="year"></button>
+
+                                                </template>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- ========================================================= --}}
+                                    {{-- TAHUN AKHIR --}}
+                                    {{-- ========================================================= --}}
+
+                                    <div class="relative">
+
+                                        <input type="text" name="tahun_akademiksatu" x-model="selectedYearAkhir"
+                                            @click="openAkhir = !openAkhir; openAwal = false" readonly
+                                            placeholder="Pilih tahun" required
+                                            class="w-full pl-3 pr-10 py-2 border border-slate-200 rounded-xl font-body-md text-body-md cursor-pointer focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200">
+
+                                        {{-- Icon --}}
+                                        <button type="button" @click="openAkhir = !openAkhir; openAwal = false"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                            <i class="fa-solid fa-calendar"></i>
+                                        </button>
+
+                                        {{-- Year Picker --}}
+                                        <div x-show="openAkhir" @click.outside="openAkhir = false" x-transition
+                                            class="absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-3"
+                                            style="display: none;">
+
+                                            {{-- Judul --}}
+                                            <div class="flex items-center justify-between mb-3">
+                                                <span class="text-sm font-semibold text-slate-700">
+                                                    Pilih Tahun
+                                                </span>
+
+                                                <button type="button" @click="openAkhir = false"
+                                                    class="text-slate-400 hover:text-slate-600">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                            </div>
+
+                                            {{-- Daftar Tahun --}}
+                                            <div class="grid grid-cols-3 gap-2 h-48 overflow-y-auto pr-1">
+
+                                                <template x-for="year in years" :key="year">
+
+                                                    <button type="button"
+                                                        @click="
+                                                        selectedYearAkhir = year;
+                                                        openAkhir = false;
+                                                    "
+                                                        class="px-3 py-2 rounded-lg text-sm transition duration-200"
+                                                        :class="selectedYearAkhir == year ?
+                                                            'bg-primary text-white' :
+                                                            'text-slate-700 bg-slate-50 hover:bg-primary hover:text-white'"
+                                                        x-text="year"></button>
+
+                                                </template>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </div>
                             {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
