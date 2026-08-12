@@ -119,7 +119,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                                 data-alt="Meeting Room Interior"
-                                                style="background-image: url('{{ Storage::disk('s3')->url($usage_item->img_item) }}')">
+                                                style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$usage_item->img_item)) }}')">
                                                 {{-- Storage::disk('s3')->url($room['gambar_room']) --}}
                                             </div>
                                             <div>
@@ -188,7 +188,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                                 data-alt="Meeting Room Interior"
-                                                style="background-image: url('{{ Storage::disk('s3')->url($usage_room->gambar_room) }}')">
+                                                style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$usage_room->gambar_room)) }}')">
                                             </div>
                                             <div>
                                                 <p class="font-medium text-slate-900">
