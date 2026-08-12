@@ -119,6 +119,50 @@ class AutoUpdateStatusAgenda extends Command
             ->update(['status_peminjaman' => 'selesai']);
 
 
+        // =================== update status auto untuk peminjaman yang dibatalkan semua di usagenya jadi dibatalkan =====================================
+        // khusus unutk peminjaman
+        // =================== update status auto untuk peminjaman yang sudah dibatalkan =====================================
+        DB::table('peminjaman as p')
+            ->where('status_peminjaman', 'terjadwal') // Tambahkan status yang tidak boleh di-auto-selesai
+            ->whereNotExists(function ($query) use ($today, $currentTime) {
+                $query->select(DB::raw(1))
+                    ->from('usage_rooms as ur')
+                    ->whereRaw('ur.kode_peminjaman = p.kode_peminjaman')
+                    ->where(function ($q) use ($today, $currentTime) {
+                        $q->where('ur.tgl_pinjam_usage_room', '>', $today)
+                            ->orWhere(function ($sq) use ($today, $currentTime) {
+                                $sq->where('ur.tgl_pinjam_usage_room', $today)
+                                    ->where(function ($finalQ) use ($currentTime) {
+                                        $finalQ->where('ur.jam_selesai_usage_room', '>', $currentTime)
+                                            ->orWhereNull('ur.jam_selesai_usage_room');
+                                    });
+                            })
+                            // PERBAIKAN DI SINI: ur, bukan ui. status_usage_room, bukan status_usage_rooms
+                            ->orWhere('ur.status_usage_room', 'dibatalkan');
+                    });
+            })
+            ->whereNotExists(function ($query) use ($today, $currentTime) {
+                $query->select(DB::raw(1))
+                    ->from('usage_items as ui')
+                    ->whereRaw('ui.kode_peminjaman = p.kode_peminjaman')
+                    ->where(function ($q) use ($today, $currentTime) {
+                        $q->where('ui.tgl_pinjam_usage_item', '>', $today)
+                            ->orWhere(function ($sq) use ($today, $currentTime) {
+                                $sq->where('ui.tgl_pinjam_usage_item', $today)
+                                    ->where(function ($finalQ) use ($currentTime) {
+                                        $finalQ->where('ui.jam_selesai_usage_item', '>', $currentTime)
+                                            ->orWhereNull('ui.jam_selesai_usage_item');
+                                    });
+                            })
+                            // PERBAIKAN DI SINI: status_usage_item, bukan status_usage_items
+                            ->orWhere('ui.status_usage_item', 'dibatalkan');
+                    });
+            })
+            // PERBAIKAN DI SINI: Hapus p. dari key update
+            ->update(['status_peminjaman' => 'selesai']);
+
+
+
         // DB::table('peminjaman as p')
         //     ->whereNotIn('p.status_peminjaman', ['terjadwal'])
         //     ->whereNotExists(function ($query) use ($today, $currentTime) {
