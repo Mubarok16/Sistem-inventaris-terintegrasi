@@ -123,7 +123,7 @@ class AutoUpdateStatusAgenda extends Command
         // khusus unutk peminjaman
         // =================== update status auto untuk peminjaman yang sudah dibatalkan =====================================
         DB::table('peminjaman as p')
-            ->where('status_peminjaman', 'terjadwal') // Tambahkan status yang tidak boleh di-auto-selesai
+            ->where('status_peminjaman', 'selesai') // Tambahkan status yang tidak boleh di-auto-selesai
             ->whereNotExists(function ($query) use ($today, $currentTime) {
                 $query->select(DB::raw(1))
                     ->from('usage_rooms as ur')
