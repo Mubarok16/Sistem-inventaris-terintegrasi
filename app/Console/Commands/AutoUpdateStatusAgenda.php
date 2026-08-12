@@ -159,7 +159,7 @@ class AutoUpdateStatusAgenda extends Command
                     });
             })
             // PERBAIKAN DI SINI: Hapus p. dari key update
-            ->update(['status_peminjaman' => 'selesai']);
+            ->update(['status_peminjaman' => 'dibatalkan']);
 
 
 

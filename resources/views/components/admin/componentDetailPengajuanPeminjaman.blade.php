@@ -178,7 +178,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ asset('storage/' . $item['img_item']) }}')">
+                                            style="background-image: url('{{ Storage::disk('s3')->url($item['img_item']) }}')">
                                         </div>
                                     </div>
                                     <div>
