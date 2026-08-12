@@ -178,7 +178,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ Storage::disk('s3')->url($item['img_item']) }}')">
+                                            style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$item['img_item'])) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -213,7 +213,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ Storage::disk('s3')->url($room['gambar_room']) }}')">
+                                            style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$room['gambar_room'])) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -301,7 +301,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ Storage::disk('s3')->url($detailBarang->img_item) }}')">
+                                            style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$detailBarang->img_item)) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
@@ -353,7 +353,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ Storage::disk('s3')->url($detailRuangan->gambar_room) }}')">
+                                            style="background-image: url('{{ Storage::disk('s3')->url(str_replace('//', '/',$detailRuangan->gambar_room)) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
