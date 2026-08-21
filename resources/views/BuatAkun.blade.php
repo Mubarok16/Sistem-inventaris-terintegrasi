@@ -138,7 +138,7 @@
                                     <div class="col-12 m-0">
                                         <div class="mb-2">
                                             <label for="foto" class="form-label">Masukkan foto ktm</label>
-                                            <input type="file" name="img_identitas" id="foto"
+                                            <input type="file" name="img_identitas" id="foto" required
                                                 class="form-control" accept="image/*" capture="environment" required>
                                         </div>
                                     </div>

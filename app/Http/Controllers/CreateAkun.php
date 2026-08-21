@@ -31,7 +31,7 @@ class CreateAkun extends Controller
                 'password' => 'required|string|max:12',
                 'tahun_masuk' => 'required',
                 'prodi' => 'required|string',
-                'img_identitas' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'img_identitas' => 'required|image|mimes:jpg,jpeg,png',
             ]);
 
             // cek username sudah ada atau belum
