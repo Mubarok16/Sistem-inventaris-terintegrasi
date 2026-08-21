@@ -69,8 +69,9 @@
                                             <div class="d-flex gap-2 justify-content-between">
                                                 <a href="/create-akun-peminjam"
                                                     class="link-primary text-decoration-none">belum punya akun?</a>
-                                                <a href="#!" class="link-primary text-decoration-none">Forgot
-                                                    password?</a>
+                                                <label class="link-primary text-decoration-none">
+                                                    hubungi admin jika lupa password!
+                                                </label>
                                             </div>
                                         </div>
                                         <div class="col-12 m-0">
