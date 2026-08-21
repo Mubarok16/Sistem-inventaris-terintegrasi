@@ -73,7 +73,7 @@ class CreateAkun extends Controller
                 'hak_akses' => 'mahasiswa',
                 'created_at' => now(),
                 'updated_at' => now(),
-                'status' => 'active',
+                'status' => 'unactive',
             ]);
 
             DB::table('peminjam')->insert([
