@@ -347,7 +347,8 @@ class calenderController extends Controller
                 'terjadwal' => '#3b82f6', // biru
                 'digunakan' => '#22c55e', // hijau
                 'selesai' => '#99A7BB', // hijau
-                // default => '#64748b' // abu-abu
+                'dibatalkan' => '#64748b', // abu-abu
+                default => '#64748b',
             };
         }
     }

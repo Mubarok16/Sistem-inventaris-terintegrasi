@@ -220,6 +220,16 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::post('/kunci-barang-ruang-temp', [pengelolaanAgenda::class, 'kunciTempBarangRuangTambahAgenda'])->name('kunci-barang-ruang-tambah-agenda');
     Route::post('/hapus-barang-ruang-temp', [pengelolaanAgenda::class, 'hapusBarangRuangTemTambahAgenda'])->name('hapus-barang-ruang-tambah-agenda');
     Route::post('/simpan-tambah-agenda', [pengelolaanAgenda::class, 'simpanTambahAgendaBaru'])->name('simpan-tambah-agenda');
+    // batalkan seluruh penggunaan agenda yang masih aktif tanpa menghapus riwayat (khusus admin)
+    Route::post('/batalkan-agenda', [pengelolaanAgenda::class, 'batalkanAgenda'])
+        ->middleware('hak_akses:admin')
+        ->name('batalkan-agenda');
+
+    // batalkan satu penggunaan barang/ruangan tertentu pada agenda (khusus admin)
+    Route::post('/batalkan-penggunaan-agenda', [pengelolaanAgenda::class, 'batalkanPenggunaanAgenda'])
+        ->middleware('hak_akses:admin')
+        ->name('batalkan-penggunaan-agenda');
+
     // hapus data agenda db
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
 

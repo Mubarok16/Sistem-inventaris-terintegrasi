@@ -2,6 +2,7 @@
 
 namespace App\Services\mahasiswa;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DetailAgendaService
@@ -64,6 +65,42 @@ class DetailAgendaService
                 // ->where('usage_rooms.tgl_pinjam_usage_room', $date)
                 ->whereDate('usage_rooms.tgl_pinjam_usage_room', $date)
                 ->get();
+
+            // Tandai usage yang masih boleh dibatalkan oleh admin.
+            // Jadwal selesai/dibatalkan maupun jadwal yang waktunya sudah lewat tidak diberi aksi batal.
+            $sekarang = Carbon::now();
+            $cekDapatDibatalkan = function ($usage, string $jenis) use ($sekarang) {
+                $status = $jenis === 'barang' ? $usage->status_usage_item : $usage->status_usage_room;
+                $tanggal = $jenis === 'barang' ? $usage->tgl_pinjam_usage_item : $usage->tgl_pinjam_usage_room;
+                $jamSelesai = $jenis === 'barang' ? $usage->jam_selesai_usage_item : $usage->jam_selesai_usage_room;
+
+                if (!in_array($status, ['terjadwal', 'digunakan'], true)) {
+                    return false;
+                }
+
+                $tanggalUsage = Carbon::parse($tanggal)->startOfDay();
+                if ($tanggalUsage->gt($sekarang->copy()->startOfDay())) {
+                    return true;
+                }
+
+                if (!$tanggalUsage->isSameDay($sekarang)) {
+                    return false;
+                }
+
+                if ($jamSelesai === null) {
+                    return true;
+                }
+
+                return Carbon::parse($tanggalUsage->format('Y-m-d') . ' ' . $jamSelesai)->gt($sekarang);
+            };
+
+            $dataDetailPengajuanPeminjamanBarang->each(function ($usage) use ($cekDapatDibatalkan) {
+                $usage->dapat_dibatalkan = $cekDapatDibatalkan($usage, 'barang');
+            });
+
+            $dataDetailPengajuanPeminjamanRuangan->each(function ($usage) use ($cekDapatDibatalkan) {
+                $usage->dapat_dibatalkan = $cekDapatDibatalkan($usage, 'ruangan');
+            });
 
             // hasil data agenda termasuk penggunaan barang dan ruang
             return [

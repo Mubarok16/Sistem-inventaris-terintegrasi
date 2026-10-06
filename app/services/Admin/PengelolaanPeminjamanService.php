@@ -155,7 +155,7 @@ class PengelolaanPeminjamanService
                 ->leftJoin('peminjaman', 'usage_items.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
                 ->leftJoin('items', 'usage_items.id_item', '=', 'items.id_item')
                 ->where('usage_items.id_item', $item->id_item)
-                ->whereNotIn('usage_items.status_usage_item', ['selesai', 'ditolak'])
+                ->whereNotIn('usage_items.status_usage_item', ['selesai', 'ditolak', 'dibatalkan'])
                 ->where(function ($q) use ($kode) {
                     $q->where(function ($x) use ($kode) {
                         $x->whereNotNull('usage_items.kode_peminjaman')
@@ -257,9 +257,7 @@ class PengelolaanPeminjamanService
                 ->leftJoin('peminjaman', 'usage_rooms.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
                 ->leftJoin('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
                 ->where('usage_rooms.id_room', $room->id_room)
-                ->where('usage_rooms.status_usage_room', '!=', 'selesai')
-                ->where('usage_rooms.status_usage_room', '!=', 'diajukan')
-                ->where('usage_rooms.status_usage_room', '!=', 'ditolak')
+                ->whereNotIn('usage_rooms.status_usage_room', ['selesai', 'diajukan', 'ditolak', 'dibatalkan'])
                 ->where(function ($q) use ($kode) {
                     $q->where(function ($x) use ($kode) {
                         // Jika itu peminjaman, kodenya tidak boleh sama dengan $kode
