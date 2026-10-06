@@ -1176,10 +1176,9 @@ class pengelolaanAgenda extends Controller
         }
     }
 
-    // Membatalkan satu baris penggunaan tertentu pada agenda.
-    // Karena tabel usage tidak memiliki primary key sendiri, record diidentifikasi dengan
-    // kode agenda + jenis resource + id resource + tanggal + jam penggunaan.
-    public function batalkanPenggunaanAgenda(Request $request)
+    // Membatalkan seluruh penggunaan barang dan ruangan pada satu tanggal agenda.
+    // Hanya penggunaan yang masih terjadwal/digunakan dan belum terlewat yang dibatalkan.
+    public function batalkanPenggunaanAgendaHarian(Request $request)
     {
         if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
             abort(403, 'Anda tidak memiliki akses untuk membatalkan penggunaan agenda.');
@@ -1187,89 +1186,82 @@ class pengelolaanAgenda extends Controller
 
         $request->validate([
             'kode_agenda' => 'required|string|exists:agenda_fakultas,kode_agenda',
-            'jenis_penggunaan' => 'required|in:barang,ruangan',
-            'id_resource' => 'required|string',
             'tanggal_penggunaan' => 'required|date',
-            'jam_mulai' => 'nullable|date_format:H:i:s',
-            'jam_selesai' => 'nullable|date_format:H:i:s',
         ]);
 
         $kodeAgenda = $request->kode_agenda;
+        $tanggalPenggunaan = Carbon::parse($request->tanggal_penggunaan)->toDateString();
         $sekarang = Carbon::now();
-        $tanggal = Carbon::parse($request->tanggal_penggunaan);
+        $hariIni = $sekarang->toDateString();
+        $jamSekarang = $sekarang->format('H:i:s');
 
-        // Proteksi tambahan: penggunaan yang waktunya sudah terlewat tidak boleh dibatalkan.
-        $tanggalHari = $tanggal->copy()->startOfDay();
-        if ($tanggalHari->lt($sekarang->copy()->startOfDay())) {
-            return redirect()->back()->with('gagal', 'Penggunaan ini sudah terlewat dan tidak dapat dibatalkan.');
-        }
-
-        if ($tanggalHari->isSameDay($sekarang) && $request->jam_selesai) {
-            $waktuSelesai = Carbon::parse($tanggalHari->format('Y-m-d') . ' ' . $request->jam_selesai);
-            if ($waktuSelesai->lte($sekarang)) {
-                return redirect()->back()->with('gagal', 'Penggunaan ini sudah selesai/terlewat dan tidak dapat dibatalkan.');
-            }
+        // Tanggal yang sudah lewat hanya menjadi riwayat dan tidak boleh dibatalkan.
+        if ($tanggalPenggunaan < $hariIni) {
+            return redirect()->back()->with('gagal', 'Penggunaan pada tanggal tersebut sudah terlewat dan tidak dapat dibatalkan.');
         }
 
         try {
             DB::beginTransaction();
 
-            if ($request->jenis_penggunaan === 'barang') {
-                $query = UsageItems::where('kode_agenda', $kodeAgenda)
-                    ->where('id_item', $request->id_resource)
-                    ->where('tgl_pinjam_usage_item', $request->tanggal_penggunaan)
-                    ->whereIn('status_usage_item', ['terjadwal', 'digunakan']);
+            $queryItem = UsageItems::where('kode_agenda', $kodeAgenda)
+                ->whereDate('tgl_pinjam_usage_item', $tanggalPenggunaan)
+                ->whereIn('status_usage_item', ['terjadwal', 'digunakan']);
 
-                $request->jam_mulai
-                    ? $query->where('jam_mulai_usage_item', $request->jam_mulai)
-                    : $query->whereNull('jam_mulai_usage_item');
-                $request->jam_selesai
-                    ? $query->where('jam_selesai_usage_item', $request->jam_selesai)
-                    : $query->whereNull('jam_selesai_usage_item');
+            $queryRoom = UsageRooms::where('kode_agenda', $kodeAgenda)
+                ->whereDate('tgl_pinjam_usage_room', $tanggalPenggunaan)
+                ->whereIn('status_usage_room', ['terjadwal', 'digunakan']);
 
-                $jumlah = $query->update([
-                    'status_usage_item' => 'dibatalkan',
-                    'updated_at' => now(),
-                ]);
-            } else {
-                $query = UsageRooms::where('kode_agenda', $kodeAgenda)
-                    ->where('id_room', $request->id_resource)
-                    ->where('tgl_pinjam_usage_room', $request->tanggal_penggunaan)
-                    ->whereIn('status_usage_room', ['terjadwal', 'digunakan']);
+            // Jika yang dibatalkan adalah hari ini, penggunaan yang jamnya sudah selesai
+            // tidak ikut dibatalkan walaupun status database belum sempat berubah menjadi selesai.
+            if ($tanggalPenggunaan === $hariIni) {
+                $queryItem->where(function ($query) use ($jamSekarang) {
+                    $query->whereNull('jam_selesai_usage_item')
+                        ->orWhere('jam_selesai_usage_item', '>', $jamSekarang);
+                });
 
-                $request->jam_mulai
-                    ? $query->where('jam_mulai_usage_room', $request->jam_mulai)
-                    : $query->whereNull('jam_mulai_usage_room');
-                $request->jam_selesai
-                    ? $query->where('jam_selesai_usage_room', $request->jam_selesai)
-                    : $query->whereNull('jam_selesai_usage_room');
-
-                $jumlah = $query->update([
-                    'status_usage_room' => 'dibatalkan',
-                    'updated_at' => now(),
-                ]);
+                $queryRoom->where(function ($query) use ($jamSekarang) {
+                    $query->whereNull('jam_selesai_usage_room')
+                        ->orWhere('jam_selesai_usage_room', '>', $jamSekarang);
+                });
             }
 
-            if ($jumlah === 0) {
+            $itemDibatalkan = $queryItem->update([
+                'status_usage_item' => 'dibatalkan',
+                'updated_at' => now(),
+            ]);
+
+            $roomDibatalkan = $queryRoom->update([
+                'status_usage_room' => 'dibatalkan',
+                'updated_at' => now(),
+            ]);
+
+            if (($itemDibatalkan + $roomDibatalkan) === 0) {
                 DB::rollBack();
-                return redirect()->back()->with('gagal', 'Penggunaan tidak dapat dibatalkan karena sudah selesai, sudah dibatalkan, atau datanya telah berubah.');
+
+                return redirect()->back()->with(
+                    'gagal',
+                    'Tidak ada penggunaan aktif pada tanggal ini yang dapat dibatalkan. Penggunaan yang sudah selesai/terlewat tetap dipertahankan.'
+                );
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'Penggunaan yang dipilih berhasil dibatalkan. Penggunaan agenda lainnya tetap berjalan.');
+
+            return redirect()
+                ->route('admin.agenda-calender', [urlencode($kodeAgenda), $tanggalPenggunaan])
+                ->with(
+                    'success',
+                    "Penggunaan tanggal " . Carbon::parse($tanggalPenggunaan)->format('d-m-Y') .
+                    " berhasil dibatalkan: {$itemDibatalkan} penggunaan barang dan {$roomDibatalkan} penggunaan ruangan."
+                );
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('gagal', 'Penggunaan gagal dibatalkan. Silakan coba kembali.');
+            return redirect()->back()->with('gagal', 'Penggunaan pada tanggal ini gagal dibatalkan. Silakan coba kembali.');
         }
     }
 
     // menghapus agenda dari db di table agenda fakultas dan menghapus usage nya di usage barang dan ruangan
     public function hapusAgenda(Request $request)
     {
-        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
-            abort(403, 'Anda tidak memiliki akses untuk menghapus agenda.');
-        }
-
         $request->validate([
             'kode_agenda' => 'required',
         ]);

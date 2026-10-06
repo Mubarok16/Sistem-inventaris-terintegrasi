@@ -45,6 +45,8 @@ class DetailAgendaService
                 'usage_barang' => $dataDetailPengajuanPeminjamanBarang,
                 'usage_ruang' => $dataDetailPengajuanPeminjamanRuangan,
                 'tgl_pinjam' => $date,
+                'is_agenda' => false,
+                'dapat_dibatalkan_hari' => false,
             ];
 
         } else {
@@ -66,24 +68,24 @@ class DetailAgendaService
                 ->whereDate('usage_rooms.tgl_pinjam_usage_room', $date)
                 ->get();
 
-            // Tandai usage yang masih boleh dibatalkan oleh admin.
-            // Jadwal selesai/dibatalkan maupun jadwal yang waktunya sudah lewat tidak diberi aksi batal.
+            // Tentukan apakah tanggal yang sedang dibuka masih memiliki penggunaan aktif
+            // yang dapat dibatalkan secara bersamaan per hari.
             $sekarang = Carbon::now();
-            $cekDapatDibatalkan = function ($usage, string $jenis) use ($sekarang) {
+            $tanggalDipilih = Carbon::parse($date)->startOfDay();
+
+            $cekAktif = function ($usage, string $jenis) use ($sekarang, $tanggalDipilih) {
                 $status = $jenis === 'barang' ? $usage->status_usage_item : $usage->status_usage_room;
-                $tanggal = $jenis === 'barang' ? $usage->tgl_pinjam_usage_item : $usage->tgl_pinjam_usage_room;
                 $jamSelesai = $jenis === 'barang' ? $usage->jam_selesai_usage_item : $usage->jam_selesai_usage_room;
 
                 if (!in_array($status, ['terjadwal', 'digunakan'], true)) {
                     return false;
                 }
 
-                $tanggalUsage = Carbon::parse($tanggal)->startOfDay();
-                if ($tanggalUsage->gt($sekarang->copy()->startOfDay())) {
+                if ($tanggalDipilih->gt($sekarang->copy()->startOfDay())) {
                     return true;
                 }
 
-                if (!$tanggalUsage->isSameDay($sekarang)) {
+                if (!$tanggalDipilih->isSameDay($sekarang)) {
                     return false;
                 }
 
@@ -91,23 +93,23 @@ class DetailAgendaService
                     return true;
                 }
 
-                return Carbon::parse($tanggalUsage->format('Y-m-d') . ' ' . $jamSelesai)->gt($sekarang);
+                return Carbon::parse($tanggalDipilih->format('Y-m-d') . ' ' . $jamSelesai)->gt($sekarang);
             };
 
-            $dataDetailPengajuanPeminjamanBarang->each(function ($usage) use ($cekDapatDibatalkan) {
-                $usage->dapat_dibatalkan = $cekDapatDibatalkan($usage, 'barang');
-            });
-
-            $dataDetailPengajuanPeminjamanRuangan->each(function ($usage) use ($cekDapatDibatalkan) {
-                $usage->dapat_dibatalkan = $cekDapatDibatalkan($usage, 'ruangan');
-            });
+            $dapatDibatalkanHari = $dataDetailPengajuanPeminjamanBarang->contains(
+                fn ($usage) => $cekAktif($usage, 'barang')
+            ) || $dataDetailPengajuanPeminjamanRuangan->contains(
+                fn ($usage) => $cekAktif($usage, 'ruangan')
+            );
 
             // hasil data agenda termasuk penggunaan barang dan ruang
             return [
                 'header' => $dataDetailAgenda,
                 'usage_barang' => $dataDetailPengajuanPeminjamanBarang,
                 'usage_ruang' => $dataDetailPengajuanPeminjamanRuangan,
-                'tgl_pinjam' => $date
+                'tgl_pinjam' => $date,
+                'is_agenda' => true,
+                'dapat_dibatalkan_hari' => $dapatDibatalkanHari,
             ];
         }
     }

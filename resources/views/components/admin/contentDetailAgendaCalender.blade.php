@@ -86,13 +86,28 @@
 
         <!-- Items & room List -->
         <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div @click="open = !open"
-                class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-white cursor-pointer">
-                <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
-                <div class="flex items-center text-slate-500">
-                    <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm"
+            <div
+                class="px-6 py-4 border-b border-slate-200 flex flex-col gap-3 md:flex-row md:justify-between md:items-center bg-white">
+                <button type="button" @click="open = !open"
+                    class="flex items-center gap-2 text-left text-slate-900">
+                    <h5 class="font-semibold">Daftar Barang &amp; Ruangan</h5>
+                    <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm text-slate-500"
                         :class="open ? 'rotate-180' : 'rotate-0'"></i>
-                </div>
+                </button>
+
+                @if (Auth::user()->hak_akses === 'admin' && ($isAgenda ?? false) && ($dapatDibatalkanHari ?? false))
+                    <form action="{{ route('batalkan-penggunaan-agenda-harian') }}" method="post"
+                        onsubmit="return confirm('Batalkan seluruh penggunaan barang dan ruangan yang masih aktif pada tanggal {{ date('d-m-Y', strtotime($date)) }}? Penggunaan pada tanggal lain tidak akan berubah.');">
+                        @csrf
+                        <input type="hidden" name="kode_agenda" value="{{ $id }}">
+                        <input type="hidden" name="tanggal_penggunaan" value="{{ $date }}">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-md font-medium text-sm hover:bg-red-600 transition-colors shadow-sm">
+                            <i class="fa-solid fa-ban"></i>
+                            Batalkan Penggunaan Tanggal Ini
+                        </button>
+                    </form>
+                @endif
             </div>
 
             <div x-show="open" x-transition:enter="transition ease-out duration-200"
@@ -108,10 +123,6 @@
                             <th class="px-6 py-3">Jadwal Penggunaan</th>
                             <th class="px-6 py-3 text-center">Jumlah</th>
                             <th class="px-6 py-3">Kondisi Awal</th>
-                            <th class="px-6 py-3">Status</th>
-                            @if (Auth::user()->hak_akses === 'admin')
-                                <th class="px-6 py-3 text-right">Aksi</th>
-                            @endif
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -186,43 +197,6 @@
                                             {{ $usage_item->kondisi_item }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        @php $statusItem = strtolower($usage_item->status_usage_item); @endphp
-                                        <span class="inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold
-                                            {{ $statusItem === 'terjadwal' ? 'bg-blue-50 text-blue-700 border-blue-100' : '' }}
-                                            {{ $statusItem === 'digunakan' ? 'bg-green-50 text-green-700 border-green-100' : '' }}
-                                            {{ $statusItem === 'selesai' ? 'bg-slate-100 text-slate-600 border-slate-200' : '' }}
-                                            {{ $statusItem === 'dibatalkan' ? 'bg-red-50 text-red-700 border-red-100' : '' }}">
-                                            {{ ucfirst($statusItem) }}
-                                        </span>
-                                    </td>
-                                    @if (Auth::user()->hak_akses === 'admin')
-                                        <td class="px-6 py-4 text-right">
-                                            @if (($usage_item->kode_agenda ?? null) && ($usage_item->dapat_dibatalkan ?? false))
-                                                <form action="{{ route('batalkan-penggunaan-agenda') }}" method="post"
-                                                    onsubmit="return confirm('Batalkan penggunaan barang ini saja? Penggunaan agenda lainnya tidak akan berubah.');"
-                                                    class="inline-block">
-                                                    @csrf
-                                                    <input type="hidden" name="kode_agenda" value="{{ $usage_item->kode_agenda }}">
-                                                    <input type="hidden" name="jenis_penggunaan" value="barang">
-                                                    <input type="hidden" name="id_resource" value="{{ $usage_item->id_item }}">
-                                                    <input type="hidden" name="tanggal_penggunaan" value="{{ $usage_item->tgl_pinjam_usage_item }}">
-                                                    <input type="hidden" name="jam_mulai" value="{{ $usage_item->jam_mulai_usage_item }}">
-                                                    <input type="hidden" name="jam_selesai" value="{{ $usage_item->jam_selesai_usage_item }}">
-                                                    <button type="submit"
-                                                        class="inline-flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded-md text-xs font-medium hover:bg-red-600 transition-colors">
-                                                        <i class="fa-solid fa-ban"></i> Batalkan Penggunaan Ini
-                                                    </button>
-                                                </form>
-                                            @elseif (($usage_item->kode_agenda ?? null))
-                                                <span class="text-xs text-slate-400">
-                                                    {{ $statusItem === 'dibatalkan' ? 'Sudah dibatalkan' : 'Tidak dapat dibatalkan' }}
-                                                </span>
-                                            @else
-                                                <span class="text-xs text-slate-400">-</span>
-                                            @endif
-                                        </td>
-                                    @endif
                                 </tr>
                                 {{-- @endif --}}
                             @endforeach
@@ -294,43 +268,6 @@
                                             Baik
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        @php $statusRoom = strtolower($usage_room->status_usage_room); @endphp
-                                        <span class="inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold
-                                            {{ $statusRoom === 'terjadwal' ? 'bg-blue-50 text-blue-700 border-blue-100' : '' }}
-                                            {{ $statusRoom === 'digunakan' ? 'bg-green-50 text-green-700 border-green-100' : '' }}
-                                            {{ $statusRoom === 'selesai' ? 'bg-slate-100 text-slate-600 border-slate-200' : '' }}
-                                            {{ $statusRoom === 'dibatalkan' ? 'bg-red-50 text-red-700 border-red-100' : '' }}">
-                                            {{ ucfirst($statusRoom) }}
-                                        </span>
-                                    </td>
-                                    @if (Auth::user()->hak_akses === 'admin')
-                                        <td class="px-6 py-4 text-right">
-                                            @if (($usage_room->kode_agenda ?? null) && ($usage_room->dapat_dibatalkan ?? false))
-                                                <form action="{{ route('batalkan-penggunaan-agenda') }}" method="post"
-                                                    onsubmit="return confirm('Batalkan penggunaan ruangan ini saja? Penggunaan agenda lainnya tidak akan berubah.');"
-                                                    class="inline-block">
-                                                    @csrf
-                                                    <input type="hidden" name="kode_agenda" value="{{ $usage_room->kode_agenda }}">
-                                                    <input type="hidden" name="jenis_penggunaan" value="ruangan">
-                                                    <input type="hidden" name="id_resource" value="{{ $usage_room->id_room }}">
-                                                    <input type="hidden" name="tanggal_penggunaan" value="{{ $usage_room->tgl_pinjam_usage_room }}">
-                                                    <input type="hidden" name="jam_mulai" value="{{ $usage_room->jam_mulai_usage_room }}">
-                                                    <input type="hidden" name="jam_selesai" value="{{ $usage_room->jam_selesai_usage_room }}">
-                                                    <button type="submit"
-                                                        class="inline-flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded-md text-xs font-medium hover:bg-red-600 transition-colors">
-                                                        <i class="fa-solid fa-ban"></i> Batalkan Penggunaan Ini
-                                                    </button>
-                                                </form>
-                                            @elseif (($usage_room->kode_agenda ?? null))
-                                                <span class="text-xs text-slate-400">
-                                                    {{ $statusRoom === 'dibatalkan' ? 'Sudah dibatalkan' : 'Tidak dapat dibatalkan' }}
-                                                </span>
-                                            @else
-                                                <span class="text-xs text-slate-400">-</span>
-                                            @endif
-                                        </td>
-                                    @endif
                                 </tr>
                                 {{-- @endif --}}
                             @endforeach

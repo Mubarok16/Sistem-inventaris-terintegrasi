@@ -225,10 +225,10 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
         ->middleware('hak_akses:admin')
         ->name('batalkan-agenda');
 
-    // batalkan satu penggunaan barang/ruangan tertentu pada agenda (khusus admin)
-    Route::post('/batalkan-penggunaan-agenda', [pengelolaanAgenda::class, 'batalkanPenggunaanAgenda'])
+    // batalkan seluruh penggunaan barang/ruangan pada satu tanggal agenda (khusus admin)
+    Route::post('/batalkan-penggunaan-agenda-harian', [pengelolaanAgenda::class, 'batalkanPenggunaanAgendaHarian'])
         ->middleware('hak_akses:admin')
-        ->name('batalkan-penggunaan-agenda');
+        ->name('batalkan-penggunaan-agenda-harian');
 
     // hapus data agenda db
     Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');

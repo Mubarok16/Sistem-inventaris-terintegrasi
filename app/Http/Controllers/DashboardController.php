@@ -473,6 +473,8 @@ class DashboardController extends Controller
         $usage_room = $dataAgenda['usage_ruang'];
         $usage_item = $dataAgenda['usage_barang'];
         $tglPinjam = $dataAgenda['tgl_pinjam'];
+        $isAgenda = $dataAgenda['is_agenda'] ?? false;
+        $dapatDibatalkanHari = $dataAgenda['dapat_dibatalkan_hari'] ?? false;
 
         // $user = null;
 
@@ -486,7 +488,7 @@ class DashboardController extends Controller
 
         // dd($user, $date);
         $halaman = 'contentDetailAgendaCalender';
-        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'id', 'date'));
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'headerAgenda', 'usage_room', 'usage_item', 'tglPinjam', 'id', 'date', 'isAgenda', 'dapatDibatalkanHari'));
     }
 
     // detail agenda edit per tgl di admin

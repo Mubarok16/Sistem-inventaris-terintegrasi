@@ -220,167 +220,131 @@
         <div id="calendar" data-url="{{ url('pengelolaan-agenda-calender') }}" class="mb-4 fc-tailwind" data-start-date="{{ $tglStartKalender }}">
         </div>
 
-        <!-- Daftar seluruh penggunaan agenda -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/50">
-                <div class="flex flex-col gap-1">
-                    <h5 class="font-semibold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-primary"></i>
-                        Daftar Penggunaan Barang &amp; Ruangan
-                    </h5>
-                    <p class="text-xs text-slate-500">
-                        Admin dapat membatalkan satu penggunaan tertentu tanpa membatalkan penggunaan agenda lainnya.
-                        Penggunaan yang sudah selesai atau waktunya sudah terlewat hanya ditampilkan sebagai riwayat.
-                    </p>
+        <!-- Daftar barang dan ruangan yang digunakan pada agenda (tanpa pengulangan per tanggal) -->
+        @php
+            $barangAgenda = $dataDetailPengajuanPeminjamanBarang->unique('id_item')->values();
+            $ruanganAgenda = $dataDetailPengajuanPeminjamanRuangan->unique('id_room')->values();
+        @endphp
+        <div x-data="{ open: true }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div @click="open = !open"
+                class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50 cursor-pointer">
+                <h5 class="font-semibold text-slate-900">Daftar Barang &amp; Ruangan</h5>
+                <div class="flex items-center text-slate-500">
+                    <i class="fa-solid fa-chevron-down transition-transform duration-300 text-sm"
+                        :class="open ? 'rotate-180' : 'rotate-0'"></i>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse min-w-[900px]">
+            <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+                class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold tracking-wider">
-                            <th class="px-5 py-3">Jenis</th>
-                            <th class="px-5 py-3">Barang / Ruangan</th>
-                            <th class="px-5 py-3">Tanggal &amp; Jam</th>
-                            <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3 text-right">Aksi</th>
+                            <th class="px-6 py-3">Detail Item</th>
+                            <th class="px-6 py-3">Jadwal Penggunaan</th>
+                            <th class="px-6 py-3 text-center">Jumlah</th>
+                            <th class="px-6 py-3">Kondisi Awal</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @forelse ($dataDetailPengajuanPeminjamanBarang as $usage)
-                            <tr class="hover:bg-slate-50/70 transition-colors">
-                                <td class="px-5 py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                                        <i class="fa-solid fa-box"></i> Barang
-                                    </span>
-                                </td>
-                                <td class="px-5 py-4">
-                                    <p class="font-medium text-slate-900">{{ $usage->nama_item }}</p>
-                                    <p class="text-xs text-slate-500">{{ $usage->id_item }} · {{ $usage->qty_usage_item }} unit</p>
-                                </td>
-                                <td class="px-5 py-4 text-sm text-slate-600">
-                                    <div>{{ date('d M Y', strtotime($usage->tgl_pinjam_usage_item)) }}</div>
-                                    <div class="text-xs text-slate-500 mt-1">
-                                        @if ($usage->jam_mulai_usage_item && $usage->jam_selesai_usage_item)
-                                            {{ date('H:i', strtotime($usage->jam_mulai_usage_item)) }} - {{ date('H:i', strtotime($usage->jam_selesai_usage_item)) }} WIB
-                                        @else
-                                            Full day
-                                        @endif
+                        @foreach ($barangAgenda as $barang)
+                            <tr class="group hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden">
+                                            <img alt="{{ $barang->nama_item ?? 'Item Image' }}" class="w-full h-full object-cover"
+                                                src="{{ Storage::disk('s3')->url(str_replace('//', '/', $barang->img_item)) }}" />
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-900">{{ $barang->nama_item }}</p>
+                                            <p class="text-xs text-slate-500">{{ $barang->id_item }}</p>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-5 py-4">
-                                    @php
-                                        $statusBarang = strtolower($usage->status_usage_item);
-                                        $statusBarangClass = match ($statusBarang) {
-                                            'terjadwal' => 'bg-blue-50 text-blue-700 border-blue-100',
-                                            'digunakan' => 'bg-green-50 text-green-700 border-green-100',
-                                            'selesai' => 'bg-slate-100 text-slate-600 border-slate-200',
-                                            'dibatalkan' => 'bg-red-50 text-red-700 border-red-100',
-                                            default => 'bg-slate-50 text-slate-600 border-slate-200',
-                                        };
-                                    @endphp
-                                    <span class="inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold {{ $statusBarangClass }}">
-                                        {{ ucfirst($statusBarang) }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-4 text-right">
-                                    @if (Auth::user()->hak_akses === 'admin' && $usage->dapat_dibatalkan)
-                                        <form action="{{ route('batalkan-penggunaan-agenda') }}" method="post"
-                                            onsubmit="return confirm('Batalkan penggunaan barang ini saja? Penggunaan agenda lainnya tidak akan berubah.');"
-                                            class="inline-block">
-                                            @csrf
-                                            <input type="hidden" name="kode_agenda" value="{{ $usage->kode_agenda }}">
-                                            <input type="hidden" name="jenis_penggunaan" value="barang">
-                                            <input type="hidden" name="id_resource" value="{{ $usage->id_item }}">
-                                            <input type="hidden" name="tanggal_penggunaan" value="{{ $usage->tgl_pinjam_usage_item }}">
-                                            <input type="hidden" name="jam_mulai" value="{{ $usage->jam_mulai_usage_item }}">
-                                            <input type="hidden" name="jam_selesai" value="{{ $usage->jam_selesai_usage_item }}">
-                                            <button type="submit"
-                                                class="inline-flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded-md font-medium text-xs hover:bg-red-600 transition-colors">
-                                                <i class="fa-solid fa-ban"></i>
-                                                Batalkan Penggunaan Ini
-                                            </button>
-                                        </form>
+                                <td class="px-6 py-4">
+                                    @if ($barang->jam_mulai_usage_item != null && $barang->jam_selesai_usage_item != null)
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                <span>Setiap hari</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
+                                                <span>{{ date('H:i', strtotime($barang->jam_mulai_usage_item)) }} -
+                                                    {{ date('H:i', strtotime($barang->jam_selesai_usage_item)) }} WIB</span>
+                                            </div>
+                                        </div>
                                     @else
-                                        <span class="text-xs text-slate-400">
-                                            {{ $statusBarang === 'dibatalkan' ? 'Sudah dibatalkan' : ($statusBarang === 'selesai' || !$usage->dapat_dibatalkan ? 'Tidak dapat dibatalkan' : '-') }}
-                                        </span>
+                                        <div class="flex items-center gap-2 text-sm text-slate-600">
+                                            <i class="fa-solid fa-clock text-base"></i>
+                                            <span>Durasi Penuh</span>
+                                        </div>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">
+                                    {{ $barang->qty_usage_item }} Unit
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-green-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check text-base"></i>
+                                        {{ $barang->kondisi_item }}
+                                    </span>
+                                </td>
                             </tr>
-                        @empty
-                        @endforelse
+                        @endforeach
 
-                        @forelse ($dataDetailPengajuanPeminjamanRuangan as $usage)
-                            <tr class="hover:bg-slate-50/70 transition-colors">
-                                <td class="px-5 py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-100">
-                                        <i class="fa-solid fa-door-open"></i> Ruangan
-                                    </span>
-                                </td>
-                                <td class="px-5 py-4">
-                                    <p class="font-medium text-slate-900">{{ $usage->nama_tipe_room }} {{ $usage->nama_room }}</p>
-                                    <p class="text-xs text-slate-500">{{ $usage->id_room }}</p>
-                                </td>
-                                <td class="px-5 py-4 text-sm text-slate-600">
-                                    <div>{{ date('d M Y', strtotime($usage->tgl_pinjam_usage_room)) }}</div>
-                                    <div class="text-xs text-slate-500 mt-1">
-                                        @if ($usage->jam_mulai_usage_room && $usage->jam_selesai_usage_room)
-                                            {{ date('H:i', strtotime($usage->jam_mulai_usage_room)) }} - {{ date('H:i', strtotime($usage->jam_selesai_usage_room)) }} WIB
-                                        @else
-                                            Full day
-                                        @endif
+                        @foreach ($ruanganAgenda as $ruangan)
+                            <tr class="group hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden">
+                                            <img alt="{{ $ruangan->nama_room ?? 'Room Image' }}" class="w-full h-full object-cover"
+                                                src="{{ Storage::disk('s3')->url(str_replace('//', '/', $ruangan->gambar_room)) }}" />
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-900">{{ $ruangan->nama_tipe_room }} {{ $ruangan->nama_room }}</p>
+                                            <p class="text-xs text-slate-500">{{ $ruangan->id_room }}</p>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-5 py-4">
-                                    @php
-                                        $statusRuangan = strtolower($usage->status_usage_room);
-                                        $statusRuanganClass = match ($statusRuangan) {
-                                            'terjadwal' => 'bg-blue-50 text-blue-700 border-blue-100',
-                                            'digunakan' => 'bg-green-50 text-green-700 border-green-100',
-                                            'selesai' => 'bg-slate-100 text-slate-600 border-slate-200',
-                                            'dibatalkan' => 'bg-red-50 text-red-700 border-red-100',
-                                            default => 'bg-slate-50 text-slate-600 border-slate-200',
-                                        };
-                                    @endphp
-                                    <span class="inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold {{ $statusRuanganClass }}">
-                                        {{ ucfirst($statusRuangan) }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-4 text-right">
-                                    @if (Auth::user()->hak_akses === 'admin' && $usage->dapat_dibatalkan)
-                                        <form action="{{ route('batalkan-penggunaan-agenda') }}" method="post"
-                                            onsubmit="return confirm('Batalkan penggunaan ruangan ini saja? Penggunaan agenda lainnya tidak akan berubah.');"
-                                            class="inline-block">
-                                            @csrf
-                                            <input type="hidden" name="kode_agenda" value="{{ $usage->kode_agenda }}">
-                                            <input type="hidden" name="jenis_penggunaan" value="ruangan">
-                                            <input type="hidden" name="id_resource" value="{{ $usage->id_room }}">
-                                            <input type="hidden" name="tanggal_penggunaan" value="{{ $usage->tgl_pinjam_usage_room }}">
-                                            <input type="hidden" name="jam_mulai" value="{{ $usage->jam_mulai_usage_room }}">
-                                            <input type="hidden" name="jam_selesai" value="{{ $usage->jam_selesai_usage_room }}">
-                                            <button type="submit"
-                                                class="inline-flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded-md font-medium text-xs hover:bg-red-600 transition-colors">
-                                                <i class="fa-solid fa-ban"></i>
-                                                Batalkan Penggunaan Ini
-                                            </button>
-                                        </form>
+                                <td class="px-6 py-4">
+                                    @if ($ruangan->jam_mulai_usage_room != null && $ruangan->jam_selesai_usage_room != null)
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i class="fa-solid fa-calendar-days text-base text-primary"></i>
+                                                <span>Setiap hari</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-slate-500 pl-6">
+                                                <span>{{ date('H:i', strtotime($ruangan->jam_mulai_usage_room)) }} -
+                                                    {{ date('H:i', strtotime($ruangan->jam_selesai_usage_room)) }} WIB</span>
+                                            </div>
+                                        </div>
                                     @else
-                                        <span class="text-xs text-slate-400">
-                                            {{ $statusRuangan === 'dibatalkan' ? 'Sudah dibatalkan' : ($statusRuangan === 'selesai' || !$usage->dapat_dibatalkan ? 'Tidak dapat dibatalkan' : '-') }}
-                                        </span>
+                                        <div class="flex items-center gap-2 text-sm text-slate-600">
+                                            <i class="fa-solid fa-clock text-base"></i>
+                                            <span>Durasi Penuh</span>
+                                        </div>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 text-center text-sm font-medium text-slate-900">-</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-green-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check text-base"></i>
+                                        {{ $ruangan->kondisi_room ?? 'Baik' }}
+                                    </span>
+                                </td>
                             </tr>
-                        @empty
-                            @if ($dataDetailPengajuanPeminjamanBarang->isEmpty())
-                                <tr>
-                                    <td colspan="5" class="px-5 py-8 text-center text-sm text-slate-500">
-                                        Tidak ada data penggunaan barang atau ruangan untuk agenda ini.
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforelse
+                        @endforeach
+
+                        @if ($barangAgenda->isEmpty() && $ruanganAgenda->isEmpty())
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-500">
+                                    Tidak ada barang atau ruangan yang digunakan pada agenda ini.
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
