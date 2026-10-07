@@ -231,9 +231,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
         ->name('batalkan-penggunaan-agenda-harian');
 
     // hapus data agenda db
-    Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])
-        ->middleware('hak_akses:admin')
-        ->name('hapus-agenda');
+    Route::post('/hapus-agenda', [pengelolaanAgenda::class, 'hapusAgenda'])->name('hapus-agenda');
 
     // Pengajuan barang admin ========================================================================================================================
     Route::post('/simpan-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('simpan-pengadaan');

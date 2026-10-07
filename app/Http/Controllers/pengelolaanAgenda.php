@@ -1270,34 +1270,20 @@ class pengelolaanAgenda extends Controller
         }
     }
 
-    // Menghapus seluruh agenda beserta seluruh riwayat penggunaan barang dan ruangan.
-    // Aksi ini hanya boleh dilakukan oleh admin dan bersifat permanen.
+    // menghapus agenda dari db di table agenda fakultas dan menghapus usage nya di usage barang dan ruangan
     public function hapusAgenda(Request $request)
     {
-        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
-            abort(403, 'Anda tidak memiliki akses untuk menghapus agenda.');
-        }
-
         $request->validate([
-            'kode_agenda' => 'required|string|exists:agenda_fakultas,kode_agenda',
+            'kode_agenda' => 'required',
         ]);
 
-        try {
-            DB::beginTransaction();
+        // dd($request->kode_agenda);
 
-            UsageItems::where('kode_agenda', $request->kode_agenda)->delete();
-            UsageRooms::where('kode_agenda', $request->kode_agenda)->delete();
-            agendaFakultas::where('kode_agenda', $request->kode_agenda)->delete();
+        $hapusUsageItem = UsageItems::where('kode_agenda', '=', $request->kode_agenda)->delete();
+        $hapusUsageRoom = UsageRooms::where('kode_agenda', '=', $request->kode_agenda)->delete();
+        $hapusAgenda = agendaFakultas::where('kode_agenda', '=', $request->kode_agenda)->delete();
 
-            DB::commit();
-
-            return redirect()->route('dashboard-admin-agenda')
-                ->with('success', 'Agenda beserta seluruh penggunaan barang dan ruangan berhasil dihapus.');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-
-            return redirect()->back()->with('gagal', 'Agenda gagal dihapus. Silakan coba kembali.');
-        }
+        return redirect()->route('dashboard-admin-agenda')->with('success', 'Data berhasil di hapus.');
     }
 
 
