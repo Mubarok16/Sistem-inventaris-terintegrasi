@@ -105,7 +105,24 @@ class PengelolaanUserController extends Controller
                 $password = trim((string) ($row['password'] ?? ''));
                 $prodiInput = trim((string) ($row['prodi'] ?? ''));
                 $tahunMasuk = trim((string) ($row['tahun_masuk'] ?? ''));
-                $statusInput = Str::lower(trim((string) ($row['status'] ?? 'active')));
+                $statusRaw = trim((string) ($row['status'] ?? ''));
+
+                // Abaikan baris yang kosong pada seluruh kolom data template (A-G).
+                // Kolom Petunjuk/Keterangan di sebelah kanan template tidak boleh
+                // membuat baris kosong dianggap sebagai data mahasiswa.
+                if (
+                    $noIdentitas === '' &&
+                    $nama === '' &&
+                    $username === '' &&
+                    $password === '' &&
+                    $prodiInput === '' &&
+                    $tahunMasuk === '' &&
+                    $statusRaw === ''
+                ) {
+                    continue;
+                }
+
+                $statusInput = Str::lower($statusRaw !== '' ? $statusRaw : 'active');
 
                 if ($noIdentitas === '' || $nama === '' || $username === '' || $password === '' || $prodiInput === '' || $tahunMasuk === '') {
                     return redirect()->back()->with(
@@ -185,6 +202,10 @@ class PengelolaanUserController extends Controller
                     'tahun_masuk' => (int) $tahunMasuk,
                     'status' => $status,
                 ];
+            }
+
+            if (empty($dataSiapSimpan)) {
+                return redirect()->back()->with('gagal', 'File import tidak berisi data mahasiswa pada kolom A-G.');
             }
 
             DB::transaction(function () use ($dataSiapSimpan) {
