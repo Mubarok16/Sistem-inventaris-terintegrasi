@@ -696,17 +696,37 @@ class pengelolaanAgenda extends Controller
             abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
         }
 
-        $kodeAgenda = session('kode_agenda_edit');
-        if (!$kodeAgenda || !DB::table('agenda_fakultas')->where('kode_agenda', $kodeAgenda)->exists()) {
+        // Ambil kode agenda langsung dari form. Session hanya dipakai sebagai tempat
+        // menyimpan draft, bukan sebagai syarat agar draft boleh disimpan.
+        $kodeAgenda = trim((string) $request->input('kode_agenda'));
+
+        if ($kodeAgenda === '' || !DB::table('agenda_fakultas')->where('kode_agenda', $kodeAgenda)->exists()) {
             return redirect()->back()->with('gagal', 'Agenda yang diedit tidak ditemukan. Silakan buka ulang halaman edit.');
         }
 
+        // Normalisasi value lama agar data agenda yang sudah ada tetap kompatibel.
+        $tipeJam = trim((string) $request->input('tipe_jam'));
+        $loopAgenda = trim((string) $request->input('loop_agenda'));
+        $tipeAgenda = trim((string) $request->input('tipe_agenda'));
+        $jamMulai = $request->filled('jam_mulai') ? substr((string) $request->input('jam_mulai'), 0, 5) : null;
+        $jamSelesai = $request->filled('jam_selesai') ? substr((string) $request->input('jam_selesai'), 0, 5) : null;
+
+        if ($tipeJam === 'full day') {
+            $jamMulai = null;
+            $jamSelesai = null;
+        }
+
         $request->merge([
-            'loop_agenda' => trim((string) $request->loop_agenda),
-            'tipe_agenda' => trim((string) $request->tipe_agenda),
+            'kode_agenda' => $kodeAgenda,
+            'loop_agenda' => $loopAgenda,
+            'tipe_agenda' => $tipeAgenda,
+            'tipe_jam' => $tipeJam,
+            'jam_mulai' => $jamMulai,
+            'jam_selesai' => $jamSelesai,
         ]);
 
         $validated = $request->validate([
+            'kode_agenda' => 'required|string|exists:agenda_fakultas,kode_agenda',
             'nama_agenda' => 'required|string|max:255',
             'tgl_mulai_agenda' => 'required|date',
             'tgl_selesai_agenda' => 'required|date|after_or_equal:tgl_mulai_agenda',
@@ -717,11 +737,12 @@ class pengelolaanAgenda extends Controller
             'jam_selesai' => 'nullable|required_if:tipe_jam,spesifik|date_format:H:i|after:jam_mulai',
         ], [
             'tgl_selesai_agenda.after_or_equal' => 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.',
+            'jam_mulai.required_if' => 'Jam mulai wajib diisi untuk tipe waktu spesifik.',
+            'jam_selesai.required_if' => 'Jam selesai wajib diisi untuk tipe waktu spesifik.',
             'jam_selesai.after' => 'Jam selesai harus lebih besar dari jam mulai.',
         ]);
 
         $dataBaru = [
-            // kode agenda sengaja dikunci agar relasi usage tidak rusak
             'kode_agenda' => $kodeAgenda,
             'nama_agenda' => $validated['nama_agenda'],
             'tgl_mulai_agenda' => $validated['tgl_mulai_agenda'],
@@ -733,11 +754,16 @@ class pengelolaanAgenda extends Controller
             'tipe_jam' => $validated['tipe_jam'],
         ];
 
+        // Sinkronkan seluruh penanda edit agar proses Simpan Semua Perubahan
+        // selalu membaca draft yang baru saja dikunci.
+        session()->put('kode_agenda_edit', $kodeAgenda);
         session()->put('data_agenda_edit', [(object) $dataBaru]);
         session()->put('edit_agenda_dikunci', $kodeAgenda);
         session()->save();
 
-        return redirect()->back()->with('success', 'Perubahan detail agenda sudah dikunci. Lanjutkan dengan Simpan Semua Perubahan.');
+        return redirect()
+            ->route('edit-agenda-admin', ['id' => $kodeAgenda])
+            ->with('success', 'Perubahan detail agenda berhasil disimpan sementara. Lanjutkan dengan Simpan Semua Perubahan.');
     }
 
     // menyimpan data input barang dan ruangan sementara untuk edit agenda sebelum disimpan di db usage item
@@ -1270,20 +1296,34 @@ class pengelolaanAgenda extends Controller
         }
     }
 
-    // menghapus agenda dari db di table agenda fakultas dan menghapus usage nya di usage barang dan ruangan
+    // Menghapus seluruh agenda beserta seluruh riwayat penggunaan barang dan ruangan.
+    // Aksi ini hanya boleh dilakukan oleh admin dan bersifat permanen.
     public function hapusAgenda(Request $request)
     {
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus agenda.');
+        }
+
         $request->validate([
-            'kode_agenda' => 'required',
+            'kode_agenda' => 'required|string|exists:agenda_fakultas,kode_agenda',
         ]);
 
-        // dd($request->kode_agenda);
+        try {
+            DB::beginTransaction();
 
-        $hapusUsageItem = UsageItems::where('kode_agenda', '=', $request->kode_agenda)->delete();
-        $hapusUsageRoom = UsageRooms::where('kode_agenda', '=', $request->kode_agenda)->delete();
-        $hapusAgenda = agendaFakultas::where('kode_agenda', '=', $request->kode_agenda)->delete();
+            UsageItems::where('kode_agenda', $request->kode_agenda)->delete();
+            UsageRooms::where('kode_agenda', $request->kode_agenda)->delete();
+            agendaFakultas::where('kode_agenda', $request->kode_agenda)->delete();
 
-        return redirect()->route('dashboard-admin-agenda')->with('success', 'Data berhasil di hapus.');
+            DB::commit();
+
+            return redirect()->route('dashboard-admin-agenda')
+                ->with('success', 'Agenda beserta seluruh penggunaan barang dan ruangan berhasil dihapus.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with('gagal', 'Agenda gagal dihapus. Silakan coba kembali.');
+        }
     }
 
 

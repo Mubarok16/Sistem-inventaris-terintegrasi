@@ -30,18 +30,16 @@
                         </h5>
                         @if (Auth::user()->hak_akses === 'admin')
                             <div class="flex flex-wrap gap-2 justify-end">
-                                @if (!$agendaDibatalkan)
-                                    <form
-                                        action="{{ route('edit-agenda-admin', ['id' => urlencode($dataPeminjaman->kode_agenda)]) }}"
-                                        method="get">
-                                        @csrf
-                                        <button
-                                            class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-green-500 rounded-md! font-medium hover:bg-green-700 transition-colors shadow-sm">
-                                            <i class="fas fa-edit text-white"></i>
-                                            <span class="text-white">Edit</span>
-                                        </button>
-                                    </form>
-                                @endif
+                                <form
+                                    action="{{ route('edit-agenda-admin', ['id' => urlencode($dataPeminjaman->kode_agenda)]) }}"
+                                    method="get">
+                                    @csrf
+                                    <button
+                                        class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-green-500 rounded-md! font-medium hover:bg-green-700 transition-colors shadow-sm">
+                                        <i class="fas fa-edit text-white"></i>
+                                        <span class="text-white">Edit</span>
+                                    </button>
+                                </form>
 
                                 @if ($agendaDapatDibatalkan)
                                     <form action="{{ route('batalkan-agenda') }}" method="post"
@@ -61,6 +59,17 @@
                                         Agenda Dibatalkan
                                     </span>
                                 @endif
+
+                                <form action="{{ route('hapus-agenda') }}" method="post"
+                                    onsubmit="return confirm('Hapus seluruh agenda ini? Semua data agenda beserta seluruh riwayat penggunaan barang dan ruangan akan dihapus permanen dan tidak dapat dikembalikan.');">
+                                    @csrf
+                                    <input type="hidden" name="kode_agenda" value="{{ $dataPeminjaman->kode_agenda }}">
+                                    <button type="submit"
+                                        class="flex items-center gap-2 px-4 py-2 bg-red-700 border border-red-700 rounded-md! font-medium hover:bg-red-900 transition-colors shadow-sm">
+                                        <i class="fa-solid fa-trash text-white"></i>
+                                        <span class="text-white">Hapus Agenda</span>
+                                    </button>
+                                </form>
                             </div>
                         @endif
                     </div>
