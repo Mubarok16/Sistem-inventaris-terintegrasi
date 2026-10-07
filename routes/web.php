@@ -141,6 +141,10 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::post('/admin/edit-akun-peminjam/{id}', [EditAkun::class, 'EditAkunPeminjam'])->name('edit-akun-mhs');
     Route::post('/admin/hapus-akun-peminjam/', [HapusAkun::class, 'HapusAkunPeminjam'])->name('hapus-akun-mhs');
 
+    // import akun mahasiswa + template Excel
+    Route::get('/dashboard/admin/pengelolaan-user/template-import-mahasiswa', [PengelolaanUserController::class, 'downloadTemplateImportMahasiswa'])->name('download-template-import-mahasiswa');
+    Route::post('/dashboard/admin/pengelolaan-user/import-mahasiswa', [PengelolaanUserController::class, 'importMahasiswa'])->name('import-akun-mahasiswa');
+
     // route fungsi filter by role
     Route::get('/dashboard/admin/pengelolaan-user/filter-role', [PengelolaanUserController::class, 'filterRole'])->name('filter-role-user');
     // route fungsi filter by status

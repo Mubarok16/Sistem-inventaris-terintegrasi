@@ -135,7 +135,7 @@
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <span class="size-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
-                                            <span><strong>Waktu:</strong> Format HH:mm (contoh: 08:00).</span>
+                                            <span><strong>Waktu:</strong> Format rentang jam, contoh: 08:00 - 09:40.</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -418,12 +418,12 @@
                                             <span class="size-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
                                             <span>
                                                 <strong>Tanggal:</strong>
-                                                Format month-date-Years (contoh: 05-20-2025).
+                                                Gunakan format tanggal YYYY-MM-DD (contoh: 2026-10-15).
                                             </span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <span class="size-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
-                                            <span><strong>Waktu:</strong> Format HH:mm (contoh: 08:00).</span>
+                                            <span><strong>Waktu:</strong> Format rentang jam, contoh: 08:00 - 09:40.</span>
                                         </li>
                                     </ul>
                                 </div>

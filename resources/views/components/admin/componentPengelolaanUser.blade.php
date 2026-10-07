@@ -15,7 +15,7 @@
 @endif
 
 
-<main class="flex-1 min-w-0 overflow-auto bg-slate-50/50" x-data="{ OpenImgIdentitas: false, selectedPeminjam: {} }">
+<main class="flex-1 min-w-0 overflow-auto bg-slate-50/50" x-data="{ OpenImgIdentitas: false, selectedPeminjam: {}, OpenImportMahasiswa: false, fileImportMahasiswa: '' }">
     <div class="py-8 px-2 max-w-7xl mx-auto space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-shadow hover:shadow-md">
@@ -87,6 +87,12 @@
                     Tambah Pengguna
                 </button>
             </form> --}}
+
+            <button type="button" @click="OpenImportMahasiswa = true"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 border-0 py-2.5 rounded-md! font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98]">
+                <i class="fa-solid fa-file-import text-lg"></i>
+                Import Mahasiswa
+            </button>
 
             <a href="{{ route('page-buat-akun-by-admin') }}"
                 class="no-underline! bg-primary hover:bg-blue-700 text-white px-6 border-0 py-2.5 rounded-md! font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
@@ -420,6 +426,65 @@
             </div>
         </div>
 
+    </div>
+
+
+
+    {{-- modal import akun mahasiswa --}}
+    <div x-show="OpenImportMahasiswa" x-cloak x-transition
+        class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
+        <div @click.outside="OpenImportMahasiswa = false"
+            class="w-full max-w-xl rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900">Import Akun Mahasiswa</h3>
+                    <p class="text-sm text-slate-500 mt-1">Gunakan template agar nama kolom sesuai dengan format sistem.</p>
+                </div>
+                <button type="button" @click="OpenImportMahasiswa = false"
+                    class="w-9 h-9 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-5">
+                <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+                    <p class="font-bold mb-2">Kolom wajib:</p>
+                    <p class="leading-relaxed">no_identitas, nama_peminjam, username, password, prodi, tahun_masuk, status.</p>
+                    <p class="mt-2 text-xs">Nama program studi harus sama dengan data pada menu Program Studi. Status gunakan <strong>active</strong> atau <strong>unactive</strong>.</p>
+                </div>
+
+                <a href="{{ route('download-template-import-mahasiswa') }}"
+                    class="no-underline! w-full border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors">
+                    <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                    Unduh Template Excel Mahasiswa
+                </a>
+
+                <form action="{{ route('import-akun-mahasiswa') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <label for="fileImportMahasiswa"
+                        class="block cursor-pointer rounded-xl border-2 border-dashed border-slate-200 p-6 text-center hover:border-primary/50 hover:bg-slate-50 transition-all">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-primary"></i>
+                        <p class="mt-3 text-sm font-bold text-slate-800">Pilih file Excel / CSV</p>
+                        <p class="mt-1 text-xs text-slate-500">.xlsx, .xls, atau .csv — maksimal 10 MB</p>
+                        <p x-show="fileImportMahasiswa" class="mt-3 text-sm font-semibold text-primary" x-text="fileImportMahasiswa"></p>
+                    </label>
+                    <input id="fileImportMahasiswa" name="fileMahasiswa" type="file" accept=".xlsx,.xls,.csv" required class="hidden"
+                        @change="fileImportMahasiswa = $event.target.files.length ? $event.target.files[0].name : ''">
+
+                    <div class="flex justify-end gap-3">
+                        <button type="button" @click="OpenImportMahasiswa = false"
+                            class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-file-import"></i>
+                            Import Akun
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     {{-- show image identitas --}}
