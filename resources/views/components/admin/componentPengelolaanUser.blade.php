@@ -446,8 +446,8 @@
                 </button>
             </div>
 
-            <div class="p-6 space-y-5">
-                <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+            <div class="p-6 space-y-4">
+                <div class="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2 text-sm text-blue-800">
                     <p class="font-bold mb-2">Kolom wajib:</p>
                     <p class="leading-relaxed">no_identitas, nama_peminjam, username, password, prodi, tahun_masuk, status.</p>
                     <p class="mt-2 text-xs">Program studi harus dipilih dari daftar dropdown pada template. Status gunakan <strong>active</strong> atau <strong>unactive</strong>.</p>

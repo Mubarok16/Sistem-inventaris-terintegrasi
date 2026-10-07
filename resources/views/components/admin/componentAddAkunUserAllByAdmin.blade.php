@@ -54,7 +54,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nidn
                             </label>
-                            <input name="nip"
+                            <input name="nip" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="number" />
                         </div>
@@ -62,7 +62,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nama
                                 Lengkap</label>
-                            <input name="nama"
+                            <input name="nama" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -70,7 +70,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Username
                             </label>
-                            <input name="username"
+                            <input name="username" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -78,7 +78,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Password
                             </label>
-                            <input name="password"
+                            <input name="password" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="password" />
                         </div>
@@ -87,7 +87,7 @@
                                 Jabatan
                             </label>
 
-                            <select name="jabatan"
+                            <select name="jabatan" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all">
                                 <option value="">Pilih Jabatan</option>
                                 @foreach ($prodi as $data)
@@ -118,7 +118,7 @@
                                 Akun</label>
                             <div class="flex flex-col md:flex-row gap-2">
                                 <label class="flex-1 cursor-pointer">
-                                    <input class="peer hidden" name="status" type="radio" value="active" />
+                                    <input class="peer hidden" required name="status" type="radio" value="active" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all">
                                         <i class="fa-solid fa-circle-check text-emerald-500 text-[20px]"></i>
@@ -131,7 +131,7 @@
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer">
-                                    <input class="peer hidden" name="status" type="radio" value="unactive" />
+                                    <input class="peer hidden" required name="status" type="radio" value="unactive" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-red-500 peer-checked:bg-red-50 transition-all">
                                         <i
@@ -176,7 +176,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nip
                             </label>
-                            <input name="nip"
+                            <input name="nip" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="number" />
                         </div>
@@ -184,7 +184,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nama
                                 Lengkap</label>
-                            <input name="nama"
+                            <input name="nama" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -192,7 +192,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Username
                             </label>
-                            <input name="username"
+                            <input name="username" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -200,7 +200,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Password
                             </label>
-                            <input name="password"
+                            <input name="password" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="password" />
                         </div>
@@ -216,7 +216,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 ID Telegram </label>
                             </label>
-                            <input name="no_hp"
+                            <input name="no_hp" readonly
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="number" />
                         </div>
@@ -226,7 +226,7 @@
                                 Akun</label>
                             <div class="flex flex-col md:flex-row gap-2">
                                 <label class="flex-1 cursor-pointer">
-                                    <input class="peer hidden" name="status" type="radio" value="active" />
+                                    <input class="peer hidden" required name="status" type="radio" value="active" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all">
                                         <i class="fa-solid fa-circle-check text-emerald-500 text-[20px]"></i>
@@ -239,7 +239,7 @@
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer">
-                                    <input class="peer hidden" name="status" type="radio" value="unactive" />
+                                    <input class="peer hidden" required name="status" type="radio" value="unactive" />
                                     <div
                                         class="p-2 border-2 border-slate-100 rounded-xl flex items-center gap-3 peer-checked:border-red-500 peer-checked:bg-red-50 transition-all">
                                         <i
@@ -285,14 +285,14 @@
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nomor Identitas</label>
-                            <input name="no_identitas"
+                            <input name="no_identitas" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
                                 Lengkap</label>
-                            <input name="nama_peminjam"
+                            <input name="nama_peminjam" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -300,7 +300,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Username
                             </label>
-                            <input name="username"
+                            <input name="username" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="text" />
                         </div>
@@ -308,7 +308,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Password
                             </label>
-                            <input name="password"
+                            <input name="password" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="password" />
                         </div>
@@ -390,7 +390,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Foto Identitas
                             </label>
-                            <input name="img_identitas"
+                            <input name="img_identitas" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 value="sdasd" type="file" />
                             <span class="text-red-600 text-xs">
@@ -401,7 +401,7 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 tahun masuk
                             </label>
-                            <input name="tahun_masuk"
+                            <input name="tahun_masuk" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
                                 type="number" />
                         </div>
