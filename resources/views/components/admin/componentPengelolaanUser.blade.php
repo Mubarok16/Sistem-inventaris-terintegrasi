@@ -450,7 +450,7 @@
                 <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
                     <p class="font-bold mb-2">Kolom wajib:</p>
                     <p class="leading-relaxed">no_identitas, nama_peminjam, username, password, prodi, tahun_masuk, status.</p>
-                    <p class="mt-2 text-xs">Nama program studi harus sama dengan data pada menu Program Studi. Status gunakan <strong>active</strong> atau <strong>unactive</strong>.</p>
+                    <p class="mt-2 text-xs">Program studi harus dipilih dari daftar dropdown pada template. Status gunakan <strong>active</strong> atau <strong>unactive</strong>.</p>
                 </div>
 
                 <a href="{{ route('download-template-import-mahasiswa') }}"

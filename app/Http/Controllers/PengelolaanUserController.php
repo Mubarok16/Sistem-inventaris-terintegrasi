@@ -72,13 +72,25 @@ class PengelolaanUserController extends Controller
                 return redirect()->back()->with('gagal', 'File import tidak berisi data mahasiswa.');
             }
 
-            // Nama program studi di template harus sama dengan data Program Studi pada sistem.
-            $prodiDb = DB::table('prodi')
-                ->pluck('nama_prodi')
-                ->mapWithKeys(function ($nama) {
-                    return [Str::lower(trim((string) $nama)) => (string) $nama];
-                })
-                ->toArray();
+            // Daftar program studi mengikuti pilihan dropdown pada template import mahasiswa.
+            // Validasi tidak bergantung pada isi tabel prodi agar format template dan importer selalu sinkron.
+            $daftarProdi = [
+                'teknik sipil' => 'teknik sipil',
+                'teknik komputer' => 'teknik komputer',
+                'ilmu hukum' => 'ilmu hukum',
+                'pendidikan bahasa inggris' => 'pendidikan bahasa inggris',
+                'pendidikan bahasa indonesia' => 'pendidikan bahasa indonesia',
+                'pendidikan matematika' => 'pendidikan matematika',
+                'pendidikan biologi' => 'pendidikan biologi',
+                'ilmu politik' => 'ilmu politik',
+                'manajemen' => 'manajemen',
+                'pendidikan agama islam' => 'pendidikan agama islam',
+                'perbankan syariah' => 'perbankan syariah',
+                'bimbingan konseling islam' => 'bimbingan konseling islam',
+                'agribisnis' => 'agribisnis',
+                'agroteknologi' => 'agroteknologi',
+                'kesehatan masyarakat' => 'kesehatan masyarakat',
+            ];
 
             $dataSiapSimpan = [];
             $npmDalamFile = [];
@@ -131,15 +143,17 @@ class PengelolaanUserController extends Controller
                     return redirect()->back()->with('gagal', "Baris {$nomorBaris}: status hanya boleh active atau unactive.");
                 }
 
-                $prodiKey = Str::lower($prodiInput);
-                if (!empty($prodiDb) && !array_key_exists($prodiKey, $prodiDb)) {
+                // Normalisasi huruf dan spasi agar nilai tetap diterima walaupun pengguna
+                // mengetik dengan kapitalisasi atau spasi ganda yang berbeda.
+                $prodiKey = Str::lower(preg_replace('/\s+/', ' ', trim($prodiInput)));
+                if (!array_key_exists($prodiKey, $daftarProdi)) {
                     return redirect()->back()->with(
                         'gagal',
-                        "Baris {$nomorBaris}: program studi '{$prodiInput}' belum terdaftar pada menu Program Studi."
+                        "Baris {$nomorBaris}: program studi '{$prodiInput}' tidak sesuai daftar prodi pada template."
                     );
                 }
 
-                $prodi = $prodiDb[$prodiKey] ?? $prodiInput;
+                $prodi = $daftarProdi[$prodiKey];
                 $usernameKey = Str::lower($username);
 
                 if (isset($npmDalamFile[$noIdentitas])) {
@@ -240,7 +254,7 @@ class PengelolaanUserController extends Controller
                 'pendidikan matematika', 'pendidikan biologi',
             ],
             'ilmu sosial dan politik' => ['ilmu politik'],
-            'agama islam' => ['pendidikan agama islam', 'ekonomi syariah', 'bimbingan konseling islam'],
+            'agama islam' => ['pendidikan agama islam', 'perbankan syariah', 'bimbingan konseling islam'],
             'pertanian' => ['agribisnis', 'agroteknologi'],
             'kesehatan masyarakat' => ['kesehatan masyarakat'],
         ];
