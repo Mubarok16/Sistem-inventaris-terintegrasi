@@ -435,7 +435,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
         <div @click.outside="OpenImportMahasiswa = false"
             class="w-full max-w-xl rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
+            <div class="px-6 py-2 border-b border-slate-200 flex items-center justify-between">
                 <div>
                     <h3 class="text-lg font-extrabold text-slate-900">Import Akun Mahasiswa</h3>
                     <p class="text-sm text-slate-500 mt-1">Gunakan template agar nama kolom sesuai dengan format sistem.</p>
