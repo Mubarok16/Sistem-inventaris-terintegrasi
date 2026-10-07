@@ -189,9 +189,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     // page tambah agenda
     Route::get('/admin/pengelolaan-agenda/tambah-agenda', [pengelolaanAgenda::class, 'HalamanTambahAgenda'])->name('hal-add-agenda');
     // page edit agenda
-    Route::get('/admin/pengelolaan-agenda/edit-agenda/{id}', [pengelolaanAgenda::class, 'HalamanEditAgenda'])
-        ->middleware('hak_akses:admin')
-        ->name('edit-agenda-admin');
+    Route::get('/admin/pengelolaan-agenda/edit-agenda/{id}', [pengelolaanAgenda::class, 'HalamanEditAgenda'])->name('edit-agenda-admin');
     // fungsi tambah agenda import
     Route::post('/tambah-agenda-impor', [pengelolaanAgenda::class, 'addAgendaImport'])->name('tambah-agenda-import');
     // download template import agenda
@@ -206,23 +204,15 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
 
     // --------------------------------------------- route untuk logika edit agenda -------------------------------------------------------------------- 
     // route fungsi temporary menambah menghapus barang dan ruang dan agenda sebelum di simpan permanen di db
-    Route::post('/edit-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])
-        ->middleware('hak_akses:admin')
-        ->name('edit-agenda');
+    Route::post('/edit-agenda', [pengelolaanAgenda::class, 'simpanInputAgendaTemporary'])->name('edit-agenda');
     //barang
-    Route::post('/tambah-barang-agenda', [pengelolaanAgenda::class, 'simpanInputBarangAgendaTemporary'])
-        ->middleware('hak_akses:admin')
-        ->name('tambah-barang-agenda');
-    Route::post('/hapus-barang-agenda', [pengelolaanAgenda::class, 'hapusInputBarangAgendaTemporary'])
-        ->middleware('hak_akses:admin')
-        ->name('hapus-barang-agenda');
+    Route::post('/tambah-barang-agenda', [pengelolaanAgenda::class, 'simpanInputBarangAgendaTemporary'])->name('tambah-barang-agenda');
+    Route::post('/hapus-barang-agenda', [pengelolaanAgenda::class, 'hapusInputBarangAgendaTemporary'])->name('hapus-barang-agenda');
     //ruangan
     Route::post('/tambah-ruangan-agenda', [pengelolaanAgenda::class, 'simpanInputRuanganAgendaTemporary'])->name('tambah-ruangan-agenda');
     Route::post('/hapus-ruangan-agenda', [pengelolaanAgenda::class, 'hapusInputRuanganAgendaTemporary'])->name('hapus-ruangan-agenda');
     // simpan data temp agenda ke db
-    Route::post('/simpan-agenda', [pengelolaanAgenda::class, 'simpanAgendaTemporary'])
-        ->middleware('hak_akses:admin')
-        ->name('simpan-agenda');
+    Route::post('/simpan-agenda', [pengelolaanAgenda::class, 'simpanAgendaTemporary'])->name('simpan-agenda');
 
     // ----------------------------------------- route untuk logika tambah agenda ---------------------------------------------------------------------
     // simpan sementara data agenda unutk bagian tambah agenda
