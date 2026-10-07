@@ -500,8 +500,11 @@ class pengelolaanAgenda extends Controller
     // kode untuk menampilkan halaman edit agenda
     public function HalamanEditAgenda($id)
     {
-        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
+        }
 
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
 
         $dataAgendas = DB::table('agenda_fakultas')
             ->where('agenda_fakultas.kode_agenda', $id)
@@ -515,11 +518,12 @@ class pengelolaanAgenda extends Controller
             )
             ->get();
 
+        if ($dataAgendas->isEmpty()) {
+            abort(404, 'Agenda tidak ditemukan.');
+        }
 
-        // mengambil semua data barang dan nama tipe barang dan nama ruangan
         $databarang = DB::table('usage_items')
             ->join('items', 'usage_items.id_item', '=', 'items.id_item')
-            // ->leftjoin('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->select(
                 'usage_items.id_item',
                 'usage_items.qty_usage_item',
@@ -527,14 +531,13 @@ class pengelolaanAgenda extends Controller
                 'items.merek_model',
                 'items.img_item',
                 'items.kondisi_item',
-                // 'tipe_item.nama_tipe_item',
                 'usage_items.jam_mulai_usage_item',
-                'usage_items.jam_selesai_usage_item',
+                'usage_items.jam_selesai_usage_item'
             )
             ->where('usage_items.kode_agenda', $id)
-            // ->whereNotIn('status_usage_item', ['selesai', 'digunakan', 'ditolak'])
             ->get()
-            ->unique('usage_items.id_item');
+            ->unique('id_item')
+            ->values();
 
         $dataruangan = DB::table('usage_rooms')
             ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
@@ -546,92 +549,62 @@ class pengelolaanAgenda extends Controller
                 'rooms.kondisi_room',
                 'tipe_rooms.nama_tipe_room',
                 'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
+                'usage_rooms.jam_selesai_usage_room'
             )
             ->where('usage_rooms.kode_agenda', $id)
-            // ->whereNotIn('status_usage_room', ['selesai', 'digunakan', 'ditolak'])
             ->get()
-            ->unique('usage_rooms.id_room');
+            ->unique('id_room')
+            ->values();
 
-        // menggabungkan data barang dan ruangan menjadi array
-        $databarangruangan = $databarang->merge($dataruangan)->toArray();
+        $databarangruangan = $databarang->merge($dataruangan)->values()->toArray();
 
-        // dd($databarangruangan);
-
-        // ambil jam mulai dan jam selesainya saja 
+        // Default null supaya halaman edit tetap aman walaupun agenda tidak memakai barang/ruangan.
+        $jamMulai = null;
+        $jamSelesai = null;
         foreach ($databarangruangan as $item) {
-            // Ambil jam mulai (cek item dulu, jika null ambil room)
-            $jamMulai = $item->jam_mulai_usage_item ?? $item->jam_mulai_usage_room;
-
-            // Ambil jam selesai
-            $jamSelesai = $item->jam_selesai_usage_item ?? $item->jam_selesai_usage_room;
+            $jamMulai = $item->jam_mulai_usage_item ?? $item->jam_mulai_usage_room ?? null;
+            $jamSelesai = $item->jam_selesai_usage_item ?? $item->jam_selesai_usage_room ?? null;
+            if ($jamMulai !== null || $jamSelesai !== null) {
+                break;
+            }
         }
 
-        // menghilangkan jam_mulai dan jam_selesai dari array databarangruangan
+        // Jam tidak dibutuhkan di daftar resource sementara.
         foreach ($databarangruangan as $item) {
-            unset($item->jam_mulai_usage_room);
-            unset($item->jam_selesai_usage_room);
+            unset($item->jam_mulai_usage_item, $item->jam_selesai_usage_item);
+            unset($item->jam_mulai_usage_room, $item->jam_selesai_usage_room);
         }
 
-        // Menambah jam mulai dan jam selesai ke data agenda 
+        // Normalisasi jam agar valid untuk input type="time" (HH:MM).
+        if ($jamMulai !== null) {
+            $jamMulai = substr((string) $jamMulai, 0, 5);
+        }
+        if ($jamSelesai !== null) {
+            $jamSelesai = substr((string) $jamSelesai, 0, 5);
+        }
+
         $dataAgendas = $dataAgendas->toArray();
-
-        // dd($databarang, $dataruangan);
-
-
         $dataAgendas[0]->jam_mulai = $jamMulai;
         $dataAgendas[0]->jam_selesai = $jamSelesai;
+        $dataAgendas[0]->tipe_jam = $jamMulai === null ? 'full day' : 'spesifik';
 
-        // dd($dataAgendas);
-
-        if ($jamMulai === null) {
-            $dataAgendas[0]->tipe_jam = 'full day';
-        } else {
-            $dataAgendas[0]->tipe_jam = 'spesifik';
-        }
-
-        // dd($dataAgendas);
-
-        // ambil id di session
         $sessionKode = session('kode_agenda_edit');
-
-        // dd(session('semua_data_edit_barang_ruang'), $sessionKode, $id);
-
         if (!session()->has('semua_data_edit_barang_ruang') || $sessionKode != $id) {
-
-            // hapus session lama jika ada
-            session()->forget(['semua_data_edit_barang_ruang', 'kode_agenda_edit']);
-
-            // simpan array barang dan ruang ke session
+            session()->forget(['semua_data_edit_barang_ruang', 'data_agenda_edit', 'kode_agenda_edit', 'edit_agenda_dikunci']);
             session(['semua_data_edit_barang_ruang' => $databarangruangan]);
-
-            // simpan array agenda ke session
+            session(['data_agenda_edit' => $dataAgendas]);
+        } elseif (!session()->has('data_agenda_edit')) {
             session(['data_agenda_edit' => $dataAgendas]);
         }
 
-        if (!session()->has('data_agenda_edit') || $sessionKode != $id) {
-            // hapus session lama jika ada
-            session()->forget('data_agenda_edit');
-
-            // simpan array agenda ke session
-            session(['data_agenda_edit' => $dataAgendas]);
-        }
-
-        // simpan kode agenda ke session
         session(['kode_agenda_edit' => $id]);
 
-        // ambil data dari session data brang dan ruang serta data agenda
-        $semuaData = collect(session('semua_data_edit_barang_ruang'));
-        $dataAgenda = collect(session('data_agenda_edit'));
+        $semuaData = collect(session('semua_data_edit_barang_ruang', []));
+        $dataAgenda = collect(session('data_agenda_edit', $dataAgendas));
 
-
-        // mengambil semua data barang dan ruangan
         $PengelolaanAgendaService = new PengelolaanAgendaService;
         $allBarangRuang = $PengelolaanAgendaService->getBarangDanRaung()->toArray();
 
-        // dd($semuaData);
-
-        // menyimpan halaman variable
         $halaman = 'contentEditAgenda';
         return view('Page_admin.dashboard-admin', compact(
             'halaman',
@@ -716,37 +689,64 @@ class pengelolaanAgenda extends Controller
 
     // ============================================= unutk edit agenda =========================================================================
 
-    // menyimpan data input agenda sementara sebelum di simpan di db agenda 
+    // menyimpan data input agenda sementara sebelum di simpan di db agenda
     public function simpanInputAgendaTemporary(Request $request)
     {
-        $dataAgenda = session('data_agenda_edit');
-        // dd($request->all());
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
+        }
+
+        $kodeAgenda = session('kode_agenda_edit');
+        if (!$kodeAgenda || !DB::table('agenda_fakultas')->where('kode_agenda', $kodeAgenda)->exists()) {
+            return redirect()->back()->with('gagal', 'Agenda yang diedit tidak ditemukan. Silakan buka ulang halaman edit.');
+        }
+
+        $request->merge([
+            'loop_agenda' => trim((string) $request->loop_agenda),
+            'tipe_agenda' => trim((string) $request->tipe_agenda),
+        ]);
+
+        $validated = $request->validate([
+            'nama_agenda' => 'required|string|max:255',
+            'tgl_mulai_agenda' => 'required|date',
+            'tgl_selesai_agenda' => 'required|date|after_or_equal:tgl_mulai_agenda',
+            'tipe_agenda' => 'required|string|max:100',
+            'loop_agenda' => 'required|in:setiap hari,senin,selasa,rabu,kamis,jumat,sabtu,minggu',
+            'tipe_jam' => 'required|in:full day,spesifik',
+            'jam_mulai' => 'nullable|required_if:tipe_jam,spesifik|date_format:H:i',
+            'jam_selesai' => 'nullable|required_if:tipe_jam,spesifik|date_format:H:i|after:jam_mulai',
+        ], [
+            'tgl_selesai_agenda.after_or_equal' => 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.',
+            'jam_selesai.after' => 'Jam selesai harus lebih besar dari jam mulai.',
+        ]);
 
         $dataBaru = [
-            'kode_agenda' => $request->kode_agenda,
-            'nama_agenda' => $request->nama_agenda,
-            'tgl_mulai_agenda' => $request->tgl_mulai_agenda,
-            'tgl_selesai_agenda' => $request->tgl_selesai_agenda,
-            'tipe_agenda' => $request->tipe_agenda,
-            'loop_hari' => $request->loop_agenda,
-            'jam_mulai' => $request->tipe_jam === 'spesifik' ? $request->jam_mulai : null,
-            'jam_selesai' => $request->tipe_jam === 'spesifik' ? $request->jam_selesai : null,
-            'tipe_jam' => $request->tipe_jam
+            // kode agenda sengaja dikunci agar relasi usage tidak rusak
+            'kode_agenda' => $kodeAgenda,
+            'nama_agenda' => $validated['nama_agenda'],
+            'tgl_mulai_agenda' => $validated['tgl_mulai_agenda'],
+            'tgl_selesai_agenda' => $validated['tgl_selesai_agenda'],
+            'tipe_agenda' => $validated['tipe_agenda'],
+            'loop_hari' => $validated['loop_agenda'],
+            'jam_mulai' => $validated['tipe_jam'] === 'spesifik' ? $validated['jam_mulai'] : null,
+            'jam_selesai' => $validated['tipe_jam'] === 'spesifik' ? $validated['jam_selesai'] : null,
+            'tipe_jam' => $validated['tipe_jam'],
         ];
 
-        // simpan array ke session
         session()->put('data_agenda_edit', [(object) $dataBaru]);
-
-        // simpan session sebelum redirect
+        session()->put('edit_agenda_dikunci', $kodeAgenda);
         session()->save();
 
-        // // Kirim respons, mungkin ke halaman form berikutnya atau halaman konfirmasi
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan sementara.');
+        return redirect()->back()->with('success', 'Perubahan detail agenda sudah dikunci. Lanjutkan dengan Simpan Semua Perubahan.');
     }
 
     // menyimpan data input barang dan ruangan sementara untuk edit agenda sebelum disimpan di db usage item
     public function simpanInputBarangAgendaTemporary(Request $request)
     {
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
+        }
+
         $request->validate([
             'id_item_room' => 'required',
             'id_agenda' => 'required',
@@ -823,6 +823,10 @@ class pengelolaanAgenda extends Controller
     // hapus input barang dan ruangan temp
     public function hapusInputBarangAgendaTemporary(Request $request)
     {
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
+        }
+
         $request->validate([
             'id_item_room' => 'required',
         ]);
@@ -842,259 +846,266 @@ class pengelolaanAgenda extends Controller
         return redirect()->back()->with('gagal', 'Barang atau ruangan berhasil dihapus dari daftar.');
     }
 
-    // simpan agenda dan semua barang dan ruangan yg d gunakan ke db
+    // simpan agenda dan semua barang dan ruangan yg digunakan ke db
     public function simpanAgendaTemporary(Request $request)
     {
-        // data id admin/staff
-        $iduser = Auth::user()->id_user;
-        // kode agenda lama
-        $kode_agenda_lama = $request->kode_agenda_lama;
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit agenda.');
+        }
 
-        // dd($kode_agenda_lama);
+        $request->validate([
+            'kode_agenda_lama' => 'required|string|exists:agenda_fakultas,kode_agenda',
+        ]);
 
-        // ambil data dari session data brang dan ruang serta data agenda
-        $semuaDataBrngRuang = session('semua_data_edit_barang_ruang');
+        $kodeAgenda = $request->kode_agenda_lama;
         $dataAgenda = session('data_agenda_edit');
+        $semuaDataBrngRuang = collect(session('semua_data_edit_barang_ruang', []));
 
-        // get data agenda disimpan ke variable
-        $kode_agenda = $dataAgenda[0]->kode_agenda;
-        $nama_agenda = $dataAgenda[0]->nama_agenda;
-        $tgl_mulai = $dataAgenda[0]->tgl_mulai_agenda;
-        $tgl_selesai = $dataAgenda[0]->tgl_selesai_agenda;
-        $loop_hari = $dataAgenda[0]->loop_hari;
-        $jam_mulai = $dataAgenda[0]->jam_mulai;
-        $jam_selesai = $dataAgenda[0]->jam_selesai;
-        $tipe_jam = $dataAgenda[0]->tipe_jam;
+        if (!$dataAgenda || !isset($dataAgenda[0]) || session('edit_agenda_dikunci') !== $kodeAgenda) {
+            return redirect()->back()->with('gagal', 'Detail agenda belum dikunci. Tekan tombol Kunci Perubahan Detail Agenda terlebih dahulu, lalu Simpan Semua Perubahan.');
+        }
 
-        // dd($semuaDataBrngRuang);
+        $namaAgenda = $dataAgenda[0]->nama_agenda;
+        $tglMulai = $dataAgenda[0]->tgl_mulai_agenda;
+        $tglSelesai = $dataAgenda[0]->tgl_selesai_agenda;
+        $tipeAgenda = $dataAgenda[0]->tipe_agenda;
+        $loopHari = trim((string) $dataAgenda[0]->loop_hari);
+        $jamMulai = $dataAgenda[0]->tipe_jam === 'spesifik' ? $dataAgenda[0]->jam_mulai : null;
+        $jamSelesai = $dataAgenda[0]->tipe_jam === 'spesifik' ? $dataAgenda[0]->jam_selesai : null;
 
-        // perulangan usage room atau barang jika setiap hari atau perminggu
-        if ($dataAgenda[0]->loop_hari === 'setiap hari') {
+        // Validasi ulang data session sebelum menyentuh database.
+        if (Carbon::parse($tglSelesai)->lt(Carbon::parse($tglMulai))) {
+            return redirect()->back()->with('gagal', 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.');
+        }
+        if ($jamMulai !== null && $jamSelesai !== null && $jamSelesai <= $jamMulai) {
+            return redirect()->back()->with('gagal', 'Jam selesai harus lebih besar dari jam mulai.');
+        }
 
-            // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
+        $mapHari = [
+            'senin' => 'monday',
+            'selasa' => 'tuesday',
+            'rabu' => 'wednesday',
+            'kamis' => 'thursday',
+            'jumat' => 'friday',
+            'sabtu' => 'saturday',
+            'minggu' => 'sunday',
+        ];
 
-            DB::beginTransaction();
+        if ($loopHari !== 'setiap hari' && !array_key_exists($loopHari, $mapHari)) {
+            return redirect()->back()->with('gagal', 'Pilihan hari agenda tidak valid. Silakan kunci kembali perubahan agenda.');
+        }
 
-            try {
-                // Update table agenda fakultas
-                DB::table('agenda_fakultas')
-                    ->where('kode_agenda',)
-                    ->update([
-                        'kode_agenda' => $kode_agenda,
-                        'id_user' => $iduser,
-                        'nama_agenda' => $nama_agenda,
-                        'tgl_mulai_agenda' => $tgl_mulai,
-                        'tgl_selesai_agenda' => $tgl_selesai,
-                        'tipe_agenda' => $nama_agenda,
-                        'loop_hari' => $loop_hari,
-                        'updated_at' => now()
-                    ]);
+        // Tanggal yang sudah menjadi riwayat tidak boleh hidup kembali saat agenda diedit.
+        $tanggalTerkunci = collect();
+        $hariIni = Carbon::today();
+        $sekarang = Carbon::now();
 
-                // hapus data usage room atau item yg lama selain yg statusnya sedang digunakan dan sudah selesai
-                DB::table('usage_rooms')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_room', 'terjadwal')->delete();
-                DB::table('usage_items')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_item', 'terjadwal')->delete();
+        $usageItemsRiwayat = DB::table('usage_items')
+            ->where('kode_agenda', $kodeAgenda)
+            ->get(['tgl_pinjam_usage_item as tanggal', 'status_usage_item as status', 'jam_selesai_usage_item as jam_selesai']);
 
-                // 3. Siapkan daftar tanggal (Hanya ini loop yang diperlukan untuk logika bisnis)
-                $mapHari = [
-                    'senin'  => 'monday',
-                    'selasa' => 'tuesday',
-                    'rabu'   => 'wednesday',
-                    'kamis'  => 'thursday',
-                    'jumat'  => 'friday',
-                    'sabtu'  => 'saturday',
-                    'minggu' => 'sunday',
-                ];
+        $usageRoomsRiwayat = DB::table('usage_rooms')
+            ->where('kode_agenda', $kodeAgenda)
+            ->get(['tgl_pinjam_usage_room as tanggal', 'status_usage_room as status', 'jam_selesai_usage_room as jam_selesai']);
 
-                // ubah nama hari menjadi menggunakan b.inggris
-                $hariInggris = $mapHari[strtolower($loop_hari)] ?? strtolower($loop_hari);
+        foreach ($usageItemsRiwayat->concat($usageRoomsRiwayat) as $usage) {
+            $tanggal = Carbon::parse($usage->tanggal);
+            $statusRiwayat = in_array($usage->status, ['selesai', 'dibatalkan', 'digunakan', 'ditolak'], true);
+            $tanggalSudahLewat = $tanggal->copy()->startOfDay()->lt($hariIni);
+            $jamSudahLewat = $tanggal->isSameDay($hariIni)
+                && $usage->jam_selesai !== null
+                && Carbon::parse($tanggal->toDateString() . ' ' . $usage->jam_selesai)->lte($sekarang);
 
-                $targetDates = [];
-
-                // berjlan hanya jika hari ini sudah melewati tgl agenda berfungsi agar saat menginputkan data baru tidak redudant dengan data yg sudah terlewat
-                if (Carbon::parse($tgl_mulai)->startOfDay() < now()) {
-                    $end = Carbon::parse($tgl_selesai)->endOfDay();
-                    $period = CarbonPeriod::create(now(), $end);
-                } else {
-                    $start = Carbon::parse($tgl_mulai)->startOfDay();
-                    $end = Carbon::parse($tgl_selesai)->endOfDay();
-                    $period = CarbonPeriod::create($start, $end);
-                }
-
-                // menyimpan tgl setiap hari tertentu yg di inputkan user
-                foreach ($period as $date) {
-                    // if (strtolower($date->translatedFormat('l')) == strtolower($hariInggris)) {
-                    $targetDates[] = $date->format('Y-m-d');
-                    // }
-                }
-
-                // dd($targetDates);
-
-                // memisahkan Data Room dan Data Item dari Array Campuran
-                $finalRooms = [];
-                $finalItems = [];
-
-                foreach ($targetDates as $tanggal) {
-                    foreach ($semuaDataBrngRuang as $data) {
-
-                        // Cek apakah ini objek Room (memiliki id_room)
-                        if (isset($data->id_room)) {
-                            $finalRooms[] = [
-                                'kode_peminjaman' => null,
-                                'kode_agenda' => $kode_agenda,
-                                'id_room'     => $data->id_room,
-                                'tgl_pinjam_usage_room'   => $tanggal . ' 00:00:00',
-                                'tgl_kembali_usage_room'   => $tanggal . ' 23:59:00',
-                                'status_usage_room'   => 'terjadwal',
-                                'created_at'  => now(),
-                                'updated_at'  => now(),
-                                'jam_mulai_usage_room'  => $jam_mulai,
-                                'jam_selesai_usage_room'  => $jam_selesai,
-                            ];
-                        }
-                        // Cek apakah ini objek Item (memiliki id_item)
-                        elseif (isset($data->id_item)) {
-                            $finalItems[] = [
-                                'kode_peminjaman' => null,
-                                'kode_agenda' => $kode_agenda,
-                                'id_item'     => $data->id_item,
-                                'qty_usage_item' => $data->qty_usage_item,
-                                'tgl_pinjam_usage_item'   => $tanggal . ' 00:00:00',
-                                'tgl_kembali_usage_item'   => $tanggal . ' 23:59:00',
-                                'status_usage_item'   => 'terjadwal',
-                                'created_at'  => now(),
-                                'updated_at'  => now(),
-                                'jam_mulai_usage_item'  => $jam_mulai,
-                                'jam_selesai_usage_item'  => $jam_selesai,
-                            ];
-                        }
-                    }
-                }
-
-                // dd($finalRooms, $finalItems);
-
-                // Insert Sekaligus ke db
-                if (!empty($finalRooms)) DB::table('usage_rooms')->insert($finalRooms);
-                if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
-
-                DB::commit();
-                return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
-            } catch (\Exception $e) {
-                DB::rollback();
-                return response()->json(['error' => $e->getMessage()], 500);
-                // return redirect()->back()->with('gagal', 'berhasil memperbarui agenda!');
+            if ($statusRiwayat || $tanggalSudahLewat || $jamSudahLewat) {
+                $tanggalTerkunci->push($tanggal->toDateString());
             }
-        } else {
-            // perulangan setiap hari tertentu misal hari senin agenda itu akan berulang setiap hari senin saja sampai waktu yg sudah d tentukan
+        }
+        $tanggalTerkunci = $tanggalTerkunci->unique()->values()->all();
 
-            DB::beginTransaction();
+        // Buat ulang hanya jadwal yang masih editable: hari ini/masa depan dan bukan tanggal riwayat.
+        $mulai = Carbon::parse($tglMulai)->startOfDay();
+        $selesai = Carbon::parse($tglSelesai)->startOfDay();
+        $awalPeriod = $mulai->lt($hariIni) ? $hariIni->copy() : $mulai->copy();
+        $targetDates = [];
 
-            try {
-                // Update table agenda fakultas
-                DB::table('agenda_fakultas')
-                    ->where('kode_agenda',)
-                    ->update([
-                        'kode_agenda' => $kode_agenda,
-                        'id_user' => $iduser,
-                        'nama_agenda' => $nama_agenda,
-                        'tgl_mulai_agenda' => $tgl_mulai,
-                        'tgl_selesai_agenda' => $tgl_selesai,
-                        'tipe_agenda' => $nama_agenda,
-                        'loop_hari' => $loop_hari,
-                        'updated_at' => now()
-                    ]);
+        if ($awalPeriod->lte($selesai)) {
+            foreach (CarbonPeriod::create($awalPeriod, $selesai) as $date) {
+                $tanggal = $date->toDateString();
 
-                // hapus data usage room atau item yg lama selain yg statusnya sedang digunakan dan sudah selesai
-                DB::table('usage_rooms')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_room', 'terjadwal')->delete();
-                DB::table('usage_items')->where('kode_agenda', $kode_agenda_lama)->where('status_usage_item', 'terjadwal')->delete();
-
-                // 3. Siapkan daftar tanggal (Hanya ini loop yang diperlukan untuk logika bisnis)
-                $mapHari = [
-                    'senin'  => 'monday',
-                    'selasa' => 'tuesday',
-                    'rabu'   => 'wednesday',
-                    'kamis'  => 'thursday',
-                    'jumat'  => 'friday',
-                    'sabtu'  => 'saturday',
-                    'minggu' => 'sunday',
-                ];
-
-                // ubah nama hari menjadi menggunakan b.inggris
-                $hariInggris = $mapHari[strtolower($loop_hari)] ?? strtolower($loop_hari);
-
-                $targetDates = [];
-
-                // berjlan hanya jika hari ini sudah melewati tgl agenda berfungsi agar saat menginputkan data baru tidak redudant dengan data yg sudah terlewat
-                if (Carbon::parse($tgl_mulai)->startOfDay() < now()) {
-                    $end = Carbon::parse($tgl_selesai)->endOfDay();
-                    $period = CarbonPeriod::create(now(), $end);
-                } else {
-                    $start = Carbon::parse($tgl_mulai)->startOfDay();
-                    $end = Carbon::parse($tgl_selesai)->endOfDay();
-                    $period = CarbonPeriod::create($start, $end);
+                if (in_array($tanggal, $tanggalTerkunci, true)) {
+                    continue;
                 }
 
-                // menyimpan tgl setiap hari tertentu yg di inputkan user
-                foreach ($period as $date) {
-                    if (strtolower($date->translatedFormat('l')) == strtolower($hariInggris)) {
-                        $targetDates[] = $date->format('Y-m-d');
+                if ($date->isToday() && $jamSelesai !== null) {
+                    $akhirHariIni = Carbon::parse($tanggal . ' ' . $jamSelesai);
+                    if ($akhirHariIni->lte($sekarang)) {
+                        continue;
                     }
                 }
 
-                // dd($targetDates);
-
-                // memisahkan Data Room dan Data Item dari Array Campuran
-                $finalRooms = [];
-                $finalItems = [];
-
-                foreach ($targetDates as $tanggal) {
-                    foreach ($semuaDataBrngRuang as $data) {
-
-                        // Cek apakah ini objek Room (memiliki id_room)
-                        if (isset($data->id_room)) {
-                            $finalRooms[] = [
-                                'kode_peminjaman' => null,
-                                'kode_agenda' => $kode_agenda,
-                                'id_room'     => $data->id_room,
-                                'tgl_pinjam_usage_room'   => $tanggal . ' 00:00:00',
-                                'tgl_kembali_usage_room'   => $tanggal . ' 23:59:00',
-                                'status_usage_room'   => 'terjadwal',
-                                'created_at'  => now(),
-                                'updated_at'  => now(),
-                                'jam_mulai_usage_room'  => $jam_mulai,
-                                'jam_selesai_usage_room'  => $jam_selesai,
-                            ];
-                        }
-                        // Cek apakah ini objek Item (memiliki id_item)
-                        elseif (isset($data->id_item)) {
-                            $finalItems[] = [
-                                'kode_peminjaman' => null,
-                                'kode_agenda' => $kode_agenda,
-                                'id_item'     => $data->id_item,
-                                'qty_usage_item' => $data->qty_usage_item,
-                                'tgl_pinjam_usage_item'   => $tanggal . ' 00:00:00',
-                                'tgl_kembali_usage_item'   => $tanggal . ' 23:59:00',
-                                'status_usage_item'   => 'terjadwal',
-                                'created_at'  => now(),
-                                'updated_at'  => now(),
-                                'jam_mulai_usage_item'  => $jam_mulai,
-                                'jam_selesai_usage_item'  => $jam_selesai,
-                            ];
-                        }
+                if ($loopHari !== 'setiap hari') {
+                    $hariInggris = $mapHari[$loopHari];
+                    if (strtolower($date->englishDayOfWeek) !== strtolower($hariInggris)) {
+                        continue;
                     }
                 }
 
-                // dd($finalRooms, $finalItems);
-
-                // Insert Sekaligus ke db
-                if (!empty($finalRooms)) DB::table('usage_rooms')->insert($finalRooms);
-                if (!empty($finalItems)) DB::table('usage_items')->insert($finalItems);
-
-                DB::commit();
-                return redirect()->back()->with('success', 'berhasil memperbarui agenda!');
-            } catch (\Exception $e) {
-                DB::rollback();
-                return response()->json(['error' => $e->getMessage()], 500);
+                $targetDates[] = $tanggal;
             }
+        }
+
+        $finalRooms = [];
+        $finalItems = [];
+
+        foreach ($targetDates as $tanggal) {
+            foreach ($semuaDataBrngRuang as $data) {
+                if (isset($data->id_room)) {
+                    $finalRooms[] = [
+                        'kode_peminjaman' => null,
+                        'kode_agenda' => $kodeAgenda,
+                        'id_room' => $data->id_room,
+                        'tgl_pinjam_usage_room' => $tanggal . ' 00:00:00',
+                        'tgl_kembali_usage_room' => $tanggal . ' 23:59:00',
+                        'status_usage_room' => 'terjadwal',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'jam_mulai_usage_room' => $jamMulai,
+                        'jam_selesai_usage_room' => $jamSelesai,
+                    ];
+                } elseif (isset($data->id_item)) {
+                    $qty = (int) ($data->qty_usage_item ?? 0);
+                    $stok = (int) DB::table('items')->where('id_item', $data->id_item)->value('qty_item');
+
+                    if ($qty < 1 || $qty > $stok) {
+                        $namaItem = DB::table('items')->where('id_item', $data->id_item)->value('nama_item') ?? $data->id_item;
+                        return redirect()->back()->with('gagal', "Jumlah penggunaan barang {$namaItem} tidak valid atau melebihi stok.");
+                    }
+
+                    $finalItems[] = [
+                        'kode_peminjaman' => null,
+                        'kode_agenda' => $kodeAgenda,
+                        'id_item' => $data->id_item,
+                        'qty_usage_item' => $qty,
+                        'tgl_pinjam_usage_item' => $tanggal . ' 00:00:00',
+                        'tgl_kembali_usage_item' => $tanggal . ' 23:59:00',
+                        'status_usage_item' => 'terjadwal',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'jam_mulai_usage_item' => $jamMulai,
+                        'jam_selesai_usage_item' => $jamSelesai,
+                    ];
+                }
+            }
+        }
+
+        // Cek bentrok hanya terhadap transaksi/agenda lain.
+        foreach ($finalRooms as $room) {
+            $tanggal = Carbon::parse($room['tgl_pinjam_usage_room'])->toDateString();
+            $query = DB::table('usage_rooms')
+                ->where('id_room', $room['id_room'])
+                ->whereNotIn('status_usage_room', ['selesai', 'diajukan', 'ditolak', 'dibatalkan'])
+                ->where(function ($q) use ($kodeAgenda) {
+                    $q->whereNull('kode_agenda')->orWhere('kode_agenda', '!=', $kodeAgenda);
+                })
+                ->whereDate('tgl_pinjam_usage_room', '<=', $tanggal)
+                ->whereDate('tgl_kembali_usage_room', '>=', $tanggal);
+
+            if ($jamMulai === null || $jamSelesai === null) {
+                // Full day bentrok dengan seluruh penggunaan aktif di tanggal yang sama.
+            } else {
+                $query->where(function ($q) use ($jamMulai, $jamSelesai) {
+                    $q->whereNull('jam_mulai_usage_room')
+                        ->orWhereNull('jam_selesai_usage_room')
+                        ->orWhere(function ($waktu) use ($jamMulai, $jamSelesai) {
+                            $waktu->where('jam_mulai_usage_room', '<', $jamSelesai)
+                                ->where('jam_selesai_usage_room', '>', $jamMulai);
+                        });
+                });
+            }
+
+            if ($query->exists()) {
+                $namaRoom = DB::table('rooms')->where('id_room', $room['id_room'])->value('nama_room') ?? $room['id_room'];
+                return redirect()->back()->with('gagal', "Ruangan {$namaRoom} bentrok dengan penggunaan lain pada tanggal {$tanggal}.");
+            }
+        }
+
+        foreach ($finalItems as $item) {
+            $tanggal = Carbon::parse($item['tgl_pinjam_usage_item'])->toDateString();
+            $query = DB::table('usage_items')
+                ->where('id_item', $item['id_item'])
+                ->whereNotIn('status_usage_item', ['selesai', 'ditolak', 'dibatalkan'])
+                ->where(function ($q) use ($kodeAgenda) {
+                    $q->whereNull('kode_agenda')->orWhere('kode_agenda', '!=', $kodeAgenda);
+                })
+                ->whereDate('tgl_pinjam_usage_item', '<=', $tanggal)
+                ->whereDate('tgl_kembali_usage_item', '>=', $tanggal);
+
+            if ($jamMulai !== null && $jamSelesai !== null) {
+                $query->where(function ($q) use ($jamMulai, $jamSelesai) {
+                    $q->whereNull('jam_mulai_usage_item')
+                        ->orWhereNull('jam_selesai_usage_item')
+                        ->orWhere(function ($waktu) use ($jamMulai, $jamSelesai) {
+                            $waktu->where('jam_mulai_usage_item', '<', $jamSelesai)
+                                ->where('jam_selesai_usage_item', '>', $jamMulai);
+                        });
+                });
+            }
+
+            $qtyTerpakai = (int) $query->sum('qty_usage_item');
+            $stok = (int) DB::table('items')->where('id_item', $item['id_item'])->value('qty_item');
+            if (($qtyTerpakai + (int) $item['qty_usage_item']) > $stok) {
+                $namaItem = DB::table('items')->where('id_item', $item['id_item'])->value('nama_item') ?? $item['id_item'];
+                return redirect()->back()->with('gagal', "Stok {$namaItem} tidak mencukupi pada tanggal {$tanggal} karena bentrok dengan penggunaan lain.");
+            }
+        }
+
+        DB::beginTransaction();
+        try {
+            DB::table('agenda_fakultas')
+                ->where('kode_agenda', $kodeAgenda)
+                ->update([
+                    'id_user' => Auth::user()->id_user,
+                    'nama_agenda' => $namaAgenda,
+                    'tgl_mulai_agenda' => $tglMulai,
+                    'tgl_selesai_agenda' => $tglSelesai,
+                    'tipe_agenda' => $tipeAgenda,
+                    'loop_hari' => $loopHari,
+                    'updated_at' => now(),
+                ]);
+
+            // Hapus hanya jadwal terjadwal yang masih boleh diedit. Riwayat tetap utuh.
+            $deleteRooms = DB::table('usage_rooms')
+                ->where('kode_agenda', $kodeAgenda)
+                ->where('status_usage_room', 'terjadwal');
+            foreach ($tanggalTerkunci as $tanggal) {
+                $deleteRooms->whereDate('tgl_pinjam_usage_room', '!=', $tanggal);
+            }
+            $deleteRooms->delete();
+
+            $deleteItems = DB::table('usage_items')
+                ->where('kode_agenda', $kodeAgenda)
+                ->where('status_usage_item', 'terjadwal');
+            foreach ($tanggalTerkunci as $tanggal) {
+                $deleteItems->whereDate('tgl_pinjam_usage_item', '!=', $tanggal);
+            }
+            $deleteItems->delete();
+
+            if (!empty($finalRooms)) {
+                DB::table('usage_rooms')->insert($finalRooms);
+            }
+            if (!empty($finalItems)) {
+                DB::table('usage_items')->insert($finalItems);
+            }
+
+            DB::commit();
+            session()->forget(['semua_data_edit_barang_ruang', 'data_agenda_edit', 'kode_agenda_edit', 'edit_agenda_dikunci']);
+
+            return redirect()->route('admin-detail-agenda', ['id' => $kodeAgenda])
+                ->with('success', 'Agenda berhasil diperbarui. Riwayat yang selesai/dibatalkan tetap dipertahankan.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+            return redirect()->back()->with('gagal', 'Agenda gagal diperbarui. Silakan coba kembali.');
         }
     }
 

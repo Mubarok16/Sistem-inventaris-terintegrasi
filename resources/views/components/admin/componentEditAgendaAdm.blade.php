@@ -14,6 +14,16 @@
     </div>
 @endif
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul style="margin-bottom: 0;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <main class="layout-container flex grow flex-col items-center justify-center my-4 mx-3 px-0 sm:px-8 lg:px-20">
     <div class="w-full max-w-[1200px] flex flex-col gap-5">
         <!-- Page Heading -->
@@ -46,9 +56,9 @@
                                 </span>
                                 <br>
                                 <input type="text" name="kode_agenda" id="kode_agenda"
-                                    value="{{ $dataPeminjaman->kode_agenda }}" 
-                                    {{-- onchange="this.form.submit()" --}}
-                                    class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
+                                    value="{{ $dataPeminjaman->kode_agenda }}" readonly
+                                    class="text-sm text-slate-500 leading-relaxed bg-slate-100 p-2 rounded-lg border border-slate-200 w-full cursor-not-allowed">
+                                <p class="text-xs text-slate-400 mt-1">Kode agenda tidak dapat diubah karena menjadi identitas agenda.</p>
 
                                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                                     Nama Agenda
@@ -96,7 +106,7 @@
                                 >
                                     @php
                                         // Daftar semua hari untuk isi dropdown
-                                        $tipe = ['kegiatan belajar mengajar', 'rapat', 'pts/pas'];
+                                        $tipe = ['kegiatan belajar mengajar', 'rapat', 'rapat pimpinan', 'pts/pas', 'seminar'];
                                     @endphp
 
                                     @foreach ($tipe as $tipe)
@@ -127,7 +137,7 @@
                                     @endphp
 
                                     @foreach ($semua_hari as $hari)
-                                        <option value="{{ $hari }} "
+                                        <option value="{{ $hari }}"
                                             {{ $dataPeminjaman->loop_hari == $hari ? 'selected' : '' }}>
                                             {{ $hari }}
                                         </option>
@@ -171,10 +181,13 @@
                                 </div>
                             </div>
                         </div>
+                        <p class="text-xs text-slate-500 mt-3 mb-1">
+                            Setelah mengubah detail di atas, tekan tombol ini terlebih dahulu. Setelah itu gunakan tombol <strong>Simpan Semua Perubahan</strong> untuk menyimpan ke database.
+                        </p>
                         <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm w-full justify-center mt-3">
                             <i class="fas fa-key text-white"></i>
-                            <span class="text-white">kunci perubahan detail jadwal dan keperluan</span>
+                            <span class="text-white">Kunci Perubahan Detail Agenda</span>
                         </button>
                     </form>
                 </div>
