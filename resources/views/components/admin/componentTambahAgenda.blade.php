@@ -27,14 +27,14 @@
                         <i class="fa-solid fa-calendar-check text-primary"></i>
                         Detail Jadwal &amp; Keperluan
                     </h5>
-                    <form action="{{ route('simpan-tambah-agenda') }}" method="post">
+                    {{-- <form action="{{ route('simpan-tambah-agenda') }}" method="post">
                         @csrf
                         <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
                             <i class="fas fa-check-circle text-white"></i>
                             <span class="text-white">Simpan Agenda</span>
                         </button>
-                    </form>
+                    </form> --}}
                 </div>
                 <form action="{{ route('kunci-agenda-tambah-agenda') }}" method="post">
                     @csrf
@@ -406,11 +406,14 @@
                                 <!-- Content -->
                                 <div class="px-3 py-3 flex flex-col gap-2">
                                     <div class="flex items-center justify-between">
-                                        <span x-show="currentTab === 'ruangan'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                        <span x-show="currentTab === 'ruangan'"
+                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                             x-text="item.nama_tipe_item"></span>
-                                        <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                        <span x-show="currentTab === 'barang'"
+                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                             x-text="item.merek_model"></span>
-                                        <div x-show="currentTab === 'barang'"  class="flex items-center gap-1 text-green-500">
+                                        <div x-show="currentTab === 'barang'"
+                                            class="flex items-center gap-1 text-green-500">
                                             stok:
                                             <span class="material-symbols-outlined text-[16px] leading-none"
                                                 x-text="item.qty_item">
@@ -431,8 +434,9 @@
                                             <input name="qty_item" type="text" :value="item.qty_item" hidden>
                                         </div>
                                         <p>
-                                            <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                                                Lokasi: Ruangan 
+                                            <span x-show="currentTab === 'barang'"
+                                                class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                                                Lokasi: Ruangan
                                             </span>
                                             <span class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                                 x-text="item.nama_room"></span>
@@ -487,6 +491,15 @@
             border-radius: 10px;
         }
     </style>
+
+    <form action="{{ route('simpan-tambah-agenda') }}" method="post">
+        @csrf
+        <button type="submit"
+            class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+            <i class="fas fa-check-circle text-white"></i>
+            <span class="text-white">Simpan Agenda</span>
+        </button>
+    </form>
 </div>
 
 <!-- tampilan barang dan runagan sementara -->

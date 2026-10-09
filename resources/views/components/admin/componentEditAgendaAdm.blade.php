@@ -37,7 +37,7 @@
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
-                        <form action="{{ route('simpan-agenda') }}" method="post">
+                        {{-- <form action="{{ route('simpan-agenda') }}" method="post">
                             @csrf
                             <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}">
                             <button type="submit"
@@ -45,7 +45,7 @@
                                 <i class="fas fa-check-circle text-white"></i>
                                 <span class="text-white">Simpan Semua Perubahan</span>
                             </button>
-                        </form>
+                        </form> --}}
                     </div>
                     <form action="{{ route('edit-agenda') }}" method="post">
                         @csrf
@@ -58,15 +58,15 @@
                                 <input type="text" name="kode_agenda" id="kode_agenda"
                                     value="{{ $dataPeminjaman->kode_agenda }}" readonly
                                     class="text-sm text-slate-500 leading-relaxed bg-slate-100 p-2 rounded-lg border border-slate-200 w-full cursor-not-allowed">
-                                <p class="text-xs text-slate-400 mt-1">Kode agenda tidak dapat diubah karena menjadi identitas agenda.</p>
+                                <p class="text-xs text-slate-400 mt-1">Kode agenda tidak dapat diubah karena menjadi
+                                    identitas agenda.</p>
 
                                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                                     Nama Agenda
                                 </span>
                                 <br>
                                 <input type="text" name="nama_agenda" id="nama_agenda"
-                                    value="{{ $dataPeminjaman->nama_agenda }}" 
-                                    {{-- onchange="this.form.submit()" --}}
+                                    value="{{ $dataPeminjaman->nama_agenda }}" {{-- onchange="this.form.submit()" --}}
                                     class="text-sm text-slate-700 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100 w-full">
 
                                 <div class="flex flex-col mt-2!">
@@ -77,8 +77,7 @@
                                         <i class="fa-solid fa-right-to-bracket text-green-600"></i>
                                         <input type="date" name="tgl_mulai_agenda" id="tgl_mulai_agenda"
                                             value="{{ date('Y-m-d', strtotime($dataPeminjaman->tgl_mulai_agenda)) }}"
-                                            {{-- onchange="this.form.submit()" --}}
-                                        >
+                                            {{-- onchange="this.form.submit()" --}}>
                                         {{-- {{ date('d F Y', strtotime($dataPeminjaman->tgl_mulai_agenda)) }} --}}
                                     </div>
                                 </div>
@@ -90,8 +89,7 @@
                                         <i class="fa-solid fa-right-from-bracket text-red-500"></i>
                                         <input type="date" name="tgl_selesai_agenda" id="tgl_selesai_agenda"
                                             value="{{ date('Y-m-d', strtotime($dataPeminjaman->tgl_selesai_agenda)) }}"
-                                            {{-- onchange="this.form.submit()" --}}
-                                        >
+                                            {{-- onchange="this.form.submit()" --}}>
                                         {{-- {{ date('d F Y', strtotime($dataPeminjaman->tgl_selesai_agenda)) }} --}}
                                     </div>
                                 </div>
@@ -101,12 +99,16 @@
                                     Tipe Agenda
                                 </span>
                                 <br>
-                                <select name="tipe_agenda" class="form-control" 
-                                {{-- onchange="this.form.submit()" --}}
-                                >
+                                <select name="tipe_agenda" class="form-control" {{-- onchange="this.form.submit()" --}}>
                                     @php
                                         // Daftar semua hari untuk isi dropdown
-                                        $tipe = ['kegiatan belajar mengajar', 'rapat', 'rapat pimpinan', 'pts/pas', 'seminar'];
+                                        $tipe = [
+                                            'kegiatan belajar mengajar',
+                                            'rapat',
+                                            'rapat pimpinan',
+                                            'pts/pas',
+                                            'seminar',
+                                        ];
                                     @endphp
 
                                     @foreach ($tipe as $tipe)
@@ -148,8 +150,7 @@
                                         Jam
                                     </span>
                                     <br>
-                                    <select name="tipe_jam" id="tipe_waktu" class="form-control"
-                                        onchange="toggleJam()">
+                                    <select name="tipe_jam" id="tipe_waktu" class="form-control" onchange="toggleJam()">
                                         <option value="full day"
                                             {{ $dataPeminjaman->tipe_jam === 'full day' ? 'selected' : '' }}>Full Day
                                         </option>
@@ -166,23 +167,22 @@
                                             <label>Jam Mulai:</label>
                                             <input type="time" name="jam_mulai" class="form-control" id="jam_mulai"
                                                 value="{{ $dataPeminjaman->tipe_jam === 'full day' ? '' : $dataPeminjaman->jam_mulai }}"
-                                                {{-- onchange="this.form.submit()" --}}
-                                            >
+                                                {{-- onchange="this.form.submit()" --}}>
                                         </div>
                                         <div class="col-md-6">
                                             <label>Jam Selesai:</label>
                                             <input type="time" name="jam_selesai" class="form-control"
                                                 id="jam_selesai"
                                                 value="{{ $dataPeminjaman->tipe_jam === 'full day' ? '' : $dataPeminjaman->jam_selesai }}"
-                                                {{-- onchange="this.form.submit()" --}}
-                                            >
+                                                {{-- onchange="this.form.submit()" --}}>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <p class="text-xs text-slate-500 mt-3 mb-1">
-                            Setelah mengubah detail di atas, tekan tombol ini terlebih dahulu. Setelah itu gunakan tombol <strong>Simpan Semua Perubahan</strong> untuk menyimpan ke database.
+                            Setelah mengubah detail di atas, tekan tombol ini terlebih dahulu. Setelah itu gunakan
+                            tombol <strong>Simpan Semua Perubahan</strong> untuk menyimpan ke database.
                         </p>
                         <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 bg-green-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-green-700 transition-colors shadow-sm w-full justify-center mt-3">
@@ -284,7 +284,7 @@
                                                     class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                                     x-text="item.nama_tipe_item"></span>
                                                 <div class="flex items-center gap-1 text-green-500">
-                                                    stok:  
+                                                    stok:
                                                     <span class="material-symbols-outlined text-[16px] leading-none"
                                                         x-text="item.qty_item">
                                                     </span>
@@ -296,9 +296,12 @@
                                                     <h3 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors"
                                                         x-text="item.nama_item">
                                                     </h3>
-                                                    <input x-show="currentTab === 'barang'" type="number" name="qty_usage" class="w-10 border-1 border-slate-300 rounded-md px-1" value="0">
-                                                    <input name="qty_item" type="text"
-                                                            :value="item.qty_item" hidden>
+                                                    <input x-show="currentTab === 'barang'" type="number"
+                                                        name="qty_usage"
+                                                        class="w-10 border-1 border-slate-300 rounded-md px-1"
+                                                        value="0">
+                                                    <input name="qty_item" type="text" :value="item.qty_item"
+                                                        hidden>
                                                 </div>
                                                 <div class="flex items-center justify-between mt-auto pt-2">
                                                     <div class="flex gap-2 w-full">
@@ -334,6 +337,16 @@
                     </div> --}}
                     </div>
                 </div>
+
+                <form action="{{ route('simpan-agenda') }}" method="post">
+                    @csrf
+                    <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}">
+                    <button type="submit"
+                        class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                        <i class="fas fa-check-circle text-white"></i>
+                        <span class="text-white">Simpan Semua Perubahan</span>
+                    </button>
+                </form>
             </div>
 
             <style>
@@ -383,8 +396,7 @@
                     <!-- Content -->
                     <div class="px-3 py-3 flex flex-col gap-2">
                         <div class="flex items-center justify-between">
-                            <span
-                                class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">
                                 {{ $dataBarang->merek_model ?? $dataBarang->nama_tipe_room }}
                             </span>
                             <div class="flex items-center gap-1 text-green-500">
@@ -398,8 +410,7 @@
                                 class="text-lg font-bold leading-tight truncate group-hover:text-primary transition-colors">
                                 {{ $dataBarang->nama_item ?? $dataBarang->nama_room }}
                             </h3>
-                            <span
-                                class="text-xs font-medium text-slate-700 uppercase tracking-wide">
+                            <span class="text-xs font-medium text-slate-700 uppercase tracking-wide">
                                 qty: {{ $dataBarang->qty_usage_item ?? '-' }}
                             </span>
                         </div>
