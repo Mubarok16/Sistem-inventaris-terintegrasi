@@ -266,7 +266,8 @@
                                         <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                                             <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                                 data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                                :style="`background-image: url('{{ asset('storage') }}/${item.img_item}')`">
+                                                :style="`background-image: url('{{ asset('storage') }}/${item.img_item}')`"                                                
+                                                >
                                             </div>
                                             <!-- Quick Action Overlay -->
                                             <div
@@ -366,7 +367,9 @@
                     <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                         <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                             data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                            style='background-image: url("/storage/{{ $dataBarang->img_item ?? $dataBarang->gambar_room }}");'>
+                            {{-- style='background-image: url("/storage/{{ $dataBarang->img_item ?? $dataBarang->gambar_room }}");' --}}
+                            src="{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item ?? $dataBarang->gambar_room)) }}"
+                            >
                         </div>
                         <!-- Quick Action Overlay -->
                         <div class="absolute top-2 right-2 z-[10] pointer-events-auto">
@@ -408,6 +411,7 @@
                 </article>
             @endforeach
         </div>
+
         <form action="{{ route('simpan-agenda') }}" method="post">
             @csrf
             <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}">
