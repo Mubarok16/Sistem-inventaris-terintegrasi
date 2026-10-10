@@ -412,7 +412,7 @@
             @csrf
             <input type="text" name="kode_agenda_lama" class="hidden" value="{{ $id }}">
             <button type="submit"
-                class="w-full flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                class="w-full flex items-center text-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
                 <i class="fas fa-check-circle text-white"></i>
                 <span class="text-white">Simpan Semua Perubahan</span>
             </button>
