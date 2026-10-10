@@ -1,3 +1,25 @@
+@php
+    $agendaImageUrl = static function ($path) {
+        if (empty($path)) {
+            return null;
+        }
+
+        $path = str_replace(chr(92), '/', ltrim((string) $path, '/'));
+
+        if (preg_match('/^https?:\\/\\//i', $path)) {
+            return $path;
+        }
+
+        return Storage::disk('s3')->url($path);
+    };
+
+    $allBarangRuang = collect($allBarangRuang)->map(function ($item) use ($agendaImageUrl) {
+        $item->img_url = $agendaImageUrl($item->img_item ?? null);
+
+        return $item;
+    })->all();
+@endphp
+
 @if (session('success'))
     <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
         <ul style="margin-bottom: 0;">
@@ -266,7 +288,7 @@
                                         <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                                             <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                                 data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                                :style="`background-image: url('{{ asset('storage') }}/${item.img_item}')`"                                                
+                                                :style="item.img_url ? { backgroundImage: 'url(' + item.img_url + ')' } : {}"                                                
                                                 >
                                             </div>
                                             <!-- Quick Action Overlay -->
@@ -367,8 +389,7 @@
                     <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                         <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                             data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                            {{-- style='background-image: url("/storage/{{ $dataBarang->img_item ?? $dataBarang->gambar_room }}");' --}}
-                            src="{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item ?? $dataBarang->gambar_room)) }}"
+                            style="background-image: url('{{ $agendaImageUrl($dataBarang->img_item ?? $dataBarang->gambar_room ?? null) }}')"
                             >
                         </div>
                         <!-- Quick Action Overlay -->
