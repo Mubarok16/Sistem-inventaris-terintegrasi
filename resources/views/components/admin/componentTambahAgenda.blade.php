@@ -492,6 +492,9 @@
         }
     </style>
 
+
+</div>
+<div class="mt-5 mb-3">
     <form action="{{ route('simpan-tambah-agenda') }}" method="post">
         @csrf
         <button type="submit"
@@ -501,7 +504,6 @@
         </button>
     </form>
 </div>
-
 <!-- tampilan barang dan runagan sementara -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-5">
     @foreach ($semuaData as $dataBarang)
