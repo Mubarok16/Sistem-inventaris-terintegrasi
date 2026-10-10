@@ -43,7 +43,8 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
-            'throw' => false,
+            // Jangan menganggap upload berhasil bila Object Storage menolak write.
+            'throw' => true,
             'report' => false,
         ],
         's3' => [

@@ -1,25 +1,3 @@
-@php
-    $agendaImageUrl = static function ($path) {
-        if (empty($path)) {
-            return null;
-        }
-
-        $path = str_replace(chr(92), '/', ltrim((string) $path, '/'));
-
-        if (preg_match('/^https?:\\/\\//i', $path)) {
-            return $path;
-        }
-
-        return Storage::disk('s3')->url($path);
-    };
-
-    $allBarangRuang = collect($allBarangRuang)->map(function ($item) use ($agendaImageUrl) {
-        $item->img_url = $agendaImageUrl($item->img_item ?? null);
-
-        return $item;
-    })->all();
-@endphp
-
 @if (session('success'))
     <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 4000)" class="alert alert-success">
         <ul style="margin-bottom: 0;">
@@ -49,14 +27,14 @@
                         <i class="fa-solid fa-calendar-check text-primary"></i>
                         Detail Jadwal &amp; Keperluan
                     </h5>
-                    {{-- <form action="{{ route('simpan-tambah-agenda') }}" method="post">
+                    <form action="{{ route('simpan-tambah-agenda') }}" method="post">
                         @csrf
                         <button type="submit"
                             class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
                             <i class="fas fa-check-circle text-white"></i>
                             <span class="text-white">Simpan Agenda</span>
                         </button>
-                    </form> --}}
+                    </form>
                 </div>
                 <form action="{{ route('kunci-agenda-tambah-agenda') }}" method="post">
                     @csrf
@@ -414,7 +392,7 @@
                                 <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                                     <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                                         data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                                        :style="item.img_url ? { backgroundImage: 'url(' + item.img_url + ')' } : {}">
+                                        :style="`background-image: url('{{ rtrim(Storage::disk('public')->url(''), '/') }}/${String(item.img_item ?? '').replace(/^\/+/, '')}')`">
                                     </div>
                                     <!-- Quick Action Overlay -->
                                     <div
@@ -428,14 +406,11 @@
                                 <!-- Content -->
                                 <div class="px-3 py-3 flex flex-col gap-2">
                                     <div class="flex items-center justify-between">
-                                        <span x-show="currentTab === 'ruangan'"
-                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                        <span x-show="currentTab === 'ruangan'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                             x-text="item.nama_tipe_item"></span>
-                                        <span x-show="currentTab === 'barang'"
-                                            class="text-xs font-medium text-slate-400 uppercase tracking-wide"
+                                        <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                             x-text="item.merek_model"></span>
-                                        <div x-show="currentTab === 'barang'"
-                                            class="flex items-center gap-1 text-green-500">
+                                        <div x-show="currentTab === 'barang'"  class="flex items-center gap-1 text-green-500">
                                             stok:
                                             <span class="material-symbols-outlined text-[16px] leading-none"
                                                 x-text="item.qty_item">
@@ -456,9 +431,8 @@
                                             <input name="qty_item" type="text" :value="item.qty_item" hidden>
                                         </div>
                                         <p>
-                                            <span x-show="currentTab === 'barang'"
-                                                class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                                                Lokasi: Ruangan
+                                            <span x-show="currentTab === 'barang'" class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+                                                Lokasi: Ruangan 
                                             </span>
                                             <span class="text-xs font-medium text-slate-400 uppercase tracking-wide"
                                                 x-text="item.nama_room"></span>
@@ -513,8 +487,6 @@
             border-radius: 10px;
         }
     </style>
-
-
 </div>
 
 <!-- tampilan barang dan runagan sementara -->
@@ -527,8 +499,7 @@
             <div class="relative aspect-square overflow-hidden bg-gray-200 ">
                 <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
                     data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
-                    style="background-image: url('{{ $agendaImageUrl($dataBarang->img_item ?? $dataBarang->gambar_room ?? null) }}')"
-                    >
+                    style="background-image: url('{{ Storage::disk('public')->url(ltrim(str_replace('//', '/', $dataBarang->img_item ?? $dataBarang->gambar_room ?? ''), '/')) }}');">
                 </div>
                 <!-- Quick Action Overlay -->
                 <div class="absolute top-2 right-2 z-[10] pointer-events-auto">
@@ -601,14 +572,3 @@
         }
     }
 </script>
-
-<div class="mt-5 mb-3">
-    <form action="{{ route('simpan-tambah-agenda') }}" method="post">
-        @csrf
-        <button type="submit"
-            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-            <i class="fas fa-check-circle text-white"></i>
-            <span class="text-white">Simpan Agenda</span>
-        </button>
-    </form>
-</div>

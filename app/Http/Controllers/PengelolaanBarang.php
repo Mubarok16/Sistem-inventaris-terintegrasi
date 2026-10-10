@@ -57,15 +57,15 @@ class PengelolaanBarang extends Controller
             // dd($gambar_lama['gambar_item']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            // if (Storage::disk('s3')->exists($gambar_lama['img_item'])) {
-            //     Storage::disk('s3')->delete($gambar_lama['img_item']);
+            // if (Storage::disk('public')->exists($gambar_lama['img_item'])) {
+            //     Storage::disk('public')->delete($gambar_lama['img_item']);
             // }
 
             // ambil path gambar baru dari request
             $file = $request->gambar_item;
             // simpan file baru
             // $path = $file->store('uploads/barang/', 'public');
-            $path = $file->store('uploads/barang/', 's3');
+            $path = $file->store('uploads/barang/', 'public');
 
             // simpan data barang yang sudah di update ke database
             DB::table('items')
@@ -240,7 +240,7 @@ class PengelolaanBarang extends Controller
             $imgPath = null;
             if ($request->hasFile('gambar_item')) {
                 // $imgPath = $request->file('gambar_item')->store('uploads/barang', 'public');
-                $imgPath = $request->file('gambar_item')->store('uploads/barang', 's3');
+                $imgPath = $request->file('gambar_item')->store('uploads/barang', 'public');
             }
 
             // dd($imgPath);

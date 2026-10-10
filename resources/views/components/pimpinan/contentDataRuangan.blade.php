@@ -126,7 +126,8 @@
                 x-transition x-cloak>
                 <div class="flex justify-center rounded-2xl w-full max-w-xl relative"
                     @click.outside="OpenImgRuangan = false">
-                    <img :src="`${bucketUrl}/${selectedDataRuangan.img}`.replace('uploads/ruangan//', 'uploads/ruangan/')" alt="gambar ruangan" class="container">
+                    <img x-show="selectedDataRuangan.img" :src="selectedDataRuangan.img ? `${bucketUrl}/${String(selectedDataRuangan.img).replace(/^\/+/, '')}` : ''" alt="Gambar Ruangan" class="container">
+                    <p x-show="!selectedDataRuangan.img" class="p-5 text-center bg-white rounded-xl">Gambar ruangan belum tersedia.</p>
                 </div>
             </div>
         </div>
@@ -191,5 +192,5 @@
     </div>
 </main>
 <script>
-    const bucketUrl = "{{ rtrim(Storage::disk('s3')->url(''), '/') }}";
+    const bucketUrl = "{{ rtrim(Storage::disk('public')->url(''), '/') }}";
 </script>

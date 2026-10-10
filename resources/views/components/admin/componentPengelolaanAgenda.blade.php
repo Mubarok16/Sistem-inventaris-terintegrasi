@@ -72,8 +72,8 @@
                                 PTS/PAS</option>
                             <option {{ $tipe_agenda == 'rapat' ? 'selected' : '' }} value="rapat">
                                 Rapat Pimpinan</option>
-                            {{-- <option {{ $tipe_agenda == 'seminar' ? 'selected' : '' }} value="seminar">Seminar
-                            </option> --}}
+                            <option {{ $tipe_agenda == 'seminar' ? 'selected' : '' }} value="seminar">Seminar
+                            </option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>

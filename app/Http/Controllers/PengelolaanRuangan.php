@@ -117,7 +117,7 @@ class PengelolaanRuangan extends Controller
             $imgPath = null;
             if ($request->hasFile('gambar_room')) {
                 // $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 'public');
-                $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 's3');
+                $imgPath = $request->file('gambar_room')->store('uploads/ruangan', 'public');
             }
 
             // dd($idroom_singkat);
@@ -150,12 +150,22 @@ class PengelolaanRuangan extends Controller
 
             $DataRuangan = DataRuangan::where('id_room', $id)->first();
 
-            $path = 'public/' . $DataRuangan->gambar_room;
-
-
-            Storage::delete($path);
-
+            // Jangan hapus foto apabila penghapusan ruangan ditolak oleh relasi database.
+            $path = $DataRuangan->gambar_room;
             $DataRuangan->delete();
+
+            // File menggunakan disk publik yang dapat berupa Object Storage di Laravel Cloud.
+            // Kegagalan penghapusan file tidak membatalkan penghapusan data ruangan.
+            if ($path) {
+                try {
+                    Storage::disk('public')->delete($path);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Gagal menghapus gambar ruangan dari storage', [
+                        'path' => $path,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
+            }
 
             return redirect()->back()->with('success', 'Ruangan berhasil dihapus!');
         } catch (\Exception $e) {
@@ -238,15 +248,15 @@ class PengelolaanRuangan extends Controller
             // dd($gambar_lama['gambar_room']);
 
             // Cek apakah file ada sebelum dihapus agar tidak error
-            // if (Storage::disk('s3')->exists($gambar_lama['gambar_room'])) {
-            //     Storage::disk('s3')->delete($gambar_lama['gambar_room']);
+            // if (Storage::disk('public')->exists($gambar_lama['gambar_room'])) {
+            //     Storage::disk('public')->delete($gambar_lama['gambar_room']);
             // }
 
             // ambil path gambar baru dari request
             $file = $request->gambar_room;
             // simpan file baru
             // $path = $file->store('uploads/ruangan/', 'public');
-            $path = $file->store('uploads/ruangan/', 's3');
+            $path = $file->store('uploads/ruangan/', 'public');
 
             // simpan data ruangan yang sudah di update ke database
             $ruangan = DB::table('rooms')

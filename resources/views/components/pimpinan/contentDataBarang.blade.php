@@ -39,7 +39,7 @@
                     class="item-card bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
                     <div class="relative h-48 overflow-hidden bg-slate-100">
                         <img alt="Laptop" class="w-full h-full object-cover"
-                            src="{{ Storage::disk('s3')->url(str_replace('//', '/', $dataBarang->img_item)) }}" />
+                            src="{{ Storage::disk('public')->url(str_replace('//', '/', $dataBarang->img_item)) }}" />
                        
                     </div>
                     <div class="p-6 flex-grow">

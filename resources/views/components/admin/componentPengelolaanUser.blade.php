@@ -435,7 +435,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
         <div @click.outside="OpenImportMahasiswa = false"
             class="w-full max-w-xl rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
-            <div class="px-6 py-2 border-b border-slate-200 flex items-center justify-between">
+            <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
                 <div>
                     <h3 class="text-lg font-extrabold text-slate-900">Import Akun Mahasiswa</h3>
                     <p class="text-sm text-slate-500 mt-1">Gunakan template agar nama kolom sesuai dengan format sistem.</p>
@@ -446,8 +446,8 @@
                 </button>
             </div>
 
-            <div class="p-6 space-y-4">
-                <div class="rounded-xl border border-blue-100 bg-blue-50 px-4 py-2 text-sm text-blue-800">
+            <div class="p-6 space-y-5">
+                <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
                     <p class="font-bold mb-2">Kolom wajib:</p>
                     <p class="leading-relaxed">no_identitas, nama_peminjam, username, password, prodi, tahun_masuk, status.</p>
                     <p class="mt-2 text-xs">Program studi harus dipilih dari daftar dropdown pada template. Status gunakan <strong>active</strong> atau <strong>unactive</strong>.</p>
@@ -493,10 +493,11 @@
 
         <div class="flex justify-center rounded-2xl w-full max-w-xl relative"
             @click.outside="OpenImgIdentitas = false">
-            <img :src="`${bucketUrl}/${selectedPeminjam.img}`" alt="Foto Peminjam" class="container">
+            <img x-show="selectedPeminjam.img" :src="selectedPeminjam.img ? `${bucketUrl}/${String(selectedPeminjam.img).replace(/^\/+/, '')}` : ''" alt="Foto Identitas" class="container">
+            <p x-show="!selectedPeminjam.img" class="p-5 text-center bg-white rounded-xl">Foto identitas belum tersedia.</p>
         </div>
     </div>
 </main>
 <script>
-    const bucketUrl = "{{ rtrim(Storage::disk('s3')->url(''), '/') }}";
+    const bucketUrl = "{{ rtrim(Storage::disk('public')->url(''), '/') }}";
 </script>

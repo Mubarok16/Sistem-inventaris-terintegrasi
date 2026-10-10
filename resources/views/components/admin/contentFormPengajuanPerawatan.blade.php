@@ -464,7 +464,7 @@
                                 <div class="relative aspect-square overflow-hidden bg-gray-200">
 
                                     <div class="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
-                                        :style="`background-image: url('/storage/${dataBarang.img_item ?? dataBarang.gambar_room}')`">
+                                        :style="`background-image: url('${bucketUrl}/${String(dataBarang.img_item ?? dataBarang.gambar_room ?? '').replace(/^\/+/, '')}')`">
                                     </div>
 
                                     <!-- DELETE -->
@@ -550,7 +550,7 @@
 <script>
     // DATA DARI LARAVEL
     const productsData = @json($allBarangRuang);
-    const bucketUrl = "{{ rtrim(Storage::disk('s3')->url(''), '/') }}";
+    const bucketUrl = "{{ rtrim(Storage::disk('public')->url(''), '/') }}";
 
     function perawatanHandler() {
 

@@ -82,7 +82,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ Storage::disk('s3')->url(str_replace('//', '/', $ruang->gambar_room)) }}')">
+                            <div class="grid grid-cols-1 gap-5" x-data="imageUploader('{{ Storage::disk('public')->url(str_replace('//', '/', $ruang->gambar_room)) }}')">
                                 <div class="border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-all group min-h-[400px]"
                                     :class="isDragging ? 'border-blue-500 bg-blue-50' :
                                         'border-slate-200 bg-white/50 hover:border-primary/40 hover:bg-white'"
@@ -209,8 +209,7 @@
                                                     data-alt="Modern high-end sneakers with white and grey accents floating in a studio setting"
                                                     :style="`background-image: url('${bucketUrl}/${item.img_item}')`">
                                                 </div> --}}
-                                                <img :src="`${bucketUrl}/${item.img_item}`.replace('uploads/barang//',
-                                                    'uploads/barang/')"
+                                                <img :src="item.img_item ? `${bucketUrl}/${String(item.img_item).replace(/^\/+/, '')}` : ''"
                                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                     alt="Gambar Barang">
 
@@ -315,7 +314,7 @@
                                                 <div
                                                     class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
                                                     {{-- <i class="fa-solid fa-snowflake text-xs"></i> --}}
-                                                    <img src="{{ Storage::disk('s3')->url(str_replace('//', '/', $item->img_item)) }}"
+                                                    <img src="{{ Storage::disk('public')->url(str_replace('//', '/', $item->img_item)) }}"
                                                         class="w-full h-full object-cover border-0 rounded-lg!">
                                                 </div>
                                                 <span class="font-medium text-slate-700">
@@ -407,7 +406,7 @@
 <script>
     const productsData = @json($allBarangRuang);
 
-    const bucketUrl = "{{ rtrim(Storage::disk('s3')->url(''), '/') }}";
+    const bucketUrl = "{{ rtrim(Storage::disk('public')->url(''), '/') }}";
 
     function imageUploader(existingUrl = null) {
         return {

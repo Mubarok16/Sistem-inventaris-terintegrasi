@@ -145,7 +145,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ asset('storage/' . $item['img_item']) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($item['img_item'], '/'))) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -180,7 +180,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ asset('storage/' . $room['gambar_room']) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($room['gambar_room'], '/'))) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -265,7 +265,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden">
                                             <img alt="{{ $barang->nama_item ?? 'Item Image' }}" class="w-full h-full object-cover"
-                                                src="{{ Storage::disk('s3')->url(str_replace('//', '/', $barang->img_item)) }}" />
+                                                src="{{ Storage::disk('public')->url(str_replace('//', '/', $barang->img_item)) }}" />
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">{{ $barang->nama_item }}</p>
@@ -310,7 +310,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden">
                                             <img alt="{{ $ruangan->nama_room ?? 'Room Image' }}" class="w-full h-full object-cover"
-                                                src="{{ Storage::disk('s3')->url(str_replace('//', '/', $ruangan->gambar_room)) }}" />
+                                                src="{{ Storage::disk('public')->url(str_replace('//', '/', $ruangan->gambar_room)) }}" />
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">{{ $ruangan->nama_tipe_room }} {{ $ruangan->nama_room }}</p>
@@ -479,14 +479,14 @@
                                                             <div
                                                                 class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                                                 <div class="size-full bg-cover bg-center"
-                                                                    style="background-image: url('{{ asset('storage/' . $item['gambar_room']) }}')">
+                                                                    style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($item['gambar_room'], '/'))) }}')">
                                                                 </div>
                                                             </div>
                                                         @else
                                                             <div
                                                                 class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                                                 <div class="size-full bg-cover bg-center"
-                                                                    style="background-image: url('{{ asset('storage/' . $item['img_item']) }}')">
+                                                                    style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($item['img_item'], '/'))) }}')">
                                                                 </div>
                                                             </div>
                                                         @endif
@@ -554,7 +554,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailBarang->img_item) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($detailBarang->img_item, '/'))) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
@@ -606,7 +606,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ asset('storage/' . $detailRuangan->gambar_room) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', ltrim($detailRuangan->gambar_room, '/'))) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
