@@ -313,20 +313,43 @@ class DashboardController extends Controller
 
         // mengambil data ruangan
         $DataRuangan = DataRuangan::get();
+        
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
+            // $DataBarang = DB::table('items')
+            //     ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
+            //     ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
+            //     ->select(
+            //         'items.*',
+            //         'rooms.nama_room',
+            //         'perawatan_barang.qty_perawatan'
+            //     ) // Pilih kolom yang diperlukan
+            //     ->when($cari !== 'null', function ($query) use ($cari) {
+            //         $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
+            //     })
+            //     ->latest()
+            //     ->paginate(6);
+        $perawatanAktif = DB::table('perawatan_barang')
+            ->select('id_item')
+            ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
+            ->where('status_perawatan', 'disetujui')
+            ->groupBy('id_item');
+
         $DataBarang = DB::table('items')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-            ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
+            ->leftJoinSub($perawatanAktif, 'perawatan_aktif', function ($join) {
+                $join->on('items.id_item', '=', 'perawatan_aktif.id_item');
+            })
             ->select(
                 'items.*',
                 'rooms.nama_room',
-                'perawatan_barang.qty_perawatan'
-            ) // Pilih kolom yang diperlukan
+                DB::raw('COALESCE(perawatan_aktif.qty_perawatan, 0) as qty_perawatan')
+            )
             ->when($cari !== 'null', function ($query) use ($cari) {
                 $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
             })
-            ->latest()
+            ->latest('items.created_at')
             ->paginate(6);
+
 
         $prodi = DB::table('prodi')->select('nama_prodi')->get();
 
