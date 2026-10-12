@@ -238,7 +238,7 @@ class DashboardController extends Controller
         $JmlhAdmin = User::where('hak_akses', 'admin')->count();
         $jmlhPenggunaAll = User::where('status', 'active')->count();
         $jmlhMhs = User::where('hak_akses', 'mahasiswa')->count();
-        $jmlhMhsTA = User::where('hak_akses', 'mahasiswa')->where('status', 'unactive')->count();
+        $jmlhMhsTA = User::where('hak_akses', 'admin')->where('status', 'unactive')->count();
 
         $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
         $halaman = 'contentPengelolaanUser';
@@ -313,43 +313,20 @@ class DashboardController extends Controller
 
         // mengambil data ruangan
         $DataRuangan = DataRuangan::get();
-
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
-        // $DataBarang = DB::table('items')
-        //     ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-        //     ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
-        //     ->select(
-        //         'items.*',
-        //         'rooms.nama_room',
-        //         'perawatan_barang.qty_perawatan'
-        //     ) // Pilih kolom yang diperlukan
-        //     ->when($cari !== 'null', function ($query) use ($cari) {
-        //         $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
-        //     })
-        //     ->latest()
-        //     ->paginate(6);
-        $perawatanAktif = DB::table('perawatan_barang')
-            ->select('id_item')
-            ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
-            ->where('status_perawatan', 'disetujui')
-            ->groupBy('id_item');
-
         $DataBarang = DB::table('items')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-            ->leftJoinSub($perawatanAktif, 'perawatan_aktif', function ($join) {
-                $join->on('items.id_item', '=', 'perawatan_aktif.id_item');
-            })
+            ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
             ->select(
                 'items.*',
                 'rooms.nama_room',
-                DB::raw('COALESCE(perawatan_aktif.qty_perawatan, 0) as qty_perawatan')
-            )
+                'perawatan_barang.qty_perawatan'
+            ) // Pilih kolom yang diperlukan
             ->when($cari !== 'null', function ($query) use ($cari) {
                 $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
             })
-            ->latest('items.created_at')
+            ->latest()
             ->paginate(6);
-
 
         $prodi = DB::table('prodi')->select('nama_prodi')->get();
 
@@ -909,43 +886,22 @@ class DashboardController extends Controller
         // mengambil data ruangan
         $DataRuangan = DataRuangan::get();
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
-        $perawatanAktif = DB::table('perawatan_barang')
-            ->select('id_item')
-            ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
-            ->where('status_perawatan', 'disetujui')
-            ->groupBy('id_item');
-
         $DataBarang = DB::table('items')
+            // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-            ->leftJoinSub($perawatanAktif, 'perawatan_aktif', function ($join) {
-                $join->on('items.id_item', '=', 'perawatan_aktif.id_item');
-            })
+            ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
             ->select(
                 'items.*',
+                // 'tipe_item.nama_tipe_item', 
                 'rooms.nama_room',
-                DB::raw('COALESCE(perawatan_aktif.qty_perawatan, 0) as qty_perawatan')
-            )
+                'perawatan_barang.qty_perawatan'
+            ) // Pilih kolom yang diperlukan
             ->when($cari !== 'null', function ($query) use ($cari) {
                 $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
             })
-            ->latest('items.created_at')
+            ->latest()
             ->paginate(6);
-        // $DataBarang = DB::table('items')
-        //     // ->join('tipe_item', 'items.id_tipe_item', '=', 'tipe_item.id_tipe_item')
-        //     ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
-        //     ->leftJoin('perawatan_barang', 'items.id_item', 'perawatan_barang.id_item')
-        //     ->select(
-        //         'items.*',
-        //         // 'tipe_item.nama_tipe_item', 
-        //         'rooms.nama_room',
-        //         'perawatan_barang.qty_perawatan'
-        //     ) // Pilih kolom yang diperlukan
-        //     ->when($cari !== 'null', function ($query) use ($cari) {
-        //         $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
-        //     })
-        //     ->latest()
-        //     ->paginate(6);
-
+        // ->get();
         // mengambil data tipe barang
         $DataTipeBarang = TipeRuangan::get();
         // mengambil data user yang sedang login

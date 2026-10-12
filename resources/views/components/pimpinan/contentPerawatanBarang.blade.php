@@ -99,7 +99,7 @@
                                     <div class="flex flex-col gap-1.5">
                                         <div class="font-bold text-slate-500 flex items-center gap-2">
                                             {{-- <i class="fa-solid fa-clipboard-list text-primary"></i> --}}
-                                            {{ $perawatan->qty_perawatan == null ? '-' : $perawatan->qty_perawatan }}
+                                            {{ $perawatan->id_room !== null ? '-' : $perawatan->qty_perawatan }}
                                         </div>
                                     </div>
                                 </td>
