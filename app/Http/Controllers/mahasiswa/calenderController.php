@@ -33,7 +33,7 @@ class calenderController extends Controller
                 'usage_rooms.jam_selesai_usage_room',
                 'usage_rooms.status_usage_room'
             )
-            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai']);
+            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'dibatalkan' ,'selesai']);
 
         // Gabungan (Union) dengan data dari Peminjaman
         $agendas = DB::table('peminjaman')
@@ -48,7 +48,7 @@ class calenderController extends Controller
                 'usage_rooms.status_usage_room'
             )
             ->union($agenda_fakultas)
-            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
+            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'dibatalkan', 'selesai'])
             ->get();
         // }
 
@@ -113,6 +113,7 @@ class calenderController extends Controller
             return match ($status) {
                 'terjadwal' => '#facc15', // kuning
                 'digunakan' => '#22c55e', // hijau
+                'dibatalkan' => '#64748B', // abu tua
                 'selesai' => '#99A7BB', // abu abu
                 default => '#64748b' // abu-abu
             };
@@ -122,7 +123,8 @@ class calenderController extends Controller
             return match ($status) {
                 'terjadwal' => '#3b82f6', // biru
                 'digunakan' => '#22c55e', // hijau
-                'selesai' => '#99A7BB', // hijau
+                'dibatalkan' => '#64748B', // abu tua
+                'selesai' => '#99A7BB', // abu abu
                 default => '#64748b' // abu-abu
             };
         }
