@@ -7,11 +7,23 @@
             <!-- detail agenda today -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 {{-- calender --}}
+                <div class="flex flex-wrap gap-2 pt-3 border-t-1 border-gray-300 ">
+                    <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                        style="background-color: #64748B;">DIBATALKAN</span>
+                    <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                        style="background-color: #99A7BB;">SELESAI</span>
+                    <span class="px-3 py-1 rounded text-xs font-bold text-gray-800 shadow-sm"
+                        style="background-color: #facc15;">TERJADWAL(Peminjaman)</span>
+                    <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                        style="background-color: #3b82f6;">TERJADWAL(Agenda Fakultas)</span>
+                    <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                        style="background-color: #22c55e;">Digunakan</span>
+                </div>
                 <div id="calendar" data-url="{{ url('/pimpinan/events-calender') }}"
                     class="mb-4 pt-4 border-gray-300 fc-tailwind">
                 </div>
             </div>
-            
+
         </div>
     </div>
 </main>

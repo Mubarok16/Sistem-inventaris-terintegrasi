@@ -1,4 +1,3 @@
-
 <div class="max-w-[1200px] mx-auto flex flex-col gap-8">
     {{-- count peminjaman --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -8,7 +7,7 @@
                 <div class="bg-blue-50 p-2.5 rounded-lg text-primary">
                     <i class="fa-solid fa-bag-shopping"></i>
                 </div>
-                
+
             </div>
             <div>
                 <p class="text-text-secondary text-sm font-medium mb-1">Peminjaman</p>
@@ -22,7 +21,7 @@
             class="bg-surface-light px-5 py-3 rounded-xl border border-[#e7ecf3] shadow-sm flex flex-col justify-between hover:border-primary/50 transition-colors">
             <div class="flex justify-between items-start mb-4">
                 <div class="bg-red-50 p-2.5 rounded-lg text-red-600">
-                    
+
                     <i class="fa-solid fa-circle-exclamation"></i>
                 </div>
             </div>
@@ -52,8 +51,19 @@
     </div>
     <div>
         <h3 class="text-lg font-bold text-text-main mb-4">Agenda Penggunaan Ruangan</h3>
-        <div id="calendar" data-url="{{ url('/peminjam/events-calender') }}" class="mb-4 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
+        <div class="flex flex-wrap gap-2 pt-3 border-t-1 border-gray-300 ">
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #64748B;">DIBATALKAN</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #99A7BB;">SELESAI</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-gray-800 shadow-sm"
+                style="background-color: #facc15;">TERJADWAL(Peminjaman)</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #3b82f6;">TERJADWAL(Agenda Fakultas)</span>
+            <span class="px-3 py-1 rounded text-xs font-bold text-white shadow-sm"
+                style="background-color: #22c55e;">Digunakan</span>
+        </div>
+        <div id="calendar" data-url="{{ url('/peminjam/events-calender') }}"
+            class="mb-4 border-t-1 pt-4 border-gray-300 fc-tailwind"></div>
     </div>
 </div>
-
-
