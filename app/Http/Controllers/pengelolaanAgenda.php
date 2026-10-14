@@ -1343,11 +1343,11 @@ class pengelolaanAgenda extends Controller
 
             UsageItems::where('kode_peminjaman', $request->kode_peminjaman)->delete();
             UsageRooms::where('kode_peminjaman', $request->kode_peminjaman)->delete();
-            agendaFakultas::where('kode_peminjaman', $request->kode_peminjaman)->delete();
+            Peminjaman::where('kode_peminjaman', $request->kode_peminjaman)->delete();
 
             DB::commit();
 
-            return redirect()->route('dashboard-admin-agenda')
+            return redirect()->back()
                 ->with('success', 'Peminjaman beserta seluruh penggunaan barang dan ruangan berhasil dihapus.');
         } catch (\Throwable $e) {
             DB::rollBack();
