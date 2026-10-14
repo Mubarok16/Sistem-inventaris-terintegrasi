@@ -221,7 +221,7 @@ class PengelolaanPeminjamanAdmin extends Controller
             $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
 
             DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)
-                ->where('status_peminjaman', 'digunakan')
+                ->where('status_peminjaman', 'terjadwal')
                 ->update([
                     'status_peminjaman' => 'digunakan',
                     'updated_at' => now(),
