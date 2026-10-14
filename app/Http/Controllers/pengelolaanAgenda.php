@@ -8,6 +8,7 @@ use App\Models\DataBarang;
 use App\Models\DataRuangan;
 use App\Models\UsageItems;
 use App\Models\UsageRooms;
+use App\Models\Peminjaman;
 use App\services\Admin\PengelolaanAgendaService;
 use App\services\Admin\PengelolaanPeminjamanService;
 use App\services\mahasiswa\RiwayatPeminjamanService;
