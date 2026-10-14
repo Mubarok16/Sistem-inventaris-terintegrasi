@@ -240,7 +240,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
         ->name('hapus-agenda');
 
     // hapus data peminjaman db
-    Route::post('/hapus-peminjaman', [PengelolaanPeminjaman::class, 'hapusPeminjaman'])
+    Route::post('/hapus-peminjaman', [pengelolaanAgenda::class, 'hapusPeminjaman'])
         ->middleware('hak_akses:admin')
         ->name('hapus-peminjaman');
 
