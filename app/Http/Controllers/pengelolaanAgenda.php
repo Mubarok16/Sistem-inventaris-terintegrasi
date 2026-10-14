@@ -1328,7 +1328,7 @@ class pengelolaanAgenda extends Controller
     }
 
     // Menghapus seluruh peminjaman beserta seluruh riwayat penggunaan barang dan ruangan.
-    // Aksi ini hanya boleh dilakukan oleh admin dan bersifat permanen.
+    // Aksi ini hanya boleh dilakukan oleh admin dan bersifat permanen. 
     public function hapusPeminjaman(Request $request)
     {
         if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
@@ -1348,7 +1348,7 @@ class pengelolaanAgenda extends Controller
 
             DB::commit();
 
-            return redirect()->back()
+            return redirect()->route('admin.pengajuan.peminjaman')
                 ->with('success', 'Peminjaman beserta seluruh penggunaan barang dan ruangan berhasil dihapus.');
         } catch (\Throwable $e) {
             DB::rollBack();
