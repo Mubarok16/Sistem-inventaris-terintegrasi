@@ -239,6 +239,11 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
         ->middleware('hak_akses:admin')
         ->name('hapus-agenda');
 
+    // hapus data peminjaman db
+    Route::post('/hapus-peminjaman', [PengelolaanPeminjaman::class, 'hapusPeminjaman'])
+        ->middleware('hak_akses:admin')
+        ->name('hapus-peminjaman');
+
     // Pengajuan barang admin ========================================================================================================================
     Route::post('/simpan-pengadaan', [PengadaanBarangController::class, 'pengajuanPengadaanBarang'])->name('simpan-pengadaan');
     // lihat surat

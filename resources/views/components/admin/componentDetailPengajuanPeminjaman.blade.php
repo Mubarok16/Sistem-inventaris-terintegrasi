@@ -110,15 +110,28 @@
                             <i class="fa-solid fa-calendar-check text-primary"></i>
                             Detail Jadwal &amp; Keperluan
                         </h5>
-                        <form action="{{ route('view-file-pengajuan-peminjaman') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="kode_peminjaman" value="{{ $dataPeminjaman->kode_peminjaman }}">
-                            <button
-                                class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                                <i class="fa-solid fa-print text-lg text-white"></i>
-                                <span class="text-white">Lampiran file</span>
-                            </button>
-                        </form>
+                        <div class="flex items-center gap-2">
+                            <form action="{{ route('view-file-pengajuan-peminjaman') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="kode_peminjaman" value="{{ $dataPeminjaman->kode_peminjaman }}">
+                                <button
+                                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 border border-slate-200 rounded-md! text-slate-700 font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-print text-lg text-white"></i>
+                                    <span class="text-white">Lampiran file</span>
+                                </button>
+
+                            </form>
+                            <form action="{{ route('hapus-peminjaman') }}" method="post"
+                                onsubmit="return confirm('Hapus peminjaman ini? Semua data agenda beserta seluruh riwayat penggunaan barang dan ruangan akan dihapus permanen dan tidak dapat dikembalikan.');">
+                                @csrf
+                                <input type="hidden" name="kode_peminjaman" value="{{ $dataPeminjaman->kode_peminjaman }}">
+                                <button type="submit"
+                                    class="flex items-center gap-2 px-4 py-2 bg-red-700 border border-red-700 rounded-md! font-medium hover:bg-red-900 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-trash text-white"></i>
+                                    <span class="text-white">Hapus Peminjaman</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
@@ -178,7 +191,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/',$item['img_item'])) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', $item['img_item'])) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -213,7 +226,7 @@
                                     <div
                                         class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden flex-shrink-0">
                                         <div class="size-full bg-cover bg-center"
-                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/',$room['gambar_room'])) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', $room['gambar_room'])) }}')">
                                         </div>
                                     </div>
                                     <div>
@@ -301,7 +314,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/',$detailBarang->img_item)) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', $detailBarang->img_item)) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
@@ -353,7 +366,7 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 overflow-hidden bg-cover bg-center"
                                             data-alt="Meeting Room Interior"
-                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/',$detailRuangan->gambar_room)) }}')">
+                                            style="background-image: url('{{ Storage::disk('public')->url(str_replace('//', '/', $detailRuangan->gambar_room)) }}')">
                                         </div>
                                         <div>
                                             <p class="font-medium text-slate-900">
@@ -409,7 +422,7 @@
                 <form method="POST" action="{{ route('persetujuanPeminjaman') }}">
                     @csrf
                     @foreach ($dataDetailPengajuanPeminjaman as $dataPeminjaman)
-                            {{-- {{ dd($dataPeminjaman) }} --}}
+                        {{-- {{ dd($dataPeminjaman) }} --}}
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2" for="notes">Catatan

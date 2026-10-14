@@ -1326,6 +1326,36 @@ class pengelolaanAgenda extends Controller
         }
     }
 
+    // Menghapus seluruh peminjaman beserta seluruh riwayat penggunaan barang dan ruangan.
+    // Aksi ini hanya boleh dilakukan oleh admin dan bersifat permanen.
+    public function hapusPeminjaman(Request $request)
+    {
+        if (!Auth::check() || Auth::user()->hak_akses !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus peminjaman.');
+        }
+
+        $request->validate([
+            'kode_peminjaman' => 'required|string',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            UsageItems::where('kode_peminjaman', $request->kode_peminjaman)->delete();
+            UsageRooms::where('kode_peminjaman', $request->kode_peminjaman)->delete();
+            agendaFakultas::where('kode_peminjaman', $request->kode_peminjaman)->delete();
+
+            DB::commit();
+
+            return redirect()->route('dashboard-admin-agenda')
+                ->with('success', 'Peminjaman beserta seluruh penggunaan barang dan ruangan berhasil dihapus.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with('gagal', 'Peminjaman gagal dihapus. Silakan coba kembali.');
+        }
+    }
+
 
     // ================================================= Tambah agenda Baru =========================================================================
     public function kunciInputTambahAgenda(Request $request)
