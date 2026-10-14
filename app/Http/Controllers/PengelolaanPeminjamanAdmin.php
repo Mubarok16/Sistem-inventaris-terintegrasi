@@ -219,7 +219,14 @@ class PengelolaanPeminjamanAdmin extends Controller
             // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
             $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
             $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
-            
+
+            DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)
+                ->where('status_peminjaman', 'digunakan')
+                ->update([
+                    'status_peminjaman' => 'digunakan',
+                    'updated_at' => now(),
+                ]);
+
             if ($isRoomFullDay || $isItemFullDay) {
                 // dd($isRoomFullDay, $isItemFullDay);
                 # jika room dan item ada yang terjadwal hari ini, maka update status keduanya menjadi digunakan
@@ -287,6 +294,13 @@ class PengelolaanPeminjamanAdmin extends Controller
             // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
             $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
             $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
+
+            DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)
+                ->where('status_peminjaman', 'digunakan')
+                ->update([
+                    'status_peminjaman' => 'selesai',
+                    'updated_at' => now(),
+                ]);
 
             if ($isRoomFullDay || $isItemFullDay) {
                 # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi selesai
