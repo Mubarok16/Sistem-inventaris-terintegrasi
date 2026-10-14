@@ -22,11 +22,11 @@
             @csrf
             <div class="flex flex-col gap-2">
                 <span class="text-[#617589] text-base font-normal">Keterangan pememinjaman atau nama Kegiatan</span>
-                <input type="text" name="nama_kegiatan"
+                <input type="text" name="nama_kegiatan" required
                     class="form-input flex-1 min-w-0 rounded-lg text-[#111418] border border-[#dce0e5] bg-white px-3 py-2 text-sm focus:border-primary focus:ring-primary"
                     placeholder="keterangan peminjaman" />
                 <span class="text-[#617589] text-base font-normal">Lampiran file (docx atau pdf)</span>
-                <input name="lampiran_file" accept=".pdf, .docx"
+                <input name="lampiran_file" accept=".pdf, .docx" required
                     class="block w-full text-sm text-gray-900 shadow-sm cursor-pointer rounded-md border border-gray-300 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-2 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500  file:text-white hover:file:bg-blue-700"
                     id="file_input" type="file">
 
