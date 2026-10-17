@@ -318,7 +318,8 @@ class DashboardController extends Controller
         $perawatanAktif = DB::table('perawatan_barang')
             ->select('id_item')
             ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
-            ->where('status_perawatan', 'disetujui')
+            ->whereNotIn('status_perawatan', ['selesai', 'ditolak'])
+            ->whereNotNull('id_item')
             ->groupBy('id_item');
 
         $DataBarang = DB::table('items')
@@ -854,11 +855,11 @@ class DashboardController extends Controller
         // unutk chart kondisi srpras
         $barang_rusak = DB::table('perawatan_barang')
             ->where('perawatan_barang.id_item', '!=', null)
-            ->where('perawatan_barang.status_perawatan', '!=', 'selesai')
-            ->count('perawatan_barang.qty_perawatan');
+            ->whereNotIn('perawatan_barang.status_perawatan', ['selesai', 'ditolak'])
+            ->sum('perawatan_barang.qty_perawatan');
         $ruang_rusak = DB::table('perawatan_barang')
             ->where('perawatan_barang.id_room', '!=', null)
-            ->where('perawatan_barang.status_perawatan', '!=', 'selesai')
+            ->whereNotIn('perawatan_barang.status_perawatan', ['selesai', 'ditolak'])
             ->count();
         // dd($barang_rusak, $ruang_rusak);
 
@@ -912,7 +913,8 @@ class DashboardController extends Controller
         $perawatanAktif = DB::table('perawatan_barang')
             ->select('id_item')
             ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
-            ->where('status_perawatan', 'disetujui')
+            ->whereNotIn('status_perawatan', ['selesai', 'ditolak'])
+            ->whereNotNull('id_item')
             ->groupBy('id_item');
 
         $DataBarang = DB::table('items')

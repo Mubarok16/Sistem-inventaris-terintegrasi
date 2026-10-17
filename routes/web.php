@@ -118,6 +118,9 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/admin/detail-agenda-berlangsung/{id}', [agendaBerlangsung::class, 'DetailAgendaBerlangsung'])->name('admin.details-content:agenda-berlangsung');
     // input konformasi pengambilan barang atau kunci ruangan
     Route::post('/admin/konfirmasi-ambil-kembali', [PengelolaanPeminjamanAdmin::class, 'konfirmasiAmbilKembali'])->name('konfirmasi-ambil-kembali');
+    Route::get('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'formPengembalian'])->name('admin.pengembalian.form');
+    Route::post('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'simpanPengembalian'])->name('admin.pengembalian.simpan');
+    Route::get('/admin/riwayat-pemeriksaan-pengembalian', [PengelolaanPeminjamanAdmin::class, 'riwayatPengembalian'])->name('admin.pengembalian.riwayat');
 
     // page pengeloaan user =========================================================================================================================
 

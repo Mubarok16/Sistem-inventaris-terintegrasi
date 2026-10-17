@@ -59,3 +59,15 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Sinkronisasi pengembalian dan perawatan
+
+- Pengembalian yang menemukan kerusakan menyimpan hasil pemeriksaan ke `pemeriksaan_pengembalian`.
+- Sistem membuat catatan `perawatan_barang` secara otomatis dengan `sumber_perawatan = pengembalian` dan referensi `id_pemeriksaan`.
+- `items.qty_item` adalah stok yang tersedia untuk dipinjam. Jumlah kerusakan aktif dihitung dari `perawatan_barang` yang statusnya belum `selesai` atau `ditolak`.
+- Pengajuan perawatan manual tetap menggunakan `sumber_perawatan = manual`.
+- Penolakan perawatan yang berasal dari pengembalian tidak mengembalikan barang rusak ke stok tersedia.
+- Konfirmasi selesai perawatan dilindungi transaksi dan tidak menambah stok lebih dari satu kali.
+
+Setelah deploy, jalankan `php artisan migrate`, `php artisan storage:link`, dan `php artisan optimize:clear`. Uji dahulu pada salinan database sebelum menerapkan ke produksi.

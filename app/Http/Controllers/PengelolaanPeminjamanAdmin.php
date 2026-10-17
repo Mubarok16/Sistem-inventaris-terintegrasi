@@ -290,85 +290,256 @@ class PengelolaanPeminjamanAdmin extends Controller
                     ]);
             }
         } elseif ($roomDigunakan->count() > 0 or $itemDigunakan->count() > 0) {
-
-            // Kita cek apakah data pertama ada DAN nilainya adalah string 'null'
-            $isRoomFullDay = $roomTerdajwal->first()?->jam_mulai_usage_room === null;
-            $isItemFullDay = $itemTerjdawal->first()?->jam_mulai_usage_item === null;
-
-            DB::table('peminjaman')->where('kode_peminjaman', $request->kode_peminjaman)
-                ->where('status_peminjaman', 'digunakan')
-                ->update([
-                    'status_peminjaman' => 'selesai',
-                    'updated_at' => now(),
-                ]);
-
-            if ($isRoomFullDay || $isItemFullDay) {
-                # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi selesai
-                # hanya untuk mengupdate semua usage room yg ada karna full day 
-                DB::table('usage_rooms')
-                    ->select(
-                        'kode_peminjaman',
-                        'tgl_pinjam_usage_room',
-                        'status_usage_room'
-                    )
-                    ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-                    ->where('status_usage_room', 'digunakan')
-                    ->update([
-                        'status_usage_room' => 'selesai',
-                        'updated_at' => now(),
-                    ]);
-
-                DB::table('usage_items')
-                    ->select(
-                        'kode_peminjaman',
-                        'tgl_pinjam_usage_item',
-                        'status_usage_item'
-                    )
-                    ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-                    ->where('status_usage_item', 'digunakan')
-                    ->update([
-                        'status_usage_item' => 'selesai',
-                        'updated_at' => now(),
-                    ]);
-            } else {
-                # jika room dan item ada yang digunakan hari ini, maka update status keduanya menjadi selesai
-                # hanya untuk mengupdate semua usage room yg ada karna spesifik
-                DB::table('usage_rooms')
-                    ->select(
-                        'kode_peminjaman',
-                        'tgl_pinjam_usage_room',
-                        'status_usage_room'
-                    )
-                    ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_room', now()->toDateString())
-                    ->where('status_usage_room', 'digunakan')
-                    ->update([
-                        'status_usage_room' => 'selesai',
-                        'updated_at' => now(),
-                    ]);
-
-                DB::table('usage_items')
-                    ->select(
-                        'kode_peminjaman',
-                        'tgl_pinjam_usage_item',
-                        'status_usage_item'
-                    )
-                    ->where('kode_peminjaman', $request->kode_peminjaman)
-                    ->whereDate('tgl_pinjam_usage_item', now()->toDateString())
-                    ->where('status_usage_item', 'digunakan')
-                    ->update([
-                        'status_usage_item' => 'selesai',
-                        'updated_at' => now(),
-                    ]);
-            }
+            // Pengembalian harus melalui formulir pemeriksaan agar kerusakan dapat dicatat.
+            return redirect()->route('admin.pengembalian.form', [
+                'kode_peminjaman' => $request->kode_peminjaman,
+            ]);
         } else {
             // jika tidak ada peminjaman hari ini berdasarkan kode peminjamannnya
             return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'peminjaman mungkin tidak dijadwalkan hari ini.');
         }
 
         return redirect()->route('admin.pengajuan.peminjaman')->with('success', 'Status pengambilan berhasil diperbarui.');
+    }
+
+    /** Riwayat pemeriksaan pengembalian dan kerusakan yang pernah dicatat. */
+    public function riwayatPengembalian()
+    {
+        abort_unless(Auth::check() && Auth::user()->hak_akses === 'admin', 403);
+        $riwayat = DB::table('pemeriksaan_pengembalian as pp')
+            ->leftJoin('items', 'pp.id_item', '=', 'items.id_item')
+            ->leftJoin('rooms', 'pp.id_room', '=', 'rooms.id_room')
+            ->leftJoin('users', 'pp.dicatat_oleh', '=', 'users.id_user')
+            ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username')
+            ->orderByDesc('pp.tanggal_pemeriksaan')
+            ->paginate(20);
+        return view('Page_admin.riwayat-pengembalian', compact('riwayat'));
+    }
+
+    /** Form pemeriksaan kondisi aset saat pengembalian. */
+    public function formPengembalian(string $kode_peminjaman)
+    {
+        abort_unless(Auth::check() && Auth::user()->hak_akses === 'admin', 403);
+        $peminjaman = DB::table('peminjaman')
+            ->join('peminjam', 'peminjaman.no_identitas', '=', 'peminjam.no_identitas')
+            ->where('peminjaman.kode_peminjaman', $kode_peminjaman)
+            ->select('peminjaman.*', 'peminjam.nama_peminjam')
+            ->first();
+
+        abort_unless($peminjaman, 404, 'Data peminjaman tidak ditemukan.');
+
+        $barang = DB::table('usage_items')
+            ->join('items', 'usage_items.id_item', '=', 'items.id_item')
+            ->where('usage_items.kode_peminjaman', $kode_peminjaman)
+            ->where('usage_items.status_usage_item', 'digunakan')
+            ->whereDate('usage_items.tgl_pinjam_usage_item', now()->toDateString())
+            ->select('usage_items.id_item', 'usage_items.qty_usage_item', 'items.nama_item', 'items.merek_model')
+            ->get()
+            ->groupBy('id_item')
+            ->map(fn ($rows) => (object) [
+                'id_item' => $rows->first()->id_item,
+                'nama_item' => $rows->first()->nama_item,
+                'merek_model' => $rows->first()->merek_model,
+                'qty' => (int) $rows->sum('qty_usage_item'),
+            ])->values();
+
+        $ruangan = DB::table('usage_rooms')
+            ->join('rooms', 'usage_rooms.id_room', '=', 'rooms.id_room')
+            ->where('usage_rooms.kode_peminjaman', $kode_peminjaman)
+            ->where('usage_rooms.status_usage_room', 'digunakan')
+            ->whereDate('usage_rooms.tgl_pinjam_usage_room', now()->toDateString())
+            ->select('usage_rooms.id_room', 'rooms.nama_room')
+            ->distinct()
+            ->get();
+
+        if ($barang->isEmpty() && $ruangan->isEmpty()) {
+            return redirect()->route('admin.pengajuan.peminjaman')
+                ->with('gagal', 'Tidak ada barang atau ruangan yang sedang digunakan hari ini untuk kode peminjaman tersebut.');
+        }
+
+        $user = DB::table('detail_staff')->where('id_user', Auth::user()->id_user)->value('nama');
+        return view('Page_admin.pemeriksaan-pengembalian', compact('peminjaman', 'barang', 'ruangan', 'user'));
+    }
+
+    /** Simpan hasil pemeriksaan, tandai penggunaan selesai, dan tandai aset rusak bila diperlukan. */
+    public function simpanPengembalian(Request $request, string $kode_peminjaman)
+    {
+        abort_unless(Auth::check() && Auth::user()->hak_akses === 'admin', 403);
+        $request->validate([
+            'barang' => ['nullable', 'array'],
+            'barang.*.qty_dikembalikan' => ['required', 'integer', 'min:1'],
+            'barang.*.qty_rusak' => ['required', 'integer', 'min:0'],
+            'barang.*.deskripsi_kerusakan' => ['nullable', 'string', 'max:5000'],
+            'barang.*.foto_kerusakan' => ['nullable', 'image', 'max:4096'],
+            'ruangan' => ['nullable', 'array'],
+            'ruangan.*.rusak' => ['nullable', 'in:0,1'],
+            'ruangan.*.deskripsi_kerusakan' => ['nullable', 'string', 'max:5000'],
+            'ruangan.*.foto_kerusakan' => ['nullable', 'image', 'max:4096'],
+        ]);
+
+        $userId = Auth::user()->id_user;
+        $alreadyProcessed = DB::table('pemeriksaan_pengembalian')
+            ->where('kode_peminjaman', $kode_peminjaman)
+            ->whereDate('tanggal_pemeriksaan', now()->toDateString())
+            ->exists();
+        if ($alreadyProcessed) {
+            return redirect()->route('admin.pengajuan.peminjaman')
+                ->with('gagal', 'Pemeriksaan pengembalian untuk peminjaman ini sudah tercatat.');
+        }
+
+        DB::transaction(function () use ($request, $kode_peminjaman, $userId) {
+            $now = now();
+
+            foreach (($request->input('barang', [])) as $idItem => $data) {
+                $usage = DB::table('usage_items')
+                    ->where('kode_peminjaman', $kode_peminjaman)
+                    ->where('id_item', $idItem)
+                    ->where('status_usage_item', 'digunakan')
+                    ->whereDate('tgl_pinjam_usage_item', $now->toDateString())
+                    ->lockForUpdate()
+                    ->get();
+                if ($usage->isEmpty()) continue;
+
+                $qtyDipinjam = (int) $usage->sum('qty_usage_item');
+                $qtyKembali = (int) $data['qty_dikembalikan'];
+                $qtyRusak = (int) $data['qty_rusak'];
+                if ($qtyKembali !== $qtyDipinjam || $qtyRusak > $qtyKembali) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        "barang.$idItem.qty_dikembalikan" => "Jumlah pengembalian harus sama dengan jumlah yang dipinjam ($qtyDipinjam) dan jumlah rusak tidak boleh melebihinya.",
+                    ]);
+                }
+                $deskripsi = trim((string) ($data['deskripsi_kerusakan'] ?? ''));
+                if ($qtyRusak > 0 && $deskripsi === '') {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        "barang.$idItem.deskripsi_kerusakan" => 'Deskripsi kerusakan wajib diisi jika ada barang rusak.',
+                    ]);
+                }
+
+                $foto = $request->file("barang.$idItem.foto_kerusakan");
+                $fotoPath = $qtyRusak > 0 && $foto ? $foto->store('kerusakan-pengembalian', 'public') : null;
+
+                $idPemeriksaan = DB::table('pemeriksaan_pengembalian')->insertGetId([
+                    'kode_peminjaman' => $kode_peminjaman,
+                    'jenis_aset' => 'barang',
+                    'id_item' => $idItem,
+                    'qty_dikembalikan' => $qtyKembali,
+                    'qty_rusak' => $qtyRusak,
+                    'kondisi_pengembalian' => $qtyRusak > 0 ? 'rusak' : 'baik',
+                    'deskripsi_kerusakan' => $qtyRusak > 0 ? $deskripsi : null,
+                    'foto_kerusakan' => $qtyRusak > 0 ? $fotoPath : null,
+                    'dicatat_oleh' => $userId,
+                    'tanggal_pemeriksaan' => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                if ($qtyRusak > 0) {
+                    $itemMaster = DB::table('items')->where('id_item', $idItem)->lockForUpdate()->first();
+                    if ($itemMaster) {
+                        $sisaQty = max(0, (int) $itemMaster->qty_item - $qtyRusak);
+                        DB::table('items')->where('id_item', $idItem)->update([
+                            'qty_item' => $sisaQty,
+                            'kondisi_item' => $sisaQty === 0 ? 'Rusak' : $itemMaster->kondisi_item,
+                            'visibility_item' => $sisaQty === 0 ? '0' : $itemMaster->visibility_item,
+                            'updated_at' => $now,
+                        ]);
+                    }
+                    // Buat catatan perawatan agar aset rusak muncul pada alur perawatan yang sudah ada.
+                    DB::table('perawatan_barang')->insert([
+                        'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
+                        'id_pemohon' => $userId,
+                        'id_penyetuju' => null,
+                        'id_item' => $idItem,
+                        'id_room' => null,
+                        'qty_perawatan' => $qtyRusak,
+                        'sumber_perawatan' => 'pengembalian',
+                        'id_pemeriksaan' => $idPemeriksaan,
+                        'status_perawatan' => 'pendding',
+                        'tahun_akademik' => (string) (now()->year . '/' . (now()->year + 1)),
+                        'keperluan_prodi' => 'Kerusakan dicatat saat pengembalian peminjaman ' . $kode_peminjaman . ': ' . $deskripsi,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                }
+
+                DB::table('usage_items')->where('kode_peminjaman', $kode_peminjaman)
+                    ->where('id_item', $idItem)->where('status_usage_item', 'digunakan')
+                    ->whereDate('tgl_pinjam_usage_item', $now->toDateString())
+                    ->update(['status_usage_item' => 'selesai', 'updated_at' => $now]);
+            }
+
+            foreach (($request->input('ruangan', [])) as $idRoom => $data) {
+                $usageExists = DB::table('usage_rooms')
+                    ->where('kode_peminjaman', $kode_peminjaman)
+                    ->where('id_room', $idRoom)
+                    ->where('status_usage_room', 'digunakan')
+                    ->whereDate('tgl_pinjam_usage_room', $now->toDateString())
+                    ->lockForUpdate()->exists();
+                if (!$usageExists) continue;
+
+                $rusak = (string) ($data['rusak'] ?? '0') === '1';
+                $deskripsi = trim((string) ($data['deskripsi_kerusakan'] ?? ''));
+                if ($rusak && $deskripsi === '') {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        "ruangan.$idRoom.deskripsi_kerusakan" => 'Deskripsi kerusakan wajib diisi jika ruangan rusak.',
+                    ]);
+                }
+
+                $foto = $request->file("ruangan.$idRoom.foto_kerusakan");
+                $fotoPath = $rusak && $foto ? $foto->store('kerusakan-pengembalian', 'public') : null;
+
+                $idPemeriksaan = DB::table('pemeriksaan_pengembalian')->insertGetId([
+                    'kode_peminjaman' => $kode_peminjaman,
+                    'jenis_aset' => 'ruangan',
+                    'id_room' => $idRoom,
+                    'qty_dikembalikan' => 1,
+                    'qty_rusak' => $rusak ? 1 : 0,
+                    'kondisi_pengembalian' => $rusak ? 'rusak' : 'baik',
+                    'deskripsi_kerusakan' => $rusak ? $deskripsi : null,
+                    'foto_kerusakan' => $rusak ? $fotoPath : null,
+                    'dicatat_oleh' => $userId,
+                    'tanggal_pemeriksaan' => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                if ($rusak) {
+                    DB::table('rooms')->where('id_room', $idRoom)->update([
+                        'kondisi_room' => 'Rusak', 'visibility_room' => '0', 'updated_at' => $now,
+                    ]);
+                    DB::table('perawatan_barang')->insert([
+                        'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
+                        'id_pemohon' => $userId,
+                        'id_penyetuju' => null,
+                        'id_item' => null,
+                        'id_room' => $idRoom,
+                        'qty_perawatan' => 1,
+                        'sumber_perawatan' => 'pengembalian',
+                        'id_pemeriksaan' => $idPemeriksaan,
+                        'status_perawatan' => 'pendding',
+                        'tahun_akademik' => (string) (now()->year . '/' . (now()->year + 1)),
+                        'keperluan_prodi' => 'Kerusakan ruangan dicatat saat pengembalian peminjaman ' . $kode_peminjaman . ': ' . $deskripsi,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                }
+
+                DB::table('usage_rooms')->where('kode_peminjaman', $kode_peminjaman)
+                    ->where('id_room', $idRoom)->where('status_usage_room', 'digunakan')
+                    ->whereDate('tgl_pinjam_usage_room', $now->toDateString())
+                    ->update(['status_usage_room' => 'selesai', 'updated_at' => $now]);
+            }
+
+            $masihDigunakan = DB::table('usage_items')->where('kode_peminjaman', $kode_peminjaman)->whereIn('status_usage_item', ['terjadwal', 'digunakan'])->exists()
+                || DB::table('usage_rooms')->where('kode_peminjaman', $kode_peminjaman)->whereIn('status_usage_room', ['terjadwal', 'digunakan'])->exists();
+            if (!$masihDigunakan) {
+                DB::table('peminjaman')->where('kode_peminjaman', $kode_peminjaman)
+                    ->update(['status_peminjaman' => 'selesai', 'updated_at' => $now]);
+            }
+        });
+
+        return redirect()->route('admin.pengajuan.peminjaman')
+            ->with('success', 'Pengembalian berhasil dicatat. Kondisi barang dan ruangan telah diperbarui jika ditemukan kerusakan.');
     }
 
     // penolakan pengajuan peminjaman

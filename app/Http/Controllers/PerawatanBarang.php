@@ -265,67 +265,75 @@ class PerawatanBarang extends Controller
         return $pdf->download('Surat_Perawatan_' . base64_encode($data->id_perawatan) . '.pdf');
     }
 
-    // page checkin perawatan yg telah selesai d perbaiki
+    // Konfirmasi barang/ruangan selesai diperbaiki. Perubahan stok dilakukan tepat satu kali.
     public function pageCheckInPerawatan($id)
     {
-
-        if (Auth::user()->hak_akses !== "admin") {
-            abort(403, 'Unauthorized');
+        abort_unless(Auth::check() && Auth::user()->hak_akses === "admin", 403);
+        $id_perawatan = base64_decode($id, true);
+        if (!$id_perawatan) {
+            abort(404, 'ID perawatan tidak valid.');
         }
 
-        $id_perawatan = base64_decode($id);
-        // dd($id_perawatan);
+        try {
+            DB::transaction(function () use ($id_perawatan) {
+                $dataDb = DB::table('perawatan_barang')
+                    ->where('id_perawatan', $id_perawatan)
+                    ->lockForUpdate()
+                    ->first();
 
-        $dataDb = DB::table('perawatan_barang')
-            ->select(
-                'perawatan_barang.*',
-            )
-            ->where('id_perawatan', $id_perawatan)
-            ->first();
+                if (!$dataDb) {
+                    abort(404, 'Data perawatan tidak ditemukan.');
+                }
+                if ($dataDb->status_perawatan === 'selesai') {
+                    return; // Sudah selesai: jangan menambahkan stok untuk kedua kalinya.
+                }
+                if ($dataDb->status_perawatan === 'ditolak') {
+                    throw new \RuntimeException('Perawatan yang ditolak tidak dapat diselesaikan.');
+                }
 
-        $item = DB::table('items')
-            ->select(
-                'items.*',
-            )
-            ->where('id_item', $dataDb->id_item)
-            ->first();
+                $now = now();
+                if ($dataDb->id_item !== null) {
+                    $item = DB::table('items')->where('id_item', $dataDb->id_item)->lockForUpdate()->first();
+                    if (!$item) {
+                        throw new \RuntimeException('Data barang tidak ditemukan.');
+                    }
 
-        if ($dataDb->id_item != null) {
-            // jika perawatan item
-            DB::table('items')
-                ->where('id_item', $dataDb->id_item)
-                ->update([
-                    'qty_item' => $dataDb->qty_perawatan + $item->qty_item,
-                    'kondisi_item' => 'Baik',
-                    'updated_at' => now(), // Opsional, jika ingin manual
-                ]);
+                    // Kondisi/stok diperbarui sekali setelah status perawatan diperiksa.
+                    // Kondisi barang hanya menjadi baik jika stok tersedia kembali.
+                    $perawatanLainAktif = DB::table('perawatan_barang')
+                        ->where('id_item', $dataDb->id_item)
+                        ->where('id_perawatan', '!=', $id_perawatan)
+                        ->whereNotIn('status_perawatan', ['selesai', 'ditolak'])
+                        ->exists();
+                    $stokSetelahPerbaikan = (int) $item->qty_item + (int) $dataDb->qty_perawatan;
+                    DB::table('items')->where('id_item', $dataDb->id_item)->update([
+                        'kondisi_item' => $stokSetelahPerbaikan > 0 ? 'Baik' : 'Rusak',
+                        'visibility_item' => $stokSetelahPerbaikan > 0 ? '1' : '0',
+                        'updated_at' => $now,
+                    ]);
+                } else {
+                    $room = DB::table('rooms')->where('id_room', $dataDb->id_room)->lockForUpdate()->first();
+                    if (!$room) {
+                        throw new \RuntimeException('Data ruangan tidak ditemukan.');
+                    }
+                    DB::table('rooms')->where('id_room', $dataDb->id_room)->update([
+                        'kondisi_room' => 'Baik',
+                        'visibility_room' => '1',
+                        'updated_at' => $now,
+                    ]);
+                }
 
-            DB::table('perawatan_barang')
-                ->where('id_perawatan', $id_perawatan)
-                ->update([
+                DB::table('perawatan_barang')->where('id_perawatan', $id_perawatan)->update([
                     'status_perawatan' => 'selesai',
-                    // 'kondisi_item' => 'Baik',
-                    'updated_at' => now(), // Opsional, jika ingin manual
+                    'updated_at' => $now,
                 ]);
-        } else {
-            DB::table('rooms')
-                ->where('id_room', $dataDb->id_room)
-                ->update([
-                    // 'qty_item' => $dataDb->qty_perawatan,
-                    'kondisi_room' => 'Baik',
-                    'updated_at' => now(), // Opsional, jika ingin manual
-                ]);
-
-            DB::table('perawatan_barang')
-                ->where('id_perawatan', $id_perawatan)
-                ->update([
-                    'status_perawatan' => 'selesai',
-                    // 'kondisi_item' => 'Baik',
-                    'updated_at' => now(), // Opsional, jika ingin manual
-                ]);
+            });
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->with('gagal', 'Gagal menyelesaikan perawatan: ' . $e->getMessage());
         }
-        // dd($dataDb);
-        return back()->with('succes', 'perawatan selesai item berhasil di berbaharui!');
+
+        return back()->with('succes', 'Perawatan selesai. Stok hanya diperbarui satu kali.');
     }
 
     function sortir_status_perawatan(Request $request)

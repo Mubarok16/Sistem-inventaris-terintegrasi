@@ -123,6 +123,9 @@
                                     name="kode_peminjaman" placeholder="Contoh: AST-FAC-2024-001" type="text" />
                             </form>
                         </div>
+                        <a href="{{ route('admin.pengembalian.riwayat') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                            <i class="fa-solid fa-clipboard-check mr-2"></i>Riwayat Pengembalian
+                        </a>
                     </div>
                 </div>
             </div>

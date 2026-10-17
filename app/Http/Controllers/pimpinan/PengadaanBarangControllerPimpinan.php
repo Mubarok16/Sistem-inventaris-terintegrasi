@@ -178,7 +178,7 @@ class PengadaanBarangControllerPimpinan extends Controller
         }
     }
 
-    // tolak surat perawatan
+    // Tolak pengajuan perawatan. Kerusakan hasil pengembalian tidak otomatis kembali menjadi stok tersedia.
     public function tolakSuratPerawatan($id)
     {
         if (Auth::user()->hak_akses !== "pimpinan") {
@@ -186,56 +186,58 @@ class PengadaanBarangControllerPimpinan extends Controller
         }
 
         try {
-            $id_decoded = base64_decode($id);
-
-            $perawatan = DB::table('perawatan_barang')
-                ->where('id_perawatan', $id_decoded)
-                ->first();
-
-            $item = DB::table('items')
-                ->where('id_item', $perawatan->id_item)
-                ->first();
-
-            // dd('berhasil');
-
-            if ($perawatan->id_item != null) {
-                // dd('item');
-                DB::table('items')
-                    ->where('id_item', $perawatan->id_item)
-                    ->update([
-                        'kondisi_item' => 'Baik',
-                        'qty_item' => $perawatan->qty_perawatan + $item->qty_item,
-                        'updated_at' => now(),
-                    ]);
-
-                DB::table('perawatan_barang')
-                    ->where('id_perawatan', $id_decoded)
-                    ->update([
-                        'status_perawatan' => 'ditolak',
-                        'updated_at'       => now(),
-                        'id_penyetuju'     => Auth::user()->id_user
-                    ]);
-
-                return redirect()->back()->with('succes', 'Pengajuan Ditolak');
-            } else {
-                // dd('rooms');
-                DB::table('rooms')
-                    ->where('id_room', $perawatan->id_room)
-                    ->update([
-                        'kondisi_room' => 'Baik',
-                        'updated_at' => now(),
-                    ]);
-                DB::table('perawatan_barang')
-                    ->where('id_perawatan', $id_decoded)
-                    ->update([
-                        'status_perawatan' => 'ditolak',
-                        'updated_at'       => now(),
-                        'id_penyetuju'     => Auth::user()->id_user
-                    ]);
-                return redirect()->back()->with('succes', 'Pengajuan Ditolak');
+            $id_decoded = base64_decode($id, true);
+            if (!$id_decoded) {
+                abort(404, 'ID perawatan tidak valid.');
             }
-        } catch (\Exception $e) {
-            return redirect()->back()->with('gagal', 'Terjadi kesalahan sistem, silakan coba lagi.' . $e);
+
+            DB::transaction(function () use ($id_decoded) {
+                $perawatan = DB::table('perawatan_barang')
+                    ->where('id_perawatan', $id_decoded)
+                    ->lockForUpdate()
+                    ->first();
+                if (!$perawatan) {
+                    abort(404, 'Data perawatan tidak ditemukan.');
+                }
+                if (in_array($perawatan->status_perawatan, ['selesai', 'ditolak'], true)) {
+                    return;
+                }
+
+                // Pengajuan manual sebelumnya mengurangi stok ketika diajukan, sehingga saat ditolak dikembalikan.
+                // Kerusakan dari pengembalian sudah mengurangi stok saat pengembalian dikonfirmasi; jangan ditambah lagi.
+                if (($perawatan->sumber_perawatan ?? 'manual') !== 'pengembalian') {
+                    if ($perawatan->id_item !== null) {
+                        $item = DB::table('items')->where('id_item', $perawatan->id_item)->lockForUpdate()->first();
+                        if ($item) {
+                            $stokBaru = (int) $item->qty_item + (int) $perawatan->qty_perawatan;
+                            DB::table('items')->where('id_item', $perawatan->id_item)->update([
+                                'qty_item' => $stokBaru,
+                                'kondisi_item' => $stokBaru > 0 ? 'Baik' : $item->kondisi_item,
+                                'visibility_item' => $stokBaru > 0 ? '1' : '0',
+                                'updated_at' => now(),
+                            ]);
+                        }
+                    } elseif ($perawatan->id_room !== null) {
+                        // Ruangan manual yang ditolak dapat dikembalikan ke kondisi tersedia sesuai alur lama.
+                        DB::table('rooms')->where('id_room', $perawatan->id_room)->update([
+                            'kondisi_room' => 'Baik',
+                            'visibility_room' => '1',
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+
+                DB::table('perawatan_barang')->where('id_perawatan', $id_decoded)->update([
+                    'status_perawatan' => 'ditolak',
+                    'id_penyetuju' => Auth::user()->id_user,
+                    'updated_at' => now(),
+                ]);
+            });
+
+            return redirect()->back()->with('succes', 'Pengajuan perawatan ditolak. Stok kerusakan pengembalian tetap tidak tersedia.');
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->back()->with('gagal', 'Terjadi kesalahan saat menolak pengajuan perawatan.');
         }
     }
 }
