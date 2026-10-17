@@ -1,6 +1,8 @@
+@php($halaman = $halaman ?? '')
+
 <!-- Sidebar -->
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/dashboard/mahasiswa') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard-admin') }}">
         <div class="sidebar-brand-icon">
             <img src="{{ asset('images/logo_ft.png') }}">
         </div>
