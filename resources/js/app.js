@@ -16,6 +16,7 @@ window.ApexCharts = ApexCharts;
 
 // full calender
 import { Calendar } from '@fullcalendar/core'
+import idLocale from '@fullcalendar/core/locales/id'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
@@ -188,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         height: 'auto',
-        locale: 'id',
+        locale: idLocale,
         firstDay: 1,
         headerToolbar: {
             left: 'prev,next today',
