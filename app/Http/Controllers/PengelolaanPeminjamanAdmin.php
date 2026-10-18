@@ -439,7 +439,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                     'tanggal_pemeriksaan' => $now,
                     'created_at' => $now,
                     'updated_at' => $now,
-                ]);
+                ], 'id_pemeriksaan');
 
                 if ($qtyRusak > 0) {
                     $itemMaster = DB::table('items')->where('id_item', $idItem)->lockForUpdate()->first();
@@ -509,7 +509,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                     'tanggal_pemeriksaan' => $now,
                     'created_at' => $now,
                     'updated_at' => $now,
-                ]);
+                ], 'id_pemeriksaan');
 
                 if ($rusak) {
                     DB::table('rooms')->where('id_room', $idRoom)->update([
