@@ -81,8 +81,6 @@ class CreateAkun extends Controller
                 'nama_peminjam' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'required|string|max:12',
-                'tahun_masuk' => 'required',
-                'prodi' => 'required|string',
                 'img_identitas' => 'required|image|mimes:jpg,jpeg,png',
             ]);
 
@@ -98,23 +96,6 @@ class CreateAkun extends Controller
             }
 
             $fakultas = $studentInfo['fakultas'];
-            if (false) {
-                $fakultas = 'teknik';
-            } elseif ($request->prodi === 'ilmu hukum') {
-                $fakultas = 'hukum';
-            } elseif ($request->prodi === 'manajemen') {
-                $fakultas = 'ekonomi';
-            } elseif ($request->prodi === 'pendidikan bahasa inggris' or $request->prodi === 'pendidikan bahasa indonesia' or $request->prodi === 'pendidikan matematika' or $request->prodi === 'pendidikan biologi') {
-                $fakultas = 'keguruan dan ilmu pendidikan';
-            } elseif ($request->prodi === 'ilmu politik') {
-                $fakultas = 'ilmu sosial dan politik';
-            } elseif ($request->prodi === 'pendidikan agama islam' or $request->prodi === 'ekonomi syariah' or $request->prodi === 'bimbingan konseling islam') {
-                $fakultas = 'agama islam';
-            } elseif ($request->prodi === 'agribisnis' or $request->prodi === 'agroteknologi') {
-                $fakultas = 'pertanian';
-            } elseif ($request->prodi === 'kesehatan masyarakat') {
-                $fakultas = 'kesehatan masyarakat';
-            }
 
             // Simpan data ke database
             $id_user_acak = Str::random(12);
@@ -163,14 +144,12 @@ class CreateAkun extends Controller
         try {
 
             $request->validate([
-                'no_identitas' => 'required|integer',
+                'no_identitas' => 'required|string|regex:/^\\d{12}$/',
                 'nama_peminjam' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'required|string|max:12',
-                'prodi' => 'required|string',
                 'img_identitas' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'status' => 'required',
-                'tahun_masuk' => 'required'
             ]);
 
             // cek username sudah ada atau belum
@@ -184,24 +163,7 @@ class CreateAkun extends Controller
                 $imgPath = $request->file('img_identitas')->store('uploads/identitas', 'public');
             }
 
-            $fakultas = '';
-            if ($request->prodi === 'teknik sipil' or $request->prodi === 'teknik komputer') {
-                $fakultas = 'teknik';
-            } elseif ($request->prodi === 'ilmu hukum') {
-                $fakultas = 'hukum';
-            } elseif ($request->prodi === 'manajemen') {
-                $fakultas = 'ekonomi';
-            } elseif ($request->prodi === 'pendidikan bahasa inggris' or $request->prodi === 'pendidikan bahasa indonesia' or $request->prodi === 'pendidikan matematika' or $request->prodi === 'pendidikan biologi') {
-                $fakultas = 'keguruan dan ilmu pendidikan';
-            } elseif ($request->prodi === 'ilmu politik') {
-                $fakultas = 'ilmu sosial dan politik';
-            } elseif ($request->prodi === 'pendidikan agama islam' or $request->prodi === 'ekonomi syariah' or $request->prodi === 'bimbingan konseling islam') {
-                $fakultas = 'agama islam';
-            } elseif ($request->prodi === 'agribisnis' or $request->prodi === 'agroteknologi') {
-                $fakultas = 'pertanian';
-            } elseif ($request->prodi === 'kesehatan masyarakat') {
-                $fakultas = 'kesehatan masyarakat';
-            }
+            $fakultas = $studentInfo['fakultas'];
 
             // Simpan data ke database
             $id_user_acak = Str::random(12);
@@ -220,9 +182,9 @@ class CreateAkun extends Controller
                 'id_user' => $id_user_acak,
                 'nama_peminjam' => $request->nama_peminjam,
                 'fakultas' => $fakultas,
-                'prodi' => $request->prodi,
+                'prodi' => $studentInfo['prodi'],
                 'img_identitas' => $imgPath,
-                'tahun_masuk' => $request->tahun_masuk,
+                'tahun_masuk' => $studentInfo['tahun_masuk'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
