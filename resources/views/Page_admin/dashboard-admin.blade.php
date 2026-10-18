@@ -310,6 +310,8 @@
                             class="text-gray-400! no-underline! font-medium">Alokasi-Barang</a>
                     </div>
                     @include('components.admin.componentCheckinBarangPengadaan')
+                @elseif ($halaman === 'contentRiwayatPemeriksaanPengembalian')
+                    @include('Page_admin.riwayat-pengembalian-content')
                 @elseif ($halaman === 'contentProfile')
                     <h4>Profile User</h4>
                     <div>
