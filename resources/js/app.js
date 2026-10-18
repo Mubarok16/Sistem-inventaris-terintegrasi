@@ -136,8 +136,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return items.map((item) => {
             const time = formatTime(item.jam_mulai, item.jam_selesai);
             const quantity = item.jumlah ? ' · Jumlah ' + escapeHtml(item.jumlah) : '';
+            const storage = item.tempat_simpan ? '<small>Tempat penyimpanan: ' + escapeHtml(item.tempat_simpan) + '</small>' : '<small>Tempat penyimpanan belum tercatat.</small>';
             return '<div class="resource"><strong>' + escapeHtml(item.nama) + '</strong>' +
-                '<small>' + escapeHtml(time) + quantity + '</small></div>';
+                '<small>' + escapeHtml(time) + quantity + '</small>' + storage + '</div>';
         }).join('');
     };
 
