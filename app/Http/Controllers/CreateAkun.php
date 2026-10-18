@@ -13,6 +13,49 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class CreateAkun extends Controller
 {
+    /**
+     * Resolve student program and intake year from the official 12-digit NPM format.
+     * The first five digits identify the program; digits 8-9 identify the intake year.
+     */
+    private function getStudentInfoFromNpm(?string $npm): ?array
+    {
+        if (!$npm || !preg_match('/^\\d{12}$/', $npm)) {
+            return null;
+        }
+
+        $programs = [
+            '22201' => ['prodi' => 'teknik sipil', 'label' => 'Teknik Sipil', 'fakultas' => 'teknik'],
+            '13201' => ['prodi' => 'kesehatan masyarakat', 'label' => 'Kesehatan Masyarakat', 'fakultas' => 'kesehatan masyarakat'],
+            '54201' => ['prodi' => 'agribisnis', 'label' => 'Agribisnis', 'fakultas' => 'pertanian'],
+            '54211' => ['prodi' => 'agroteknologi', 'label' => 'Agroteknologi', 'fakultas' => 'pertanian'],
+            '56202' => ['prodi' => 'teknik komputer', 'label' => 'Teknik Komputer', 'fakultas' => 'teknik'],
+            '61201' => ['prodi' => 'manajemen', 'label' => 'Manajemen', 'fakultas' => 'ekonomi'],
+            '61206' => ['prodi' => 'perbankan syariah', 'label' => 'Perbankan Syariah', 'fakultas' => 'agama islam'],
+            '65201' => ['prodi' => 'ilmu pemerintahan', 'label' => 'Ilmu Pemerintahan', 'fakultas' => 'ilmu sosial dan politik'],
+            '70232' => ['prodi' => 'bimbingan konseling islam', 'label' => 'Bimbingan dan Konseling Islam (BKPI)', 'fakultas' => 'agama islam'],
+            '74201' => ['prodi' => 'ilmu hukum', 'label' => 'Ilmu Hukum', 'fakultas' => 'hukum'],
+            '84202' => ['prodi' => 'pendidikan matematika', 'label' => 'Pendidikan Matematika', 'fakultas' => 'keguruan dan ilmu pendidikan'],
+            '84205' => ['prodi' => 'pendidikan biologi', 'label' => 'Pendidikan Biologi', 'fakultas' => 'keguruan dan ilmu pendidikan'],
+            '86208' => ['prodi' => 'pendidikan agama islam', 'label' => 'Pendidikan Agama Islam (PAI)', 'fakultas' => 'agama islam'],
+            '88201' => ['prodi' => 'pendidikan bahasa indonesia', 'label' => 'Pendidikan Bahasa dan Sastra Indonesia (PBSI)', 'fakultas' => 'keguruan dan ilmu pendidikan'],
+            '88203' => ['prodi' => 'pendidikan bahasa inggris', 'label' => 'Pendidikan Bahasa Inggris', 'fakultas' => 'keguruan dan ilmu pendidikan'],
+        ];
+
+        $programCode = substr($npm, 0, 5);
+        if (!isset($programs[$programCode])) {
+            return null;
+        }
+
+        $intakeYear = (int) substr($npm, 7, 2);
+
+        return [
+            'prodi' => $programs[$programCode]['prodi'],
+            'label_prodi' => $programs[$programCode]['label'],
+            'fakultas' => $programs[$programCode]['fakultas'],
+            'tahun_masuk' => 2000 + $intakeYear,
+        ];
+    }
+
     // page signin akun peminjam
     public function showCreateAkunFormPeminjam()
     {
@@ -23,9 +66,18 @@ class CreateAkun extends Controller
     // simpan akun peminjam ke db dari signin
     public function SimpanAkunPeminjam(Request $request)
     {
+        $studentInfo = $this->getStudentInfoFromNpm((string) $request->input('no_identitas'));
+        if (!$studentInfo) {
+            return redirect()->back()->withInput()->with('gagal', 'NPM tidak valid atau kode program studi tidak dikenali. Pastikan NPM 12 digit dan sesuai data kampus.');
+        }
+
+        if (DB::table('peminjam')->where('no_identitas', $request->no_identitas)->exists()) {
+            return redirect()->back()->withInput()->with('gagal', 'NPM tersebut sudah terdaftar. Silakan masuk menggunakan akun yang sudah ada.');
+        }
+
         try {
             $request->validate([
-                'no_identitas' => 'required|integer',
+                'no_identitas' => 'required|string|regex:/^\\d{12}$/',
                 'nama_peminjam' => 'required|string|max:100',
                 'username' => 'required|string|max:50',
                 'password' => 'required|string|max:12',
@@ -45,8 +97,8 @@ class CreateAkun extends Controller
                 $imgPath = $request->file('img_identitas')->store('uploads/identitas', 'public');
             }
 
-            $fakultas = '';
-            if ($request->prodi === 'teknik sipil' or $request->prodi === 'teknik komputer') {
+            $fakultas = $studentInfo['fakultas'];
+            if (false) {
                 $fakultas = 'teknik';
             } elseif ($request->prodi === 'ilmu hukum') {
                 $fakultas = 'hukum';
@@ -81,9 +133,9 @@ class CreateAkun extends Controller
                 'id_user' => $id_user_acak,
                 'nama_peminjam' => $request->nama_peminjam,
                 'fakultas' => $fakultas,
-                'prodi' => $request->prodi,
+                'prodi' => $studentInfo['prodi'],
                 'img_identitas' => $imgPath,
-                'tahun_masuk' => $request->tahun_masuk,
+                'tahun_masuk' => $studentInfo['tahun_masuk'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -98,7 +150,16 @@ class CreateAkun extends Controller
     // simpan akun peminjam (mhs) dari admin
     public function showCreateAkunPeminjamFormAdmin(Request $request)
     {
-        // dd($request->file('img_identitas'));
+        $studentInfo = $this->getStudentInfoFromNpm((string) $request->input('no_identitas'));
+        if (!$studentInfo) {
+            return redirect()->back()->withInput()->with('gagal', 'NPM tidak valid atau kode program studi tidak dikenali. Pastikan NPM 12 digit dan sesuai data kampus.');
+        }
+
+        if (DB::table('peminjam')->where('no_identitas', $request->no_identitas)->exists()) {
+            return redirect()->back()->withInput()->with('gagal', 'NPM tersebut sudah terdaftar.');
+        }
+
+        // Tampilan form admin tetap, tetapi prodi dan tahun masuk ditentukan dari NPM.
         try {
 
             $request->validate([
