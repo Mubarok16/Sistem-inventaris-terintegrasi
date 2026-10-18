@@ -1,93 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    @vite([
-        // css js app
-        'resources/css/app.css',
-        'resources/js/app.js',
-    ])
-
-
-    <title>Landing Page</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102a56">
+@vite(['resources/css/app.css','resources/js/app.js'])
+<title>Masuk SIPRA | Fakultas Teknik UNWIR</title>
+<style>
+:root{--navy:#102a56;--blue:#1d4ed8;--ink:#172b4d;--muted:#64748b;--line:#e5ebf3}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.shell{min-height:100vh;padding:24px clamp(12px,3vw,44px);background:radial-gradient(ellipse at 8% 0%,#dbeafe 0,transparent 32%),radial-gradient(ellipse at 100% 90%,#e0f2fe 0,transparent 30%),#f6f8fc}
+.top{max-width:1500px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:12px}.brand img{width:54px;height:48px;object-fit:contain}.brand h2{font-size:1rem;font-weight:850;letter-spacing:.04em;color:var(--navy);margin:0}.brand p{font-size:.76rem;color:var(--muted);margin:3px 0 0}.badge-public{border:1px solid #dbeafe;background:#fff;color:#1d4ed8;border-radius:999px;padding:9px 13px;font-size:.75rem;font-weight:800;white-space:nowrap}
+.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1.75fr);gap:22px;align-items:stretch}
+.login{position:relative;overflow:hidden;padding:clamp(24px,3vw,40px);border-radius:24px;background:linear-gradient(145deg,#102a56,#17477e 70%,#17649a);color:#fff;box-shadow:0 22px 55px #102a5626}.login:after{content:"";position:absolute;width:290px;height:290px;right:-145px;top:-140px;border:1px solid #ffffff24;border-radius:50%;box-shadow:0 0 0 35px #ffffff09,0 0 0 70px #ffffff08}.login-inner{position:relative;z-index:1}.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:850;color:#bfdbfe;margin-bottom:26px}.login h1{font-size:clamp(2rem,3vw,2.75rem);line-height:1.08;letter-spacing:-.04em;font-weight:850;margin:0 0 14px}.intro{color:#d5e5f8;font-size:.9rem;line-height:1.75;margin:0 0 28px}.form-card{padding:21px;border-radius:17px;background:#ffffff12;border:1px solid #ffffff2c;backdrop-filter:blur(12px)}.form-card h3{font-size:1rem;font-weight:850;margin:0 0 4px}.form-card .sub{font-size:.78rem;color:#d5e5f8;margin:0 0 17px}.form-card label{font-size:.78rem;font-weight:750;color:#f0f7ff}.form-card .form-control{min-height:46px;border-radius:10px;border:1px solid #ffffff70;box-shadow:none}.form-card .form-control:focus{border-color:#93c5fd;box-shadow:0 0 0 3px #93c5fd35}.login-btn{min-height:46px;border:0;border-radius:10px;background:#fff;color:#173f79;font-weight:850}.login-btn:hover{background:#eaf3ff;color:#102a56}.links{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;margin-top:16px;font-size:.73rem;color:#d5e5f8}.links a{color:white;text-decoration:none;font-weight:800}.links a:hover{text-decoration:underline}.privacy{display:flex;gap:9px;margin-top:22px;color:#d5e5f8;font-size:.76rem;line-height:1.6}
+.calendar{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 15px 45px #172b4d0d}.cal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:26px 29px 20px;border-bottom:1px solid #edf1f6}.kicker{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:850;color:#2563eb;margin-bottom:8px}.cal-head h2{font-size:clamp(1.45rem,2vw,1.95rem);letter-spacing:-.035em;line-height:1.15;font-weight:850;margin:0 0 8px}.cal-head p{font-size:.83rem;color:var(--muted);line-height:1.6;margin:0}.readonly{white-space:nowrap;border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:9px 11px;font-size:.72rem;font-weight:850}.cal-body{padding:19px 24px 23px}.legend{display:flex;gap:15px;flex-wrap:wrap;margin-bottom:17px;color:#52627a;font-size:.74rem}.legend span{display:flex;align-items:center;gap:7px}.dot{width:9px;height:9px;border-radius:3px;display:inline-block}#public-calendar{min-height:470px}#public-calendar .fc{font-size:.83rem;--fc-border-color:#e9eef5;--fc-today-bg-color:#eff6ff}#public-calendar .fc-toolbar{gap:10px;flex-wrap:wrap}#public-calendar .fc-toolbar-title{font-size:1.15rem;font-weight:850;color:#172b4d}#public-calendar .fc-button{border-radius:9px!important;background:#fff!important;border:1px solid #dce4ef!important;color:#334155!important;box-shadow:none!important;font-weight:750!important;text-transform:capitalize}#public-calendar .fc-button:hover,#public-calendar .fc-button-active{background:#1d4ed8!important;border-color:#1d4ed8!important;color:#fff!important}#public-calendar .fc-col-header-cell-cushion{padding:10px 3px;color:#64748b;text-decoration:none;font-size:.73rem;font-weight:850}#public-calendar .fc-daygrid-day-number{color:#40516b;text-decoration:none;padding:8px}#public-calendar .fc-event{border:0;border-radius:5px;padding:3px 5px;font-size:.72rem;font-weight:750;cursor:pointer}#public-calendar .fc-daygrid-day-frame{transition:background .15s}#public-calendar .fc-daygrid-day:hover .fc-daygrid-day-frame{background:#f7faff}.hint{margin-top:17px;padding:13px 14px;border:1px solid #edf1f6;border-radius:12px;background:#f8fafc;color:#64748b;font-size:.76rem;line-height:1.55}.hint strong{color:#334155}.footer{max-width:1500px;margin:18px auto 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8995a7;font-size:.72rem}
+.agenda-modal .modal-content{border:0;border-radius:19px;overflow:hidden;box-shadow:0 24px 70px #0f172a38}.modal-banner{padding:23px;background:linear-gradient(135deg,#102a56,#1d4ed8);color:#fff}.modal-banner .modal-title{font-size:1.25rem;line-height:1.35;font-weight:850}.modal-banner .btn-close{filter:invert(1);opacity:.8}.modal-body-custom{padding:23px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:17px}.chip{padding:8px 10px;background:#f1f5f9;border-radius:9px;font-size:.76rem;color:#475569;font-weight:750}.section-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;font-weight:850;color:#64748b;margin:19px 0 9px}.resource{padding:12px;border:1px solid #e8edf4;border-radius:11px;margin-bottom:8px}.resource strong{font-size:.84rem;color:#24344d}.resource small{display:block;color:#64748b;margin-top:4px}.empty{font-size:.82rem;color:#64748b;background:#f8fafc;padding:13px;border-radius:10px}
+@media(max-width:1050px){.layout{grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr)}.login{padding:25px}.cal-head{padding:22px}.cal-body{padding:16px}}@media(max-width:820px){.shell{padding:15px 12px}.top{margin-bottom:15px}.layout{grid-template-columns:1fr}.login{min-height:auto}.intro{margin-bottom:22px}.cal-head{padding:21px 18px 17px}.cal-body{padding:15px 11px 18px}.calendar{border-radius:20px}#public-calendar{min-height:400px}}@media(max-width:480px){.brand img{width:44px;height:40px}.brand h2{font-size:.86rem}.brand p{font-size:.67rem}.badge-public{font-size:.67rem;padding:8px}.cal-head{display:block}.readonly{display:inline-block;margin-top:13px}.cal-head h2{font-size:1.45rem}#public-calendar .fc-toolbar{justify-content:center}#public-calendar .fc-toolbar-title{font-size:1rem}#public-calendar .fc-button{padding:.38rem .47rem;font-size:.73rem}.login{border-radius:20px}.login h1{font-size:2.05rem}}
+</style>
 </head>
-
-<body id="page-top " class=".container-fluid"
-    style="background-image: linear-gradient(rgba(0, 0, 0, 0.712), rgba(1, 1, 19, 0.897)), url('{{ asset('images/backgoound.jpg') }}'); background-size: cover; background-repeat: no-repeat;   background-position: center center;   background-attachment: fixed;">
-
-    <!-- Login 13 - Bootstrap Brain Component -->
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul style="margin-bottom: 0;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-        <section class="py-3 py-md-5">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-                        <div class="card border border-light-subtle rounded-3 shadow-sm">
-                            <div class="card-body p-3 p-md-4 p-xl-5">
-                                <div class="text-center mb-3">
-                                    <a href="#!">
-                                        <img src="{{ asset('images/logo_ft.png') }}" class=" mx-auto"
-                                            alt="BootstrapBrain Logo" width="100" height="57">
-                                    </a>
-                                </div>
-                                <h5 class="fs-6 fw-normal text-center text-secondary mb-4">Sistem Peminjaman sarana dan
-                                    prasarana terintegrasi</h5>
-                                {{-- <h5 class="fs-6 fw-normal text-center text-secondary mb-2">Fakultas Teknik Unwir</h5> --}}
-                                <p class="text-secondary mb-2">Sign in</p>
-                                <form method="POST" action="{{ route('login') }}">
-                                    @csrf
-                                    <div class="row gy-2 overflow-hidden">
-                                        <div class="col-12">
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" name="username"
-                                                    id="username" placeholder=" " required>
-                                                <label class="form-label">username</label>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-12 m-0">
-                                            <div class="form-floating mb-3">
-                                                <input type="password" class="form-control" name="password"
-                                                    id="password" value="" placeholder=" " required>
-                                                <label for="password" class="form-label">password</label>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-12 m-0">
-                                            <div class="d-flex gap-2 justify-content-between">
-                                                <a href="/create-akun-peminjam"
-                                                    class="link-primary text-decoration-none">belum punya akun?</a>
-                                                <label class="link-primary text-decoration-none">
-                                                    hubungi admin jika lupa password!
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 m-0">
-                                            <div class="d-grid my-2 ">
-                                                <button class="btn btn-primary w-100" type="submit">Log in</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-</body>
-
-</html>
+<body><div class="shell">
+<header class="top"><div class="brand"><img src="{{ asset('images/logo_ft.png') }}" alt="Logo Fakultas Teknik UNWIR"><div><h2>SIPRA <span style="color:#64748b;font-weight:600">| UNWIR</span></h2><p>Sistem Informasi Sarana dan Prasarana</p></div></div><div class="badge-public">● Kalender publik aktif</div></header>
+<main class="layout">
+<section class="login"><div class="login-inner"><div class="eyebrow">Fakultas Teknik · Universitas Wiralodra</div><h1>Semua agenda,<br>lebih terencana.</h1><p class="intro">Jelajahi jadwal kegiatan Fakultas Teknik dalam satu kalender yang mudah diakses. Pilih agenda untuk melihat detail jadwal, ruangan, dan sarana yang digunakan.</p>
+<div class="form-card"><h3>Masuk ke SIPRA</h3><p class="sub">Login untuk mengakses fitur sesuai hak akses Anda.</p>
+@if ($errors->any())<div class="alert alert-danger py-2 px-3" role="alert" style="font-size:.8rem;border-radius:10px">@foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>@endif
+<form method="POST" action="{{ route('login') }}">@csrf
+<div class="mb-3"><label for="username" class="form-label">Username</label><input type="text" class="form-control" name="username" id="username" placeholder="Masukkan username" value="{{ old('username') }}" autocomplete="username" required></div>
+<div class="mb-3"><label for="password" class="form-label">Password</label><input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password" autocomplete="current-password" required></div>
+<button class="btn login-btn w-100" type="submit">Masuk ke akun →</button></form>
+<div class="links"><a href="{{ url('/create-akun-peminjam') }}">Belum punya akun?</a><span>Butuh bantuan? Hubungi admin.</span></div></div>
+<div class="privacy"><span aria-hidden="true">◈</span><span>Kalender ini dapat dilihat siapa saja. Informasi akun dan fitur pengelolaan tetap memerlukan login.</span></div>
+</div></section>
+<section class="calendar" aria-labelledby="calendar-heading"><div class="cal-head"><div><div class="kicker">Agenda Fakultas</div><h2 id="calendar-heading">Jadwal kegiatan</h2><p>Jelajahi agenda berdasarkan bulan, minggu, atau daftar harian. Klik agenda untuk membuka detailnya.</p></div><div class="readonly">◉ Hanya lihat · Tanpa login</div></div>
+<div class="cal-body"><div class="legend"><span><i class="dot" style="background:#2563eb"></i>KBM / Kuliah</span><span><i class="dot" style="background:#7c3aed"></i>Seminar / Sidang</span><span><i class="dot" style="background:#0f766e"></i>Rapat</span><span><i class="dot" style="background:#475569"></i>Lainnya</span></div>
+<div id="public-calendar" data-events-url="{{ route('agenda-publik.events') }}" aria-label="Kalender agenda publik"></div><div class="hint"><strong>Tips:</strong> klik tanggal untuk melihat agenda pada hari tersebut atau pilih agenda untuk membaca informasi jadwal, ruangan, dan sarana yang digunakan.</div></div></section>
+</main><footer class="footer"><span>© {{ date('Y') }} Fakultas Teknik · Universitas Wiralodra</span><span>SIPRA · Informasi agenda untuk publik</span></footer></div>
+<div class="modal fade agenda-modal" id="publicAgendaModal" tabindex="-1" aria-labelledby="publicAgendaModalTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content"><div class="modal-banner d-flex justify-content-between align-items-start gap-3"><div><div class="small mb-2" style="color:#bfdbfe;font-weight:800;letter-spacing:.12em;text-transform:uppercase">Detail agenda</div><h2 class="modal-title" id="publicAgendaModalTitle">Memuat agenda...</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button></div><div class="modal-body-custom" id="publicAgendaModalBody"><div class="text-center py-5 text-secondary">Memuat informasi agenda...</div></div></div></div></div>
+</body></html>
