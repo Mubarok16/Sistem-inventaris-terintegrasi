@@ -306,6 +306,7 @@ class PengelolaanPeminjamanAdmin extends Controller
     public function riwayatPengembalian()
     {
         abort_unless(Auth::check() && Auth::user()->hak_akses === 'admin', 403);
+
         $riwayat = DB::table('pemeriksaan_pengembalian as pp')
             ->leftJoin('items', 'pp.id_item', '=', 'items.id_item')
             ->leftJoin('rooms', 'pp.id_room', '=', 'rooms.id_room')
@@ -313,7 +314,14 @@ class PengelolaanPeminjamanAdmin extends Controller
             ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username')
             ->orderByDesc('pp.tanggal_pemeriksaan')
             ->paginate(20);
-        return view('Page_admin.riwayat-pengembalian', compact('riwayat'));
+
+        $user = DB::table('detail_staff')
+            ->where('id_user', Auth::user()->id_user)
+            ->value('nama');
+
+        $halaman = 'contentRiwayatPemeriksaanPengembalian';
+
+        return view('Page_admin.dashboard-admin', compact('halaman', 'user', 'riwayat'));
     }
 
     /** Form pemeriksaan kondisi aset saat pengembalian. */
