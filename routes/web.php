@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\agendaBerlangsung;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PublicAgendaController;
 use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardControllerPimpinan;
@@ -55,6 +56,12 @@ use Illuminate\Support\Facades\Storage;
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest'); // menampilkan halaman login
 Route::post('/', [AuthController::class, 'login'])->middleware('guest'); // proses login
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); // proses logout
+
+// Kalender agenda fakultas untuk publik (read-only, tidak memerlukan login).
+Route::get('/agenda-publik/events', [PublicAgendaController::class, 'events'])->name('agenda-publik.events');
+Route::get('/agenda-publik/{kode_agenda}/{tanggal}', [PublicAgendaController::class, 'detail'])
+    ->where('tanggal', '\\d{4}-\\d{2}-\\d{2}')
+    ->name('agenda-publik.detail');
 
 // route for create akun peminjam (mahasiswa)
 Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPeminjam'])->middleware('guest'); // menampilkan halaman buat akun peminjam
