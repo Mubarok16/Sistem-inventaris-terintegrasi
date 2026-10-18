@@ -145,10 +145,12 @@ class PublicAgendaController extends Controller
             ->whereIn('u.status_usage_item', ['terjadwal', 'digunakan', 'selesai'])
             ->whereDate('u.tgl_pinjam_usage_item', '<=', $date)
             ->whereDate('u.tgl_kembali_usage_item', '>=', $date)
-            ->select('i.nama_item', 'i.merek_model', 'u.qty_usage_item', 'u.jam_mulai_usage_item as jam_mulai', 'u.jam_selesai_usage_item as jam_selesai', 'u.status_usage_item as status')
+            ->select('i.nama_item', 'i.merek_model', 'r.nama_room as tempat_simpan', 'u.qty_usage_item', 'u.jam_mulai_usage_item as jam_mulai', 'u.jam_selesai_usage_item as jam_selesai', 'u.status_usage_item as status')
+            ->join('rooms as r', 'i.id_room', '=', 'r.id_room')
             ->get()
             ->map(fn ($row) => [
                 'nama' => trim($row->nama_item . ' ' . ($row->merek_model ?? '')),
+                'tempat_simpan' => $row->tempat_simpan,
                 'jumlah' => (int) $row->qty_usage_item,
                 'jam_mulai' => $row->jam_mulai ? substr((string) $row->jam_mulai, 0, 5) : null,
                 'jam_selesai' => $row->jam_selesai ? substr((string) $row->jam_selesai, 0, 5) : null,
@@ -171,18 +173,11 @@ class PublicAgendaController extends Controller
     {
         $type = mb_strtolower((string) $type);
 
-        if (str_contains($type, 'belajar') || str_contains($type, 'kbm') || str_contains($type, 'kuliah')) {
-            return '#2563eb';
-        }
-
-        if (str_contains($type, 'seminar') || str_contains($type, 'sidang')) {
-            return '#7c3aed';
-        }
-
-        if (str_contains($type, 'rapat')) {
+        if (str_contains($type, 'peminjaman')) {
             return '#0f766e';
         }
 
-        return '#475569';
+        // KBM, seminar, rapat, dan agenda fakultas lainnya memakai satu kategori warna.
+        return '#2563eb';
     }
 }
