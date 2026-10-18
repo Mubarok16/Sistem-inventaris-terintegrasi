@@ -278,16 +278,18 @@
             {{-- Form Peminjam Mahasiswa Anda di sini --}}
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <form class="p-8 space-y-6" method="POST" action="{{ route('addAkunPeminjam') }}"
+                <form id="admin-student-registration-form" class="p-8 space-y-6" method="POST" action="{{ route('addAkunPeminjam') }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 Nomor Identitas</label>
-                            <input name="no_identitas"
+                            <input id="admin_no_identitas" name="no_identitas" maxlength="12" minlength="12" inputmode="numeric" pattern="[0-9]{12}" autocomplete="off"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                type="text" />
+                                type="text" required />
+                            <p class="text-xs text-slate-500 mt-2">Masukkan NPM 12 digit. Program studi dan tahun masuk akan terisi otomatis.</p>
+                            <div id="admin_npm_status" class="hidden mt-2 rounded-lg px-3 py-2 text-xs" role="status" aria-live="polite"></div>
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
@@ -323,68 +325,26 @@
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Program
                                 Studi</label>
-                            <select name="prodi" id="prodi" required
+                            <select name="prodi" id="admin_prodi" required disabled
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-semibold transition-all text-slate-700">
-
-                                <option value="">pilih prodi</option>
-                                <optgroup label="TEKNIK">
-                                    <option value="teknik sipil">Teknik
-                                        Sipil
-                                    </option>
-                                    <option value="teknik komputer">Teknik
-                                        Komputer
-                                    </option>
-                                </optgroup>
-                                <optgroup label="HUKUM">
-                                    <option value="ilmu hukum">Ilmu Hukum
-                                    </option>
-                                </optgroup>
-                                <optgroup label="KEGURUAN DAN ILMU PENDIDIKAN">
-                                    <option value="pendidikan bahasa inggris">
-                                        Pendidikan Bahasa Inggris
-                                    </option>
-                                    <option value="pendidikan bahasa indonesia">
-                                        Pendidikan Bahasa
-                                        Indonesia</option>
-                                    <option value="pendidikan matematika">
-                                        Pendidikan Matematika</option>
-                                    <option value="pendidikan biologi">
-                                        Pendidikan
-                                        Biologi</option>
-                                </optgroup>
-                                <optgroup label="ILMU SOSIAL DAN ILMU POLITIK">
-                                    <option value="ilmu politik">Ilmu
-                                        Politik
-                                    </option>
-                                </optgroup>
-                                <optgroup label="EKONOMI">
-                                    <option value="manajemen">Manajemen
-                                    </option>
-                                </optgroup>
-                                <optgroup label="AGAMA ISLAM">
-                                    <option value="pendidikan agama islam">
-                                        pendidikan agama islam
-                                    </option>
-                                    <option value="perbankan syariah">
-                                        perbankan
-                                        syariah</option>
-                                    <option value="bimbingan konseling islam">
-                                        bimbingan konseling islam
-                                    </option>
-                                </optgroup>
-                                <optgroup label="PERTANIAN">
-                                    <option value="agribisnis">agribisnis
-                                    </option>
-                                    <option value="agroteknologi">
-                                        agroteknologi
-                                    </option>
-                                </optgroup>
-                                <optgroup label="KESEHATAN MASYARAKAT">
-                                    <option value="kesehatan masyarakat">
-                                        Kesehatan
-                                        Masyarakat</option>
-                                </optgroup>
+                                <option value="">Terisi otomatis dari NPM</option>
+                                <option value="teknik sipil">Teknik Sipil</option>
+                                <option value="kesehatan masyarakat">Kesehatan Masyarakat</option>
+                                <option value="agribisnis">Agribisnis</option>
+                                <option value="agroteknologi">Agroteknologi</option>
+                                <option value="teknik komputer">Teknik Komputer</option>
+                                <option value="manajemen">Manajemen</option>
+                                <option value="perbankan syariah">Perbankan Syariah</option>
+                                <option value="ilmu pemerintahan">Ilmu Pemerintahan</option>
+                                <option value="bimbingan konseling islam">Bimbingan dan Konseling Islam (BKPI)</option>
+                                <option value="ilmu hukum">Ilmu Hukum</option>
+                                <option value="pendidikan matematika">Pendidikan Matematika</option>
+                                <option value="pendidikan biologi">Pendidikan Biologi</option>
+                                <option value="pendidikan agama islam">Pendidikan Agama Islam (PAI)</option>
+                                <option value="pendidikan bahasa indonesia">Pendidikan Bahasa dan Sastra Indonesia (PBSI)</option>
+                                <option value="pendidikan bahasa inggris">Pendidikan Bahasa Inggris</option>
                             </select>
+                            <p class="text-xs text-slate-500 mt-2">Program studi mengikuti kode lima digit pertama NPM.</p>
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
@@ -401,9 +361,9 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                 tahun masuk
                             </label>
-                            <input name="tahun_masuk"
+                            <input id="admin_tahun_masuk" name="tahun_masuk" readonly placeholder="Otomatis dari NPM"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                type="number" />
+                                type="text" required />
                         </div>
                         <div class="space-y-3 md:col-span-2 pt-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Status
@@ -457,3 +417,52 @@
     </div>
 
 </main>
+
+<script>
+(function () {
+    const form = document.getElementById('admin-student-registration-form');
+    if (!form || form.dataset.npmAutofillBound === '1') return;
+    form.dataset.npmAutofillBound = '1';
+    const npm = document.getElementById('admin_no_identitas');
+    const prodi = document.getElementById('admin_prodi');
+    const year = document.getElementById('admin_tahun_masuk');
+    const status = document.getElementById('admin_npm_status');
+    const programs = {'22201':'teknik sipil','13201':'kesehatan masyarakat','54201':'agribisnis','54211':'agroteknologi','56202':'teknik komputer','61201':'manajemen','61206':'perbankan syariah','65201':'ilmu pemerintahan','70232':'bimbingan konseling islam','74201':'ilmu hukum','84202':'pendidikan matematika','84205':'pendidikan biologi','86208':'pendidikan agama islam','88201':'pendidikan bahasa indonesia','88203':'pendidikan bahasa inggris'};
+    function resolveNpm() {
+        const value = npm.value.trim();
+        prodi.value = ''; year.value = '';
+        status.className = 'hidden mt-2 rounded-lg px-3 py-2 text-xs';
+        status.textContent = '';
+        if (!value) return;
+        if (!/^\\d{12}$/.test(value)) {
+            if (value.length >= 5) {
+                status.className = 'mt-2 rounded-lg px-3 py-2 text-xs bg-amber-50 border border-amber-200 text-amber-800';
+                status.textContent = 'NPM harus terdiri dari tepat 12 angka.';
+            }
+            return;
+        }
+        const code = value.slice(0, 5);
+        if (!programs[code]) {
+            status.className = 'mt-2 rounded-lg px-3 py-2 text-xs bg-amber-50 border border-amber-200 text-amber-800';
+            status.textContent = 'Kode prodi ' + code + ' tidak dikenali. Periksa kembali NPM.';
+            return;
+        }
+        prodi.value = programs[code];
+        year.value = String(2000 + Number(value.slice(7, 9)));
+        status.className = 'mt-2 rounded-lg px-3 py-2 text-xs bg-emerald-50 border border-emerald-200 text-emerald-800';
+        status.textContent = 'NPM dikenali: ' + prodi.options[prodi.selectedIndex].text + ' · Tahun masuk ' + year.value + '.';
+    }
+    npm.addEventListener('input', resolveNpm);
+    form.addEventListener('submit', function (event) {
+        resolveNpm();
+        if (!/^\\d{12}$/.test(npm.value.trim()) || !prodi.value || !year.value) {
+            event.preventDefault();
+            status.className = 'mt-2 rounded-lg px-3 py-2 text-xs bg-amber-50 border border-amber-200 text-amber-800';
+            status.textContent = 'Masukkan NPM 12 digit dengan kode prodi yang terdaftar.';
+            npm.focus();
+        }
+    });
+    if (npm.value) resolveNpm();
+})();
+</script>
+
