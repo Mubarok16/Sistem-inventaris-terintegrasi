@@ -1,11 +1,11 @@
 <?php
 
-namespace App\\Http\\Controllers;
+namespace App\Http\Controllers;
 
-use Carbon\\Carbon;
-use Carbon\\CarbonPeriod;
-use Illuminate\\Http\\JsonResponse;
-use Illuminate\\Support\\Facades\\DB;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class PublicAgendaController extends Controller
 {
@@ -111,7 +111,7 @@ class PublicAgendaController extends Controller
     {
         try {
             $date = Carbon::createFromFormat('Y-m-d', $tanggal)->toDateString();
-        } catch (\\Throwable $exception) {
+        } catch (\Throwable $exception) {
             return response()->json(['message' => 'Tanggal tidak valid.'], 422);
         }
 
