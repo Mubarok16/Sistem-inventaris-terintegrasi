@@ -138,12 +138,10 @@ class PublicAgendaController extends Controller
                         'tipe_agenda' => $event->event_type ?: 'Agenda Fakultas',
                         'status' => $event->event_status,
                         'tanggal' => $dateString,
-                        'detail_url' => $event->event_source === 'peminjaman'
-                            ? null
-                            : route('agenda-publik.detail', [
-                                'kode_agenda' => $event->event_code,
-                                'tanggal' => $dateString,
-                            ]),
+                        'detail_url' => route('agenda-publik.detail', [
+                            'kode_agenda' => $event->event_code,
+                            'tanggal' => $dateString,
+                        ]),
                     ],
                 ]);
             }
