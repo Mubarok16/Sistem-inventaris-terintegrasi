@@ -315,22 +315,38 @@ class DashboardController extends Controller
         $DataRuangan = DataRuangan::get();
         // mengambil semua data barang dan nama tipe barang dan nama ruangan
 
+        // Kerusakan yang sudah diajukan perawatan dan belum selesai.
         $perawatanAktif = DB::table('perawatan_barang')
             ->select('id_item')
             ->selectRaw('SUM(qty_perawatan) as qty_perawatan')
-            ->whereNotIn('status_perawatan', ['selesai', 'ditolak'])
+            ->where('status_perawatan', '!=', 'selesai')
             ->whereNotNull('id_item')
             ->groupBy('id_item');
+
+        // Kerusakan dari pengembalian yang belum dibuatkan pengajuan perawatan.
+        // Setelah diajukan, catatan pengembalian tidak dihitung lagi agar tidak double count.
+        $rusakDariPengembalian = DB::table('pemeriksaan_pengembalian as pp')
+            ->leftJoin('perawatan_barang as pb', 'pp.id_pemeriksaan', '=', 'pb.id_pemeriksaan')
+            ->where('pp.jenis_aset', 'barang')
+            ->where('pp.qty_rusak', '>', 0)
+            ->whereNull('pb.id_pemeriksaan')
+            ->select('pp.id_item')
+            ->selectRaw('SUM(pp.qty_rusak) as qty_rusak')
+            ->whereNotNull('pp.id_item')
+            ->groupBy('pp.id_item');
 
         $DataBarang = DB::table('items')
             ->join('rooms', 'items.id_room', '=', 'rooms.id_room')
             ->leftJoinSub($perawatanAktif, 'perawatan_aktif', function ($join) {
                 $join->on('items.id_item', '=', 'perawatan_aktif.id_item');
             })
+            ->leftJoinSub($rusakDariPengembalian, 'rusak_pengembalian', function ($join) {
+                $join->on('items.id_item', '=', 'rusak_pengembalian.id_item');
+            })
             ->select(
                 'items.*',
                 'rooms.nama_room',
-                DB::raw('COALESCE(perawatan_aktif.qty_perawatan, 0) as qty_perawatan')
+                DB::raw('(COALESCE(perawatan_aktif.qty_perawatan, 0) + COALESCE(rusak_pengembalian.qty_rusak, 0)) as qty_perawatan')
             )
             ->when($cari !== 'null', function ($query) use ($cari) {
                 $query->where('items.nama_item', 'ILIKE', "%{$cari}%");
@@ -853,10 +869,19 @@ class DashboardController extends Controller
         $countsRuangan = collect($finalDataRuangan)->pluck('total')->sum();
 
         // unutk chart kondisi srpras
-        $barang_rusak = DB::table('perawatan_barang')
-            ->where('perawatan_barang.id_item', '!=', null)
-            ->whereNotIn('perawatan_barang.status_perawatan', ['selesai', 'ditolak'])
-            ->sum('perawatan_barang.qty_perawatan');
+        $barang_rusak_perawatan = DB::table('perawatan_barang')
+            ->whereNotNull('id_item')
+            ->where('status_perawatan', '!=', 'selesai')
+            ->sum('qty_perawatan');
+
+        $barang_rusak_pengembalian = DB::table('pemeriksaan_pengembalian as pp')
+            ->leftJoin('perawatan_barang as pb', 'pp.id_pemeriksaan', '=', 'pb.id_pemeriksaan')
+            ->where('pp.jenis_aset', 'barang')
+            ->where('pp.qty_rusak', '>', 0)
+            ->whereNull('pb.id_pemeriksaan')
+            ->sum('pp.qty_rusak');
+
+        $barang_rusak = $barang_rusak_perawatan + $barang_rusak_pengembalian;
         $ruang_rusak = DB::table('perawatan_barang')
             ->where('perawatan_barang.id_room', '!=', null)
             ->whereNotIn('perawatan_barang.status_perawatan', ['selesai', 'ditolak'])
