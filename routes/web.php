@@ -65,6 +65,7 @@ Route::get('/agenda-publik/{kode_agenda}/{tanggal}', [PublicAgendaController::cl
 
 // route for create akun peminjam (mahasiswa)
 Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPeminjam'])->middleware('guest'); // menampilkan halaman buat akun peminjam
+Route::get('/cek-npm-terdaftar', [CreateAkun::class, 'cekNpmTerdaftar'])->name('cek-npm-terdaftar')->middleware('guest');
 Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar')->middleware('guest');
 
 // URL: /peminjam/dashboard
@@ -128,6 +129,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'formPengembalian'])->name('admin.pengembalian.form');
     Route::post('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'simpanPengembalian'])->name('admin.pengembalian.simpan');
     Route::get('/admin/riwayat-pemeriksaan-pengembalian', [PengelolaanPeminjamanAdmin::class, 'riwayatPengembalian'])->name('admin.pengembalian.riwayat');
+    Route::post('/admin/riwayat-pemeriksaan-pengembalian/{id_pemeriksaan}/ajukan-perawatan', [PengelolaanPeminjamanAdmin::class, 'ajukanPerawatanDariPengembalian'])->name('admin.pengembalian.ajukan-perawatan');
 
     // page pengeloaan user =========================================================================================================================
 

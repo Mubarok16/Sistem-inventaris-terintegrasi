@@ -311,7 +311,8 @@ class PengelolaanPeminjamanAdmin extends Controller
             ->leftJoin('items', 'pp.id_item', '=', 'items.id_item')
             ->leftJoin('rooms', 'pp.id_room', '=', 'rooms.id_room')
             ->leftJoin('users', 'pp.dicatat_oleh', '=', 'users.id_user')
-            ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username')
+            ->leftJoin('perawatan_barang as pb', 'pp.id_pemeriksaan', '=', 'pb.id_pemeriksaan')
+            ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username', 'pb.id_perawatan', 'pb.status_perawatan')
             ->orderByDesc('pp.tanggal_pemeriksaan')
             ->paginate(20);
 
@@ -452,22 +453,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                             'updated_at' => $now,
                         ]);
                     }
-                    // Buat catatan perawatan agar aset rusak muncul pada alur perawatan yang sudah ada.
-                    DB::table('perawatan_barang')->insert([
-                        'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
-                        'id_pemohon' => $userId,
-                        'id_penyetuju' => null,
-                        'id_item' => $idItem,
-                        'id_room' => null,
-                        'qty_perawatan' => $qtyRusak,
-                        'sumber_perawatan' => 'pengembalian',
-                        'id_pemeriksaan' => $idPemeriksaan,
-                        'status_perawatan' => 'pendding',
-                        'tahun_akademik' => (string) (now()->year . '/' . (now()->year + 1)),
-                        'keperluan_prodi' => 'Kerusakan dicatat saat pengembalian peminjaman ' . $kode_peminjaman . ': ' . $deskripsi,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ]);
+                    // Pengajuan perawatan dibuat nanti dari halaman riwayat oleh admin.
                 }
 
                 DB::table('usage_items')->where('kode_peminjaman', $kode_peminjaman)
@@ -515,21 +501,7 @@ class PengelolaanPeminjamanAdmin extends Controller
                     DB::table('rooms')->where('id_room', $idRoom)->update([
                         'kondisi_room' => 'Rusak', 'visibility_room' => '0', 'updated_at' => $now,
                     ]);
-                    DB::table('perawatan_barang')->insert([
-                        'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
-                        'id_pemohon' => $userId,
-                        'id_penyetuju' => null,
-                        'id_item' => null,
-                        'id_room' => $idRoom,
-                        'qty_perawatan' => 1,
-                        'sumber_perawatan' => 'pengembalian',
-                        'id_pemeriksaan' => $idPemeriksaan,
-                        'status_perawatan' => 'pendding',
-                        'tahun_akademik' => (string) (now()->year . '/' . (now()->year + 1)),
-                        'keperluan_prodi' => 'Kerusakan ruangan dicatat saat pengembalian peminjaman ' . $kode_peminjaman . ': ' . $deskripsi,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ]);
+                    // Pengajuan perawatan dibuat nanti dari halaman riwayat oleh admin.
                 }
 
                 DB::table('usage_rooms')->where('kode_peminjaman', $kode_peminjaman)
@@ -548,6 +520,58 @@ class PengelolaanPeminjamanAdmin extends Controller
 
         return redirect()->route('admin.pengajuan.peminjaman')
             ->with('success', 'Pengembalian berhasil dicatat. Kondisi barang dan ruangan telah diperbarui jika ditemukan kerusakan.');
+    }
+
+    /** Buat surat/pengajuan perawatan dari catatan kerusakan yang dipilih admin di riwayat. */
+    public function ajukanPerawatanDariPengembalian(Request $request, int $id_pemeriksaan)
+    {
+        abort_unless(Auth::check() && Auth::user()->hak_akses === 'admin', 403);
+
+        $pemeriksaan = DB::table('pemeriksaan_pengembalian')
+            ->where('id_pemeriksaan', $id_pemeriksaan)
+            ->first();
+
+        abort_unless($pemeriksaan, 404, 'Catatan pengembalian tidak ditemukan.');
+
+        if ((int) $pemeriksaan->qty_rusak < 1 || $pemeriksaan->kondisi_pengembalian !== 'rusak') {
+            return back()->with('gagal', 'Hanya catatan aset yang rusak yang dapat diajukan perawatannya.');
+        }
+
+        $existing = DB::table('perawatan_barang')
+            ->where('id_pemeriksaan', $id_pemeriksaan)
+            ->first();
+
+        if ($existing) {
+            return back()->with('success', 'Pengajuan perawatan untuk catatan ini sudah dibuat.');
+        }
+
+        $now = now();
+        $tahunAkademik = $now->year . '/' . ($now->year + 1);
+        $aset = $pemeriksaan->jenis_aset === 'barang'
+            ? DB::table('items')->where('id_item', $pemeriksaan->id_item)->first()
+            : DB::table('rooms')->where('id_room', $pemeriksaan->id_room)->first();
+
+        if (!$aset) {
+            return back()->with('gagal', 'Data barang atau ruangan tidak ditemukan.');
+        }
+
+        DB::table('perawatan_barang')->insert([
+            'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
+            'id_pemohon' => Auth::user()->id_user,
+            'id_penyetuju' => null,
+            'id_item' => $pemeriksaan->jenis_aset === 'barang' ? $pemeriksaan->id_item : null,
+            'id_room' => $pemeriksaan->jenis_aset === 'ruangan' ? $pemeriksaan->id_room : null,
+            'qty_perawatan' => (int) $pemeriksaan->qty_rusak,
+            'sumber_perawatan' => 'pengembalian',
+            'id_pemeriksaan' => $id_pemeriksaan,
+            'status_perawatan' => 'pendding',
+            'tahun_akademik' => $tahunAkademik,
+            'keperluan_prodi' => 'Kerusakan dicatat saat pengembalian peminjaman ' . $pemeriksaan->kode_peminjaman . ': ' . ($pemeriksaan->deskripsi_kerusakan ?: 'Tidak ada deskripsi tambahan.'),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        return back()->with('success', 'Pengajuan perawatan berhasil dibuat. Surat mengikuti format perawatan yang sudah digunakan.');
     }
 
     // penolakan pengajuan peminjaman
