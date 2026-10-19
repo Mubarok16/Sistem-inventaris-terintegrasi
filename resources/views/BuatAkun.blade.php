@@ -50,16 +50,47 @@
 (function(){
  const npm=document.getElementById('no_identitas'), prodi=document.getElementById('prodi'), year=document.getElementById('tahun_masuk'), status=document.getElementById('npm-status'), form=document.getElementById('student-registration-form');
  const programs={'22201':'teknik sipil','13201':'kesehatan masyarakat','54201':'agribisnis','54211':'agroteknologi','56202':'teknik komputer','61201':'manajemen','61206':'perbankan syariah','65201':'ilmu pemerintahan','70232':'bimbingan konseling islam','74201':'ilmu hukum','84202':'pendidikan matematika','84205':'pendidikan biologi','86208':'pendidikan agama islam','88201':'pendidikan bahasa indonesia','88203':'pendidikan bahasa inggris'};
- function resolveNpm(){const value=npm.value.trim();prodi.value='';year.value='';status.className='npm-status';status.textContent='';
+ let npmCheckTimer=null, npmCheckToken=0, npmRegistered=false;
+ async function checkNpmRegistration(value){
+   const token=++npmCheckToken;
+   if(!/^\\d{12}$/.test(value))return null;
+   status.className='npm-status';status.textContent='Memeriksa status NPM...';
+   try{
+     const response=await fetch('{{ route('cek-npm-terdaftar') }}?npm='+encodeURIComponent(value),{headers:{'Accept':'application/json'},credentials:'same-origin'});
+     const result=await response.json();
+     if(token!==npmCheckToken||npm.value.trim()!==value)return null;
+     npmRegistered=!!result.terdaftar;
+     if(npmRegistered){status.className='npm-status error';status.textContent='NPM sudah terdaftar. Silakan masuk menggunakan akun yang sudah ada.';}
+     else if(result.valid){status.className='npm-status success';status.textContent='NPM tersedia: '+prodi.options[prodi.selectedIndex].text+' · Tahun masuk '+year.value+'.';}
+     else{status.className='npm-status error';status.textContent=result.message||'NPM tidak valid.';}
+     return result;
+   }catch(error){
+     if(token!==npmCheckToken)return null;
+     status.className='npm-status error';status.textContent='Status NPM belum dapat diperiksa. Periksa koneksi lalu coba kembali.';
+     return null;
+   }
+ }
+ function resolveNpm(){
+   const value=npm.value.trim();prodi.value='';year.value='';status.className='npm-status';status.textContent='';npmRegistered=false;npmCheckToken++;
+   clearTimeout(npmCheckTimer);
    if(value.length===0)return;
-   if(!/^\d{12}$/.test(value)){if(value.length>=5){status.className='npm-status error';status.textContent='NPM harus terdiri dari tepat 12 angka.';}return;}
+   if(!/^\\d{12}$/.test(value)){if(value.length>=5){status.className='npm-status error';status.textContent='NPM harus terdiri dari tepat 12 angka.';}return;}
    const code=value.slice(0,5), program=programs[code];
    if(!program){status.className='npm-status error';status.textContent='Kode prodi '+code+' belum dikenali. Periksa kembali NPM Anda.';return;}
    prodi.value=program;year.value=String(2000+Number(value.slice(7,9)));
-   status.className='npm-status success';status.textContent='NPM dikenali: '+prodi.options[prodi.selectedIndex].text+' · Tahun masuk '+year.value+'.';
+   status.className='npm-status success';status.textContent='NPM dikenali: '+prodi.options[prodi.selectedIndex].text+' · Tahun masuk '+year.value+'. Memeriksa status pendaftaran...';
+   npmCheckTimer=setTimeout(()=>checkNpmRegistration(value),350);
  }
  npm.addEventListener('input',resolveNpm);
- form.addEventListener('submit',function(event){resolveNpm();if(!/^\d{12}$/.test(npm.value.trim())||!prodi.value||!year.value){event.preventDefault();status.className='npm-status error';status.textContent='Masukkan NPM 12 digit yang memiliki kode prodi terdaftar sebelum melanjutkan.';npm.focus();}});
+ form.addEventListener('submit',async function(event){
+   event.preventDefault();
+   const value=npm.value.trim();
+   if(!/^\\d{12}$/.test(value)||!prodi.value||!year.value){resolveNpm();status.className='npm-status error';status.textContent='Masukkan NPM 12 digit yang memiliki kode prodi terdaftar sebelum melanjutkan.';npm.focus();return;}
+   clearTimeout(npmCheckTimer);
+   const result=await checkNpmRegistration(value);
+   if(!result||result.terdaftar||!result.valid){npm.focus();return;}
+   form.submit();
+ });
  if(npm.value)resolveNpm();
 })();
 </script>
