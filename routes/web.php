@@ -65,6 +65,7 @@ Route::get('/agenda-publik/{kode_agenda}/{tanggal}', [PublicAgendaController::cl
 
 // route for create akun peminjam (mahasiswa)
 Route::get('/create-akun-peminjam', [CreateAkun::class, 'showCreateAkunFormPeminjam'])->middleware('guest'); // menampilkan halaman buat akun peminjam
+Route::get('/cek-npm-terdaftar', [CreateAkun::class, 'cekNpmTerdaftar'])->name('cek-npm-terdaftar')->middleware('guest');
 Route::post('/daftar', [CreateAkun::class, 'simpanAkunPeminjam'])->name('daftar')->middleware('guest');
 
 // URL: /peminjam/dashboard
