@@ -165,18 +165,34 @@ class PublicAgendaController extends Controller
         }
 
         $agenda = DB::table('agenda_fakultas')
-            ->select('kode_agenda', 'nama_agenda', 'tipe_agenda', 'tgl_mulai_agenda', 'tgl_selesai_agenda')
+            ->select('kode_agenda as kode', 'nama_agenda as nama', 'tipe_agenda as tipe', 'tgl_mulai_agenda as mulai', 'tgl_selesai_agenda as selesai')
             ->where('kode_agenda', $kode_agenda)
             ->first();
 
+        $isBorrowing = false;
         if (!$agenda) {
-            return response()->json(['message' => 'Agenda tidak ditemukan.'], 404);
+            $agenda = DB::table('peminjaman')
+                ->select('kode_peminjaman as kode', 'ket_peminjaman as nama')
+                ->where('kode_peminjaman', $kode_agenda)
+                ->first();
+
+            if (!$agenda) {
+                return response()->json(['message' => 'Agenda atau peminjaman tidak ditemukan.'], 404);
+            }
+
+            $agenda->tipe = 'Peminjaman';
+            $agenda->mulai = null;
+            $agenda->selesai = null;
+            $isBorrowing = true;
         }
+
+        $foreignKey = $isBorrowing ? 'kode_peminjaman' : 'kode_agenda';
+        $statuses = ['terjadwal', 'digunakan'];
 
         $rooms = DB::table('usage_rooms as u')
             ->join('rooms as r', 'u.id_room', '=', 'r.id_room')
-            ->where('u.kode_agenda', $kode_agenda)
-            ->whereIn('u.status_usage_room', ['terjadwal', 'digunakan', 'selesai'])
+            ->where('u.' . $foreignKey, $kode_agenda)
+            ->whereIn('u.status_usage_room', $statuses)
             ->whereDate('u.tgl_pinjam_usage_room', '<=', $date)
             ->whereDate('u.tgl_kembali_usage_room', '>=', $date)
             ->select('r.nama_room', 'u.jam_mulai_usage_room as jam_mulai', 'u.jam_selesai_usage_room as jam_selesai', 'u.status_usage_room as status')
@@ -190,12 +206,12 @@ class PublicAgendaController extends Controller
 
         $items = DB::table('usage_items as u')
             ->join('items as i', 'u.id_item', '=', 'i.id_item')
-            ->where('u.kode_agenda', $kode_agenda)
-            ->whereIn('u.status_usage_item', ['terjadwal', 'digunakan', 'selesai'])
+            ->leftJoin('rooms as r', 'i.id_room', '=', 'r.id_room')
+            ->where('u.' . $foreignKey, $kode_agenda)
+            ->whereIn('u.status_usage_item', $statuses)
             ->whereDate('u.tgl_pinjam_usage_item', '<=', $date)
             ->whereDate('u.tgl_kembali_usage_item', '>=', $date)
             ->select('i.nama_item', 'i.merek_model', 'r.nama_room as tempat_simpan', 'u.qty_usage_item', 'u.jam_mulai_usage_item as jam_mulai', 'u.jam_selesai_usage_item as jam_selesai', 'u.status_usage_item as status')
-            ->join('rooms as r', 'i.id_room', '=', 'r.id_room')
             ->get()
             ->map(fn ($row) => [
                 'nama' => trim($row->nama_item . ' ' . ($row->merek_model ?? '')),
@@ -207,12 +223,16 @@ class PublicAgendaController extends Controller
             ]);
 
         return response()->json([
-            'kode_agenda' => $agenda->kode_agenda,
-            'nama_agenda' => $agenda->nama_agenda,
-            'tipe_agenda' => $agenda->tipe_agenda ?: 'Agenda Fakultas',
+            'kode_agenda' => $agenda->kode,
+            'nama_agenda' => $agenda->nama ?: ($isBorrowing ? 'Peminjaman Sarana' : 'Agenda Fakultas'),
+            'tipe_agenda' => $agenda->tipe ?: 'Agenda Fakultas',
             'tanggal' => $date,
-            'tanggal_mulai' => $agenda->tgl_mulai_agenda,
-            'tanggal_selesai' => $agenda->tgl_selesai_agenda,
+            'tanggal_mulai' => $agenda->mulai,
+            'tanggal_selesai' => $agenda->selesai,
+            'status' => $isBorrowing
+                ? (DB::table('usage_rooms')->where('kode_peminjaman', $kode_agenda)->whereIn('status_usage_room', $statuses)->value('status_usage_room')
+                    ?? DB::table('usage_items')->where('kode_peminjaman', $kode_agenda)->whereIn('status_usage_item', $statuses)->value('status_usage_item'))
+                : null,
             'ruangan' => $rooms->values(),
             'barang' => $items->values(),
         ]);
