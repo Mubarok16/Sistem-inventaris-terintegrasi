@@ -63,6 +63,23 @@ class CreateAkun extends Controller
         // }
     }
 
+    /** Endpoint read-only untuk mengecek NPM saat mahasiswa mengetik pada formulir registrasi. */
+    public function cekNpmTerdaftar(Request $request)
+    {
+        $npm = (string) $request->query('npm', '');
+        if (!preg_match('/^\\d{12}$/', $npm)) {
+            return response()->json(['valid' => false, 'terdaftar' => false, 'message' => 'Masukkan NPM yang terdiri dari 12 angka.']);
+        }
+
+        $terdaftar = DB::table('peminjam')->where('no_identitas', $npm)->exists();
+
+        return response()->json([
+            'valid' => true,
+            'terdaftar' => $terdaftar,
+            'message' => $terdaftar ? 'NPM sudah terdaftar. Silakan masuk atau periksa kembali NPM Anda.' : 'NPM belum terdaftar dan dapat dilanjutkan.',
+        ]);
+    }
+
     // simpan akun peminjam ke db dari signin
     public function SimpanAkunPeminjam(Request $request)
     {
