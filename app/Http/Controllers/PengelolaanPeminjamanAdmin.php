@@ -311,7 +311,8 @@ class PengelolaanPeminjamanAdmin extends Controller
             ->leftJoin('items', 'pp.id_item', '=', 'items.id_item')
             ->leftJoin('rooms', 'pp.id_room', '=', 'rooms.id_room')
             ->leftJoin('users', 'pp.dicatat_oleh', '=', 'users.id_user')
-            ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username')
+            ->leftJoin('perawatan_barang as pb', 'pp.id_pemeriksaan', '=', 'pb.id_pemeriksaan')
+            ->select('pp.*', 'items.nama_item', 'rooms.nama_room', 'users.username', 'pb.id_perawatan', 'pb.status_perawatan')
             ->orderByDesc('pp.tanggal_pemeriksaan')
             ->paginate(20);
 
