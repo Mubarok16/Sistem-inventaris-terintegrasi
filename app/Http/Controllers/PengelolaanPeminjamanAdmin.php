@@ -556,7 +556,7 @@ class PengelolaanPeminjamanAdmin extends Controller
         }
 
         DB::table('perawatan_barang')->insert([
-            'id_perawatan' => 'RET-' . strtoupper(\\Illuminate\\Support\\Str::random(20)),
+            'id_perawatan' => 'RET-' . strtoupper(\Illuminate\Support\Str::random(20)),
             'id_pemohon' => Auth::user()->id_user,
             'id_penyetuju' => null,
             'id_item' => $pemeriksaan->jenis_aset === 'barang' ? $pemeriksaan->id_item : null,
