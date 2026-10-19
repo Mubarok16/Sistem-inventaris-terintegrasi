@@ -128,6 +128,7 @@ Route::middleware(['auth', 'hak_akses:admin,pimpinan,kaprodi'])->group(function 
     Route::get('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'formPengembalian'])->name('admin.pengembalian.form');
     Route::post('/admin/pengembalian/{kode_peminjaman}', [PengelolaanPeminjamanAdmin::class, 'simpanPengembalian'])->name('admin.pengembalian.simpan');
     Route::get('/admin/riwayat-pemeriksaan-pengembalian', [PengelolaanPeminjamanAdmin::class, 'riwayatPengembalian'])->name('admin.pengembalian.riwayat');
+    Route::post('/admin/riwayat-pemeriksaan-pengembalian/{id_pemeriksaan}/ajukan-perawatan', [PengelolaanPeminjamanAdmin::class, 'ajukanPerawatanDariPengembalian'])->name('admin.pengembalian.ajukan-perawatan');
 
     // page pengeloaan user =========================================================================================================================
 
