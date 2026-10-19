@@ -14,88 +14,99 @@ class calenderController extends Controller
     /// unutk menampilkan semua data agenda di dalamkalender
     public function calender()
     {
-        // Deteksi prefix di Controller
-        // $prefix = request()->is('admin/*') ? 'admin' : 'peminjam';
         $prefix = request()->segment(1);
-        $routeName = $prefix;
+        $routeName = $prefix === 'peminjam' ? 'peminjam' : $prefix;
 
-        // dd($routeName);
+        // Fetch room and item schedules separately. A borrowing may contain
+        // only items, only rooms, or both, so a room-only join hides valid events.
+        $statuses = ['terjadwal', 'digunakan'];
 
-        // Ambil data dari Agenda Fakultas
-        $agenda_fakultas = DB::table('agenda_fakultas')
-            ->join('usage_rooms', 'agenda_fakultas.kode_agenda', '=', 'usage_rooms.kode_agenda')
-            ->select(
-                'agenda_fakultas.kode_agenda as id_ref',
-                'agenda_fakultas.nama_agenda as title_ref',
-                'usage_rooms.tgl_pinjam_usage_room',
-                'usage_rooms.tgl_kembali_usage_room',
-                'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
-                'usage_rooms.status_usage_room'
-            )
-            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'dibatalkan' ,'selesai']);
-
-        // Gabungan (Union) dengan data dari Peminjaman
-        $agendas = DB::table('peminjaman')
-            ->join('usage_rooms', 'peminjaman.kode_peminjaman', '=', 'usage_rooms.kode_peminjaman')
-            ->select(
-                'peminjaman.kode_peminjaman as id_ref',
-                'peminjaman.ket_peminjaman as title_ref',
-                'usage_rooms.tgl_pinjam_usage_room',
-                'usage_rooms.tgl_kembali_usage_room',
-                'usage_rooms.jam_mulai_usage_room',
-                'usage_rooms.jam_selesai_usage_room',
-                'usage_rooms.status_usage_room'
-            )
-            ->union($agenda_fakultas)
-            ->whereIn('usage_rooms.status_usage_room', ['terjadwal', 'digunakan', 'dibatalkan', 'selesai'])
+        $agendaRooms = DB::table('agenda_fakultas as a')
+            ->join('usage_rooms as u', 'a.kode_agenda', '=', 'u.kode_agenda')
+            ->whereIn('u.status_usage_room', $statuses)
+            ->whereNotNull('u.tgl_pinjam_usage_room')
+            ->whereNotNull('u.tgl_kembali_usage_room')
+            ->selectRaw("a.kode_agenda as id_ref, a.nama_agenda as title_ref,
+                u.tgl_pinjam_usage_room as starts_at, u.tgl_kembali_usage_room as ends_at,
+                u.jam_mulai_usage_room as starts_time, u.jam_selesai_usage_room as ends_time,
+                u.status_usage_room as status_ref, 'agenda' as source_ref")
             ->get();
-        // }
 
-        foreach ($agendas as $agenda) {
+        $agendaItems = DB::table('agenda_fakultas as a')
+            ->join('usage_items as u', 'a.kode_agenda', '=', 'u.kode_agenda')
+            ->whereIn('u.status_usage_item', $statuses)
+            ->whereNotNull('u.tgl_pinjam_usage_item')
+            ->whereNotNull('u.tgl_kembali_usage_item')
+            ->selectRaw("a.kode_agenda as id_ref, a.nama_agenda as title_ref,
+                u.tgl_pinjam_usage_item as starts_at, u.tgl_kembali_usage_item as ends_at,
+                u.jam_mulai_usage_item as starts_time, u.jam_selesai_usage_item as ends_time,
+                u.status_usage_item as status_ref, 'agenda' as source_ref")
+            ->get();
 
-            // loop per hari
-            $period = CarbonPeriod::create(
-                $agenda->tgl_pinjam_usage_room,
-                $agenda->tgl_kembali_usage_room
-            );
+        $borrowingRooms = DB::table('peminjaman as p')
+            ->join('usage_rooms as u', 'p.kode_peminjaman', '=', 'u.kode_peminjaman')
+            ->whereIn('u.status_usage_room', $statuses)
+            ->whereNotNull('u.tgl_pinjam_usage_room')
+            ->whereNotNull('u.tgl_kembali_usage_room')
+            ->selectRaw("p.kode_peminjaman as id_ref, p.ket_peminjaman as title_ref,
+                u.tgl_pinjam_usage_room as starts_at, u.tgl_kembali_usage_room as ends_at,
+                u.jam_mulai_usage_room as starts_time, u.jam_selesai_usage_room as ends_time,
+                u.status_usage_room as status_ref, 'peminjaman' as source_ref")
+            ->get();
 
-            // JAM ADA (BUKAN FULL DAY)
-            foreach ($period as $date) {
+        $borrowingItems = DB::table('peminjaman as p')
+            ->join('usage_items as u', 'p.kode_peminjaman', '=', 'u.kode_peminjaman')
+            ->whereIn('u.status_usage_item', $statuses)
+            ->whereNotNull('u.tgl_pinjam_usage_item')
+            ->whereNotNull('u.tgl_kembali_usage_item')
+            ->selectRaw("p.kode_peminjaman as id_ref, p.ket_peminjaman as title_ref,
+                u.tgl_pinjam_usage_item as starts_at, u.tgl_kembali_usage_item as ends_at,
+                u.jam_mulai_usage_item as starts_time, u.jam_selesai_usage_item as ends_time,
+                u.status_usage_item as status_ref, 'peminjaman' as source_ref")
+            ->get();
 
-                $formattedDate = $date->format('Y-m-d');
+        $events = [];
+        $seen = [];
 
-                if ($agenda->jam_mulai_usage_room && $agenda->jam_selesai_usage_room) {
+        foreach ($agendaRooms->concat($agendaItems)->concat($borrowingRooms)->concat($borrowingItems) as $schedule) {
+            try {
+                $start = \Carbon\Carbon::parse($schedule->starts_at)->startOfDay();
+                $end = \Carbon\Carbon::parse($schedule->ends_at)->startOfDay();
+            } catch (\Throwable $exception) {
+                continue;
+            }
 
-                    $events[] = [
-                        'id' => $agenda->id_ref,
-                        'title' => $agenda->title_ref,
-                        'start' => $formattedDate . 'T' . $agenda->jam_mulai_usage_room,
-                        'end'   => $formattedDate . 'T' . $agenda->jam_selesai_usage_room,
-                        'allDay' => false,
-                        'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
-                        'url'   => route($routeName . '.agenda-calender', [
-                            urlencode($agenda->id_ref),
-                            $date->format('Y-m-d')
-                        ]),
-                    ];
+            if ($end->lt($start)) {
+                continue;
+            }
+
+            foreach (CarbonPeriod::create($start, $end) as $date) {
+                $dateString = $date->format('Y-m-d');
+                $startTime = $schedule->starts_time ? substr((string) $schedule->starts_time, 0, 8) : null;
+                $endTime = $schedule->ends_time ? substr((string) $schedule->ends_time, 0, 8) : null;
+                $hasTime = $startTime && $endTime;
+                $dedupeKey = implode('|', [$schedule->source_ref, $schedule->id_ref, $dateString, $startTime ?: '', $endTime ?: '']);
+
+                // Room and item rows belonging to the same booking/event and slot
+                // should not create duplicate blocks in the calendar.
+                if (isset($seen[$dedupeKey])) {
+                    continue;
                 }
-                // JAM NULL (FULL DAY)
-                else {
+                $seen[$dedupeKey] = true;
 
-                    $events[] = [
-                        'id' => $agenda->id_ref,
-                        'title' => $agenda->title_ref,
-                        'start' => $formattedDate,
-                        'end'   => $formattedDate,
-                        'allDay' => true,
-                        'color' => $this->statusColor($agenda->status_usage_room, $agenda->id_ref),
-                        'url'   => route($routeName . '.agenda-calender', [
-                            urlencode($agenda->id_ref),
-                            $date->format('Y-m-d')
-                        ]),
-                    ];
-                }
+                $event = [
+                    'id' => $schedule->source_ref . '-' . $schedule->id_ref . '-' . $dateString,
+                    'title' => $schedule->title_ref ?: ($schedule->source_ref === 'peminjaman' ? 'Peminjaman Sarana' : 'Agenda Fakultas'),
+                    'start' => $hasTime ? $dateString . 'T' . $startTime : $dateString,
+                    'end' => $hasTime ? $dateString . 'T' . $endTime : $date->copy()->addDay()->format('Y-m-d'),
+                    'allDay' => !$hasTime,
+                    'color' => $this->statusColor($schedule->status_ref, $schedule->id_ref),
+                    'url' => route($routeName . '.agenda-calender', [
+                        urlencode($schedule->id_ref),
+                        $dateString,
+                    ]),
+                ];
+                $events[] = $event;
             }
         }
 
