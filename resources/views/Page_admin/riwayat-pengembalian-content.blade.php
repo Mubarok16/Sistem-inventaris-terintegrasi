@@ -13,7 +13,7 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                                 <tr>
-                                    <th class="px-4 py-3">Tanggal</th><th class="px-4 py-3">Kode Peminjaman</th><th class="px-4 py-3">Aset</th><th class="px-4 py-3">Kondisi</th><th class="px-4 py-3">Jumlah Rusak</th><th class="px-4 py-3">Deskripsi</th><th class="px-4 py-3">Foto</th><th class="px-4 py-3">Petugas</th>
+                                    <th class="px-4 py-3">Tanggal</th><th class="px-4 py-3">Kode Peminjaman</th><th class="px-4 py-3">Aset</th><th class="px-4 py-3">Kondisi</th><th class="px-4 py-3">Jumlah Rusak</th><th class="px-4 py-3">Deskripsi</th><th class="px-4 py-3">Foto</th><th class="px-4 py-3">Status Perawatan</th><th class="px-4 py-3">Petugas</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
@@ -26,10 +26,26 @@
                                         <td class="px-4 py-3">{{ $row->qty_rusak }} / {{ $row->qty_dikembalikan }}</td>
                                         <td class="max-w-xs px-4 py-3 whitespace-normal">{{ $row->deskripsi_kerusakan ?: '—' }}</td>
                                         <td class="px-4 py-3">@if ($row->foto_kerusakan)<a class="text-blue-600 underline" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($row->foto_kerusakan) }}" target="_blank" rel="noopener">Lihat foto</a>@else — @endif</td>
+                                        <td class="px-4 py-3">
+                                            @if ((int) $row->qty_rusak > 0)
+                                                @if ($row->id_perawatan)
+                                                    <span class="inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-800">Sudah diajukan</span>
+                                                    <div class="mt-1 text-xs text-slate-500">{{ $row->status_perawatan }}</div>
+                                                    <a href="{{ route('preview_surat_perawatan', ['id' => base64_encode($row->id_perawatan)]) }}" target="_blank" rel="noopener" class="mt-2 inline-block text-blue-600 underline">Lihat surat perawatan</a>
+                                                @else
+                                                    <form method="POST" action="{{ route('admin.pengembalian.ajukan-perawatan', $row->id_pemeriksaan) }}" onsubmit="return confirm('Ajukan perawatan untuk aset rusak ini? Surat akan dibuat menggunakan format perawatan yang sudah ada.');">
+                                                        @csrf
+                                                        <button type="submit" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">Ajukan perawatan</button>
+                                                    </form>
+                                                @endif
+                                            @else
+                                                <span class="text-xs text-slate-400">Tidak diperlukan</span>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-3">{{ $row->username ?? $row->dicatat_oleh }}</td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="8" class="px-4 py-10 text-center text-slate-500">Belum ada catatan pemeriksaan pengembalian.</td></tr>
+                                    <tr><td colspan="9" class="px-4 py-10 text-center text-slate-500">Belum ada catatan pemeriksaan pengembalian.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
