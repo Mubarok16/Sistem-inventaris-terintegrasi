@@ -88,7 +88,7 @@
                                 <span class="material-symbols-outlined text-[18px]"></span>
                                 &minus;
                             </button>
-                            <input name="qty_pinjam" x-model="qty" min="0"
+                            <input name="qty_pinjam" x-model="qty" min="1"
                                 class="w-full h-full text-center border-none bg-transparent focus:outline-none text-[#111418] font-medium p-0"
                                 type="number" value="1" />
                             <button type="button"
