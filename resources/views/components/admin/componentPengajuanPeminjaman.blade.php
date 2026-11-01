@@ -171,26 +171,22 @@
                                                         <div class="flex items-center gap-2 mb-1">
                                                             <i class="fa-solid fa-calendar-day text-primary"></i>
                                                             <span class="text-slate-900 font-medium">
-                                                                @if ($dataPeminjaman->tgl_pinjam_usage_room != null)
-                                                                    @if (date('d M y', strtotime($dataPeminjaman->tgl_pinjam_usage_room)) ===
-                                                                            date('d M y', strtotime($dataPeminjaman->tgl_kembali_usage_room)))
-                                                                        {{ date('d M y', strtotime($dataPeminjaman->tgl_pinjam_usage_room)) }}
+                                                                @if ($dataPeminjaman->tgl_pinjam && $dataPeminjaman->tgl_kembali)
+                                                                    @php
+                                                                        $tglPinjam = \Carbon\Carbon::parse($dataPeminjaman->tgl_pinjam);
+                                                                        $tglKembali = \Carbon\Carbon::parse($dataPeminjaman->tgl_kembali);
+                                                                    @endphp
+
+                                                                    @if ($tglPinjam->isSameDay($tglKembali))
+                                                                        {{ $tglPinjam->format('d M y') }}
                                                                     @else
-                                                                        {{ date('d M', strtotime($dataPeminjaman->tgl_pinjam_usage_room)) }}
+                                                                        {{ $tglPinjam->format('d M y') }}
                                                                         -
-                                                                        {{ date('d M y', strtotime($dataPeminjaman->tgl_kembali_usage_room)) }}
+                                                                        {{ $tglKembali->format('d M y') }}
                                                                     @endif
                                                                 @else
-                                                                    @if (date('d M y', strtotime($dataPeminjaman->tgl_pinjam_usage_item)) ===
-                                                                            date('d M y', strtotime($dataPeminjaman->tgl_kembali_usage_item)))
-                                                                        {{ date('d M y', strtotime($dataPeminjaman->tgl_pinjam_usage_item)) }}
-                                                                    @else
-                                                                        {{ date('d M', strtotime($dataPeminjaman->tgl_pinjam_usage_item)) }}
-                                                                        -
-                                                                        {{ date('d M y', strtotime($dataPeminjaman->tgl_kembali_usage_item)) }}
-                                                                    @endif
+                                                                    <span class="text-slate-400">Jadwal belum tersedia</span>
                                                                 @endif
-                                                            </span>
                                                         </div>
                                                         {{-- <span class="text-xs text-slate-500 pl-6">
                                                         10:00 - 12:00 (2 Jam)
