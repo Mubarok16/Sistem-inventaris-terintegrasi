@@ -42,9 +42,9 @@
                             @else
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NIDN</label>
                             @endif
-                            <input name="nomorIdentitas" maxlength="12" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:bg-white text-sm font-medium transition-all"
-                                placeholder="Masukkan nomor identitas" type="text" value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
+                            <input name="nomorIdentitas" maxlength="12" type="text" readonly
+                                class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed text-sm font-medium"
+                                value="{{ $dataUser->nidn ?? $dataUser->nip }}" />
                         </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
@@ -158,6 +158,12 @@
                     enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">NPM</label>
+                            <input type="text" readonly
+                                class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed text-sm font-medium"
+                                value="{{ $dataUser->no_identitas }}" />
+                        </div>
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Nama
                                 Lengkap</label>
