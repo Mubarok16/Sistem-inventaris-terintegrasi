@@ -60,6 +60,7 @@ class PengelolaanUserService
 
                     'detail_dosen.nidn',
                     'detail_dosen.nama as nama_dosen',
+                    'detail_dosen.jabatan as jabatan_dosen',
 
                     'detail_staff.nip',
                     'detail_staff.nama as nama_staff',

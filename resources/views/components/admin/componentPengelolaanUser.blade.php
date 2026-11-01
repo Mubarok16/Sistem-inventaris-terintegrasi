@@ -239,8 +239,12 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
-                                        Fakultas Teknik
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700 capitalize">
+                                        @if ($akunUser->hak_akses === 'kaprodi')
+                                            {{ $akunUser->jabatan_dosen ?: 'Program Studi belum diatur' }}
+                                        @else
+                                            Fakultas Teknik
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if ($akunUser->status === 'active')
