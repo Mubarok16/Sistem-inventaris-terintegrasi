@@ -164,7 +164,13 @@ class PengajuanPeminjamanController extends Controller
 
             // KIRIM NOTIFIKASI KE TELEGRAM (Menggunakan Chat ID dari .env)
             // Notification::route('telegram', env('TELEGRAM_CHAT_ID'))
-            $allAdmin = DB::table('detail_staff')->whereNotNull('no_hp')->get();
+            $allAdmin = DB::table('detail_staff')
+                ->join('users', 'users.id_user', '=', 'detail_staff.id_user')
+                ->where('users.hak_akses', 'admin')
+                ->whereNotNull('detail_staff.no_hp')
+                ->where('detail_staff.no_hp', '!=', 0)
+                ->select('detail_staff.no_hp')
+                ->get();
             foreach ($allAdmin as $admin) {
                 Notification::route('telegram', $admin->no_hp)
                     ->notify(new PengajuanPeminjaman($dataTelegram));
