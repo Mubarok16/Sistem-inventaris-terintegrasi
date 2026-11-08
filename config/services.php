@@ -16,6 +16,7 @@ return [
     'telegram' => [
         'token' => env('TELEGRAM_BOT_TOKEN'),
         'chat_id' => env('TELEGRAM_CHAT_ID'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
     ],
     
     'postmark' => [

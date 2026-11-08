@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\agendaBerlangsung;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\PublicAgendaController;
 use App\Http\Controllers\CreateAkun;
 use App\Http\Controllers\DashboardController;
@@ -51,6 +52,10 @@ use Illuminate\Support\Facades\Storage;
 //         'endpoint' => config('filesystems.disks.s3.endpoint'),
 //     ];
 // });
+
+// Telegram webhook untuk mengambil Telegram ID admin/staff.
+Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])
+    ->name('telegram.webhook');
 
 // routes for authentication
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest'); // menampilkan halaman login

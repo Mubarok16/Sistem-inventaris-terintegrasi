@@ -4,7 +4,9 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Http; // 🟢 Menggunakan HTTP Client bawaan Laravel
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PengajuanPeminjaman extends Notification
 {
@@ -39,8 +41,18 @@ class PengajuanPeminjaman extends Notification
     private function kirimTembakTelegram($chatId)
     // private function kirimTembakTelegram()
     {
-        $token = env('TELEGRAM_BOT_TOKEN');
+        $token = config('services.telegram.token');
         // $chatId = env('TELEGRAM_CHAT_ID');
+
+        if (blank($token) || blank($chatId)) {
+            Log::warning('Telegram notification skipped: bot token or chat ID is missing.');
+            return;
+        }
+
+        // Kolom no_hp lama bertipe decimal; hilangkan akhiran desimal agar Telegram menerima chat ID integer.
+        $chatId = str_contains((string) $chatId, '.')
+            ? rtrim(rtrim((string) $chatId, '0'), '.')
+            : (string) $chatId;
 
         // Menyusun template pesan text biasa (Markdown)
         $pesan = "*🚨 PERMOHONAN PENGAJUAN PEMINJAMAN 🚨*\n\n"
@@ -55,10 +67,25 @@ class PengajuanPeminjaman extends Notification
                . "[Lihat & Setujui Pengajuan](" . url('admin/pengajuan-peminjaman/detail/' . $this->peminjaman['kode_peminjaman']) . ")";
 
         // Tembak API Telegram menggunakan HTTP Client bawaan Laravel
-        Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+        try {
+            $response = Http::timeout(10)->post("https://api.telegram.org/bot{$token}/sendMessage", [
             'chat_id' => $chatId,
             'text' => $pesan,
-            'parse_mode' => 'Markdown',
-        ]);
+                'parse_mode' => 'Markdown',
+            ]);
+
+            if (!$response->successful() || !$response->json('ok')) {
+                Log::warning('Telegram notification failed.', [
+                    'chat_id' => $chatId,
+                    'http_status' => $response->status(),
+                    'telegram_description' => $response->json('description'),
+                ]);
+            }
+        } catch (Throwable $exception) {
+            Log::warning('Telegram notification request failed.', [
+                'chat_id' => $chatId,
+                'error' => $exception->getMessage(),
+            ]);
+        }
     }
 }
