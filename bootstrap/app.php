@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function ($middleware) {
+        $middleware->validateCsrfTokens(except: ['telegram/webhook']);
+
         $middleware->alias([
             'hak_akses' => \App\Http\Middleware\Authenticate::class,
         ]);
