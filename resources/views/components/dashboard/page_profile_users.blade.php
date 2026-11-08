@@ -91,7 +91,7 @@
                                     value="{{ $dataUser->no_hp }}" type="text" />
                                 <label class="text-xs font-bold text-slate-500 tracking-wider block">
                                     Dapatkan ID Telegram Anda dengan menghubungi Bot Telegram kami di
-                                    <a href="https://t.me/sipraunwir_bot" target="_blank">sipraunwir_bot</a> unutk
+                                    <a href="https://t.me/notif_sipra_bot" target="_blank">notif_sipra_bot</a> unutk
                                     mendapatkan notifikasi peminjaman
                                 </label>
                             </div>
