@@ -1,10 +1,11 @@
 <?php
 
-namespace App\\Http\\Controllers;
+namespace App\Http\Controllers;
 
-use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\Http;
-use Illuminate\\Support\\Facades\\Log;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class TelegramWebhookController extends Controller
 {
@@ -26,7 +27,8 @@ class TelegramWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
 
-        if (!preg_match('/^\\/(start|id)(?:@notif_sipra_bot)?(?:\\s|$)/i', $text)) {
+        $command = strtolower(strtok($text, " \t\n"));
+        if (!in_array($command, ['/start', '/id', '/start@notif_sipra_bot', '/id@notif_sipra_bot'], true)) {
             return response()->json(['ok' => true]);
         }
 
@@ -37,9 +39,9 @@ class TelegramWebhookController extends Controller
         }
 
         $chatId = (string) $chatId;
-        $reply = "Halo! Selamat datang di Bot Notifikasi SIPRA Fakultas Teknik.\\n\\n"
-            . "Telegram ID Anda adalah:\\n<code>{$chatId}</code>\\n\\n"
-            . "Salin ID tersebut, lalu masukkan pada kolom ID Telegram di profil admin/staff SIPRA.\\n"
+        $reply = "Halo! Selamat datang di Bot Notifikasi SIPRA Fakultas Teknik.\n\n"
+            . "Telegram ID Anda adalah:\n<code>{$chatId}</code>\n\n"
+            . "Salin ID tersebut, lalu masukkan pada kolom ID Telegram di profil admin/staff SIPRA.\n"
             . "Gunakan perintah /id kapan saja untuk melihat ID ini kembali.";
 
         try {
@@ -56,7 +58,7 @@ class TelegramWebhookController extends Controller
                     'telegram_description' => $response->json('description'),
                 ]);
             }
-        } catch (\\Throwable $exception) {
+        } catch (Throwable $exception) {
             Log::warning('Telegram bot reply request failed.', [
                 'chat_id' => $chatId,
                 'error' => $exception->getMessage(),
