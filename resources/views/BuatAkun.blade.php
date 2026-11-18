@@ -53,7 +53,7 @@
  let npmCheckTimer=null, npmCheckToken=0, npmRegistered=false;
  async function checkNpmRegistration(value){
    const token=++npmCheckToken;
-   if(!/^\\d{12}$/.test(value))return null;
+   if(!/^\d{12}$/.test(value))return null;
    status.className='npm-status';status.textContent='Memeriksa status NPM...';
    try{
      const response=await fetch('{{ route('cek-npm-terdaftar') }}?npm='+encodeURIComponent(value),{headers:{'Accept':'application/json'},credentials:'same-origin'});
@@ -74,7 +74,7 @@
    const value=npm.value.trim();prodi.value='';year.value='';status.className='npm-status';status.textContent='';npmRegistered=false;npmCheckToken++;
    clearTimeout(npmCheckTimer);
    if(value.length===0)return;
-   if(!/^\\d{12}$/.test(value)){if(value.length>=5){status.className='npm-status error';status.textContent='NPM harus terdiri dari tepat 12 angka.';}return;}
+   if(!/^\d{12}$/.test(value)){if(value.length>=5){status.className='npm-status error';status.textContent='NPM harus terdiri dari tepat 12 angka.';}return;}
    const code=value.slice(0,5), program=programs[code];
    if(!program){status.className='npm-status error';status.textContent='Kode prodi '+code+' belum dikenali. Periksa kembali NPM Anda.';return;}
    prodi.value=program;year.value=String(2000+Number(value.slice(7,9)));
@@ -85,7 +85,7 @@
  form.addEventListener('submit',async function(event){
    event.preventDefault();
    const value=npm.value.trim();
-   if(!/^\\d{12}$/.test(value)||!prodi.value||!year.value){resolveNpm();status.className='npm-status error';status.textContent='Masukkan NPM 12 digit yang memiliki kode prodi terdaftar sebelum melanjutkan.';npm.focus();return;}
+   if(!/^\d{12}$/.test(value)||!prodi.value||!year.value){resolveNpm();status.className='npm-status error';status.textContent='Masukkan NPM 12 digit yang memiliki kode prodi terdaftar sebelum melanjutkan.';npm.focus();return;}
    clearTimeout(npmCheckTimer);
    const result=await checkNpmRegistration(value);
    if(!result||result.terdaftar||!result.valid){npm.focus();return;}
