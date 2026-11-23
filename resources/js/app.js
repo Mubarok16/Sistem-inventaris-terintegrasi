@@ -189,7 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
-        height: 'auto',
+        height: '100%',
+        expandRows: true,
         locale: idLocale,
         firstDay: 1,
         headerToolbar: {
