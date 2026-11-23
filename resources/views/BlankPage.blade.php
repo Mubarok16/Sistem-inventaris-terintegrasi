@@ -24,6 +24,38 @@
 .login-overlay{position:fixed;inset:0;z-index:1050;display:none;align-items:center;justify-content:center;padding:20px}.login-overlay.is-open{display:flex}.login-backdrop{position:absolute;inset:0;width:100%;height:100%;border:0;background:#081a35a8;backdrop-filter:blur(5px);cursor:pointer}.login-dialog{position:relative;z-index:1;width:min(100%,540px);max-height:calc(100dvh - 40px);overflow:auto}.login-dialog .login{padding:clamp(22px,3vw,34px);border-radius:22px}.login-dialog .eyebrow{margin-bottom:17px}.login-dialog .intro{margin-bottom:18px}.login-dialog .privacy{margin-top:15px}.login-close{position:absolute;z-index:3;right:13px;top:12px;width:34px;height:34px;border:1px solid #ffffff55;border-radius:50%;background:#ffffff20;color:#fff;font-size:1.5rem;line-height:1;cursor:pointer}.login-close:hover{background:#ffffff35}
 @media(max-width:820px){.shell{height:auto;min-height:100dvh;overflow:visible;padding:15px 12px}.layout{min-height:calc(100dvh - 145px)}.calendar{min-height:620px}.cal-head{padding:18px}.cal-body{padding:12px 11px 14px}#public-calendar{min-height:420px}.footer{margin-top:14px}}
 @media(max-height:700px) and (min-width:821px){.cal-head{padding-top:11px;padding-bottom:9px}.cal-head h2{font-size:1.4rem;margin-bottom:4px}.cal-head p{font-size:.75rem}.cal-body{padding-top:8px;padding-bottom:8px}.legend{margin-bottom:5px}.hint{font-size:.69rem;padding:7px 10px}.footer{margin-top:6px}}
+/* Penyempurnaan ukuran kalender dan perataan ikon pada landing page. */
+html,body{height:100%;overflow:hidden}
+.shell{height:100dvh;min-height:0;padding:12px clamp(12px,2vw,30px) 8px;gap:0}
+.top{margin-bottom:8px;min-height:48px}
+.layout{flex:1;min-height:0;display:flex;align-items:stretch}
+.calendar{width:100%;min-height:0;height:100%;overflow:hidden}
+.cal-head{padding:12px 20px 10px;align-items:center}
+.cal-head .kicker{margin-bottom:4px}.cal-head h2{font-size:clamp(1.2rem,1.6vw,1.6rem);margin-bottom:4px}.cal-head p{font-size:.75rem;line-height:1.4}
+.cal-body{flex:1;min-height:0;padding:8px 16px 9px;overflow:hidden}
+.legend{margin-bottom:5px;font-size:.68rem;gap:12px}
+#public-calendar{flex:1;min-height:0;height:100%;overflow:hidden}
+#public-calendar .fc{height:100%!important;font-size:.75rem}
+#public-calendar .fc-view-harness{min-height:0!important;height:calc(100% - 42px)!important}
+#public-calendar .fc-scrollgrid,#public-calendar .fc-scrollgrid-section table,#public-calendar .fc-daygrid-body,#public-calendar .fc-daygrid-body table{height:100%!important}
+#public-calendar .fc-daygrid-day-frame{min-height:0;padding:0}
+#public-calendar .fc-daygrid-day-number{padding:4px 6px}
+#public-calendar .fc-daygrid-day.fc-day-today{background:#dbeafe!important;box-shadow:inset 0 0 0 2px #2563eb}
+#public-calendar .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{color:#1d4ed8;font-weight:900}
+#public-calendar .fc-toolbar{margin-bottom:7px!important;gap:6px}
+#public-calendar .fc-toolbar-title{font-size:1rem}
+#public-calendar .fc-button{padding:.3em .55em!important;font-size:.75rem!important}
+#public-calendar .fc-col-header-cell-cushion{padding:5px 2px}
+#public-calendar .fc-event{font-size:.66rem;padding:2px 4px}
+.hint{margin-top:6px;padding:7px 10px;font-size:.68rem;line-height:1.35}
+.footer{margin-top:6px;font-size:.66rem}
+.login-trigger{padding:0!important;line-height:1!important;flex:0 0 42px;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.login-trigger i,.login-trigger svg{display:block;margin:0!important;line-height:1!important;width:1em;height:1em}
+.login-close{padding:0!important;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1!important;font-family:Arial,sans-serif;font-weight:400}
+.login-close i,.login-close svg{display:block;margin:0!important;line-height:1}
+.login-close{top:14px;right:14px}
+@media(max-width:820px){html,body{height:auto;overflow:auto}.shell{height:auto;min-height:100dvh;overflow:visible;padding:15px 12px}.layout{display:block;min-height:0}.calendar{height:auto;min-height:620px}.cal-body{overflow:visible}#public-calendar{height:540px;min-height:540px}#public-calendar .fc-view-harness{height:calc(100% - 42px)!important}.footer{margin-top:12px}}
+@media(max-height:700px) and (min-width:821px){.top{min-height:40px;margin-bottom:5px}.cal-head{padding:8px 16px}.cal-body{padding:6px 12px}.legend{margin-bottom:3px}.hint{padding:5px 8px;margin-top:4px}.footer{margin-top:3px}}
 </style>
 </head>
 <body><div class="shell">
