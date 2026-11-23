@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         initialView: 'dayGridMonth',
         height: '100%',
         expandRows: true,
+        dayMaxEventRows: 2,
         locale: idLocale,
         firstDay: 1,
         headerToolbar: {
